@@ -8,7 +8,7 @@ export default function Input({ title, placeholder }: InputProps) {
     <div className="flex flex-col gap-2">
       <h1 className="text-black text-2xl">{title}</h1>
       <input
-        className="bg-neutral-300 rounded-lg placeholder:text-zinc-700 text-black p-3 text-xl"
+        className="bg-neutral-300 rounded-lg placeholder:text-zinc-700 text-black p-3 text-xl cursor-pointer"
         type="text"
         name=""
         id=""

@@ -16,6 +16,9 @@ export default function Home() {
             <Input title="Email" placeholder="Enter your email" />
             <Input title="Github" placeholder="Enter your github" />
           </Card>
+          <Card title="Professional Summary">
+            <Input title="Summary" placeholder="Enter your full summary" />
+          </Card>
         </div>
       </main>
     </div>
