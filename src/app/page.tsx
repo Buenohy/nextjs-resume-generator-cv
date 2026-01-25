@@ -1,5 +1,6 @@
 import Card from './components/Card';
 import Input from './components/Input';
+import Skills from './components/Skills';
 
 export default function Home() {
   return (
@@ -10,14 +11,40 @@ export default function Home() {
             <Input title="Full name" placeholder="Enter your full name" />
           </Card>
           <Card title="Links">
-            <Input title="Linkedin" placeholder="Enter your linkedin" />
-            <Input title="Phone" placeholder="Enter your phone" />
-            <Input title="Site" placeholder="Enter your site" />
-            <Input title="Email" placeholder="Enter your email" />
-            <Input title="Github" placeholder="Enter your github" />
+            <Input title="Linkedin" placeholder="Enter linkedin" />
+            <Input title="Phone" placeholder="Enter phone" />
+            <Input title="Site" placeholder="Enter site" />
+            <Input title="Email" placeholder="Enter email" />
+            <Input title="Github" placeholder="Enter github" />
           </Card>
           <Card title="Professional Summary">
             <Input title="Summary" placeholder="Enter your full summary" />
+          </Card>
+          <Card title="Skills">
+            <Skills title="Skills" placeholder="Enter skill" />
+          </Card>
+          <Card title="Experience">
+            <div className="grid grid-cols-3 gap-4">
+              <Input title="Role Title" placeholder="Enter your role title" />
+              <Input title="Job Title" placeholder="Enter your job title" />
+              <Input title="Date" placeholder="Enter your date" />
+            </div>
+            <Input
+              title="Summary"
+              placeholder="Enter your experience summary"
+            />
+            <Input
+              title="Summary"
+              placeholder="Enter your experience summary"
+            />
+            <Input
+              title="Summary"
+              placeholder="Enter your experience summary"
+            />
+            <Input
+              title="Summary"
+              placeholder="Enter your experience summary"
+            />
           </Card>
         </div>
       </main>
