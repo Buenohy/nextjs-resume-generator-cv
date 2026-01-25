@@ -13,11 +13,13 @@ export default function Home() {
               <Input title="Full name" placeholder="Enter your full name" />
             </Card>
             <Card title="Links">
-              <Input title="Linkedin" placeholder="Enter linkedin" />
-              <Input title="Phone" placeholder="Enter phone" />
-              <Input title="Site" placeholder="Enter site" />
-              <Input title="Email" placeholder="Enter email" />
-              <Input title="Github" placeholder="Enter github" />
+              <div className="grid grid-cols-2 gap-4">
+                <Input title="Linkedin" placeholder="Enter linkedin" />
+                <Input title="Phone" placeholder="Enter phone" />
+                <Input title="Site" placeholder="Enter site" />
+                <Input title="Email" placeholder="Enter email" />
+                <Input title="Github" placeholder="Enter github" />
+              </div>
             </Card>
             <Card title="Professional Summary">
               <Input title="" placeholder="Enter your full summary" />
@@ -50,7 +52,7 @@ export default function Home() {
             </Card>
           </div>
           <div className="col-start-2 hidden sm:grid">
-            <Card title="Preview">
+            <Card title="Preview Resume">
               <Resume
                 info={{
                   name: "Gabriel Bueno Hygino",
