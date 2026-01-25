@@ -6,16 +6,16 @@ interface SkillsProps {
 export default function Skills({ title, placeholder }: SkillsProps) {
   return (
     <div className="flex flex-col gap-2">
-      <h1 className="text-black text-2xl">{title}</h1>
-      <div className="flex gap-2 items-center">
+      <h1 className="text-2xl text-black">{title}</h1>
+      <div className="flex items-center gap-2">
         <button
-          className="text-black text-2xl bg-neutral-300 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
+          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-neutral-300 text-2xl text-black"
           type="button"
         >
-          <span className="text-black text-2xl">+</span>
+          <span className="text-2xl text-black">+</span>
         </button>
         <input
-          className="bg-neutral-300 rounded-lg placeholder:text-zinc-700 text-black p-3 text-xl cursor-pointer w-fit"
+          className="w-fit cursor-pointer rounded-lg bg-neutral-300 p-3 text-xl text-black placeholder:text-zinc-700"
           type="text"
           name=""
           id=""
