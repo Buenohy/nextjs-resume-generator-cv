@@ -6,16 +6,17 @@ export default function Home() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
       <main className="flex h-screen w-full flex-col items-center justify-between overflow-hidden bg-white p-4 sm:items-start dark:bg-black">
-        <div className="grid h-full w-full grid-cols-2 gap-4">
+        <div className="grid h-full w-full grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="col-start-1 flex h-full snap-y snap-mandatory flex-col gap-4 overflow-y-auto scroll-smooth pr-2">
             <div className="snap-start">
               <Card title="Personal Details">
                 <Input label="Full name" placeholder="Enter your full name" />
+                <Input label="Language" placeholder="Enter your language" />
               </Card>
             </div>
             <div className="snap-start">
               <Card title="Links">
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                   <Input label="Linkedin" placeholder="Enter linkedin" />
                   <Input label="Phone" placeholder="Enter phone" />
                   <Input label="Site" placeholder="Enter site" />
@@ -36,7 +37,7 @@ export default function Home() {
             </div>
             <div className="snap-start">
               <Card title="Experiences">
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
                   <Input
                     label="Role Title"
                     placeholder="Enter your role title"
