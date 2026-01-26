@@ -36,64 +36,7 @@ export default function Home() {
               </Card>
             </div>
             <div className="snap-start">
-              <Card title="Experience 1">
-                <div className="grid grid-cols-3 gap-4">
-                  <Input
-                    title="Role Title"
-                    placeholder="Enter your role title"
-                  />
-                  <Input title="Job Title" placeholder="Enter your job title" />
-                  <Input title="Date" placeholder="Enter your date" />
-                </div>
-                <Input
-                  title="Summary"
-                  placeholder="Enter your experience summary"
-                />
-                <Input title="" placeholder="Enter your experience summary" />
-                <Input title="" placeholder="Enter your experience summary" />
-                <Input title="" placeholder="Enter your experience summary" />
-              </Card>
-            </div>
-            <div className="snap-start">
-              <Card title="Experience 2">
-                <div className="grid grid-cols-3 gap-4">
-                  <Input
-                    title="Role Title"
-                    placeholder="Enter your role title"
-                  />
-                  <Input title="Job Title" placeholder="Enter your job title" />
-                  <Input title="Date" placeholder="Enter your date" />
-                </div>
-                <Input
-                  title="Summary"
-                  placeholder="Enter your experience summary"
-                />
-                <Input title="" placeholder="Enter your experience summary" />
-                <Input title="" placeholder="Enter your experience summary" />
-                <Input title="" placeholder="Enter your experience summary" />
-              </Card>
-            </div>
-            <div className="snap-start">
-              <Card title="Experience 3">
-                <div className="grid grid-cols-3 gap-4">
-                  <Input
-                    title="Role Title"
-                    placeholder="Enter your role title"
-                  />
-                  <Input title="Job Title" placeholder="Enter your job title" />
-                  <Input title="Date" placeholder="Enter your date" />
-                </div>
-                <Input
-                  title="Summary"
-                  placeholder="Enter your experience summary"
-                />
-                <Input title="" placeholder="Enter your experience summary" />
-                <Input title="" placeholder="Enter your experience summary" />
-                <Input title="" placeholder="Enter your experience summary" />
-              </Card>
-            </div>
-            <div className="snap-start">
-              <Card title="Experience 4">
+              <Card title="Experiences">
                 <div className="grid grid-cols-3 gap-4">
                   <Input
                     title="Role Title"
@@ -114,13 +57,10 @@ export default function Home() {
             <div className="snap-start">
               <Card title="Education">
                 <Input title="" placeholder="Enter your education" />
-                <Input title="" placeholder="Enter your education" />
               </Card>
             </div>
             <div className="snap-start">
               <Card title="Languages">
-                <Input title="" placeholder="Enter your languages" />
-                <Input title="" placeholder="Enter your languages" />
                 <Input title="" placeholder="Enter your languages" />
               </Card>
             </div>
