@@ -1,7 +1,6 @@
 import Card from "./components/Card";
 import Input from "./components/Input";
 import Resume from "./components/Resume";
-import Skills from "./components/Skills";
 
 export default function Home() {
   return (
@@ -11,69 +10,70 @@ export default function Home() {
           <div className="col-start-1 flex h-full snap-y snap-mandatory flex-col gap-4 overflow-y-auto scroll-smooth pr-2">
             <div className="snap-start">
               <Card title="Personal Details">
-                <Input title="Full name" placeholder="Enter your full name" />
+                <Input label="Full name" placeholder="Enter your full name" />
               </Card>
             </div>
             <div className="snap-start">
               <Card title="Links">
                 <div className="grid grid-cols-3 gap-4">
-                  <Input title="Linkedin" placeholder="Enter linkedin" />
-                  <Input title="Phone" placeholder="Enter phone" />
-                  <Input title="Site" placeholder="Enter site" />
-                  <Input title="Email" placeholder="Enter email" />
-                  <Input title="Github" placeholder="Enter github" />
+                  <Input label="Linkedin" placeholder="Enter linkedin" />
+                  <Input label="Phone" placeholder="Enter phone" />
+                  <Input label="Site" placeholder="Enter site" />
+                  <Input label="Email" placeholder="Enter email" />
+                  <Input label="Github" placeholder="Enter github" />
                 </div>
               </Card>
             </div>
             <div className="snap-start">
               <Card title="Professional Summary">
-                <Input title="" placeholder="Enter your full summary" />
+                <Input label="" placeholder="Enter your full summary" />
               </Card>
             </div>
             <div className="snap-start">
               <Card title="Skills">
-                <Input title="" placeholder="Enter yours skills" />
+                <Input label="" placeholder="Enter yours skills" />
               </Card>
             </div>
             <div className="snap-start">
               <Card title="Experiences">
                 <div className="grid grid-cols-4 gap-4">
                   <Input
-                    title="Role Title"
+                    label="Role Title"
                     placeholder="Enter your role title"
                   />
                   <Input
-                    title="Company Name"
+                    label="Company Name"
                     placeholder="Enter your job title"
                   />
                   <Input
-                    title="Company Link"
+                    label="Company Link"
                     placeholder="Enter your link to job title"
                   />
-                  <Input title="Date" placeholder="00/0000" />
+                  <Input label="Date" placeholder="00/0000" />
                 </div>
                 <Input
-                  title="Summary"
+                  label="Summary"
                   placeholder="Enter your experience summary"
                 />
-                <Input title="" placeholder="Enter your experience summary" />
-                <Input title="" placeholder="Enter your experience summary" />
-                <Input title="" placeholder="Enter your experience summary" />
+                <Input label="" placeholder="Enter your experience summary" />
+                <Input label="" placeholder="Enter your experience summary" />
+                <Input label="" placeholder="Enter your experience summary" />
               </Card>
             </div>
             <div className="snap-start">
               <Card title="Education">
-                <Input title="" placeholder="Enter your education" />
+                <Input label="" placeholder="Enter your education" />
               </Card>
             </div>
             <div className="snap-start">
               <Card title="Languages">
-                <Input title="" placeholder="Enter your languages" />
+                <Input label="" placeholder="Enter your languages" />
               </Card>
             </div>
           </div>
           <div className="col-start-2 hidden h-full overflow-y-auto sm:grid">
             <Card title="Preview Resume">
+              <hr className="h-1 w-full text-black" />
               <Resume
                 info={{
                   name: "Gabriel Bueno Hygino",
