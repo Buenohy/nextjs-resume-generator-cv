@@ -1,6 +1,6 @@
-import Card from "./components/Card";
-import Input from "./components/Input";
-import Resume from "./components/Resume";
+import Card from "@/components/Card";
+import Input from "@/components/Input";
+import Resume from "@/components/Resume";
 
 export default function Home() {
   return (
