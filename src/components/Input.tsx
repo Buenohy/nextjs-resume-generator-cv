@@ -1,7 +1,4 @@
-interface InputProps {
-  label: string;
-  placeholder: string;
-}
+import { InputProps } from "@/types/Input";
 
 export default function Input({ label, placeholder }: InputProps) {
   return (
