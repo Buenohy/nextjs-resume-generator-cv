@@ -16,7 +16,7 @@ export default function Home() {
             </div>
             <div className="snap-start">
               <Card title="Links">
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <Input label="Linkedin" placeholder="Enter linkedin" />
                   <Input label="Phone" placeholder="Enter phone" />
                   <Input label="Site" placeholder="Enter site" />
@@ -37,7 +37,7 @@ export default function Home() {
             </div>
             <div className="snap-start">
               <Card title="Experiences">
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
                   <Input
                     label="Role Title"
                     placeholder="Enter your role title"
