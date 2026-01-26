@@ -16,7 +16,7 @@ export default function Home() {
             </div>
             <div className="snap-start">
               <Card title="Links">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                   <Input title="Linkedin" placeholder="Enter linkedin" />
                   <Input title="Phone" placeholder="Enter phone" />
                   <Input title="Site" placeholder="Enter site" />
@@ -32,18 +32,25 @@ export default function Home() {
             </div>
             <div className="snap-start">
               <Card title="Skills">
-                <Skills title="" placeholder="Enter skill" />
+                <Input title="" placeholder="Enter yours skills" />
               </Card>
             </div>
             <div className="snap-start">
               <Card title="Experiences">
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-4 gap-4">
                   <Input
                     title="Role Title"
                     placeholder="Enter your role title"
                   />
-                  <Input title="Job Title" placeholder="Enter your job title" />
-                  <Input title="Date" placeholder="Enter your date" />
+                  <Input
+                    title="Company Name"
+                    placeholder="Enter your job title"
+                  />
+                  <Input
+                    title="Company Link"
+                    placeholder="Enter your link to job title"
+                  />
+                  <Input title="Date" placeholder="00/0000" />
                 </div>
                 <Input
                   title="Summary"
