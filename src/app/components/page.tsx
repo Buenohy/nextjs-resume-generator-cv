@@ -1,6 +1,6 @@
 
 export default function page() {
   return (
-    <div>Job Description Page</div>
+    <div>Components Page</div>
   )
 }
