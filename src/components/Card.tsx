@@ -3,7 +3,7 @@ import { tv, type VariantProps } from 'tailwind-variants';
 import { twMerge } from 'tailwind-merge';
 
 const cardVariants = tv({
-  base: 'text-white dark:text-black border bg-transparent',
+  base: 'text-white dark:text-black border bg-transparent w-full h-full',
   variants: {
     color: {
       primary: 'border-green-primary text-black dark:text-white hover:bg-green-primary hover:text-black',

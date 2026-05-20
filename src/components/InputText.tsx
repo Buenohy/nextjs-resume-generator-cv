@@ -3,7 +3,7 @@ import { tv, type VariantProps } from 'tailwind-variants';
 import { twMerge } from 'tailwind-merge';
 
 const inputTextVariants = tv({
-  base: 'text-black dark:text-white border border-green-tertiary focus:border-green-secondary bg-transparent outline-none',
+  base: 'text-black dark:text-white border border-green-tertiary focus:border-green-secondary bg-transparent outline-none w-full h-screen',
   variants: {
     size: {
       sm: 'px-5 py-2.5',
