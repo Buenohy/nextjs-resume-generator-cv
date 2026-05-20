@@ -21,6 +21,80 @@ import {
 
 import { Textarea } from "@/components/ui/textarea"
 
+interface Rows  {
+  id: string,
+  title: string
+}
+
+export const rows :Rows[] = [
+  {
+    id: "1",
+    title: "Experiência"
+  },
+  {
+    id: "2",
+    title: "Dados"
+  }
+]
+
+interface Columns  {
+  id: string,
+  title: string
+}
+
+export const columns :Columns[] = [
+  {
+    id: "1",
+    title: "role"
+  },
+  {
+    id: "2",
+    title: "company"
+  },
+  {
+    id: "3",
+    title: "url"
+  },
+  {
+    id: "4",
+    title: "date"
+  },
+  {
+    id: "5",
+    title: "details"
+  },
+  {
+    id: "6",
+    title: "stacks"
+  },
+]
+
+interface ExperienceData  {
+  id: string,
+  role: string,
+  company: string,
+  deployUrl: string,
+  date: string,
+  details1: string,
+  details2: string,
+  details3: string,
+  stacks: string
+}
+
+export const data :ExperienceData[] = [
+  {
+    id: "1", 
+    role: "Developer Frontend", 
+    company: "Gallery Plus",
+    deployUrl: "https://bueno-gallery-plus.vercel.app/",
+    date: "April 2026 - Present",
+    details1: "Developed the gallery's caching and dynamic filtering architecture, optimizing image loading and enabling state persistence via URL search parameters by integrating TanStack React Query with the Nuqs library.",
+    details2: "Optimized backend API consumption (hosted on Railway), significantly reducing excessive network requests and improving search performance by implementing a custom debounce algorithm using React Hooks.",
+    details3: "Guaranteed data integrity and request safety during photo uploads and album creation by implementing robust schema validations using Zod and inferring strict static typing with TypeScript.",
+    stacks: "React, TypeScript, Tailwind CSS, TanStack Query (React Query), Nuqs, Zod, React Router, Vite",
+  },
+]
+
 export default function FullContentPtBrPage() {
   return (
     <div className="p-6">
@@ -68,15 +142,20 @@ export default function FullContentPtBrPage() {
 
         <CardContent>
           <div className="flex flex-col gap-4">
-            <CardTitle>Gallery Plus</CardTitle>
-            <CardDescription>Descrição de quando eu trabalhei na Gallery Plus</CardDescription>
+            {data.map(({id, company}) => (
+              <div key={id} className="flex flex-col gap-1">
+                <CardTitle>{company}</CardTitle>
+                <CardDescription>{`Descrição de quando eu trabalhei na empresa ${company}`}</CardDescription>
+              </div>
+            ))}
           </div>
           <div className="rounded-md border border-muted mt-4">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-25">Experience</TableHead>
-                  <TableHead>Data</TableHead>
+                  {rows.map(({id, title}) => (
+                    <TableHead key={id} className="w-25">{title}</TableHead>
+                  ))}
                 </TableRow>
               </TableHeader>
               
