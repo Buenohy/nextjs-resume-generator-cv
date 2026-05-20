@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Oxanium, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const jetbrainsMonoHeading = JetBrains_Mono({subsets:['latin'],variable:'--font-heading'});
 
@@ -18,11 +19,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", oxanium.variable, jetbrainsMonoHeading.variable)}>
+    <html lang="en" className={cn("font-sans", oxanium.variable, jetbrainsMonoHeading.variable)} suppressHydrationWarning>
       <body
         className={`antialiased`}
       >
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
