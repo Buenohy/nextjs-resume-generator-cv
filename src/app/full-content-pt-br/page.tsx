@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardAction,
@@ -62,14 +63,15 @@ export default function FullContentPtBrPage() {
             <h2 className="w-24 mt-2 font-medium">stacks</h2>
             <Textarea placeholder="Coloque as stacks usadas na empresa" className="flex-1" />
           </div>
+          <Button>Adicionar nova experiência</Button>
         </CardContent>
 
         <CardContent>
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-4">
             <CardTitle>Gallery Plus</CardTitle>
             <CardDescription>Descrição de quando eu trabalhei na Gallery Plus</CardDescription>
           </div>
-          <div className="rounded-md border border-muted mt-8">
+          <div className="rounded-md border border-muted mt-4">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -130,6 +132,7 @@ export default function FullContentPtBrPage() {
             </Table>
           </div>
         </CardContent>
+
         <CardFooter>
         </CardFooter>
       </Card>
