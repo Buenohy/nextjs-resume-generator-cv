@@ -6,18 +6,6 @@
 
 @theme {
   --color-*: initial;
-
-  --color-black: #1C1C1E;
-  --color-white: #F2F2F7;
-  --color-gray: #8E8E93;
-
-  --color-primary: #007AFF;
-
-  --color-green-secondary: #008f11;
-  --color-green-tertiary: #003b00;
-
-  --color-red: #ff2a2a;
-  --color-blue: #0044ff;
 }
 
 @theme inline {
