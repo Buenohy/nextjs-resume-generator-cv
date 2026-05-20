@@ -1,6 +1,7 @@
 import Text from "@/components/Text";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
+import InputText from "@/components/InputText";
 
 export default function page() {
   return (
@@ -20,6 +21,9 @@ export default function page() {
         <Card>
           <Text>Card Text</Text>
         </Card>
+      </div>
+      <div>
+        <InputText />
       </div>
     </div>
   )
