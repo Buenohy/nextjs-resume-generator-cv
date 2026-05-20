@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("font-sans", oxanium.variable, jetbrainsMonoHeading.variable)} suppressHydrationWarning>
       <body
-        className={`antialiased`}
+        className={`antialiased p-5 selection:bg-primary`}
       >
         <ThemeProvider
           attribute="class"
