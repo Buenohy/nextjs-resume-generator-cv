@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 
-export default function page() {
+export default function JobDescriptionPage() {
   return (
     <div>
       <div>Job Description Page</div>
