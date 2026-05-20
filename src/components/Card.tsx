@@ -3,16 +3,16 @@ import { tv, type VariantProps } from 'tailwind-variants';
 import { twMerge } from 'tailwind-merge';
 
 const cardVariants = tv({
-  base: 'text-white dark:text-black border bg-transparent w-full h-full',
+  base: 'border bg-transparent rounded-2xl w-full h-full',
   variants: {
-    color: {
-      primary: 'border-green-primary text-black dark:text-white hover:bg-green-primary hover:text-black',
-      secondary: 'border-green-secondary text-black dark:text-white hover:bg-green-secondary hover:text-black',
+    variant: {
+      primary: 'border-primary',
+      secondary: 'border-primary',
     },
     size: {
-      sm: 'px-5 py-2.5',
-      md: 'px-7.5 py-5',
-      lg: 'px-10 py-7.5',
+      sm: 'p-16',
+      md: '',
+      lg: '',
     },
   },
   compoundVariants: [
@@ -23,7 +23,7 @@ const cardVariants = tv({
   ],
   defaultVariants: {
     size: 'md',
-    color: 'primary',
+    variant: 'primary',
   },
 });
 
@@ -35,7 +35,7 @@ interface CardProps extends VariantProps<typeof cardVariants> {
 
 export default function Card({
   as: Tag = 'div',
-  color,
+  variant,
   size,
   className,
   children,
@@ -44,7 +44,7 @@ export default function Card({
   return (
     <Tag
       className={twMerge(
-        cardVariants({ color, size }),
+        cardVariants({ variant, size }),
         className
       )}
       {...props}

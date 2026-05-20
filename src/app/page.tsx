@@ -4,8 +4,8 @@ import Resume from "@/components/Resume";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-white p-4 sm:items-start dark:bg-black">
+    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans">
+      <main className="flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-white p-4 sm:items-start">
         <div className="grid h-full w-full grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="col-start-1 flex h-full snap-y snap-mandatory flex-col gap-4 overflow-y-auto scroll-smooth pr-2">
             <div className="snap-start">

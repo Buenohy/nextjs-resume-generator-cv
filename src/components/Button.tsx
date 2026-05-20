@@ -3,17 +3,28 @@ import { tv, type VariantProps } from 'tailwind-variants';
 import { twMerge } from 'tailwind-merge';
 
 const buttoVariants = tv({
-  base: 'text-white dark:text-black border bg-transparent',
+  base: 'border cursor-pointer rounded-xl h-fit w-fit transition-all',
   variants: {
-    color: {
-      primary: 'border-green-primary text-black dark:text-white hover:bg-green-primary hover:text-black',
-      secondary: 'border-green-secondary text-black dark:text-white hover:bg-green-secondary hover:text-black',
+    variant: {
+      light: [
+        `bg-primary text-white dark:text-white`,
+        `border-primary`,
+        `hover:bg-primary/50 hover:text-white hover:border-primary/50`
+      ],
+      dark: [
+        `bg-primary text-black dark:text-white`,
+        `border-primary`,
+        'hover:bg-primary/50 hover:text-black hover:border-primary/50 ',
+      ] 
     },
     size: {
-      sm: 'px-5 py-2.5',
+      sm: 'px-5 py-3.5',
       md: 'px-7.5 py-5',
       lg: 'px-10 py-7.5',
     },
+    disabled: {
+      true: 'cursor-not-allowed bg-primary/20 border-primary/20 hover:border-primary/20'
+    }
   },
   compoundVariants: [
     {
@@ -22,8 +33,8 @@ const buttoVariants = tv({
     },
   ],
   defaultVariants: {
-    size: 'md',
-    color: 'primary',
+    size: 'sm',
+    variant: 'light',
   },
 });
 
@@ -33,8 +44,9 @@ interface ButtonProps extends VariantProps<typeof buttoVariants> {
 }
 
 export default function Text({
-  color,
+  variant,
   size,
+  disabled,
   className,
   children,
   ...props
@@ -42,7 +54,7 @@ export default function Text({
   return (
     <button
       className={twMerge(
-        buttoVariants({ color, size }),
+        buttoVariants({ variant, size, disabled }),
         className
       )}
       {...props}

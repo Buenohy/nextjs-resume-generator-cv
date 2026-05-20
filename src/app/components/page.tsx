@@ -12,18 +12,17 @@ export default function page() {
         <Text as="h1" size="md" color="primary">Text H1 md</Text>
         <Text as="h1" size="sm" color="primary">Text H1 sm</Text>
       </div>
-      <div className="flex flex-col">
-        <Button color="secondary" size="lg">Button Primary md</Button>
-        <Button color="primary" size="md">Button Primary md</Button>
-        <Button color="primary" size="sm">Button Primary sm</Button>
+      <div className="flex flex-col gap-5">
+        <Button variant="light" size="sm">Button</Button>
+        <Button variant="light" size="sm" disabled>Button Disabled</Button>
       </div>
       <div>
-        <Card>
+        <Card size="sm">
           <Text>Card Text</Text>
         </Card>
       </div>
       <div>
-        <InputText />
+        <InputText placeholder="Placeholder" />
       </div>
     </div>
   )

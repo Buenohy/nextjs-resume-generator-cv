@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${IbmPlexSans.variable} ${IbmPlexMono.variable} antialiased`}
+        className={`${IbmPlexSans.variable} ${IbmPlexMono} antialiased`}
       >
         {children}
       </body>

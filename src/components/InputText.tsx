@@ -3,7 +3,7 @@ import { tv, type VariantProps } from 'tailwind-variants';
 import { twMerge } from 'tailwind-merge';
 
 const inputTextVariants = tv({
-  base: 'text-black dark:text-white border border-green-tertiary focus:border-green-secondary bg-transparent outline-none w-full h-screen',
+  base: 'text-black dark:text-white border border-primary focus:border-primary/50 bg-transparent outline-none w-fit h-fit rounded-2xl pl-4',
   variants: {
     size: {
       sm: 'px-5 py-2.5',
@@ -29,6 +29,7 @@ const inputTextVariants = tv({
 interface InputTextProps extends VariantProps<typeof inputTextVariants> {
   className?: string;
   children?: React.ReactNode;
+  placeholder?: string;
 }
 
 export default function InputText({
@@ -36,6 +37,7 @@ export default function InputText({
   disabled,
   className,
   children,
+  placeholder,
   ...props
 }: InputTextProps) {
   return (
@@ -44,6 +46,7 @@ export default function InputText({
         inputTextVariants({ size, disabled }),
         className
       )}
+      placeholder={placeholder}
       {...props}
     >
       {children}
