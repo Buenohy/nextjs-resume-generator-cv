@@ -104,6 +104,24 @@ export const EducationExperience: CreateEducation[] = [
   }
 ]
 
+interface CreateCertifications {
+  id: string,
+  title: string,
+  subTitle: string,
+  education: string,
+  placeholder: string
+}
+
+export const CertificationsExperience: CreateCertifications[] = [
+  {
+    id: "1",
+    title: "Certificações",
+    subTitle: "Coloque as suas certificações",
+    education: "certification",
+    placeholder: "Coloque a sua certificação"
+  }
+]
+
 export default function ContentEnUsPage() {
   return (
     <div className="p-6">
@@ -133,6 +151,22 @@ export default function ContentEnUsPage() {
 
         <CardContent>
           {EducationExperience.map(({id, title, subTitle, education, placeholder}) => (
+            <div key={id} className="flex flex-col gap-6 border-b py-4">
+              <div>
+                <h2 className="text-xl font-semibold">{title}</h2>
+                <h3 className="text-lg border-b pb-2">{subTitle}</h3>
+              </div>
+
+              <div key={null} className="flex gap-4 items-start">
+                <h2 className="w-24 mt-2 font-medium">{education}</h2>
+                <Textarea className="flex-1" placeholder={placeholder} />
+              </div>
+            </div>
+          ))}
+        </CardContent>
+
+        <CardContent>
+          {CertificationsExperience.map(({id, title, subTitle, education, placeholder}) => (
             <div key={id} className="flex flex-col gap-6 border-b py-4">
               <div>
                 <h2 className="text-xl font-semibold">{title}</h2>
