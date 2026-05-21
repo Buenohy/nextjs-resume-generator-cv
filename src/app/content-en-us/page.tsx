@@ -9,6 +9,32 @@ import {
 } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 
+interface Header {
+  id: string
+  title: string
+  subTitle: string
+  headers: {
+    name: string
+    role: string
+    city: string
+    age: string
+  }
+} 
+
+export const HeaderExperience: Header[] = [
+  {
+    id: "1",
+    title: "Header",
+    subTitle: "Coloque os dados",
+    headers: {
+      name: "name",
+      role: "role",
+      city: "city",
+      age: "age",
+    }
+  },
+]
+
 interface Link {
   id: string
   title: string
@@ -205,6 +231,13 @@ export const LanguegesExperience: CreateLanguages[] = [
 ]
 
 export default function ContentEnUsPage() {
+  const header: Record<string, string> = {
+    name: "Name",
+    role: "Role",
+    city: "City",
+    age: "Age",
+  }
+
   const friendlyLinkNames: Record<string, string> = {
     linkedin: "LinkedIn",
     phone: "Telefone",
@@ -223,6 +256,33 @@ export default function ContentEnUsPage() {
             Gere um currículo a partir do conteúdo abaixo.
           </CardDescription>
         </CardHeader>
+
+        {/* Header */}
+        <CardContent>
+          {HeaderExperience.map(({ id, title, subTitle, headers }) => (
+            <div key={id} className="flex flex-col gap-6 border-b py-4">
+              <div>
+                <h2 className="text-xl font-semibold">{title}</h2>
+                <h3 className="text-lg border-b pb-2">{subTitle}</h3>
+              </div>
+
+              {Object.entries(headers).map(([key, value]) => {
+                const HeaderName = header[key] || value
+                return (
+                  <div key={key} className="flex gap-4 items-start">
+                    <h2 className="w-24 mt-2 font-medium capitalize">
+                      {HeaderName}
+                    </h2>
+                    <Textarea
+                      className="flex-1"
+                      placeholder={`Coloque o seu ${HeaderName}`}
+                    />
+                  </div>
+                )
+              })}
+            </div>
+          ))}
+        </CardContent>
 
         {/* Links Profissionais */}
         <CardContent>
