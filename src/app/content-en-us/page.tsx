@@ -86,6 +86,24 @@ export const CreateExperience: Create[] = [
   },
 ]
 
+interface CreateEducation {
+  id: string,
+  title: string,
+  subTitle: string,
+  education: string,
+  placeholder: string
+}
+
+export const EducationExperience: CreateEducation[] = [
+  {
+    id: "1",
+    title: "Educação",
+    subTitle: "Coloque a sua formação",
+    education: "education",
+    placeholder: "Coloque a sua formação"
+  }
+]
+
 export default function ContentEnUsPage() {
   return (
     <div className="p-6">
@@ -106,12 +124,29 @@ export default function ContentEnUsPage() {
               {CreateExperience.map(({ id: createId, title: createTitle, placeholder }) => (
                 <div key={createId} className="flex gap-4 items-start">
                   <h2 className="w-24 mt-2 font-medium">{createTitle}</h2>
-                  <Textarea placeholder={placeholder} className="flex-1" />
+                  <Textarea className="flex-1" placeholder={placeholder} />
                 </div>
               ))}
             </div>
           ))}
         </CardContent>
+
+        <CardContent>
+          {EducationExperience.map(({id, title, subTitle, education, placeholder}) => (
+            <div key={id} className="flex flex-col gap-6 border-b py-4">
+              <div>
+                <h2 className="text-xl font-semibold">{title}</h2>
+                <h3 className="text-lg border-b pb-2">{subTitle}</h3>
+              </div>
+
+              <div key={null} className="flex gap-4 items-start">
+                <h2 className="w-24 mt-2 font-medium">{education}</h2>
+                <Textarea className="flex-1" placeholder={placeholder} />
+              </div>
+            </div>
+          ))}
+        </CardContent>
+
           <Button>Gerar currículo</Button>
 
         <CardFooter />
