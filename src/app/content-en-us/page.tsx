@@ -1,4 +1,11 @@
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+
+import {
+  Field,
+  FieldLabel,
+} from "@/components/ui/field"
+
 import {
   Card,
   CardContent,
@@ -13,25 +20,40 @@ interface Header {
   id: string
   title: string
   subTitle: string
-  headers: {
-    name: string
-    role: string
-    city: string
-    age: string
-  }
-} 
+  fields: {
+    id: string
+    label: string
+    placeholder: string
+  }[]
+}
 
 export const HeaderExperience: Header[] = [
   {
     id: "1",
     title: "Header",
     subTitle: "Coloque os dados",
-    headers: {
-      name: "name",
-      role: "role",
-      city: "city",
-      age: "age",
-    }
+    fields: [
+      {
+        id: "1",
+        label: "name",
+        placeholder: "Coloque o seu nome",
+      },
+      {
+        id: "2",
+        label: "role",
+        placeholder: "Coloque o cargo desejado",
+      },
+      {
+        id: "3",
+        label: "city",
+        placeholder: "Coloque a sua cidade e a sigla",
+      },
+      {
+        id: "4",
+        label: "age",
+        placeholder: "Coloque a sua idade",
+      },
+    ]
   },
 ]
 
@@ -231,13 +253,6 @@ export const LanguegesExperience: CreateLanguages[] = [
 ]
 
 export default function ContentEnUsPage() {
-  const header: Record<string, string> = {
-    name: "Name",
-    role: "Role",
-    city: "City",
-    age: "Age",
-  }
-
   const friendlyLinkNames: Record<string, string> = {
     linkedin: "LinkedIn",
     phone: "Telefone",
@@ -259,27 +274,25 @@ export default function ContentEnUsPage() {
 
         {/* Header */}
         <CardContent>
-          {HeaderExperience.map(({ id, title, subTitle, headers }) => (
+          {HeaderExperience.map(({ id, title, subTitle, fields }) => (
             <div key={id} className="flex flex-col gap-6 border-b py-4">
               <div>
                 <h2 className="text-xl font-semibold">{title}</h2>
                 <h3 className="text-lg border-b pb-2">{subTitle}</h3>
               </div>
-
-              {Object.entries(headers).map(([key, value]) => {
-                const HeaderName = header[key] || value
-                return (
-                  <div key={key} className="flex gap-4 items-start">
-                    <h2 className="w-24 mt-2 font-medium capitalize">
-                      {HeaderName}
-                    </h2>
-                    <Textarea
-                      className="flex-1"
-                      placeholder={`Coloque o seu ${HeaderName}`}
+              {fields.map(({ id: fieldId, label, placeholder }) => (
+                <Field key={fieldId} className="mb-4">
+                  <div className="flex w-full items-center gap-4">
+                    <FieldLabel className="w-18.75 min-w-18.75 shrink-0 font-medium text-left capitalize">
+                      {label}
+                    </FieldLabel>
+                    <Input
+                      className="flex-1 w-full"
+                      placeholder={placeholder}
                     />
                   </div>
-                )
-              })}
+                </Field>
+              ))}
             </div>
           ))}
         </CardContent>

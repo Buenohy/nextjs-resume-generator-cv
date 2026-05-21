@@ -1,10 +1,8 @@
 import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 
 import {
   Field,
-  FieldDescription,
   FieldLabel,
 } from "@/components/ui/field"
 
@@ -26,8 +24,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-
-import { Textarea } from "@/components/ui/textarea"
 
 interface Rows {
   id: string
@@ -208,7 +204,7 @@ export default function FullContentEnUsPage() {
             {CreateExperience.map((experience) => (
               <Field key={experience.id} className="mb-4">
                 <div className="flex w-full items-center gap-4">
-                  <FieldLabel  className="w-18.75 min-w-18.75 shrink-0 font-medium text-left">{experience.label}</FieldLabel>
+                  <FieldLabel className="w-18.75 min-w-18.75 shrink-0 font-medium text-left">{experience.label}</FieldLabel>
                   <Input placeholder={experience.placeholder} className="flex-1 w-full" />
                 </div>
               </Field>
