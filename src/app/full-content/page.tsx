@@ -186,7 +186,7 @@ const mockExperiences: ExperienceData[] = [
   },
 ];
 
-export default function FullContentEnUsPage() {
+export default function FullContentPage() {
   const renderCellContent = (colTitle: string, experience: ExperienceData) => {
     switch (colTitle) {
       case "url":
