@@ -16,7 +16,6 @@ export default function OptimizingResumePage() {
         <CardHeader>
           <CardTitle>Optimizing Resume</CardTitle>
           <CardDescription>Otimizando verbos e linguagem do currículo...</CardDescription>
-          <CardAction>Card Action</CardAction>
         </CardHeader>
         <CardContent className="flex flex-col gap-5">
           <h2>⚠️ [VERBO FRACO] em Resumo (Summary)</h2>
