@@ -8,29 +8,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Resume } from "@/components/resume"; // Importe o componente que criamos acima
-import { Printer } from "lucide-react"; // Opcional: Ícone legal para o botão de exportar
+import { Resume } from "@/components/resume";
+import { Printer } from "lucide-react";
 
 export default function PdfPreviewPage() {
   const handleExportPDF = () => {
-    // Essa é a maneira nativa de gerar PDF no frontend
     window.print();
   };
 
   return (
     <div className="container mx-auto min-h-screen p-4 md:p-8">
-      {/* 
-        As classes "print:border-none print:shadow-none print:m-0 print:p-0" 
-        tiram todo o estilo de "Card" durante a geração do PDF, 
-        deixando a folha branca padrão.
-      */}
       <Card className="shadow-primary/50 mx-auto max-w-4xl shadow-lg print:m-0 print:border-none print:p-0 print:shadow-none">
-        {/* "print:hidden" esconde esse cabeçalho e o botão na hora de salvar o PDF */}
         <CardHeader className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center print:hidden">
           <div>
             <CardTitle className="text-2xl">Pdf Preview</CardTitle>
             <CardDescription>
-              Verifique como ficou e baixe o pdf do seu currículo.
+              Verifique os seus dados e exporte o documento final.
             </CardDescription>
           </div>
           <Button onClick={handleExportPDF} className="w-full sm:w-auto">
@@ -39,82 +32,92 @@ export default function PdfPreviewPage() {
           </Button>
         </CardHeader>
 
-        {/* Aqui injetamos o componente e os dados */}
         <CardContent className="flex flex-col gap-5 print:p-0">
-          {/* Adicionando um container com fundo branco pra destacar bem na tela (Dark mode) */}
-          <div className="overflow-x-auto rounded-lg border bg-white p-4 shadow-sm md:p-8 print:m-0 print:border-none print:p-0 print:shadow-none">
+          <div className="bg-card overflow-x-auto rounded-lg border p-4 shadow-sm md:p-8 print:m-0 print:border-none print:p-0 print:shadow-none">
             <Resume
               info={{
                 name: "Gabriel Bueno Hygino",
+                role: "Frontend Developer",
+                location: "Brazil (UTC-3)",
+                age: "23 Years",
                 linkedin: "LinkedIn",
                 linkedin_url: "http://www.linkedin.com/in/gabriel-bueno-hygino",
                 phone: "+55 11 9 8873-5414",
-                website: "bueno.com",
+                phone_url: "https://wa.me/5511988735414",
+                website: "Bueno.com",
                 website_url: "http://bueno-portfolio-web.vercel.app/",
-                email: "gabriel.buenohyiginoc@gmail.com",
+                email: "gabriel.buenohyginoc@gmail.com",
                 github: "GitHub",
                 github_url: "https://github.com/Buenohy",
               }}
-              summary="Software Engineer enthusiastic about driving impact at Google. Proactive and growth-focused Junior Front-End Developer with solid hands-on experience developing web applications using JavaScript, CSS, HTML, and the React ecosystem. I have experience in projects that demonstrate the creation of responsive, high-performance interfaces. I have solid experience in React and a strong interest and ability to quickly learn Angular. I'm seeking an opportunity to apply my skills, collaborate with a team, and grow in an environment that values professional development."
+              summary="Developer focused on Test. Proactive and growth-focused Junior Front-End Developer with solid hands-on experience developing web applications using JavaScript, CSS, HTML, and the React ecosystem."
               skills_list={[
-                "React | Next.js | TypeScript | JavaScript | Node.js | Express | Git | HTML | CSS | Sass | Tailwind CSS",
-                "Frontend | Backend | English – All professional proficiency or above",
+                "React | Angular | Next.js | TypeScript | JavaScript | Node.js | Express | Git | HTML | CSS | Tailwind CSS | Frontend | Agile Methodologies | UI/UX | Figma | Web Performance",
               ]}
               experience={[
                 {
-                  role: "Software Engineer",
-                  company: "Crypto DashBoard",
-                  date: "06/2025",
-                  url: "http://bueno-crypto-dashboard.vercel.app/",
+                  role: "Developer Frontend",
+                  company: "Gallery Plus",
+                  date: "April 2026 - Present",
+                  url: "https://github.com/Buenohy",
                   details: [
-                    "Engineered a comprehensive cryptocurrency dashboard using Next.js, React, and TypeScript to provide a fluid, high-performance user experience for real-time market monitoring and portfolio management.",
-                    "Optimized application performance by implementing Server-Side Rendering (SSR) with Next.js, resulting in a 70% reduction in initial load time and ensuring real-time market data delivery.",
-                    'Developed the "My Portfolio" feature from scratch, allowing users to track the performance of their assets in real time, leveraged TypeScript to ensure type safety and data integrity for all financial data handled by the application.',
-                    "Built a modern and fully responsive UI with Tailwind CSS and Shadcn UI, featuring interactive charts and a user-friendly Dark Mode to enhance the overall user experience (UX).",
+                    "Developed the gallery's caching and dynamic filtering architecture, optimizing image loading and enabling state persistence via URL search parameters by integrating TanStack React Query with the Nuqs library.",
+                    "Optimized backend API consumption (hosted on Railway), significantly reducing excessive network requests and improving search performance by implementing a custom debounce algorithm using React Hooks.",
+                    "Guaranteed data integrity and request safety during photo uploads and album creation by implementing robust schema validations using Zod and inferring strict static typing with TypeScript.",
                   ],
+                  stacks:
+                    "React, TypeScript, Tailwind CSS, TanStack Query (React Query), Nuqs, Zod, React Router, Vite",
                 },
                 {
-                  role: "Software Engineer",
+                  role: "Developer Frontend",
                   company: "Professional Portfolio",
-                  date: "05/2025",
+                  date: "May 2025 - April 2025",
                   url: "http://bueno-portfolio-web.vercel.app/",
                   details: [
-                    "Engineered a professional portfolio with Next.js and TypeScript, implementing Server-Side Rendering (SSR) to optimize SEO and achieve sub-1-second page load times.",
-                    "Implemented a dynamic and interactive project gallery with zero-latency filtering by category, managed efficiently with React's state management capabilities.",
-                    "Built a visually striking modern UI using Tailwind CSS and Shadcn UI, integrating Next-Theme for a persistent and professional Dark Mode experience that enhances user comfort.",
+                    "Optimized overall web performance and SEO ranking, achieving a Grade 'A' (99%) on GTmetrix with a 610ms LCP, alongside >90 scores in Accessibility and SEO on Google PageSpeed Insights, by implementing Server-Side Rendering (SSR) with Next.js.",
+                    "Optimized the recruiter navigation experience by ensuring zero latency when exploring portfolio items, implementing a dynamic categorization system using React's state management.",
+                    "Implemented a highly accessible user interface with prolonged visual comfort (persistent Dark Mode), building modular components with Tailwind CSS, Shadcn UI, and the Next-Theme library.",
                   ],
+                  stacks: "React, Next.js, TypeScript, Tailwind CSS",
                 },
                 {
-                  role: "Software Engineer",
-                  company: "Code Connect",
-                  date: "04/2025",
-                  url: "http://bueno-code-connect.vercel.app/",
+                  role: "Developer Frontend",
+                  company: "React To-Do List",
+                  date: "April 2026 - Present",
+                  url: "https://github.com/Buenohy",
                   details: [
-                    "Implemented a robust authentication system, including social logins with Google and GitHub, to streamline the user onboarding process and improve the new user experience.",
-                    "Developed a complete authentication flow (Login/Registration) as a Single-Page Application (SPA) using React Router, enabling seamless and instant navigation between routes without page reloads.",
-                    "Built a modern, responsive user interface with Tailwind CSS, implementing real-time, client-side form validation to provide instant feedback and ensure an intuitive registration experience.",
+                    "Developed state management and data persistence for the CRUD application by building React Custom Hooks, utilizing the browser Local Storage API as a local database to retain user tasks across sessions.",
+                    "Optimized user experience (UX) by implementing Skeleton Loaders for visual feedback during data fetching and building a responsive Light/Dark theme toggle using Tailwind CSS.",
+                    "Implemented a scalable front-end architecture using React Router for navigation and class-variance-authority (CVA) to build a standardized UI component library, deployed continuously on Vercel.",
                   ],
+                  stacks:
+                    "React, TypeScript, Tailwind CSS, React Router, class-variance-authority (CVA), Vite",
                 },
                 {
-                  role: "Software Engineer",
-                  company: "Bueno Books",
-                  date: "03/2025",
-                  url: "http://bueno-books.vercel.app/",
+                  role: "Developer Frontend",
+                  company: "Calculator React",
+                  date: "March 2026 - Present",
+                  url: "https://github.com/Buenohy",
                   details: [
-                    "Developed a dynamic search functionality in React that filters and displays real-time results from a book API, utilizing component state to manage queries and update the UI instantly.",
-                    "Architected and implemented the user interface following a reusable, component-based architecture in React (e.g., Header, BookCard) and styled with Tailwind CSS for rapid, consistent development, ensuring code scalability and maintainability.",
-                    'Created dynamic content sections like "Latest Releases" and "Suggestions" by consuming multiple API endpoints to boost user engagement and content discovery on the platform.',
+                    "Developed the calculation engine and global state management by implementing React Context API and Custom Hooks, ensuring a modular architecture and clear separation of concerns between math logic and the UI.",
+                    "Implemented a persistent mathematical operation history panel, optimizing user data retention across page reloads through seamless integration with the browser's Local Storage API.",
+                    "Optimized user interface (UI) construction by building reusable components based on variant props (internal Design System) and applying modern, responsive styling using Tailwind CSS.",
                   ],
+                  stacks:
+                    "React, JavaScript/ES6+, Tailwind CSS, CSS Variables, Local Storage API",
                 },
               ]}
               education={[
-                "Full Stack JavaScript Program: Project with React and Node.js – Alura (Expected 2025)",
-                "React with TypeScript: Developing an Administrative Area – Alura (Expected 2025)",
+                "Bachelor in Systems Analysis and Development - University, Senac | Feb 2026 - Expected: Dec 2028",
+              ]}
+              certifications={[
+                "Full Stack JavaScript Program: Project with React and Node.js - Course, Alura | Feb 2026",
+                "React with TypeScript: Developing an Administrative Area - Course, Alura | Feb 2026",
               ]}
               languages={[
-                "English: Advanced Professional Proficiency",
-                "Spanish: Basic Proficiency",
-                "Portuguese: Native Speaker",
+                "English - Professional Working Proficiency",
+                "Portuguese - Native",
+                "Spanish - Basic",
               ]}
             />
           </div>

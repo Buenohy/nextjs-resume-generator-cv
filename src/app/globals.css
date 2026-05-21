@@ -9,6 +9,17 @@
 }
 
 @theme inline {
+  --color-resume-print-bg: #ffffff;
+  --color-resume-print-text: #000000;
+  --color-resume-print-muted: #4b5563;
+
+  --color-resume-primary: #2563eb;
+  --color-resume-accent: #10b981;
+
+  --color-resume-bg: var(--resume-bg);
+  --color-resume-foreground: var(--resume-foreground);
+  --color-resume-muted: var(--resume-muted);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
@@ -53,6 +64,10 @@
 }
 
 :root {
+  --resume-bg: #ffffff;
+  --resume-foreground: #1f2937;
+  --resume-muted: #4b5563;
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -88,6 +103,10 @@
 }
 
 .dark {
+  --resume-bg: #151515;
+  --resume-foreground: #f3f4f6;
+  --resume-muted: #9ca3af;
+
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
