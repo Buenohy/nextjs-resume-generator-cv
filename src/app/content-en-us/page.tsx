@@ -1,23 +1,12 @@
 import { Button } from "@/components/ui/button"
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 
 import { Textarea } from "@/components/ui/textarea"
 
@@ -184,14 +173,14 @@ export const CreateExperience: Create[] = [
   },
 ]
 
-export default function FullContentEnUsPage() {
+export default function ContentEnUsPage() {
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Full Content En Us Page</h1>
+      <h1 className="text-2xl font-bold mb-6">Content En Us Page</h1>
       <Card className="shadow-primary/50 shadow-lg border-muted">
         <CardHeader>
-          <CardTitle>Full Content En Us</CardTitle>
-          <CardDescription>Todo o conteúdo do currículo En Us</CardDescription>
+          <CardTitle>Content En Us</CardTitle>
+          <CardDescription>Gere um currículo apartir do conteúdo abaixo.</CardDescription>
         </CardHeader>
 
         <CardContent className="flex flex-col gap-6">
@@ -205,76 +194,7 @@ export default function FullContentEnUsPage() {
               </div>
             ))}
 
-          <Button>Adicionar nova experiência</Button>
-        </CardContent>
-
-        <CardContent>
-          <div className="flex flex-col gap-8">
-            {data.map((experience) => (
-              <div key={experience.id} className="flex flex-col gap-2">
-
-                <CardTitle>{experience.company}</CardTitle>
-                <CardDescription>
-                  {`Descrição de quando eu trabalhei na empresa ${experience.company}`}
-                </CardDescription>
-
-                <div className="rounded-md border border-muted mt-2 [&>div]:overflow-hidden">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        {rows.map(({ id, title }) => (
-                          <TableHead key={id} className="w-37.5">
-                            {title}
-                          </TableHead>
-                        ))}
-                      </TableRow>
-                    </TableHeader>
-
-                    <TableBody>
-                      {columns.map((col) => {
-                        let cellValue: React.ReactNode = ""
-
-                        if (col.title === "url") {
-                          cellValue = (
-                            <a
-                              href={experience.deployUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="underline break-all"
-                            >
-                              {experience.deployUrl}
-                            </a>
-                          )
-                        } else if (col.title === "details") {
-                          cellValue = (
-                            <div className="flex flex-col gap-4 text-wrap leading-relaxed py-2">
-                              <p>{experience.details1}</p>
-                              <p>{experience.details2}</p>
-                              <p>{experience.details3}</p>
-                            </div>
-                          )
-                        } else {
-                          cellValue = experience[col.title as keyof typeof experience]
-                        }
-
-                        return (
-                          <TableRow key={col.id}>
-                            <TableCell className="font-medium align-top pt-4 w-37.5">
-                              {col.title}
-                            </TableCell>
-                            <TableCell className="wrap-break-word">{cellValue}</TableCell>
-                          </TableRow>
-                        )
-                      })}
-                    </TableBody>
-
-                    <TableFooter />
-                  </Table>
-                </div>
-
-              </div>
-            ))}
-          </div>
+          <Button>Gerar currículo</Button>
         </CardContent>
 
         <CardFooter />

@@ -3,6 +3,7 @@ import { Oxanium, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
+import NavigationMenuDemo from "@/components/nav-menu";
 
 const jetbrainsMonoHeading = JetBrains_Mono({subsets:['latin'],variable:'--font-heading'});
 
@@ -29,7 +30,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <NavigationMenuDemo />
+            {children}
         </ThemeProvider>
       </body>
     </html>
