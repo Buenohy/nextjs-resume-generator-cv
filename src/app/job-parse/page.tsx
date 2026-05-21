@@ -17,7 +17,6 @@ export default function JobParsePage() {
         <CardHeader>
           <CardTitle>Job Parse</CardTitle>
           <CardDescription>Está faltando no seu currículo</CardDescription>
-          <CardAction>Card Action</CardAction>
         </CardHeader>
         <CardContent className="flex flex-col gap-5">
           <h1>Inconsistências entre meta_ats e a vaga</h1>
