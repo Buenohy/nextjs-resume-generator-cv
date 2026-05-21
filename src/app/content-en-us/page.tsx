@@ -1,11 +1,6 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-
-import {
-  Field,
-  FieldLabel,
-} from "@/components/ui/field"
-
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Field, FieldLabel } from "@/components/ui/field";
 import {
   Card,
   CardContent,
@@ -13,258 +8,210 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Textarea } from "@/components/ui/textarea"
+} from "@/components/ui/card";
 
-interface Header {
-  id: string
-  title: string
-  subTitle: string
-  fields: {
-    id: string
-    label: string
-    placeholder: string
-  }[]
+interface FormField {
+  id: string;
+  label: string;
+  placeholder: string;
 }
 
-export const HeaderExperience: Header[] = [
-  {
-    id: "1",
-    title: "Header",
-    subTitle: "Coloque os dados",
-    fields: [
-      {
-        id: "1",
-        label: "name",
-        placeholder: "Coloque o seu nome",
-      },
-      {
-        id: "2",
-        label: "role",
-        placeholder: "Coloque o cargo desejado",
-      },
-      {
-        id: "3",
-        label: "city",
-        placeholder: "Coloque a sua cidade e a sigla",
-      },
-      {
-        id: "4",
-        label: "age",
-        placeholder: "Coloque a sua idade",
-      },
-    ]
-  },
-]
-
-interface Link {
-  id: string
-  title: string
-  subTitle: string
-  links: {
-    linkedin: string
-    phone: string
-    webSite: string
-    email: string
-    github: string
-  }
-  placeholder?: string
+interface FormSection {
+  id: string;
+  title: string;
+  subTitle: string;
+  fields: FormField[];
 }
 
-export const LinkExperience: Link[] = [
+const experienceFields: FormField[] = [
   {
-    id: "1",
-    title: "Links Profissionais",
-    subTitle: "Coloque os seus links",
-    links: {
-      linkedin: "linkedin",
-      phone: "phone",
-      webSite: "web site",
-      email: "email",
-      github: "github",
-    },
-  },
-]
-
-interface Resume {
-  id: string
-  title: string
-  subTitle: string
-  resume: string
-  placeholder: string
-}
-
-export const ResumeExperience: Resume[] = [
-  {
-    id: "1",
-    title: "Resumo Profissional",
-    subTitle: "Coloque o seu resumo profissional",
-    resume: "resume",
-    placeholder: "Coloque o seu resumo",
-  },
-]
-
-interface Skills {
-  id: string
-  title: string
-  subTitle: string
-  skills: string
-  placeholder: string
-}
-
-export const SkillsExperience: Skills[] = [
-  {
-    id: "1",
-    title: "Habilidades",
-    subTitle: "Coloque as suas habilidades",
-    skills: "skills",
-    placeholder: "Coloque as suas habilidades",
-  },
-]
-
-interface Title {
-  id: string
-  title: string
-  subTitle: string
-}
-
-export const TitleExperience: Title[] = [
-  {
-    id: "1",
-    title: "Experiência 1",
-    subTitle: "Crie uma nova experiência 1",
-  },
-  {
-    id: "2",
-    title: "Experiência 2",
-    subTitle: "Crie uma nova experiência 2",
-  },
-  {
-    id: "3",
-    title: "Experiência 3",
-    subTitle: "Crie uma nova experiência 3",
-  },
-  {
-    id: "4",
-    title: "Experiência 4",
-    subTitle: "Crie uma nova experiência 4",
-  },
-]
-
-interface Create {
-  id: string
-  title?: string
-  placeholder: string
-}
-
-export const CreateExperience: Create[] = [
-  {
-    id: "1",
-    title: "role",
+    id: "role",
+    label: "role",
     placeholder: "Coloque a função que você exerceu na empresa",
   },
+  { id: "company", label: "company", placeholder: "Coloque o nome da empresa" },
   {
-    id: "2",
-    title: "company",
-    placeholder: "Coloque o nome da empresa",
-  },
-  {
-    id: "3",
-    title: "url",
+    id: "url",
+    label: "url",
     placeholder: "Coloque o url do deploy do projeto",
   },
   {
-    id: "4",
-    title: "date",
+    id: "date",
+    label: "date",
     placeholder: "Coloque a data de início e termino Ex: April 2026 - Present",
   },
   {
-    id: "5",
-    title: "details",
+    id: "details1",
+    label: "details",
     placeholder: "Coloque a descrição sobre o projeto 1",
   },
   {
-    id: "6",
+    id: "details2",
+    label: "details",
     placeholder: "Coloque a descrição sobre o projeto 2",
   },
   {
-    id: "7",
+    id: "details3",
+    label: "details",
     placeholder: "Coloque a descrição sobre o projeto 3",
   },
   {
-    id: "8",
-    title: "stacks",
+    id: "stacks",
+    label: "stacks",
     placeholder: "Coloque as stacks usadas na empresa",
   },
-]
+];
 
-interface CreateEducation {
-  id: string
-  title: string
-  subTitle: string
-  education: string
-  placeholder: string
-}
-
-export const EducationExperience: CreateEducation[] = [
+export const ResumeData: FormSection[] = [
+  // {/* Header */}
   {
-    id: "1",
+    id: "header",
+    title: "Header",
+    subTitle: "Coloque os dados",
+    fields: [
+      { id: "name", label: "name", placeholder: "Coloque o seu nome" },
+      { id: "role", label: "role", placeholder: "Coloque o cargo desejado" },
+      {
+        id: "city",
+        label: "city",
+        placeholder: "Coloque a sua cidade e a sigla",
+      },
+      { id: "age", label: "age", placeholder: "Coloque a sua idade" },
+    ],
+  },
+
+  // {/* Links Profissionais */}
+  {
+    id: "links",
+    title: "Links Profissionais",
+    subTitle: "Coloque os seus links",
+    fields: [
+      {
+        id: "linkedin",
+        label: "LinkedIn",
+        placeholder: "Coloque o link do seu LinkedIn",
+      },
+      {
+        id: "phone",
+        label: "Telefone",
+        placeholder: "Coloque o link do seu Telefone",
+      },
+      {
+        id: "website",
+        label: "Site",
+        placeholder: "Coloque o link do seu Site",
+      },
+      {
+        id: "email",
+        label: "E-mail",
+        placeholder: "Coloque o link do seu E-mail",
+      },
+      {
+        id: "github",
+        label: "GitHub",
+        placeholder: "Coloque o link do seu GitHub",
+      },
+    ],
+  },
+
+  // {/* Resumo Profissional */}
+  {
+    id: "resume",
+    title: "Resumo Profissional",
+    subTitle: "Coloque o seu resumo profissional",
+    fields: [
+      { id: "resume", label: "resume", placeholder: "Coloque o seu resumo" },
+    ],
+  },
+
+  // {/* Habilidades */}
+  {
+    id: "skills",
+    title: "Habilidades",
+    subTitle: "Coloque as suas habilidades",
+    fields: [
+      {
+        id: "skills",
+        label: "skills",
+        placeholder: "Coloque as suas habilidades",
+      },
+    ],
+  },
+
+  // {/* Experiências (1 a 4) */}
+  {
+    id: "exp1",
+    title: "Experiência 1",
+    subTitle: "Crie uma nova experiência 1",
+    fields: experienceFields,
+  },
+  {
+    id: "exp2",
+    title: "Experiência 2",
+    subTitle: "Crie uma nova experiência 2",
+    fields: experienceFields,
+  },
+  {
+    id: "exp3",
+    title: "Experiência 3",
+    subTitle: "Crie uma nova experiência 3",
+    fields: experienceFields,
+  },
+  {
+    id: "exp4",
+    title: "Experiência 4",
+    subTitle: "Crie uma nova experiência 4",
+    fields: experienceFields,
+  },
+
+  // {/* Educação */}
+  {
+    id: "education",
     title: "Educação",
     subTitle: "Coloque a sua formação",
-    education: "education",
-    placeholder: "Coloque a sua formação",
+    fields: [
+      {
+        id: "education",
+        label: "education",
+        placeholder: "Coloque a sua formação",
+      },
+    ],
   },
-]
 
-interface CreateCertifications {
-  id: string
-  title: string
-  subTitle: string
-  education: string
-  placeholder: string
-}
-
-export const CertificationsExperience: CreateCertifications[] = [
+  // {/* Certificações */}
   {
-    id: "1",
+    id: "certifications",
     title: "Certificações",
     subTitle: "Coloque as suas certificações",
-    education: "certification",
-    placeholder: "Coloque a sua certificação",
+    fields: [
+      {
+        id: "certification",
+        label: "certification",
+        placeholder: "Coloque a sua certificação",
+      },
+    ],
   },
-]
 
-interface CreateLanguages {
-  id: string
-  title: string
-  subTitle: string
-  education: string
-  placeholder: string
-}
-
-export const LanguegesExperience: CreateLanguages[] = [
+  // {/* Idiomas */}
   {
-    id: "1",
+    id: "languages",
     title: "Idiomas",
     subTitle: "Coloque os idiomas que você fala",
-    education: "languages",
-    placeholder: "Coloque os idiomas",
+    fields: [
+      {
+        id: "languages",
+        label: "languages",
+        placeholder: "Coloque os idiomas",
+      },
+    ],
   },
-]
+];
 
 export default function ContentEnUsPage() {
-  const friendlyLinkNames: Record<string, string> = {
-    linkedin: "LinkedIn",
-    phone: "Telefone",
-    webSite: "Site",
-    email: "E-mail",
-    github: "GitHub",
-  }
-
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Content En Us Page</h1>
-      <Card className="shadow-primary/50 shadow-lg border-muted">
+      <h1 className="mb-6 text-2xl font-bold">Content En Us Page</h1>
+      <Card className="shadow-primary/50 border-muted shadow-lg">
         <CardHeader>
           <CardTitle>Content En Us</CardTitle>
           <CardDescription>
@@ -272,165 +219,36 @@ export default function ContentEnUsPage() {
           </CardDescription>
         </CardHeader>
 
-        {/* Header */}
-        <CardContent>
-          {HeaderExperience.map(({ id, title, subTitle, fields }) => (
-            <div key={id} className="flex flex-col gap-6 border-b py-4">
+        {ResumeData.map((section) => (
+          <CardContent key={section.id}>
+            <div className="flex flex-col gap-6 border-b py-4">
               <div>
-                <h2 className="text-xl font-semibold">{title}</h2>
-                <h3 className="text-lg border-b pb-2">{subTitle}</h3>
+                <h2 className="text-xl font-semibold">{section.title}</h2>
+                <h3 className="border-b pb-2 text-lg">{section.subTitle}</h3>
               </div>
-              {fields.map(({ id: fieldId, label, placeholder }) => (
+
+              {section.fields.map(({ id: fieldId, label, placeholder }) => (
                 <Field key={fieldId} className="mb-4">
                   <div className="flex w-full items-center gap-4">
-                    <FieldLabel className="w-18.75 min-w-18.75 shrink-0 font-medium text-left capitalize">
+                    <FieldLabel className="w-18.75 min-w-18.75 shrink-0 text-left font-medium capitalize">
                       {label}
                     </FieldLabel>
                     <Input
-                      className="flex-1 w-full"
+                      className="w-full flex-1"
                       placeholder={placeholder}
                     />
                   </div>
                 </Field>
               ))}
             </div>
-          ))}
+          </CardContent>
+        ))}
+
+        <CardContent className="pt-6">
+          <Button>Gerar currículo</Button>
         </CardContent>
-
-        {/* Links Profissionais */}
-        <CardContent>
-          {LinkExperience.map(({ id, title, subTitle, links }) => (
-            <div key={id} className="flex flex-col gap-6 border-b py-4">
-              <div>
-                <h2 className="text-xl font-semibold">{title}</h2>
-                <h3 className="text-lg border-b pb-2">{subTitle}</h3>
-              </div>
-
-              {Object.entries(links).map(([key, value]) => {
-                const friendlyName = friendlyLinkNames[key] || value
-                return (
-                  <div key={key} className="flex gap-4 items-start">
-                    <h2 className="w-24 mt-2 font-medium capitalize">
-                      {friendlyName}
-                    </h2>
-                    <Textarea
-                      className="flex-1"
-                      placeholder={`Coloque o link do seu ${friendlyName}`}
-                    />
-                  </div>
-                )
-              })}
-            </div>
-          ))}
-        </CardContent>
-
-        {/* Resumo Profissional */}
-        <CardContent>
-          {ResumeExperience.map(({ id, title, subTitle, resume, placeholder }) => (
-            <div key={id} className="flex flex-col gap-6 border-b py-4">
-              <div>
-                <h2 className="text-xl font-semibold">{title}</h2>
-                <h3 className="text-lg border-b pb-2">{subTitle}</h3>
-              </div>
-              <div className="flex gap-4 items-start">
-                <h2 className="w-24 mt-2 font-medium">{resume}</h2>
-                <Textarea className="flex-1" placeholder={placeholder} />
-              </div>
-            </div>
-          ))}
-        </CardContent>
-
-        {/* Habilidades */}
-        <CardContent>
-          {SkillsExperience.map(({ id, title, subTitle, skills, placeholder }) => (
-            <div key={id} className="flex flex-col gap-6 border-b py-4">
-              <div>
-                <h2 className="text-xl font-semibold">{title}</h2>
-                <h3 className="text-lg border-b pb-2">{subTitle}</h3>
-              </div>
-              <div className="flex gap-4 items-start">
-                <h2 className="w-24 mt-2 font-medium">{skills}</h2>
-                <Textarea className="flex-1" placeholder={placeholder} />
-              </div>
-            </div>
-          ))}
-        </CardContent>
-
-        {/* Experiências (Título + campos dinâmicos) */}
-        <CardContent>
-          {TitleExperience.map(({ id, title, subTitle }) => (
-            <div key={id} className="flex flex-col gap-6 border-b py-4">
-              <div>
-                <h2 className="text-xl font-semibold">{title}</h2>
-                <h3 className="text-lg border-b pb-2">{subTitle}</h3>
-              </div>
-              {CreateExperience.map(
-                ({ id: createId, title: createTitle, placeholder }) => (
-                  <div key={createId} className="flex gap-4 items-start">
-                    <h2 className="w-24 mt-2 font-medium capitalize">
-                      {createTitle || "Descrição"}
-                    </h2>
-                    <Textarea className="flex-1" placeholder={placeholder} />
-                  </div>
-                )
-              )}
-            </div>
-          ))}
-        </CardContent>
-
-        {/* Educação */}
-        <CardContent>
-          {EducationExperience.map(({ id, title, subTitle, education, placeholder }) => (
-            <div key={id} className="flex flex-col gap-6 border-b py-4">
-              <div>
-                <h2 className="text-xl font-semibold">{title}</h2>
-                <h3 className="text-lg border-b pb-2">{subTitle}</h3>
-              </div>
-              <div className="flex gap-4 items-start">
-                <h2 className="w-24 mt-2 font-medium">{education}</h2>
-                <Textarea className="flex-1" placeholder={placeholder} />
-              </div>
-            </div>
-          ))}
-        </CardContent>
-
-        {/* Certificações */}
-        <CardContent>
-          {CertificationsExperience.map(
-            ({ id, title, subTitle, education, placeholder }) => (
-              <div key={id} className="flex flex-col gap-6 border-b py-4">
-                <div>
-                  <h2 className="text-xl font-semibold">{title}</h2>
-                  <h3 className="text-lg border-b pb-2">{subTitle}</h3>
-                </div>
-                <div className="flex gap-4 items-start">
-                  <h2 className="w-24 mt-2 font-medium">{education}</h2>
-                  <Textarea className="flex-1" placeholder={placeholder} />
-                </div>
-              </div>
-            )
-          )}
-        </CardContent>
-
-        {/* Idiomas */}
-        <CardContent>
-          {LanguegesExperience.map(({ id, title, subTitle, education, placeholder }) => (
-            <div key={id} className="flex flex-col gap-6 border-b py-4">
-              <div>
-                <h2 className="text-xl font-semibold">{title}</h2>
-                <h3 className="text-lg border-b pb-2">{subTitle}</h3>
-              </div>
-              <div className="flex gap-4 items-start">
-                <h2 className="w-24 mt-2 font-medium">{education}</h2>
-                <Textarea className="flex-1" placeholder={placeholder} />
-              </div>
-            </div>
-          ))}
-        </CardContent>
-
-        <Button>Gerar currículo</Button>
         <CardFooter />
       </Card>
     </div>
-  )
+  );
 }
