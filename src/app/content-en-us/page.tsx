@@ -10,6 +10,24 @@ import {
 
 import { Textarea } from "@/components/ui/textarea"
 
+interface Resume {
+  id: string,
+  title: string,
+  subTitle: string
+  resume: string
+  placeholder: string
+}
+
+export const ResumeExperience: Resume[] = [
+  {
+    id: "1",
+    title: "Resumo Profissional",
+    subTitle: "Coloque o seu resumo profissional",
+    resume: "resume",
+    placeholder: "Coloque o seu resumo"
+  }
+]
+
 interface Skills {
   id: string,
   title: string,
@@ -167,6 +185,22 @@ export default function ContentEnUsPage() {
           <CardTitle>Content En Us</CardTitle>
           <CardDescription>Gere um currículo apartir do conteúdo abaixo.</CardDescription>
         </CardHeader>
+
+        <CardContent>
+          {ResumeExperience.map(({id, title, subTitle, resume, placeholder}) => (
+            <div key={id} className="flex flex-col gap-6 border-b py-4">
+              <div>
+                <h2 className="text-xl font-semibold">{title}</h2>
+                <h3 className="text-lg border-b pb-2">{subTitle}</h3>
+              </div>
+
+              <div key={null} className="flex gap-4 items-start">
+                <h2 className="w-24 mt-2 font-medium">{resume}</h2>
+                <Textarea className="flex-1" placeholder={placeholder} />
+              </div>
+            </div>
+          ))}
+        </CardContent>
 
         <CardContent>
           {SkillsExperience.map(({id, title, subTitle, skills, placeholder}) => (
