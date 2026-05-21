@@ -73,14 +73,14 @@ export default function NavigationMenuDemo() {
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Content</NavigationMenuTrigger>
+          <NavigationMenuTrigger>Contents</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="w-96">
-              <ListItem href="/full-content-en-us" title="Full Content En Us">
-                Full content en us page.
+              <ListItem href="/full-content" title="Full Content">
+                Full content page.
               </ListItem>
-              <ListItem href="/content-en-us" title="Content En Us">
-                Content en us page.
+              <ListItem href="/content" title="Content">
+                Content page.
               </ListItem>
             </ul>
           </NavigationMenuContent>
