@@ -5,9 +5,14 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import NavigationMenuDemo from "@/components/nav-menu";
 
-const jetbrainsMonoHeading = JetBrains_Mono({subsets:['latin'],variable:'--font-heading'});
+import { NextIntlClientProvider } from "next-intl";
 
-const oxanium = Oxanium({subsets:['latin'],variable:'--font-sans'});
+const jetbrainsMonoHeading = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-heading",
+});
+
+const oxanium = Oxanium({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "Next Resume Generator CV App",
@@ -20,10 +25,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", oxanium.variable, jetbrainsMonoHeading.variable)} suppressHydrationWarning>
-      <body
-        className={`antialiased p-5 selection:bg-primary`}
-      >
+    <html
+      lang="en"
+      className={cn(
+        "font-sans",
+        oxanium.variable,
+        jetbrainsMonoHeading.variable
+      )}
+      suppressHydrationWarning
+    >
+      <body className={`selection:bg-primary p-5 antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -31,7 +42,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <NavigationMenuDemo />
-            {children}
+          <NextIntlClientProvider>{children}</NextIntlClientProvider>
         </ThemeProvider>
       </body>
     </html>
