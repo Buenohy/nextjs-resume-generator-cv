@@ -128,10 +128,25 @@
   body {
     @apply bg-background text-foreground;
   }
-  button:not(:disabled), [role="button"]:not(:disabled) {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
     cursor: pointer;
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* --- ADICIONADO PARA O PDF FUNCIONAR CORRETAMENTE --- */
+@page {
+  size: A4;
+  margin: 1cm 1cm;
+}
+
+@media print {
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    background: white;
   }
 }
