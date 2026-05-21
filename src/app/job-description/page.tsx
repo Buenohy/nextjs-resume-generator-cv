@@ -18,7 +18,6 @@ export default function JobDescriptionPage() {
         <CardHeader>
           <CardTitle>Job Description</CardTitle>
           <CardDescription>Coloque os detalhes da vaga abaixo</CardDescription>
-          <CardAction>Card Action</CardAction>
         </CardHeader>
         <CardContent>
           <Textarea 
