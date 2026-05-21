@@ -9,7 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
 import {
   Table,
   TableBody,
@@ -48,71 +47,57 @@ const invoices = [
     totalAmount: "$450.00",
     paymentMethod: "Credit Card",
   },
-  {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
 ];
 
 export default function ComponentsPage() {
   const t = useTranslations("ComponentsPage");
 
   return (
-    <div className="flex flex-col gap-10">
-      <h1>{t("title")}</h1>
+    <div className="flex flex-col gap-10 p-6">
+      <h1 className="text-2xl font-bold">{t("title")}</h1>
 
       <h2>Card</h2>
       <Card>
         <CardHeader>
-          <CardTitle>Card Title</CardTitle>
-          <CardDescription>Card Description</CardDescription>
-          <CardAction>Card Action</CardAction>
+          <CardTitle>{t("card.title")}</CardTitle>
+          <CardDescription>{t("card.description")}</CardDescription>
+          <CardAction>{t("card.action")}</CardAction>
         </CardHeader>
         <CardContent>
-          <p>Card Content</p>
+          <p>{t("card.content")}</p>
         </CardContent>
         <CardFooter>
-          <p>Card Footer</p>
+          <p>{t("card.footer")}</p>
         </CardFooter>
       </Card>
 
-      <h2>Button</h2>
-      <Button>Button</Button>
+      <h2>{t("button")}</h2>
+      <Button>{t("button")}</Button>
 
       <h2>Text Area</h2>
       <Textarea />
 
       <h2>Table</h2>
       <Table>
-        <TableCaption>A list of your recent invoices.</TableCaption>
+        <TableCaption>{t("table.caption")}</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-25">Invoice</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Method</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
+            <TableHead className="w-25">{t("table.headers.invoice")}</TableHead>
+            <TableHead>{t("table.headers.status")}</TableHead>
+            <TableHead>{t("table.headers.method")}</TableHead>
+            <TableHead className="text-right">
+              {t("table.headers.amount")}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {invoices.map((invoice) => (
             <TableRow key={invoice.invoice}>
               <TableCell className="font-medium">{invoice.invoice}</TableCell>
-              <TableCell>{invoice.paymentStatus}</TableCell>
-              <TableCell>{invoice.paymentMethod}</TableCell>
+
+              <TableCell>{t(`status.${invoice.paymentStatus}`)}</TableCell>
+              <TableCell>{t(`methods.${invoice.paymentMethod}`)}</TableCell>
+
               <TableCell className="text-right">
                 {invoice.totalAmount}
               </TableCell>
@@ -121,8 +106,8 @@ export default function ComponentsPage() {
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={3}>Total</TableCell>
-            <TableCell className="text-right">$2,500.00</TableCell>
+            <TableCell colSpan={3}>{t("table.total")}</TableCell>
+            <TableCell className="text-right">$1,200.00</TableCell>
           </TableRow>
         </TableFooter>
       </Table>

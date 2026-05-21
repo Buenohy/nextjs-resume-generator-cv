@@ -1,9 +1,47 @@
 {
   "Metadata": {
-    "title": "Gabriel Bueno | Engenheiro de Software Front-end | React & Next.js",
-    "description": "Engenheiro de Software especialista em criar interfaces de alta performance com React, Next.js e TypeScript. Explore projetos focados em otimização, SEO e experiência do usuário."
+    "title": "Gabriel Bueno | Engenheiro de Software Front-end",
+    "description": "Engenheiro de Software especialista em criar..."
+  },
+  "NavMenu": {
+    "pages": "Páginas",
+    "jobs": "Trabalhos",
+    "ats": "Ats",
+    "contents": "Conteúdo",
+    "pdfPreview": "Pdf Preview"
   },
   "HomePage": {
-    "title": "Página Home"
+    "title": "Página Inicial"
+  },
+  "ComponentsPage": {
+    "title": "Página de Componentes",
+    "card": {
+      "title": "Título do Cartão",
+      "description": "Descrição do Cartão",
+      "action": "Ação do Cartão",
+      "content": "Conteúdo do Cartão",
+      "footer": "Rodapé do Cartão"
+    },
+    "button": "Botão",
+    "table": {
+      "caption": "Uma lista das suas faturas recentes.",
+      "headers": {
+        "invoice": "Fatura",
+        "status": "Status",
+        "method": "Método",
+        "amount": "Valor"
+      },
+      "total": "Total"
+    },
+    "status": {
+      "Paid": "Pago",
+      "Pending": "Pendente",
+      "Unpaid": "Não Pago"
+    },
+    "methods": {
+      "Credit Card": "Cartão de Crédito",
+      "PayPal": "PayPal",
+      "Bank Transfer": "Transferência Bancária"
+    }
   }
 }
