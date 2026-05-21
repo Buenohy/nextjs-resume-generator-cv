@@ -13,6 +13,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { LangMenu } from "./lang-menu";
+import { DarkMode } from "./dark-mode";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -100,6 +101,10 @@ export default function NavigationMenuDemo() {
 
         <NavigationMenuItem>
           <LangMenu />
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
+          <DarkMode />
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
