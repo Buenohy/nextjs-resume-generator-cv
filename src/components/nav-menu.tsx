@@ -79,8 +79,8 @@ export default function NavigationMenuDemo() {
               <ListItem href="/full-content" title="Full Content">
                 Full content page.
               </ListItem>
-              <ListItem href="/content" title="Content">
-                Content page.
+              <ListItem href="/resume-builder" title="Resume Builder">
+                Resume Builder page.
               </ListItem>
             </ul>
           </NavigationMenuContent>

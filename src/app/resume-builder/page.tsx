@@ -207,13 +207,13 @@ export const ResumeData: FormSection[] = [
   },
 ];
 
-export default function ContentPage() {
+export default function ResumeBuilderPage() {
   return (
     <div className="p-6">
-      <h1 className="mb-6 text-2xl font-bold">Content En Us Page</h1>
+      <h1 className="mb-6 text-2xl font-bold">Resume Builder</h1>
       <Card className="shadow-primary/50 border-muted shadow-lg">
         <CardHeader>
-          <CardTitle>Content En Us</CardTitle>
+          <CardTitle>Resume Builder</CardTitle>
           <CardDescription>
             Gere um currículo a partir do conteúdo abaixo.
           </CardDescription>
