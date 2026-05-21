@@ -12,6 +12,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { LangMenu } from "./lang-menu";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -95,6 +96,10 @@ export default function NavigationMenuDemo() {
               </ListItem>
             </ul>
           </NavigationMenuContent>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
+          <LangMenu />
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>

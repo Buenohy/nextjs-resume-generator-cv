@@ -5,11 +5,19 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
+  CardAction,
   CardTitle,
 } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 
+import { useRouter } from "next/navigation";
+
 export default function JobDescriptionPage() {
+  const router = useRouter();
+
+  const handleNextStep = () => {
+    router.push("/job-parse");
+  };
   return (
     <div>
       <div>Job Description Page</div>
@@ -17,6 +25,9 @@ export default function JobDescriptionPage() {
         <CardHeader>
           <CardTitle>Job Description</CardTitle>
           <CardDescription>Coloque os detalhes da vaga abaixo</CardDescription>
+          <CardAction>
+            <Button onClick={handleNextStep}>Analisar Currículo</Button>
+          </CardAction>
         </CardHeader>
         <CardContent>
           <Textarea placeholder="Cole a descrição completa da vaga do Wellfound aqui..." />

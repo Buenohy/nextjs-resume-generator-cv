@@ -5,5 +5,8 @@
   },
   "HomePage": {
     "title": "Home Page"
+  },
+  "ComponentsPage": {
+    "title": "Components Page"
   }
 }
