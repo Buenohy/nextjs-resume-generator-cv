@@ -1,7 +1,15 @@
 import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+
+import {
+  Field,
+  FieldDescription,
+  FieldLabel,
+} from "@/components/ui/field"
+
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -139,34 +147,34 @@ export const data: ExperienceData[] = [
 
 interface Create {
   id: string,
-  title?: string,
+  label?: string,
   placeholder: string,
 }
 
 export const CreateExperience: Create[] = [
   {
     id: "1",
-    title: "role",
+    label: "Role",
     placeholder: "Coloque a função que você exerceu na empresa"
   },
   {
     id: "2",
-    title: "company",
+    label: "Company",
     placeholder: "Coloque o nome da empresa"
   },
   {
     id: "3",
-    title: "url",
+    label: "Url",
     placeholder: "Coloque o url do deploy do projeto"
   },
   {
     id: "4",
-    title: "date",
+    label: "Date",
     placeholder: "Coloque a data de início e termino Ex: April 2026 - Present"
   },
   {
     id: "5",
-    title: "details",
+    label: "Details",
     placeholder: "Coloque a descrição sobre o projeto 1"
   },
   {
@@ -179,7 +187,7 @@ export const CreateExperience: Create[] = [
   },
   {
     id: "8",
-    title: "stacks",
+    label: "Stacks",
     placeholder: "Coloque as stacks usadas na empresa"
   },
 ]
@@ -198,11 +206,13 @@ export default function FullContentEnUsPage() {
           <h2 className="text-xl font-semibold">Experiência</h2>
           <h3 className="text-lg border-b pb-2">Crie uma nova experiência</h3>
 
-            {CreateExperience.map(({id, title, placeholder}) => (
-              <div key={id} className="flex gap-4 items-start">
-                <h2 className="w-24 mt-2 font-medium">{title}</h2>
-                <Textarea placeholder={placeholder} className="flex-1" />
-              </div>
+            {CreateExperience.map(({id, label, placeholder}) => (
+              <Field key={id} className="mb-4">
+                <div className="flex w-full items-center gap-4">
+                  <FieldLabel  className="w-37.5 min-w-37.5 shrink-0 font-medium text-left">{label}</FieldLabel>
+                  <Input placeholder={placeholder} className="flex-1 w-full" />
+                </div>
+              </Field>
             ))}
 
           <Button>Adicionar nova experiência</Button>
