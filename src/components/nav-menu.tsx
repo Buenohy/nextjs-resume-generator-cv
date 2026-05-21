@@ -1,7 +1,8 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 import {
   NavigationMenu,
@@ -10,90 +11,87 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { LangMenu } from "./lang-menu";
 import { DarkMode } from "./dark-mode";
 
-const components: { title: string; href: string; description: string }[] = [
-  {
-    title: "Job Description",
-    href: "/job-description",
-    description: "Job description page.",
-  },
-  {
-    title: "Job parse",
-    href: "/job-parse",
-    description: "Job parse page.",
-  },
-];
-
 export default function NavigationMenuDemo() {
+  const t = useTranslations("NavMenu");
+
   return (
     <NavigationMenu className="mx-auto my-5">
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Páginas</NavigationMenuTrigger>
+          <NavigationMenuTrigger>{t("pages.trigger")}</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="w-96">
-              <ListItem href="/" title="Home">
-                Home page
+            <ul className="flex w-96 flex-col gap-3 p-4">
+              <ListItem href="/" title={t("pages.home.title")}>
+                {t("pages.home.desc")}
               </ListItem>
-              <ListItem href="/components" title="Components">
-                Components page
+              <ListItem href="/components" title={t("pages.components.title")}>
+                {t("pages.components.desc")}
               </ListItem>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Jobs</NavigationMenuTrigger>
+          <NavigationMenuTrigger>{t("jobs.trigger")}</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="w-96">
-              <ListItem href="/job-description" title="Job Description">
-                Job description page.
+            <ul className="flex w-96 flex-col gap-3 p-4">
+              <ListItem
+                href="/job-description"
+                title={t("jobs.description.title")}
+              >
+                {t("jobs.description.desc")}
               </ListItem>
-              <ListItem href="/job-parse" title="Job parse">
-                Job parse page.
+              <ListItem href="/job-parse" title={t("jobs.parse.title")}>
+                {t("jobs.parse.desc")}
               </ListItem>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Ats</NavigationMenuTrigger>
+          <NavigationMenuTrigger>{t("ats.trigger")}</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="w-96">
-              <ListItem href="/match-ats" title="Match Ats">
-                Match ats page.
+            <ul className="flex w-96 flex-col gap-3 p-4">
+              <ListItem href="/match-ats" title={t("ats.match.title")}>
+                {t("ats.match.desc")}
               </ListItem>
-              <ListItem href="/optimizing-resume" title="Optimizing Resume">
-                Optimizing resume page.
+              <ListItem
+                href="/optimizing-resume"
+                title={t("ats.optimize.title")}
+              >
+                {t("ats.optimize.desc")}
               </ListItem>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Contents</NavigationMenuTrigger>
+          <NavigationMenuTrigger>{t("contents.trigger")}</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="w-96">
-              <ListItem href="/full-content" title="Full Content">
-                Full content page.
+            <ul className="flex w-96 flex-col gap-3 p-4">
+              <ListItem href="/full-content" title={t("contents.full.title")}>
+                {t("contents.full.desc")}
               </ListItem>
-              <ListItem href="/resume-builder" title="Resume Builder">
-                Resume Builder page.
+              <ListItem
+                href="/resume-builder"
+                title={t("contents.builder.title")}
+              >
+                {t("contents.builder.desc")}
               </ListItem>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Pdf Preview</NavigationMenuTrigger>
+          <NavigationMenuTrigger>{t("pdf.trigger")}</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="w-96">
-              <ListItem href="/pdf-preview" title="Pdf Preview">
-                Pdf preview page.
+            <ul className="flex w-96 flex-col gap-3 p-4">
+              <ListItem href="/pdf-preview" title={t("pdf.preview.title")}>
+                {t("pdf.preview.desc")}
               </ListItem>
             </ul>
           </NavigationMenuContent>
@@ -116,13 +114,15 @@ function ListItem({
   children,
   href,
   ...props
-}: React.ComponentPropsWithoutRef<"li"> & { href: string }) {
+}: React.ComponentPropsWithoutRef<"li"> & { href: string; title: string }) {
   return (
     <li {...props}>
       <NavigationMenuLink asChild>
         <Link href={href}>
-          <div className="flex flex-col gap-1 text-sm">
-            <div className="leading-none font-medium">{title}</div>
+          <div className="hover:bg-muted flex flex-col gap-1 rounded-md p-2 text-sm transition-colors">
+            <div className="text-foreground leading-none font-medium">
+              {title}
+            </div>
             <div className="text-muted-foreground line-clamp-2">{children}</div>
           </div>
         </Link>

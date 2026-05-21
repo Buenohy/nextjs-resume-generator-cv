@@ -1,47 +1,44 @@
 {
   "Metadata": {
-    "title": "Gabriel Bueno | Front-end Software Engineer",
-    "description": "Software Engineer specializing in building..."
-  },
-  "NavMenu": {
-    "pages": "Pages",
-    "jobs": "Jobs",
-    "ats": "Ats",
-    "contents": "Contents",
-    "pdfPreview": "Pdf Preview"
+    "title": "Gabriel Bueno | Front-end Software Engineer | React & Next.js",
+    "description": "Software Engineer specializing in building high-performance user interfaces with React, Next.js, and TypeScript. Explore projects focused on optimization, SEO, and user experience."
   },
   "HomePage": {
     "title": "Home Page"
   },
   "ComponentsPage": {
-    "title": "Components Page",
-    "card": {
-      "title": "Card Title",
-      "description": "Card Description",
-      "action": "Card Action",
-      "content": "Card Content",
-      "footer": "Card Footer"
+    "title": "Components Page"
+  },
+  "NavMenu": {
+    "pages": {
+      "trigger": "Pages",
+      "home": { "title": "Home", "desc": "Home page" },
+      "components": { "title": "Components", "desc": "Components page" }
     },
-    "button": "Button",
-    "table": {
-      "caption": "A list of your recent invoices.",
-      "headers": {
-        "invoice": "Invoice",
-        "status": "Status",
-        "method": "Method",
-        "amount": "Amount"
+    "jobs": {
+      "trigger": "Jobs",
+      "description": {
+        "title": "Job Description",
+        "desc": "Job description page."
       },
-      "total": "Total"
+      "parse": { "title": "Job Parse", "desc": "Job parse page." }
     },
-    "status": {
-      "Paid": "Paid",
-      "Pending": "Pending",
-      "Unpaid": "Unpaid"
+    "ats": {
+      "trigger": "ATS",
+      "match": { "title": "Match ATS", "desc": "Match ATS page." },
+      "optimize": {
+        "title": "Optimizing Resume",
+        "desc": "Optimizing resume page."
+      }
     },
-    "methods": {
-      "Credit Card": "Credit Card",
-      "PayPal": "PayPal",
-      "Bank Transfer": "Bank Transfer"
+    "contents": {
+      "trigger": "Contents",
+      "full": { "title": "Full Content", "desc": "Full content page." },
+      "builder": { "title": "Resume Builder", "desc": "Resume Builder page." }
+    },
+    "pdf": {
+      "trigger": "PDF Preview",
+      "preview": { "title": "PDF Preview", "desc": "PDF preview page." }
     }
   }
 }

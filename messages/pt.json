@@ -1,47 +1,59 @@
 {
   "Metadata": {
-    "title": "Gabriel Bueno | Engenheiro de Software Front-end",
-    "description": "Engenheiro de Software especialista em criar..."
-  },
-  "NavMenu": {
-    "pages": "Páginas",
-    "jobs": "Trabalhos",
-    "ats": "Ats",
-    "contents": "Conteúdo",
-    "pdfPreview": "Pdf Preview"
+    "title": "Gabriel Bueno | Engenheiro de Software Front-end | React & Next.js",
+    "description": "Engenheiro de Software especialista em criar interfaces de alta performance com React, Next.js e TypeScript. Explore projetos focados em otimização, SEO e experiência do usuário."
   },
   "HomePage": {
-    "title": "Página Inicial"
+    "title": "Página Home"
   },
   "ComponentsPage": {
-    "title": "Página de Componentes",
-    "card": {
-      "title": "Título do Cartão",
-      "description": "Descrição do Cartão",
-      "action": "Ação do Cartão",
-      "content": "Conteúdo do Cartão",
-      "footer": "Rodapé do Cartão"
+    "title": "Página Componentes"
+  },
+  "NavMenu": {
+    "pages": {
+      "trigger": "Páginas",
+      "home": { "title": "Início", "desc": "Página inicial" },
+      "components": { "title": "Componentes", "desc": "Página de componentes" }
     },
-    "button": "Botão",
-    "table": {
-      "caption": "Uma lista das suas faturas recentes.",
-      "headers": {
-        "invoice": "Fatura",
-        "status": "Status",
-        "method": "Método",
-        "amount": "Valor"
+    "jobs": {
+      "trigger": "Vagas",
+      "description": {
+        "title": "Descrição da Vaga",
+        "desc": "Página de descrição da vaga."
       },
-      "total": "Total"
+      "parse": {
+        "title": "Análise da Vaga",
+        "desc": "Página de análise da vaga."
+      }
     },
-    "status": {
-      "Paid": "Pago",
-      "Pending": "Pendente",
-      "Unpaid": "Não Pago"
+    "ats": {
+      "trigger": "ATS",
+      "match": {
+        "title": "Match ATS",
+        "desc": "Página de correspondência ATS."
+      },
+      "optimize": {
+        "title": "Otimizar Currículo",
+        "desc": "Página de otimização de currículo."
+      }
     },
-    "methods": {
-      "Credit Card": "Cartão de Crédito",
-      "PayPal": "PayPal",
-      "Bank Transfer": "Transferência Bancária"
+    "contents": {
+      "trigger": "Conteúdos",
+      "full": {
+        "title": "Conteúdo Completo",
+        "desc": "Página de conteúdo completo."
+      },
+      "builder": {
+        "title": "Construtor de Currículo",
+        "desc": "Página do construtor de currículo."
+      }
+    },
+    "pdf": {
+      "trigger": "Prévia do PDF",
+      "preview": {
+        "title": "Prévia do PDF",
+        "desc": "Página de pré-visualização do PDF."
+      }
     }
   }
 }
