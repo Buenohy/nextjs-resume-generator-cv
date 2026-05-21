@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
+import * as React from "react";
+import Link from "next/link";
 
 import {
   NavigationMenu,
@@ -11,22 +11,20 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
+} from "@/components/ui/navigation-menu";
 
 const components: { title: string; href: string; description: string }[] = [
   {
     title: "Job Description",
     href: "/job-description",
-    description:
-      "Job description page.",
+    description: "Job description page.",
   },
   {
     title: "Job parse",
     href: "/job-parse",
-    description:
-      "Job parse page.",
+    description: "Job parse page.",
   },
-]
+];
 
 export default function NavigationMenuDemo() {
   return (
@@ -87,9 +85,20 @@ export default function NavigationMenuDemo() {
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
+
+        <NavigationMenuItem>
+          <NavigationMenuTrigger>Pdf Preview</NavigationMenuTrigger>
+          <NavigationMenuContent>
+            <ul className="w-96">
+              <ListItem href="/pdf-preview" title="Pdf Preview">
+                Pdf preview page.
+              </ListItem>
+            </ul>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
-  )
+  );
 }
 
 function ListItem({
@@ -104,10 +113,10 @@ function ListItem({
         <Link href={href}>
           <div className="flex flex-col gap-1 text-sm">
             <div className="leading-none font-medium">{title}</div>
-            <div className="line-clamp-2 text-muted-foreground">{children}</div>
+            <div className="text-muted-foreground line-clamp-2">{children}</div>
           </div>
         </Link>
       </NavigationMenuLink>
     </li>
-  )
+  );
 }
