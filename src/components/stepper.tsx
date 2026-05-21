@@ -4,19 +4,18 @@ import { usePathname } from "next/navigation";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Definição dos seus passos e as rotas correspondentes
 const STEPS = [
   { id: 1, title: "Vaga", path: "/job-description" },
-  { id: 2, title: "Análise", path: "/job-parse" },
-  { id: 3, title: "Match ATS", path: "/match-ats" },
-  { id: 4, title: "Otimizar", path: "/optimizing-resume" },
-  { id: 5, title: "Exportar PDF", path: "/preview-pdf" },
+  { id: 2, title: "Currículo", path: "/resume-builder" },
+  { id: 3, title: "Análise", path: "/job-parse" },
+  { id: 4, title: "Match ATS", path: "/match-ats" },
+  { id: 5, title: "Otimizar", path: "/optimizing-resume" },
+  { id: 6, title: "Exportar PDF", path: "/pdf-preview" },
 ];
 
 export function Stepper() {
   const pathname = usePathname();
 
-  // Encontra o index do passo atual com base na URL
   const currentStepIndex = STEPS.findIndex((step) =>
     pathname.includes(step.path)
   );
@@ -33,22 +32,20 @@ export function Stepper() {
               key={step.id}
               className="relative z-10 flex w-full items-center"
             >
-              {/* Círculo do Passo */}
               <div className="relative flex flex-col items-center gap-2">
                 <div
                   className={cn(
                     "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 font-semibold transition-colors",
                     isActive
-                      ? "border-primary bg-primary text-primary-foreground" // Passo atual
+                      ? "border-primary bg-primary text-primary-foreground"
                       : isCompleted
-                        ? "border-primary bg-primary text-primary-foreground" // Passo concluído
-                        : "border-muted bg-background text-muted-foreground" // Próximo passo
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-muted bg-background text-muted-foreground"
                   )}
                 >
                   {isCompleted ? <Check className="h-5 w-5" /> : step.id}
                 </div>
 
-                {/* Título do Passo */}
                 <span
                   className={cn(
                     "absolute -bottom-6 w-max text-xs font-medium transition-colors md:text-sm",
@@ -59,7 +56,6 @@ export function Stepper() {
                 </span>
               </div>
 
-              {/* Linha conectora entre os passos */}
               {index < STEPS.length - 1 && (
                 <div
                   className={cn(

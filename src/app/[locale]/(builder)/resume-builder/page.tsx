@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldLabel } from "@/components/ui/field";
@@ -7,8 +9,11 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
+  CardAction,
   CardTitle,
 } from "@/components/ui/card";
+
+import { useRouter } from "next/navigation";
 
 interface FormField {
   id: string;
@@ -208,6 +213,11 @@ export const ResumeData: FormSection[] = [
 ];
 
 export default function ResumeBuilderPage() {
+  const router = useRouter();
+
+  const handleNextStep = () => {
+    router.push("/job-parse");
+  };
   return (
     <div className="p-6">
       <h1 className="mb-6 text-2xl font-bold">Resume Builder</h1>
@@ -217,6 +227,9 @@ export default function ResumeBuilderPage() {
           <CardDescription>
             Gere um currículo a partir do conteúdo abaixo.
           </CardDescription>
+          <CardAction>
+            <Button onClick={handleNextStep}>Analisar Currículo</Button>
+          </CardAction>
         </CardHeader>
 
         {ResumeData.map((section) => (

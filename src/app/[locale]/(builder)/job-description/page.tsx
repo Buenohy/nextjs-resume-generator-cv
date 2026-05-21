@@ -18,7 +18,7 @@ export default function JobDescriptionPage() {
   const router = useRouter();
 
   const handleNextStep = () => {
-    router.push("/job-parse");
+    router.push("/resume-builder");
   };
   return (
     <div>
@@ -28,7 +28,7 @@ export default function JobDescriptionPage() {
           <CardTitle>Job Description</CardTitle>
           <CardDescription>Coloque os detalhes da vaga abaixo</CardDescription>
           <CardAction>
-            <Button onClick={handleNextStep}>Analisar Currículo</Button>
+            <Button onClick={handleNextStep}>Dados Currículo</Button>
           </CardAction>
         </CardHeader>
         <CardContent>
