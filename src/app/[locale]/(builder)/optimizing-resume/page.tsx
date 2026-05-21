@@ -1,13 +1,25 @@
+"use client";
+
 import {
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
+  CardAction,
   CardTitle,
 } from "@/components/ui/card";
 
+import { Button } from "@/components/ui/button";
+
+import { useRouter } from "next/navigation";
+
 export default function OptimizingResumePage() {
+  const router = useRouter();
+
+  const handleNextStep = () => {
+    router.push("/pdf-preview");
+  };
   return (
     <div>
       <div>Optimizing Resume Page</div>
@@ -17,6 +29,9 @@ export default function OptimizingResumePage() {
           <CardDescription>
             Otimizando verbos e linguagem do currículo...
           </CardDescription>
+          <CardAction>
+            <Button onClick={handleNextStep}>Exportar Currículo</Button>
+          </CardAction>
         </CardHeader>
         <CardContent className="flex flex-col gap-5">
           <h2>⚠️ [VERBO FRACO] em Resumo (Summary)</h2>

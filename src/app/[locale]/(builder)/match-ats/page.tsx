@@ -18,6 +18,7 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
+  CardAction,
   CardTitle,
 } from "@/components/ui/card";
 import {
@@ -30,6 +31,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+
+import { useRouter } from "next/navigation";
 
 export interface KeywordData {
   id: string;
@@ -353,6 +356,12 @@ export default function MatchAtsPage() {
     (item) => item.status === "Aprovado"
   ).length;
 
+  const router = useRouter();
+
+  const handleNextStep = () => {
+    router.push("/optimizing-resume");
+  };
+
   return (
     <div className="p-6">
       <h1 className="mb-6 text-2xl font-bold">Match ATS Page</h1>
@@ -363,6 +372,9 @@ export default function MatchAtsPage() {
           <CardDescription>
             Analisando Match ATS (Currículo vs Vaga)...
           </CardDescription>
+          <CardAction>
+            <Button onClick={handleNextStep}>Otimizar Currículo</Button>
+          </CardAction>
         </CardHeader>
 
         <CardContent>
