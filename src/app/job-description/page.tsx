@@ -1,14 +1,13 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Textarea } from "@/components/ui/textarea"
+} from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function JobDescriptionPage() {
   return (
@@ -20,14 +19,12 @@ export default function JobDescriptionPage() {
           <CardDescription>Coloque os detalhes da vaga abaixo</CardDescription>
         </CardHeader>
         <CardContent>
-          <Textarea 
-          placeholder="Cole a descrição completa da vaga do Wellfound aqui..."
-          />
+          <Textarea placeholder="Cole a descrição completa da vaga do Wellfound aqui..." />
         </CardContent>
         <CardFooter>
           <Button>Enviar descrição da vaga</Button>
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }
