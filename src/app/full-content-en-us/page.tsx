@@ -137,6 +137,53 @@ export const data: ExperienceData[] = [
   },
 ]
 
+interface Create {
+  id: string,
+  title?: string,
+  placeholder: string,
+}
+
+export const CreateExperience: Create[] = [
+  {
+    id: "1",
+    title: "role",
+    placeholder: "Coloque a função que você exerceu na empresa"
+  },
+  {
+    id: "2",
+    title: "company",
+    placeholder: "Coloque o nome da empresa"
+  },
+  {
+    id: "3",
+    title: "url",
+    placeholder: "Coloque o url do deploy do projeto"
+  },
+  {
+    id: "4",
+    title: "date",
+    placeholder: "Coloque a data de início e termino Ex: April 2026 - Present"
+  },
+  {
+    id: "5",
+    title: "details",
+    placeholder: "Coloque a descrição sobre o projeto 1"
+  },
+  {
+    id: "6",
+    placeholder: "Coloque a descrição sobre o projeto 2"
+  },
+  {
+    id: "7",
+    placeholder: "Coloque a descrição sobre o projeto 3"
+  },
+  {
+    id: "8",
+    title: "stacks",
+    placeholder: "Coloque as stacks usadas na empresa"
+  },
+]
+
 export default function FullContentEnUsPage() {
   return (
     <div className="p-6">
@@ -145,41 +192,19 @@ export default function FullContentEnUsPage() {
         <CardHeader>
           <CardTitle>Full Content Pt Br</CardTitle>
           <CardDescription>Todo o conteúdo do currículo Pt Br</CardDescription>
-          <CardAction>Card Action</CardAction>
         </CardHeader>
 
         <CardContent className="flex flex-col gap-6">
           <h2 className="text-xl font-semibold">Experiência</h2>
           <h3 className="text-lg border-b pb-2">Crie uma nova experiência</h3>
 
-          <div className="flex gap-4 items-start">
-            <h2 className="w-24 mt-2 font-medium">role</h2>
-            <Textarea placeholder="Coloque a função que você exerceu na empresa" className="flex-1" />
-          </div>
-          <div className="flex gap-4 items-start">
-            <h2 className="w-24 mt-2 font-medium">company</h2>
-            <Textarea placeholder="Coloque o nome da empresa" className="flex-1" />
-          </div>
-          <div className="flex gap-4 items-start">
-            <h2 className="w-24 mt-2 font-medium">url</h2>
-            <Textarea placeholder="Coloque o url do deploy do projeto" className="flex-1" />
-          </div>
-          <div className="flex gap-4 items-start">
-            <h2 className="w-24 mt-2 font-medium">date</h2>
-            <Textarea placeholder="Coloque a data de início e termino Ex: April 2026 - Present" className="flex-1" />
-          </div>
-          <div className="flex gap-4 items-start">
-            <h2 className="w-24 mt-2 font-medium">details</h2>
-            <div className="flex flex-col gap-3 flex-1 w-full">
-              <Textarea placeholder="Coloque a descrição sobre o projeto 1" />
-              <Textarea placeholder="Coloque a descrição sobre o projeto 2" />
-              <Textarea placeholder="Coloque a descrição sobre o projeto 3" />
-            </div>
-          </div>
-          <div className="flex gap-4 items-start">
-            <h2 className="w-24 mt-2 font-medium">stacks</h2>
-            <Textarea placeholder="Coloque as stacks usadas na empresa" className="flex-1" />
-          </div>
+            {CreateExperience.map(({id, title, placeholder}) => (
+              <div key={id} className="flex gap-4 items-start">
+                <h2 className="w-24 mt-2 font-medium">{title}</h2>
+                <Textarea placeholder={placeholder} className="flex-1" />
+              </div>
+            ))}
+
           <Button>Adicionar nova experiência</Button>
         </CardContent>
 
