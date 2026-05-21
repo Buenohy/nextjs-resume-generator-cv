@@ -30,7 +30,7 @@ const components: { title: string; href: string; description: string }[] = [
 
 export default function NavigationMenuDemo() {
   return (
-    <NavigationMenu>
+    <NavigationMenu className="mx-auto my-5">
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger>Páginas</NavigationMenuTrigger>
