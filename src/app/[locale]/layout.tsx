@@ -1,11 +1,33 @@
+import { Oxanium, JetBrains_Mono } from "next/font/google";
+import "@/app/globals.css";
+import { cn } from "@/lib/utils";
+
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import MenuBar from "@/components/nav-menu";
-
 import type { Metadata } from "next";
-import { NextIntlClientProvider, hasLocale } from "next-intl";
-import { getTranslations } from "next-intl/server";
 
+import { NextIntlClientProvider } from "next-intl";
+import {
+  getTranslations,
+  getMessages,
+  setRequestLocale,
+} from "next-intl/server";
+
+import NavigationMenu from "@/components/nav-menu";
+import { ThemeProvider } from "@/components/theme-provider";
+
+// Configuração das Fontes
+const jetbrainsMonoHeading = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-heading",
+});
+
+const oxanium = Oxanium({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+
+// Configuração dos Metadados (Title e Description)
 export async function generateMetadata({
   params,
 }: {
@@ -27,14 +49,42 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  if (!hasLocale(routing.locales, locale)) {
+
+  // Verifica se o idioma é válido
+  if (!routing.locales.includes(locale as any)) {
     notFound();
   }
 
+  // Otimização para Server Components recomendada pelo next-intl
+  setRequestLocale(locale);
+
+  // Busca as traduções do pt.json ou en.json
+  const messages = await getMessages();
+
   return (
-    <NextIntlClientProvider>
-      <main>{children}</main>
-      <MenuBar />
-    </NextIntlClientProvider>
+    <html
+      lang={locale}
+      className={cn(
+        "font-sans",
+        oxanium.variable,
+        jetbrainsMonoHeading.variable
+      )}
+      suppressHydrationWarning
+    >
+      <body className="selection:bg-primary p-5 antialiased">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <NextIntlClientProvider messages={messages}>
+            <NavigationMenu />
+
+            <main>{children}</main>
+          </NextIntlClientProvider>
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }
