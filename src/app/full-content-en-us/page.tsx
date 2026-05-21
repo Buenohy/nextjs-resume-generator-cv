@@ -205,16 +205,14 @@ export default function FullContentEnUsPage() {
         <CardContent className="flex flex-col gap-6">
           <h2 className="text-xl font-semibold">Experiência</h2>
           <h3 className="text-lg border-b pb-2">Crie uma nova experiência</h3>
-
-            {CreateExperience.map(({id, label, placeholder}) => (
-              <Field key={id} className="mb-4">
+            {CreateExperience.map((experience) => (
+              <Field key={experience.id} className="mb-4">
                 <div className="flex w-full items-center gap-4">
-                  <FieldLabel  className="w-37.5 min-w-37.5 shrink-0 font-medium text-left">{label}</FieldLabel>
-                  <Input placeholder={placeholder} className="flex-1 w-full" />
+                  <FieldLabel  className="w-18.75 min-w-18.75 shrink-0 font-medium text-left">{experience.label}</FieldLabel>
+                  <Input placeholder={experience.placeholder} className="flex-1 w-full" />
                 </div>
               </Field>
             ))}
-
           <Button>Adicionar nova experiência</Button>
         </CardContent>
 
