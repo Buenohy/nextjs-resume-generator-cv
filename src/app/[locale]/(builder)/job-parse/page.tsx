@@ -6,37 +6,19 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardAction,
   CardTitle,
 } from "@/components/ui/card";
 
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 
-import { useRouter } from "next/navigation";
+import ButtonPaginate from "@/components/button-paginate";
 
 export default function JobParsePage() {
-  const router = useRouter();
-
-  const handleBackStep = () => {
-    router.push("/resume-builder");
-  };
-
-  const handleNextStep = () => {
-    router.push("/match-ats");
-  };
   return (
     <div className="p-6">
       <h1 className="mb-6 text-2xl font-bold">Job Parse</h1>
       <Card className="shadow-primary/50 shadow-lg">
-        <div className="flex items-center justify-between px-6">
-          <CardAction>
-            <Button onClick={handleBackStep}>Dados Currículo</Button>
-          </CardAction>
-          <CardAction>
-            <Button onClick={handleNextStep}>Analisar Currículo</Button>
-          </CardAction>
-        </div>
+        <ButtonPaginate />
         <CardHeader>
           <CardTitle>Job Parse</CardTitle>
           <CardDescription>Está faltando no seu currículo</CardDescription>

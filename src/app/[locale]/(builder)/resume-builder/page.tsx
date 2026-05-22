@@ -9,11 +9,10 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardAction,
   CardTitle,
 } from "@/components/ui/card";
 
-import { useRouter } from "next/navigation";
+import ButtonPaginate from "@/components/button-paginate";
 
 interface FormField {
   id: string;
@@ -213,27 +212,11 @@ export const ResumeData: FormSection[] = [
 ];
 
 export default function ResumeBuilderPage() {
-  const router = useRouter();
-
-  const handleBackStep = () => {
-    router.push("/job-description");
-  };
-
-  const handleNextStep = () => {
-    router.push("/job-parse");
-  };
   return (
     <div className="p-6">
       <h1 className="mb-6 text-2xl font-bold">Resume Builder</h1>
       <Card className="shadow-primary/50 border-muted shadow-lg">
-        <div className="flex items-center justify-between px-6">
-          <CardAction>
-            <Button onClick={handleBackStep}>Dados Vaga</Button>
-          </CardAction>
-          <CardAction>
-            <Button onClick={handleNextStep}>Analisar Currículo</Button>
-          </CardAction>
-        </div>
+        <ButtonPaginate />
         <CardHeader>
           <CardTitle>Resume Builder</CardTitle>
           <CardDescription>

@@ -6,36 +6,17 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardAction,
   CardTitle,
 } from "@/components/ui/card";
 
-import { Button } from "@/components/ui/button";
-
-import { useRouter } from "next/navigation";
+import ButtonPaginate from "@/components/button-paginate";
 
 export default function OptimizingResumePage() {
-  const router = useRouter();
-
-  const handleBackStep = () => {
-    router.push("/match-ats");
-  };
-
-  const handleNextStep = () => {
-    router.push("/pdf-preview");
-  };
   return (
     <div className="p-6">
       <h1 className="mb-6 text-2xl font-bold">Optimizing Resume</h1>
       <Card className="shadow-primary/50 shadow-lg">
-        <div className="flex items-center justify-between px-6">
-          <CardAction>
-            <Button onClick={handleBackStep}>Otimizar Currículo</Button>
-          </CardAction>
-          <CardAction>
-            <Button onClick={handleNextStep}>Exportar Currículo</Button>
-          </CardAction>
-        </div>
+        <ButtonPaginate />
         <CardHeader>
           <CardTitle>Optimizing Resume</CardTitle>
           <CardDescription>

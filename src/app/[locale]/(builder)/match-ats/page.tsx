@@ -33,6 +33,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { useRouter } from "next/navigation";
+import ButtonPaginate from "@/components/button-paginate";
 
 export interface KeywordData {
   id: string;
@@ -356,29 +357,12 @@ export default function MatchAtsPage() {
     (item) => item.status === "Aprovado"
   ).length;
 
-  const router = useRouter();
-
-  const handleBackStep = () => {
-    router.push("/job-parse");
-  };
-
-  const handleNextStep = () => {
-    router.push("/optimizing-resume");
-  };
-
   return (
     <div className="p-6">
       <h1 className="mb-6 text-2xl font-bold">Match ATS</h1>
 
       <Card className="border-muted shadow-primary/50 shadow-lg">
-        <div className="flex items-center justify-between px-6">
-          <CardAction>
-            <Button onClick={handleBackStep}>Analisar Currículo</Button>
-          </CardAction>
-          <CardAction>
-            <Button onClick={handleNextStep}>Otimizar Currículo</Button>
-          </CardAction>
-        </div>
+        <ButtonPaginate />
         <CardHeader>
           <CardTitle>Match ATS</CardTitle>
           <CardDescription>
