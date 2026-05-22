@@ -5,13 +5,21 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
+  CardAction,
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Resume } from "@/components/resume";
 import { Printer } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function PdfPreviewPage() {
+  const router = useRouter();
+
+  const handleBackStep = () => {
+    router.push("/optimizing-resume");
+  };
+
   const handleExportPDF = () => {
     window.print();
   };
@@ -19,6 +27,17 @@ export default function PdfPreviewPage() {
   return (
     <div className="container mx-auto min-h-screen p-4 md:p-8">
       <Card className="shadow-primary/50 mx-auto max-w-4xl shadow-lg print:m-0 print:border-none print:p-0 print:shadow-none">
+        <div className="flex items-center justify-between px-6">
+          <CardAction>
+            <Button onClick={handleBackStep}>Otimizar Currículo</Button>
+          </CardAction>
+          <CardAction>
+            <Button onClick={handleExportPDF}>
+              <Printer className="mr-2 h-4 w-4" />
+              Exportar Currículo
+            </Button>
+          </CardAction>
+        </div>
         <CardHeader className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center print:hidden">
           <div>
             <CardTitle className="text-2xl">Pdf Preview</CardTitle>
@@ -26,10 +45,6 @@ export default function PdfPreviewPage() {
               Verifique os seus dados e exporte o documento final.
             </CardDescription>
           </div>
-          <Button onClick={handleExportPDF} className="w-full sm:w-auto">
-            <Printer className="mr-2 h-4 w-4" />
-            Exportar Currículo
-          </Button>
         </CardHeader>
 
         <CardContent className="flex flex-col gap-5 print:p-0">
