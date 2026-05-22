@@ -22,55 +22,57 @@ export function Stepper() {
 
   return (
     <div className="mx-auto w-full max-w-4xl px-4 py-6">
-      <div className="relative flex items-center justify-between">
-        {STEPS.map((step, index) => {
-          const isActive = index === currentStepIndex;
-          const isCompleted = currentStepIndex > index;
-          const isLastStep = index === STEPS.length - 1;
+      <div className="w-full overflow-x-auto pt-2 pb-8 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="relative flex min-w-160 items-center justify-between px-2 md:min-w-full">
+          {STEPS.map((step, index) => {
+            const isActive = index === currentStepIndex;
+            const isCompleted = currentStepIndex > index;
+            const isLastStep = index === STEPS.length - 1;
 
-          return (
-            <div
-              key={step.id}
-              className={cn(
-                "relative z-10 flex items-center",
-                !isLastStep ? "w-full" : ""
-              )}
-            >
-              <div className="relative flex flex-col items-center gap-2">
-                <div
-                  className={cn(
-                    "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 font-semibold transition-colors",
-                    isActive
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : isCompleted
+            return (
+              <div
+                key={step.id}
+                className={cn(
+                  "relative z-10 flex items-center",
+                  !isLastStep ? "w-full" : ""
+                )}
+              >
+                <div className="relative flex flex-col items-center gap-2">
+                  <div
+                    className={cn(
+                      "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 font-semibold transition-colors",
+                      isActive
                         ? "border-primary bg-primary text-primary-foreground"
-                        : "border-muted bg-background text-muted-foreground"
-                  )}
-                >
-                  {isCompleted ? <Check className="h-5 w-5" /> : step.id}
+                        : isCompleted
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-muted bg-background text-muted-foreground"
+                    )}
+                  >
+                    {isCompleted ? <Check className="h-5 w-5" /> : step.id}
+                  </div>
+
+                  <span
+                    className={cn(
+                      "absolute -bottom-6 w-max text-xs font-medium transition-colors md:text-sm",
+                      isActive ? "text-foreground" : "text-muted-foreground"
+                    )}
+                  >
+                    {step.title}
+                  </span>
                 </div>
 
-                <span
-                  className={cn(
-                    "absolute -bottom-6 w-max text-xs font-medium transition-colors md:text-sm",
-                    isActive ? "text-foreground" : "text-muted-foreground"
-                  )}
-                >
-                  {step.title}
-                </span>
+                {!isLastStep && (
+                  <div
+                    className={cn(
+                      "mx-4 h-0.5 flex-1 transition-colors",
+                      isCompleted ? "bg-primary" : "bg-muted"
+                    )}
+                  />
+                )}
               </div>
-
-              {!isLastStep && (
-                <div
-                  className={cn(
-                    "mx-4 h-0.5 flex-1 transition-colors",
-                    isCompleted ? "bg-primary" : "bg-muted"
-                  )}
-                />
-              )}
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );
