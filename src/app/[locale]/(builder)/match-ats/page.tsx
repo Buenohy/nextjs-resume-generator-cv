@@ -358,6 +358,10 @@ export default function MatchAtsPage() {
 
   const router = useRouter();
 
+  const handleBackStep = () => {
+    router.push("/job-parse");
+  };
+
   const handleNextStep = () => {
     router.push("/optimizing-resume");
   };
@@ -367,14 +371,19 @@ export default function MatchAtsPage() {
       <h1 className="mb-6 text-2xl font-bold">Match ATS Page</h1>
 
       <Card className="border-muted shadow-primary/50 shadow-lg">
+        <div className="flex items-center justify-between px-6">
+          <CardAction>
+            <Button onClick={handleBackStep}>Analisar Currículo</Button>
+          </CardAction>
+          <CardAction>
+            <Button onClick={handleNextStep}>Otimizar Currículo</Button>
+          </CardAction>
+        </div>
         <CardHeader>
           <CardTitle>Match ATS</CardTitle>
           <CardDescription>
             Analisando Match ATS (Currículo vs Vaga)...
           </CardDescription>
-          <CardAction>
-            <Button onClick={handleNextStep}>Otimizar Currículo</Button>
-          </CardAction>
         </CardHeader>
 
         <CardContent>
