@@ -17,6 +17,10 @@ import { useRouter } from "next/navigation";
 export default function OptimizingResumePage() {
   const router = useRouter();
 
+  const handleBackStep = () => {
+    router.push("/match-ats");
+  };
+
   const handleNextStep = () => {
     router.push("/pdf-preview");
   };
@@ -24,14 +28,19 @@ export default function OptimizingResumePage() {
     <div>
       <div>Optimizing Resume Page</div>
       <Card className="shadow-primary/50 shadow-lg">
+        <div className="flex items-center justify-between px-6">
+          <CardAction>
+            <Button onClick={handleBackStep}>Otimizar Currículo</Button>
+          </CardAction>
+          <CardAction>
+            <Button onClick={handleNextStep}>Exportar Currículo</Button>
+          </CardAction>
+        </div>
         <CardHeader>
           <CardTitle>Optimizing Resume</CardTitle>
           <CardDescription>
             Otimizando verbos e linguagem do currículo...
           </CardDescription>
-          <CardAction>
-            <Button onClick={handleNextStep}>Exportar Currículo</Button>
-          </CardAction>
         </CardHeader>
         <CardContent className="flex flex-col gap-5">
           <h2>⚠️ [VERBO FRACO] em Resumo (Summary)</h2>
