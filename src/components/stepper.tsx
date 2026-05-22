@@ -21,16 +21,20 @@ export function Stepper() {
   );
 
   return (
-    <div className="w-full py-6">
+    <div className="mx-auto w-full max-w-4xl px-4 py-6">
       <div className="relative flex items-center justify-between">
         {STEPS.map((step, index) => {
           const isActive = index === currentStepIndex;
           const isCompleted = currentStepIndex > index;
+          const isLastStep = index === STEPS.length - 1;
 
           return (
             <div
               key={step.id}
-              className="relative z-10 flex w-full items-center"
+              className={cn(
+                "relative z-10 flex items-center",
+                !isLastStep ? "w-full" : ""
+              )}
             >
               <div className="relative flex flex-col items-center gap-2">
                 <div
@@ -56,7 +60,7 @@ export function Stepper() {
                 </span>
               </div>
 
-              {index < STEPS.length - 1 && (
+              {!isLastStep && (
                 <div
                   className={cn(
                     "mx-4 h-0.5 flex-1 transition-colors",
