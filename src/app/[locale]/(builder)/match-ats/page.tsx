@@ -371,7 +371,7 @@ export default function MatchAtsPage() {
         </CardHeader>
 
         <CardContent>
-          <div className="border-muted mt-2 rounded-md border shadow-sm [&>div]:overflow-hidden">
+          <div className="border-muted mt-2 rounded-md border shadow-sm">
             <Table>
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => {
