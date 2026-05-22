@@ -61,28 +61,28 @@ export const Resume: React.FC<ResumeProps> = ({
       <header className="mb-2 text-center">
         {/* Informações Pessoais */}
         <div className="mb-2 flex flex-col items-center justify-center">
-          <h1 className="text-resume-foreground print:text-resume-print-text m-0 mb-0 font-serif text-[18pt] leading-none font-normal">
+          <h1 className="text-resume-foreground print:text-resume-print-text m-0 mb-0 font-serif text-[16pt] leading-none font-normal sm:text-[18pt]">
             {info.name}
           </h1>
           {info.role && (
-            <p className="text-resume-muted print:text-resume-print-muted m-0 mt-[3px] text-[14pt] leading-none font-normal">
+            <p className="text-resume-muted print:text-resume-print-muted m-0 mt-[3px] text-[12pt] leading-none font-normal sm:text-[14pt]">
               {info.role}
             </p>
           )}
           {info.location && (
-            <p className="text-resume-muted print:text-resume-print-muted m-0 mt-[2px] text-[12pt] leading-none font-normal">
+            <p className="text-resume-muted print:text-resume-print-muted m-0 mt-[2px] text-[10pt] leading-none font-normal sm:text-[12pt]">
               {info.location}
             </p>
           )}
           {info.age && (
-            <p className="text-resume-muted print:text-resume-print-muted m-0 mt-[2px] text-[12pt] leading-none font-normal">
+            <p className="text-resume-muted print:text-resume-print-muted m-0 mt-[2px] text-[10pt] leading-none font-normal sm:text-[12pt]">
               {info.age}
             </p>
           )}
         </div>
 
         {/* Links de Contato */}
-        <div className="flex w-full flex-row flex-wrap items-center justify-center gap-x-[15px] gap-y-1 text-[10pt]">
+        <div className="flex w-full flex-row flex-wrap items-center justify-center gap-x-[15px] gap-y-1 text-[8pt] sm:text-[10pt]">
           {info.linkedin && (
             <a
               href={info.linkedin_url}
@@ -139,19 +139,21 @@ export const Resume: React.FC<ResumeProps> = ({
 
       {/* --- SUMMARY --- */}
       <section className="mb-2">
-        <h3 className="text-resume-primary mt-1 mb-1 text-[12pt] font-bold normal-case">
+        <h3 className="text-resume-primary mt-1 mb-1 text-[10pt] font-bold normal-case sm:text-[12pt]">
           Professional Summary
         </h3>
-        <p className="m-0 text-justify leading-[1.35]">{summary}</p>
+        <p className="m-0 text-justify text-[8pt] leading-[1.35] sm:text-[12pt]">
+          {summary}
+        </p>
       </section>
 
       {/* --- AI SUMMARY --- */}
       {summary_ai && (
         <section className="mb-2">
-          <h3 className="text-resume-primary mt-1 mb-1 text-[12pt] font-bold normal-case">
+          <h3 className="text-resume-primary mt-1 mb-1 text-[10pt] font-bold normal-case sm:text-[12pt]">
             AI Summary
           </h3>
-          <p className="text-resume-muted print:text-resume-print-muted m-0 text-justify leading-[1.35] italic">
+          <p className="text-resume-muted print:text-resume-print-muted m-0 text-justify text-[9pt] leading-[1.35] italic sm:text-[12pt]">
             {summary_ai}
           </p>
         </section>
@@ -159,25 +161,27 @@ export const Resume: React.FC<ResumeProps> = ({
 
       {/* --- SKILLS --- */}
       <section className="mb-2">
-        <h3 className="text-resume-primary mt-1 mb-1 text-[12pt] font-bold normal-case">
+        <h3 className="text-resume-primary mt-1 mb-1 text-[10pt] font-bold normal-case sm:text-[12pt]">
           Skills
         </h3>
         <ul className="marker:text-resume-primary m-0 list-disc pl-[18px]">
           {skills_list.map((skill, index) => (
-            <li key={index}>{skill}</li>
+            <li key={index} className="text-[8pt] sm:text-[12pt]">
+              {skill}
+            </li>
           ))}
         </ul>
       </section>
 
       {/* --- EXPERIENCE --- */}
       <section className="mb-2">
-        <h3 className="text-resume-primary mt-1 mb-1 text-[12pt] font-bold normal-case">
+        <h3 className="text-resume-primary mt-1 mb-1 text-[10pt] font-bold normal-case sm:text-[12pt]">
           Experience
         </h3>
         {experience.map((job, index) => (
           <div key={index} className="mb-2">
             <div className="mb-0.5 grid w-full grid-cols-[1fr_auto_1fr] items-baseline">
-              <span className="text-left text-[10pt] font-bold">
+              <span className="text-left text-[6pt] font-bold sm:text-[10pt]">
                 {job.role}
               </span>
               {job.url ? (
@@ -185,30 +189,33 @@ export const Resume: React.FC<ResumeProps> = ({
                   href={job.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-resume-accent decoration-resume-accent hover:text-resume-accent cursor-pointer text-center text-[10pt] font-normal whitespace-nowrap underline"
+                  className="text-resume-accent decoration-resume-accent hover:text-resume-accent cursor-pointer text-center text-[6pt] font-normal whitespace-nowrap underline sm:text-[10pt]"
                 >
                   {job.company}
                 </a>
               ) : (
-                <span className="text-resume-accent decoration-resume-accent text-center text-[10pt] font-normal whitespace-nowrap underline">
+                <span className="text-resume-accent decoration-resume-accent text-center text-[6pt] font-normal whitespace-nowrap underline sm:text-[10pt]">
                   {job.company}
                 </span>
               )}
-              <span className="text-resume-muted print:text-resume-print-muted text-right text-[10pt] font-normal whitespace-nowrap italic">
+              <span className="text-resume-muted print:text-resume-print-muted text-right text-[6pt] font-normal whitespace-nowrap italic sm:text-[10pt]">
                 {job.date}
               </span>
             </div>
 
             <ul className="marker:text-resume-primary m-0 list-disc pl-[18px]">
               {job.details.map((detail, idx) => (
-                <li key={idx} className="mb-px text-justify">
+                <li
+                  key={idx}
+                  className="mb-px text-justify text-[7pt] sm:text-[12pt]"
+                >
                   {detail}
                 </li>
               ))}
             </ul>
 
             {job.stacks && (
-              <p className="text-resume-muted print:text-resume-print-muted m-0 mt-0.5 text-[10pt] italic">
+              <p className="text-resume-muted print:text-resume-print-muted m-0 mt-0.5 text-[6pt] italic sm:text-[10pt]">
                 Tech Stack: {job.stacks}
               </p>
             )}
@@ -218,12 +225,15 @@ export const Resume: React.FC<ResumeProps> = ({
 
       {/* --- EDUCATION --- */}
       <section className="mb-2">
-        <h3 className="text-resume-primary mt-1 mb-1 text-[12pt] font-bold normal-case">
+        <h3 className="text-resume-primary mt-1 mb-1 text-[10pt] font-bold normal-case sm:text-[12pt]">
           Education
         </h3>
         <ul className="marker:text-resume-primary m-0 list-disc pl-[18px]">
           {education.map((edu, index) => (
-            <li key={index} className="mb-px text-justify">
+            <li
+              key={index}
+              className="mb-px text-justify text-[7pt] sm:text-[12pt]"
+            >
               {edu}
             </li>
           ))}
@@ -233,12 +243,15 @@ export const Resume: React.FC<ResumeProps> = ({
       {/* --- CERTIFICATIONS --- */}
       {certifications && certifications.length > 0 && (
         <section className="mb-2">
-          <h3 className="text-resume-primary mt-1 mb-1 text-[12pt] font-bold normal-case">
+          <h3 className="text-resume-primary mt-1 mb-1 text-[10pt] font-bold normal-case sm:text-[12pt]">
             Certifications
           </h3>
           <ul className="marker:text-resume-primary m-0 list-disc pl-[18px]">
             {certifications.map((cer, index) => (
-              <li key={index} className="mb-px text-justify">
+              <li
+                key={index}
+                className="mb-px text-justify text-[7pt] sm:text-[12pt]"
+              >
                 {cer}
               </li>
             ))}
@@ -248,11 +261,13 @@ export const Resume: React.FC<ResumeProps> = ({
 
       {/* --- LANGUAGES --- */}
       <section className="mb-2">
-        <h3 className="text-resume-primary mt-1 mb-1 text-[12pt] font-bold normal-case">
+        <h3 className="text-resume-primary mt-1 mb-1 text-[10pt] font-bold normal-case sm:text-[12pt]">
           Languages
         </h3>
         <ul className="marker:text-resume-primary m-0 list-disc pl-[18px]">
-          <li className="mb-px text-justify">{languages.join(" | ")}</li>
+          <li className="mb-px text-justify text-[7pt] sm:text-[12pt]">
+            {languages.join(" | ")}
+          </li>
         </ul>
       </section>
     </div>

@@ -33,7 +33,7 @@ export default function PdfPreviewPage() {
         </CardHeader>
 
         <CardContent className="flex flex-col gap-5 print:p-0">
-          <div className="bg-card overflow-x-auto rounded-lg border p-4 shadow-sm md:p-8 print:m-0 print:border-none print:p-0 print:shadow-none">
+          <div className="bg-card overflow-x-auto rounded-lg border p-3 shadow-sm sm:p-6 print:m-0 print:border-none print:p-0 print:shadow-none">
             <Resume
               info={{
                 name: "Gabriel Bueno Hygino",
