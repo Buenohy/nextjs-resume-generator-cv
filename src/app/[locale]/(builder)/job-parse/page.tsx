@@ -18,6 +18,10 @@ import { useRouter } from "next/navigation";
 export default function JobParsePage() {
   const router = useRouter();
 
+  const handleBackStep = () => {
+    router.push("/resume-builder");
+  };
+
   const handleNextStep = () => {
     router.push("/match-ats");
   };
@@ -25,12 +29,17 @@ export default function JobParsePage() {
     <div>
       <div>Job Parse Page</div>
       <Card className="shadow-primary/50 shadow-lg">
-        <CardHeader>
-          <CardTitle>Job Parse</CardTitle>
-          <CardDescription>Está faltando no seu currículo</CardDescription>
+        <div className="flex items-center justify-between px-6">
+          <CardAction>
+            <Button onClick={handleBackStep}>Dados Currículo</Button>
+          </CardAction>
           <CardAction>
             <Button onClick={handleNextStep}>Analisar Currículo</Button>
           </CardAction>
+        </div>
+        <CardHeader>
+          <CardTitle>Job Parse</CardTitle>
+          <CardDescription>Está faltando no seu currículo</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-5">
           <h1>Inconsistências entre meta_ats e a vaga</h1>
