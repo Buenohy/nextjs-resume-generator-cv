@@ -282,7 +282,7 @@ export default function ResumeBuilderPage() {
         {/* Dynamic Skills */}
         <CardContent>
           <div className="flex flex-col gap-6 border-b py-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
               <div>
                 <h2 className="text-xl font-semibold">Habilidades</h2>
                 <h3 className="border-b pb-2 text-lg">
@@ -418,7 +418,7 @@ export default function ResumeBuilderPage() {
 
                 {/* Sub-section: Dynamic Details */}
                 <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                     <div>
                       <h5 className="text-sm font-semibold">
                         Detalhes do Projeto
@@ -475,7 +475,7 @@ export default function ResumeBuilderPage() {
 
                 {/* Sub-section: Dynamic Stacks */}
                 <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                     <div>
                       <h5 className="text-sm font-semibold">
                         Tecnologias (Stacks)
@@ -534,7 +534,7 @@ export default function ResumeBuilderPage() {
         {/* Dynamic Education */}
         <CardContent>
           <div className="flex flex-col gap-6 border-b py-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
               <div>
                 <h2 className="text-xl font-semibold">Educação</h2>
                 <h3 className="border-b pb-2 text-lg">
@@ -589,7 +589,7 @@ export default function ResumeBuilderPage() {
         {/* Dynamic Certifications */}
         <CardContent>
           <div className="flex flex-col gap-6 border-b py-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
               <div>
                 <h2 className="text-xl font-semibold">Certificações</h2>
                 <h3 className="border-b pb-2 text-lg">
@@ -650,7 +650,7 @@ export default function ResumeBuilderPage() {
         {/* Dynamic Languages */}
         <CardContent>
           <div className="flex flex-col gap-6 border-b py-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
               <div>
                 <h2 className="text-xl font-semibold">Idiomas</h2>
                 <h3 className="border-b pb-2 text-lg">
