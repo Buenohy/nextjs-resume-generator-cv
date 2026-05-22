@@ -71,7 +71,7 @@ export default async function LocaleLayout({
       )}
       suppressHydrationWarning
     >
-      <body className="selection:bg-primary p-5 antialiased">
+      <body className="selection:bg-primary overflow-x-hidden p-5 antialiased">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
