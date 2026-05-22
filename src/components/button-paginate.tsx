@@ -39,7 +39,7 @@ export default function ButtonPaginate() {
   };
 
   return (
-    <div className="flex items-center justify-between px-6">
+    <div className="flex w-full items-center justify-between">
       <Button onClick={handleBackStep} disabled={isFirstStep} variant="outline">
         <ArrowLeft className="mr-2 h-4 w-4" />
         Anterior
