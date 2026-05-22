@@ -26,8 +26,8 @@ export default function JobParsePage() {
     router.push("/match-ats");
   };
   return (
-    <div>
-      <div>Job Parse Page</div>
+    <div className="p-6">
+      <h1 className="mb-6 text-2xl font-bold">Job Parse Page</h1>
       <Card className="shadow-primary/50 shadow-lg">
         <div className="flex items-center justify-between px-6">
           <CardAction>
