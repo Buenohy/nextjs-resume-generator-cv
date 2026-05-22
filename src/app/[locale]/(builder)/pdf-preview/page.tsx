@@ -23,7 +23,6 @@ export default function PdfPreviewPage() {
     <div className="container mx-auto min-h-screen p-6">
       <h1 className="mb-6 text-2xl font-bold">Pdf Preview</h1>
       <Card className="shadow-primary/50 mx-auto max-w-4xl shadow-lg print:m-0 print:border-none print:p-0 print:shadow-none">
-        <ButtonPaginate />
         <CardHeader className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center print:hidden">
           <div>
             <CardTitle>Pdf Preview</CardTitle>
@@ -123,13 +122,14 @@ export default function PdfPreviewPage() {
             />
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="flex flex-col gap-6">
           <CardAction>
             <Button onClick={handleExportPDF}>
               <Printer className="mr-2 h-4 w-4" />
               Exportar Currículo
             </Button>
           </CardAction>
+          <ButtonPaginate />
         </CardFooter>
       </Card>
     </div>
