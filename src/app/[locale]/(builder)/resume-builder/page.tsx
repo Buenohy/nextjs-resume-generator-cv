@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldLabel } from "@/components/ui/field";
@@ -28,47 +30,16 @@ interface FormSection {
   fields: FormField[];
 }
 
-const experienceFields: FormField[] = [
-  {
-    id: "role",
-    label: "role",
-    placeholder: "Coloque a função que você exerceu na empresa",
-  },
-  { id: "company", label: "company", placeholder: "Coloque o nome da empresa" },
-  {
-    id: "url",
-    label: "url",
-    placeholder: "Coloque o url do deploy do projeto",
-  },
-  {
-    id: "date",
-    label: "date",
-    placeholder: "Coloque a data de início e termino Ex: April 2026 - Present",
-  },
-  {
-    id: "details1",
-    label: "details",
-    placeholder: "Coloque a descrição sobre o projeto 1",
-  },
-  {
-    id: "details2",
-    label: "details",
-    placeholder: "Coloque a descrição sobre o projeto 2",
-  },
-  {
-    id: "details3",
-    label: "details",
-    placeholder: "Coloque a descrição sobre o projeto 3",
-  },
-  {
-    id: "stacks",
-    label: "stacks",
-    placeholder: "Coloque as stacks usadas na empresa",
-  },
-];
+interface ExperienceState {
+  role: string;
+  company: string;
+  url: string;
+  date: string;
+  details: string[];
+  stacks: string;
+}
 
-export const ResumeData: FormSection[] = [
-  // {/* Header */}
+const STATIC_SECTIONS: FormSection[] = [
   {
     id: "header",
     title: "Header",
@@ -84,8 +55,6 @@ export const ResumeData: FormSection[] = [
       { id: "age", label: "age", placeholder: "Coloque a sua idade" },
     ],
   },
-
-  // {/* Links Profissionais */}
   {
     id: "links",
     title: "Links Profissionais",
@@ -118,8 +87,6 @@ export const ResumeData: FormSection[] = [
       },
     ],
   },
-
-  // {/* Resumo Profissional */}
   {
     id: "resume",
     title: "Resumo Profissional",
@@ -128,91 +95,120 @@ export const ResumeData: FormSection[] = [
       { id: "resume", label: "resume", placeholder: "Coloque o seu resumo" },
     ],
   },
+];
 
-  // {/* Habilidades */}
+const BASE_EXPERIENCE_FIELDS: FormField[] = [
   {
-    id: "skills",
-    title: "Habilidades",
-    subTitle: "Coloque as suas habilidades",
-    fields: [
-      {
-        id: "skills",
-        label: "skills",
-        placeholder: "Coloque as suas habilidades",
-      },
-    ],
+    id: "role",
+    label: "role",
+    placeholder: "Coloque a função que você exerceu na empresa",
   },
-
-  // {/* Experiências (1 a 4) */}
+  { id: "company", label: "company", placeholder: "Coloque o nome da empresa" },
   {
-    id: "exp1",
-    title: "Experiência 1",
-    subTitle: "Crie uma nova experiência 1",
-    fields: experienceFields,
+    id: "url",
+    label: "url",
+    placeholder: "Coloque o url do deploy do projeto",
   },
   {
-    id: "exp2",
-    title: "Experiência 2",
-    subTitle: "Crie uma nova experiência 2",
-    fields: experienceFields,
-  },
-  {
-    id: "exp3",
-    title: "Experiência 3",
-    subTitle: "Crie uma nova experiência 3",
-    fields: experienceFields,
-  },
-  {
-    id: "exp4",
-    title: "Experiência 4",
-    subTitle: "Crie uma nova experiência 4",
-    fields: experienceFields,
-  },
-
-  // {/* Educação */}
-  {
-    id: "education",
-    title: "Educação",
-    subTitle: "Coloque a sua formação",
-    fields: [
-      {
-        id: "education",
-        label: "education",
-        placeholder: "Coloque a sua formação",
-      },
-    ],
-  },
-
-  // {/* Certificações */}
-  {
-    id: "certifications",
-    title: "Certificações",
-    subTitle: "Coloque as suas certificações",
-    fields: [
-      {
-        id: "certification",
-        label: "certification",
-        placeholder: "Coloque a sua certificação",
-      },
-    ],
-  },
-
-  // {/* Idiomas */}
-  {
-    id: "languages",
-    title: "Idiomas",
-    subTitle: "Coloque os idiomas que você fala",
-    fields: [
-      {
-        id: "languages",
-        label: "languages",
-        placeholder: "Coloque os idiomas",
-      },
-    ],
+    id: "date",
+    label: "date",
+    placeholder: "Coloque a data de início e termino Ex: April 2026 - Present",
   },
 ];
 
 export default function ResumeBuilderPage() {
+  const [skills, setSkills] = useState<string[]>([""]);
+  const [education, setEducation] = useState<string[]>([""]);
+  const [certifications, setCertifications] = useState<string[]>([""]);
+  const [languages, setLanguages] = useState<string[]>([""]);
+
+  const [experiences, setExperiences] = useState<ExperienceState[]>([
+    { role: "", company: "", url: "", date: "", details: [""], stacks: "" },
+  ]);
+
+  const handleAddListItem = (
+    list: string[],
+    setList: React.Dispatch<React.SetStateAction<string[]>>
+  ) => {
+    setList([...list, ""]);
+  };
+
+  const handleRemoveListItem = (
+    index: number,
+    list: string[],
+    setList: React.Dispatch<React.SetStateAction<string[]>>
+  ) => {
+    if (list.length > 1) {
+      const newList = list.filter((_, i) => i !== index);
+      setList(newList);
+    }
+  };
+
+  const handleUpdateListItem = (
+    index: number,
+    value: string,
+    list: string[],
+    setList: React.Dispatch<React.SetStateAction<string[]>>
+  ) => {
+    const newList = [...list];
+    newList[index] = value;
+    setList(newList);
+  };
+
+  const handleAddExperience = () => {
+    if (experiences.length < 4) {
+      setExperiences([
+        ...experiences,
+        { role: "", company: "", url: "", date: "", details: [""], stacks: "" },
+      ]);
+    }
+  };
+
+  const handleRemoveExperience = (index: number) => {
+    if (experiences.length > 1) {
+      const newExp = experiences.filter((_, i) => i !== index);
+      setExperiences(newExp);
+    }
+  };
+
+  const handleUpdateExperienceField = (
+    index: number,
+    field: keyof Omit<ExperienceState, "details">,
+    value: string
+  ) => {
+    const newExp = [...experiences];
+    newExp[index][field] = value;
+    setExperiences(newExp);
+  };
+
+  const handleAddDetail = (expIndex: number) => {
+    const newExp = [...experiences];
+    if (newExp[expIndex].details.length < 3) {
+      newExp[expIndex].details.push("");
+      setExperiences(newExp);
+    }
+  };
+
+  const handleRemoveDetail = (expIndex: number, detailIndex: number) => {
+    const newExp = [...experiences];
+    if (newExp[expIndex].details.length > 1) {
+      newExp[expIndex].details = newExp[expIndex].details.filter(
+        (_, i) => i !== detailIndex
+      );
+      setExperiences(newExp);
+    }
+  };
+
+  const handleUpdateDetail = (
+    expIndex: number,
+    detailIndex: number,
+    value: string
+  ) => {
+    const newExp = [...experiences];
+    newExp[expIndex].details[detailIndex] = value;
+    setExperiences(newExp);
+  };
+
   return (
     <div className="p-3 sm:p-6">
       <h1 className="mb-6 text-2xl font-bold">Resume Builder</h1>
@@ -224,7 +220,7 @@ export default function ResumeBuilderPage() {
           </CardDescription>
         </CardHeader>
 
-        {ResumeData.map((section) => (
+        {STATIC_SECTIONS.map((section) => (
           <CardContent key={section.id}>
             <div className="flex flex-col gap-6 border-b py-4">
               <div>
@@ -235,7 +231,7 @@ export default function ResumeBuilderPage() {
               {section.fields.map(({ id: fieldId, label, placeholder }) => (
                 <Field key={fieldId} className="mb-4">
                   <div className="flex w-full items-center gap-4">
-                    <FieldLabel className="w-18.75 min-w-18.75 shrink-0 text-left font-medium capitalize">
+                    <FieldLabel className="w-28 min-w-28 shrink-0 text-left font-medium whitespace-nowrap capitalize">
                       {label}
                     </FieldLabel>
                     <Input
@@ -248,6 +244,390 @@ export default function ResumeBuilderPage() {
             </div>
           </CardContent>
         ))}
+
+        {/* Dynamic Skills */}
+        <CardContent>
+          <div className="flex flex-col gap-6 border-b py-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold">Habilidades</h2>
+                <h3 className="border-b pb-2 text-lg">
+                  Coloque as suas habilidades
+                </h3>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleAddListItem(skills, setSkills)}
+              >
+                <Plus className="mr-2 h-4 w-4" /> Adicionar Habilidade
+              </Button>
+            </div>
+
+            {skills.map((skill, index) => (
+              <Field key={index} className="mb-2">
+                <div className="flex w-full items-center gap-4">
+                  <FieldLabel className="w-28 min-w-28 shrink-0 text-left font-medium whitespace-nowrap capitalize">
+                    Skill {index + 1}
+                  </FieldLabel>
+                  <Input
+                    className="w-full flex-1"
+                    placeholder="Coloque uma habilidade"
+                    value={skill}
+                    onChange={(e) =>
+                      handleUpdateListItem(
+                        index,
+                        e.target.value,
+                        skills,
+                        setSkills
+                      )
+                    }
+                  />
+                  {skills.length > 1 && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() =>
+                        handleRemoveListItem(index, skills, setSkills)
+                      }
+                    >
+                      <Trash2 className="text-destructive h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </Field>
+            ))}
+          </div>
+        </CardContent>
+
+        {/* Dynamic Experiences */}
+        <CardContent>
+          <div className="flex flex-col gap-6 border-b py-4">
+            <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+              <div>
+                <h2 className="text-xl font-semibold">
+                  Experiências Profissionais
+                </h2>
+                <h3 className="text-lg">
+                  Cadastre suas experiências de atuação
+                </h3>
+                <p className="text-muted-foreground mt-1 text-xs">
+                  Limite máximo de 4 experiências. Atualmente usando:{" "}
+                  {experiences.length}/4
+                </p>
+              </div>
+              {experiences.length < 4 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleAddExperience}
+                >
+                  <Plus className="mr-2 h-4 w-4" /> Adicionar Experiência
+                </Button>
+              )}
+            </div>
+
+            {experiences.map((exp, expIndex) => (
+              <div
+                key={expIndex}
+                className="flex flex-col gap-6 border-b pt-4 pb-8 last:border-0 last:pb-0"
+              >
+                <div className="flex items-center justify-between">
+                  <h4 className="text-lg font-semibold">
+                    Experiência {expIndex + 1}
+                  </h4>
+                  {experiences.length > 1 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRemoveExperience(expIndex)}
+                    >
+                      <Trash2 className="text-destructive mr-1 h-4 w-4" />{" "}
+                      Remover Experiência
+                    </Button>
+                  )}
+                </div>
+
+                {BASE_EXPERIENCE_FIELDS.map(
+                  ({ id: fieldId, label, placeholder }) => (
+                    <Field key={fieldId} className="mb-4">
+                      <div className="flex w-full items-center gap-4">
+                        <FieldLabel className="w-28 min-w-28 shrink-0 text-left font-medium whitespace-nowrap capitalize">
+                          {label}
+                        </FieldLabel>
+                        <Input
+                          className="w-full flex-1"
+                          placeholder={placeholder}
+                          value={
+                            exp[
+                              fieldId as keyof Omit<ExperienceState, "details">
+                            ] || ""
+                          }
+                          onChange={(e) =>
+                            handleUpdateExperienceField(
+                              expIndex,
+                              fieldId as keyof Omit<ExperienceState, "details">,
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
+                    </Field>
+                  )
+                )}
+
+                {/* Sub-section: Dynamic Details */}
+                <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h5 className="text-sm font-semibold">
+                        Detalhes do Projeto
+                      </h5>
+                      <p className="text-muted-foreground text-xs">
+                        Limite máximo de 3 detalhes. Atualmente:{" "}
+                        {exp.details.length}/3
+                      </p>
+                    </div>
+                    {exp.details.length < 3 && (
+                      <Button
+                        variant="outline"
+                        size="xs"
+                        onClick={() => handleAddDetail(expIndex)}
+                      >
+                        <Plus className="mr-1 h-3.5 w-3.5" /> Adicionar Detalhe
+                      </Button>
+                    )}
+                  </div>
+
+                  {exp.details.map((detail, detailIndex) => (
+                    <Field key={detailIndex} className="mb-2">
+                      <div className="flex w-full items-center gap-4">
+                        <FieldLabel className="w-28 min-w-28 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize">
+                          Detalhe {detailIndex + 1}
+                        </FieldLabel>
+                        <Input
+                          className="w-full flex-1"
+                          placeholder={`Coloque a descrição sobre o projeto ${detailIndex + 1}`}
+                          value={detail}
+                          onChange={(e) =>
+                            handleUpdateDetail(
+                              expIndex,
+                              detailIndex,
+                              e.target.value
+                            )
+                          }
+                        />
+                        {exp.details.length > 1 && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() =>
+                              handleRemoveDetail(expIndex, detailIndex)
+                            }
+                          >
+                            <Trash2 className="text-destructive h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </Field>
+                  ))}
+                </div>
+
+                {/* Stacks Field */}
+                <Field className="mb-4">
+                  <div className="flex w-full items-center gap-4">
+                    <FieldLabel className="w-28 min-w-28 shrink-0 text-left font-medium whitespace-nowrap capitalize">
+                      stacks
+                    </FieldLabel>
+                    <Input
+                      className="w-full flex-1"
+                      placeholder="Coloque as stacks usadas na empresa"
+                      value={exp.stacks}
+                      onChange={(e) =>
+                        handleUpdateExperienceField(
+                          expIndex,
+                          "stacks",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+                </Field>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+
+        {/* Dynamic Education */}
+        <CardContent>
+          <div className="flex flex-col gap-6 border-b py-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold">Educação</h2>
+                <h3 className="border-b pb-2 text-lg">
+                  Coloque a sua formação acadêmica
+                </h3>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleAddListItem(education, setEducation)}
+              >
+                <Plus className="mr-2 h-4 w-4" /> Adicionar Formação
+              </Button>
+            </div>
+
+            {education.map((edu, index) => (
+              <Field key={index} className="mb-2">
+                <div className="flex w-full items-center gap-4">
+                  <FieldLabel className="w-28 min-w-28 shrink-0 text-left font-medium whitespace-nowrap capitalize">
+                    Educação {index + 1}
+                  </FieldLabel>
+                  <Input
+                    className="w-full flex-1"
+                    placeholder="Coloque a sua formação"
+                    value={edu}
+                    onChange={(e) =>
+                      handleUpdateListItem(
+                        index,
+                        e.target.value,
+                        education,
+                        setEducation
+                      )
+                    }
+                  />
+                  {education.length > 1 && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() =>
+                        handleRemoveListItem(index, education, setEducation)
+                      }
+                    >
+                      <Trash2 className="text-destructive h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </Field>
+            ))}
+          </div>
+        </CardContent>
+
+        {/* Dynamic Certifications */}
+        <CardContent>
+          <div className="flex flex-col gap-6 border-b py-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold">Certificações</h2>
+                <h3 className="border-b pb-2 text-lg">
+                  Coloque as suas certificações relevantes
+                </h3>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  handleAddListItem(certifications, setCertifications)
+                }
+              >
+                <Plus className="mr-2 h-4 w-4" /> Adicionar Certificação
+              </Button>
+            </div>
+
+            {certifications.map((cert, index) => (
+              <Field key={index} className="mb-2">
+                <div className="flex w-full items-center gap-4">
+                  <FieldLabel className="w-28 min-w-28 shrink-0 text-left font-medium whitespace-nowrap capitalize">
+                    Certificado {index + 1}
+                  </FieldLabel>
+                  <Input
+                    className="w-full flex-1"
+                    placeholder="Coloque o nome da sua certificação"
+                    value={cert}
+                    onChange={(e) =>
+                      handleUpdateListItem(
+                        index,
+                        e.target.value,
+                        certifications,
+                        setCertifications
+                      )
+                    }
+                  />
+                  {certifications.length > 1 && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() =>
+                        handleRemoveListItem(
+                          index,
+                          certifications,
+                          setCertifications
+                        )
+                      }
+                    >
+                      <Trash2 className="text-destructive h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </Field>
+            ))}
+          </div>
+        </CardContent>
+
+        {/* Dynamic Languages */}
+        <CardContent>
+          <div className="flex flex-col gap-6 border-b py-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold">Idiomas</h2>
+                <h3 className="border-b pb-2 text-lg">
+                  Coloque os idiomas que você fala
+                </h3>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleAddListItem(languages, setLanguages)}
+              >
+                <Plus className="mr-2 h-4 w-4" /> Adicionar Idioma
+              </Button>
+            </div>
+
+            {languages.map((lang, index) => (
+              <Field key={index} className="mb-2">
+                <div className="flex w-full items-center gap-4">
+                  <FieldLabel className="w-28 min-w-28 shrink-0 text-left font-medium whitespace-nowrap capitalize">
+                    Idioma {index + 1}
+                  </FieldLabel>
+                  <Input
+                    className="w-full flex-1"
+                    placeholder="Coloque um idioma"
+                    value={lang}
+                    onChange={(e) =>
+                      handleUpdateListItem(
+                        index,
+                        e.target.value,
+                        languages,
+                        setLanguages
+                      )
+                    }
+                  />
+                  {languages.length > 1 && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() =>
+                        handleRemoveListItem(index, languages, setLanguages)
+                      }
+                    >
+                      <Trash2 className="text-destructive h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </Field>
+            ))}
+          </div>
+        </CardContent>
 
         <CardFooter className="flex flex-col gap-6">
           <div className="flex w-full justify-center">
