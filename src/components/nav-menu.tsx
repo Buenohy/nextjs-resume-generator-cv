@@ -19,93 +19,97 @@ export default function NavigationMenuDemo() {
   const t = useTranslations("NavMenu");
 
   return (
-    <NavigationMenu className="mx-auto my-5">
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>{t("pages.trigger")}</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="flex w-96 flex-col gap-3 p-4">
-              <ListItem href="/" title={t("pages.home.title")}>
-                {t("pages.home.desc")}
-              </ListItem>
-              <ListItem href="/components" title={t("pages.components.title")}>
-                {t("pages.components.desc")}
-              </ListItem>
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
+    <div className="bg-background border-primary mx-auto my-5 flex h-14 w-fit items-center gap-6 rounded-lg border px-4 shadow-sm">
+      <NavigationMenu>
+        <NavigationMenuList>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>{t("pages.trigger")}</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="flex w-96 flex-col gap-3 p-4">
+                <ListItem href="/" title={t("pages.home.title")}>
+                  {t("pages.home.desc")}
+                </ListItem>
+                <ListItem
+                  href="/components"
+                  title={t("pages.components.title")}
+                >
+                  {t("pages.components.desc")}
+                </ListItem>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
 
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>{t("jobs.trigger")}</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="flex w-96 flex-col gap-3 p-4">
-              <ListItem
-                href="/job-description"
-                title={t("jobs.description.title")}
-              >
-                {t("jobs.description.desc")}
-              </ListItem>
-              <ListItem href="/job-parse" title={t("jobs.parse.title")}>
-                {t("jobs.parse.desc")}
-              </ListItem>
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>{t("jobs.trigger")}</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="flex w-96 flex-col gap-3 p-4">
+                <ListItem
+                  href="/job-description"
+                  title={t("jobs.description.title")}
+                >
+                  {t("jobs.description.desc")}
+                </ListItem>
+                <ListItem href="/job-parse" title={t("jobs.parse.title")}>
+                  {t("jobs.parse.desc")}
+                </ListItem>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
 
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>{t("ats.trigger")}</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="flex w-96 flex-col gap-3 p-4">
-              <ListItem href="/match-ats" title={t("ats.match.title")}>
-                {t("ats.match.desc")}
-              </ListItem>
-              <ListItem
-                href="/optimizing-resume"
-                title={t("ats.optimize.title")}
-              >
-                {t("ats.optimize.desc")}
-              </ListItem>
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>{t("ats.trigger")}</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="flex w-96 flex-col gap-3 p-4">
+                <ListItem href="/match-ats" title={t("ats.match.title")}>
+                  {t("ats.match.desc")}
+                </ListItem>
+                <ListItem
+                  href="/optimizing-resume"
+                  title={t("ats.optimize.title")}
+                >
+                  {t("ats.optimize.desc")}
+                </ListItem>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
 
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>{t("contents.trigger")}</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="flex w-96 flex-col gap-3 p-4">
-              <ListItem href="/full-content" title={t("contents.full.title")}>
-                {t("contents.full.desc")}
-              </ListItem>
-              <ListItem
-                href="/resume-builder"
-                title={t("contents.builder.title")}
-              >
-                {t("contents.builder.desc")}
-              </ListItem>
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>
+              {t("contents.trigger")}
+            </NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="flex w-96 flex-col gap-3 p-4">
+                <ListItem href="/full-content" title={t("contents.full.title")}>
+                  {t("contents.full.desc")}
+                </ListItem>
+                <ListItem
+                  href="/resume-builder"
+                  title={t("contents.builder.title")}
+                >
+                  {t("contents.builder.desc")}
+                </ListItem>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
 
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>{t("pdf.trigger")}</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="flex w-96 flex-col gap-3 p-4">
-              <ListItem href="/pdf-preview" title={t("pdf.preview.title")}>
-                {t("pdf.preview.desc")}
-              </ListItem>
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>{t("pdf.trigger")}</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="flex w-96 flex-col gap-3 p-4">
+                <ListItem href="/pdf-preview" title={t("pdf.preview.title")}>
+                  {t("pdf.preview.desc")}
+                </ListItem>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
 
-        <NavigationMenuItem>
-          <LangMenu />
-        </NavigationMenuItem>
-
-        <NavigationMenuItem>
-          <DarkMode />
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
+      <div className="flex h-full items-center gap-2 border-l pl-6">
+        <LangMenu />
+        <DarkMode />
+      </div>
+    </div>
   );
 }
 

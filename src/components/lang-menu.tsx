@@ -2,18 +2,15 @@
 
 import * as React from "react";
 import { useLocale } from "next-intl";
-
 import { useRouter, usePathname } from "@/i18n/navigation";
 
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 export function LangMenu() {
   const locale = useLocale();
@@ -25,17 +22,28 @@ export function LangMenu() {
   };
 
   return (
-    <Select defaultValue={locale} onValueChange={handleLocaleChange}>
-      <SelectTrigger className="w-full max-w-48">
-        <SelectValue placeholder="Select a lang" />
-      </SelectTrigger>
-      <SelectContent position="item-aligned">
-        <SelectGroup>
-          <SelectLabel>Langs</SelectLabel>
-          <SelectItem value="pt">Português (pt-br)</SelectItem>
-          <SelectItem value="en">English (en-us)</SelectItem>
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" className="w-35 justify-start">
+          {locale === "pt" ? "Português (pt-br)" : "English (en-us)"}
+        </Button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent align="end" className="w-35">
+        <DropdownMenuItem
+          onClick={() => handleLocaleChange("pt")}
+          className={locale === "pt" ? "bg-muted font-bold" : ""}
+        >
+          Português (pt-br)
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
+          onClick={() => handleLocaleChange("en")}
+          className={locale === "en" ? "bg-muted font-bold" : ""}
+        >
+          English (en-us)
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
