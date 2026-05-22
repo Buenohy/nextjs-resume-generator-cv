@@ -16,7 +16,6 @@ export default function OptimizingResumePage() {
     <div className="p-6">
       <h1 className="mb-6 text-2xl font-bold">Optimizing Resume</h1>
       <Card className="shadow-primary/50 shadow-lg">
-        <ButtonPaginate />
         <CardHeader>
           <CardTitle>Optimizing Resume</CardTitle>
           <CardDescription>
@@ -38,7 +37,9 @@ export default function OptimizingResumePage() {
           <h2>Palavras Suspeitas:</h2>
           <h2 className="text-destructive">todo, url </h2>
         </CardContent>
-        <CardFooter></CardFooter>
+        <CardFooter>
+          <ButtonPaginate />
+        </CardFooter>
       </Card>
     </div>
   );
