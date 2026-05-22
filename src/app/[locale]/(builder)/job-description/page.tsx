@@ -26,9 +26,11 @@ export default function JobDescriptionPage() {
           <Textarea placeholder="Cole a descrição completa da vaga do Wellfound aqui..." />
         </CardContent>
         <CardFooter className="flex flex-col gap-6">
-          <CardAction>
-            <Button>Enviar descrição da vaga</Button>
-          </CardAction>
+          <div className="flex w-full justify-center">
+            <CardAction>
+              <Button>Enviar descrição da vaga</Button>
+            </CardAction>
+          </div>
           <ButtonPaginate />
         </CardFooter>
       </Card>
