@@ -17,6 +17,10 @@ import { useRouter } from "next/navigation";
 export default function JobDescriptionPage() {
   const router = useRouter();
 
+  const handleBackStep = () => {
+    router.push("/resume-builder");
+  };
+
   const handleNextStep = () => {
     router.push("/resume-builder");
   };
@@ -24,12 +28,19 @@ export default function JobDescriptionPage() {
     <div>
       <div>Job Description Page</div>
       <Card className="shadow-primary/50 shadow-lg">
-        <CardHeader>
-          <CardTitle>Job Description</CardTitle>
-          <CardDescription>Coloque os detalhes da vaga abaixo</CardDescription>
+        <div className="flex items-center justify-between px-6">
+          <CardAction>
+            <Button disabled onClick={handleBackStep}>
+              Dados Currículo
+            </Button>
+          </CardAction>
           <CardAction>
             <Button onClick={handleNextStep}>Dados Currículo</Button>
           </CardAction>
+        </div>
+        <CardHeader>
+          <CardTitle>Job Description</CardTitle>
+          <CardDescription>Coloque os detalhes da vaga abaixo</CardDescription>
         </CardHeader>
         <CardContent>
           <Textarea placeholder="Cole a descrição completa da vaga do Wellfound aqui..." />
