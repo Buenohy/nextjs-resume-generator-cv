@@ -366,7 +366,7 @@ export default function ResumeBuilderPage() {
                 key={expIndex}
                 className="flex flex-col gap-6 border-b pt-4 pb-8 last:border-0 last:pb-0"
               >
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                   <h4 className="text-lg font-semibold">
                     Experiência {expIndex + 1}
                   </h4>
