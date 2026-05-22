@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 export default function JobDescriptionPage() {
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6">
       <h1 className="mb-6 text-2xl font-bold">Job Description</h1>
       <Card className="shadow-primary/50 shadow-lg">
         <CardHeader>

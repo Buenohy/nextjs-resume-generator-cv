@@ -32,7 +32,7 @@ export default function NavigationMenuDemo() {
   const t = useTranslations("NavMenu");
 
   return (
-    <div className="bg-background border-primary mx-auto my-5 flex h-14 w-[95%] max-w-full items-center justify-between gap-4 rounded-lg border px-4 shadow-sm sm:w-fit sm:justify-start">
+    <div className="bg-background border-primary mx-auto my-5 flex h-14 w-[95%] max-w-full items-center justify-center gap-4 rounded-lg border px-2 shadow-sm sm:w-fit sm:justify-start">
       <div className="block sm:hidden">
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
@@ -198,10 +198,8 @@ export default function NavigationMenuDemo() {
         </NavigationMenu>
       </div>
 
-      <div className="flex h-full items-center gap-2 sm:border-l sm:pl-4">
-        <LangMenu />
-        <DarkMode />
-      </div>
+      <LangMenu />
+      <DarkMode />
     </div>
   );
 }
