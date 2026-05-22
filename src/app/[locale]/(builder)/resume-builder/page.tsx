@@ -261,7 +261,6 @@ export default function ResumeBuilderPage() {
                 <h3 className="border-b pb-2 text-lg">{section.subTitle}</h3>
               </div>
 
-              {/* Dynamic Header, Links and Resume */}
               {section.fields.map(({ id: fieldId, label, placeholder }) => (
                 <Field key={fieldId} className="mb-4">
                   <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center">
@@ -300,10 +299,24 @@ export default function ResumeBuilderPage() {
 
             {skills.map((skill, index) => (
               <Field key={index} className="mb-2">
-                <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center">
-                  <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-                    Skill {index + 1}
-                  </FieldLabel>
+                <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+                  <div className="flex w-full items-center justify-between sm:w-auto">
+                    <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+                      Skill {index + 1}
+                    </FieldLabel>
+                    {skills.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() =>
+                          handleRemoveListItem(index, skills, setSkills)
+                        }
+                        className="h-8 w-8 sm:hidden"
+                      >
+                        <Trash2 className="text-destructive h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
                   <Input
                     className="w-full flex-1"
                     placeholder="Coloque uma habilidade"
@@ -324,6 +337,7 @@ export default function ResumeBuilderPage() {
                       onClick={() =>
                         handleRemoveListItem(index, skills, setSkills)
                       }
+                      className="hidden sm:inline-flex"
                     >
                       <Trash2 className="text-destructive h-4 w-4" />
                     </Button>
@@ -441,10 +455,24 @@ export default function ResumeBuilderPage() {
 
                   {exp.details.map((detail, detailIndex) => (
                     <Field key={detailIndex} className="mb-2">
-                      <div className="sm:items-centergap-4 flex w-full flex-col gap-4 sm:flex-row">
-                        <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-                          Detalhe {detailIndex + 1}
-                        </FieldLabel>
+                      <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+                        <div className="flex w-full items-center justify-between sm:w-auto">
+                          <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+                            Detalhe {detailIndex + 1}
+                          </FieldLabel>
+                          {exp.details.length > 1 && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() =>
+                                handleRemoveDetail(expIndex, detailIndex)
+                              }
+                              className="h-8 w-8 sm:hidden"
+                            >
+                              <Trash2 className="text-destructive h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
                         <Input
                           className="w-full flex-1"
                           placeholder={`Coloque a descrição sobre o projeto ${detailIndex + 1}`}
@@ -464,6 +492,7 @@ export default function ResumeBuilderPage() {
                             onClick={() =>
                               handleRemoveDetail(expIndex, detailIndex)
                             }
+                            className="hidden sm:inline-flex"
                           >
                             <Trash2 className="text-destructive h-4 w-4" />
                           </Button>
@@ -495,10 +524,24 @@ export default function ResumeBuilderPage() {
 
                   {exp.stacks.map((stack, stackIndex) => (
                     <Field key={stackIndex} className="mb-2">
-                      <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center">
-                        <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-                          Stack {stackIndex + 1}
-                        </FieldLabel>
+                      <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+                        <div className="flex w-full items-center justify-between sm:w-auto">
+                          <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+                            Stack {stackIndex + 1}
+                          </FieldLabel>
+                          {exp.stacks.length > 1 && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() =>
+                                handleRemoveStack(expIndex, stackIndex)
+                              }
+                              className="h-8 w-8 sm:hidden"
+                            >
+                              <Trash2 className="text-destructive h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
                         <Input
                           className="w-full flex-1"
                           placeholder="Ex: React, Node.js, TypeScript"
@@ -518,6 +561,7 @@ export default function ResumeBuilderPage() {
                             onClick={() =>
                               handleRemoveStack(expIndex, stackIndex)
                             }
+                            className="hidden sm:inline-flex"
                           >
                             <Trash2 className="text-destructive h-4 w-4" />
                           </Button>
@@ -552,10 +596,24 @@ export default function ResumeBuilderPage() {
 
             {education.map((edu, index) => (
               <Field key={index} className="mb-2">
-                <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center">
-                  <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-                    Educação {index + 1}
-                  </FieldLabel>
+                <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+                  <div className="flex w-full items-center justify-between sm:w-auto">
+                    <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+                      Educação {index + 1}
+                    </FieldLabel>
+                    {education.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() =>
+                          handleRemoveListItem(index, education, setEducation)
+                        }
+                        className="h-8 w-8 sm:hidden"
+                      >
+                        <Trash2 className="text-destructive h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
                   <Input
                     className="w-full flex-1"
                     placeholder="Coloque a sua formação"
@@ -576,6 +634,7 @@ export default function ResumeBuilderPage() {
                       onClick={() =>
                         handleRemoveListItem(index, education, setEducation)
                       }
+                      className="hidden sm:inline-flex"
                     >
                       <Trash2 className="text-destructive h-4 w-4" />
                     </Button>
@@ -609,10 +668,28 @@ export default function ResumeBuilderPage() {
 
             {certifications.map((cert, index) => (
               <Field key={index} className="mb-2">
-                <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center">
-                  <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-                    Certificado {index + 1}
-                  </FieldLabel>
+                <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+                  <div className="flex w-full items-center justify-between sm:w-auto">
+                    <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+                      Certificado {index + 1}
+                    </FieldLabel>
+                    {certifications.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() =>
+                          handleRemoveListItem(
+                            index,
+                            certifications,
+                            setCertifications
+                          )
+                        }
+                        className="h-8 w-8 sm:hidden"
+                      >
+                        <Trash2 className="text-destructive h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
                   <Input
                     className="w-full flex-1"
                     placeholder="Coloque o nome da sua certificação"
@@ -637,6 +714,7 @@ export default function ResumeBuilderPage() {
                           setCertifications
                         )
                       }
+                      className="hidden sm:inline-flex"
                     >
                       <Trash2 className="text-destructive h-4 w-4" />
                     </Button>
@@ -668,10 +746,24 @@ export default function ResumeBuilderPage() {
 
             {languages.map((lang, index) => (
               <Field key={index} className="mb-2">
-                <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center">
-                  <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-                    Idioma {index + 1}
-                  </FieldLabel>
+                <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+                  <div className="flex w-full items-center justify-between sm:w-auto">
+                    <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+                      Idioma {index + 1}
+                    </FieldLabel>
+                    {languages.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() =>
+                          handleRemoveListItem(index, languages, setLanguages)
+                        }
+                        className="h-8 w-8 sm:hidden"
+                      >
+                        <Trash2 className="text-destructive h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
                   <Input
                     className="w-full flex-1"
                     placeholder="Coloque um idioma"
@@ -692,6 +784,7 @@ export default function ResumeBuilderPage() {
                       onClick={() =>
                         handleRemoveListItem(index, languages, setLanguages)
                       }
+                      className="hidden sm:inline-flex"
                     >
                       <Trash2 className="text-destructive h-4 w-4" />
                     </Button>
