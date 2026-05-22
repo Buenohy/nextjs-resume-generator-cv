@@ -261,10 +261,11 @@ export default function ResumeBuilderPage() {
                 <h3 className="border-b pb-2 text-lg">{section.subTitle}</h3>
               </div>
 
+              {/* Dynamic Header, Links and Resume */}
               {section.fields.map(({ id: fieldId, label, placeholder }) => (
                 <Field key={fieldId} className="mb-4">
                   <div className="flex w-full items-center gap-4">
-                    <FieldLabel className="w-28 min-w-28 shrink-0 text-left font-medium whitespace-nowrap capitalize">
+                    <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
                       {label}
                     </FieldLabel>
                     <Input
@@ -300,7 +301,7 @@ export default function ResumeBuilderPage() {
             {skills.map((skill, index) => (
               <Field key={index} className="mb-2">
                 <div className="flex w-full items-center gap-4">
-                  <FieldLabel className="w-28 min-w-28 shrink-0 text-left font-medium whitespace-nowrap capitalize">
+                  <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
                     Skill {index + 1}
                   </FieldLabel>
                   <Input
@@ -385,7 +386,7 @@ export default function ResumeBuilderPage() {
                   ({ id: fieldId, label, placeholder }) => (
                     <Field key={fieldId} className="mb-4">
                       <div className="flex w-full items-center gap-4">
-                        <FieldLabel className="w-28 min-w-28 shrink-0 text-left font-medium whitespace-nowrap capitalize">
+                        <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
                           {label}
                         </FieldLabel>
                         <Input
@@ -441,7 +442,7 @@ export default function ResumeBuilderPage() {
                   {exp.details.map((detail, detailIndex) => (
                     <Field key={detailIndex} className="mb-2">
                       <div className="flex w-full items-center gap-4">
-                        <FieldLabel className="w-28 min-w-28 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize">
+                        <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
                           Detalhe {detailIndex + 1}
                         </FieldLabel>
                         <Input
@@ -495,7 +496,7 @@ export default function ResumeBuilderPage() {
                   {exp.stacks.map((stack, stackIndex) => (
                     <Field key={stackIndex} className="mb-2">
                       <div className="flex w-full items-center gap-4">
-                        <FieldLabel className="w-28 min-w-28 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize">
+                        <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
                           Stack {stackIndex + 1}
                         </FieldLabel>
                         <Input
@@ -552,7 +553,7 @@ export default function ResumeBuilderPage() {
             {education.map((edu, index) => (
               <Field key={index} className="mb-2">
                 <div className="flex w-full items-center gap-4">
-                  <FieldLabel className="w-28 min-w-28 shrink-0 text-left font-medium whitespace-nowrap capitalize">
+                  <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
                     Educação {index + 1}
                   </FieldLabel>
                   <Input
@@ -609,7 +610,7 @@ export default function ResumeBuilderPage() {
             {certifications.map((cert, index) => (
               <Field key={index} className="mb-2">
                 <div className="flex w-full items-center gap-4">
-                  <FieldLabel className="w-28 min-w-28 shrink-0 text-left font-medium whitespace-nowrap capitalize">
+                  <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
                     Certificado {index + 1}
                   </FieldLabel>
                   <Input
@@ -668,7 +669,7 @@ export default function ResumeBuilderPage() {
             {languages.map((lang, index) => (
               <Field key={index} className="mb-2">
                 <div className="flex w-full items-center gap-4">
-                  <FieldLabel className="w-28 min-w-28 shrink-0 text-left font-medium whitespace-nowrap capitalize">
+                  <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
                     Idioma {index + 1}
                   </FieldLabel>
                   <Input
