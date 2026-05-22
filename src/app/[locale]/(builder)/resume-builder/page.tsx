@@ -217,7 +217,6 @@ export default function ResumeBuilderPage() {
     <div className="p-6">
       <h1 className="mb-6 text-2xl font-bold">Resume Builder</h1>
       <Card className="shadow-primary/50 border-muted shadow-lg">
-        <ButtonPaginate />
         <CardHeader>
           <CardTitle>Resume Builder</CardTitle>
           <CardDescription>

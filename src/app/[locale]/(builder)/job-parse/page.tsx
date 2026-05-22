@@ -18,7 +18,6 @@ export default function JobParsePage() {
     <div className="p-6">
       <h1 className="mb-6 text-2xl font-bold">Job Parse</h1>
       <Card className="shadow-primary/50 shadow-lg">
-        <ButtonPaginate />
         <CardHeader>
           <CardTitle>Job Parse</CardTitle>
           <CardDescription>Está faltando no seu currículo</CardDescription>
@@ -34,7 +33,9 @@ export default function JobParsePage() {
           <h2>Validando cargo declarado (info.role: frontend developer)...</h2>
           <Textarea placeholder="Atenção: O cargo 'frontend developer' informado no YAML não parece estar relacionado à descrição da vaga." />
         </CardContent>
-        <CardFooter></CardFooter>
+        <CardFooter>
+          <ButtonPaginate />
+        </CardFooter>
       </Card>
     </div>
   );
