@@ -368,7 +368,7 @@ export default function MatchAtsPage() {
 
   return (
     <div className="p-6">
-      <h1 className="mb-6 text-2xl font-bold">Match ATS Page</h1>
+      <h1 className="mb-6 text-2xl font-bold">Match ATS</h1>
 
       <Card className="border-muted shadow-primary/50 shadow-lg">
         <div className="flex items-center justify-between px-6">
