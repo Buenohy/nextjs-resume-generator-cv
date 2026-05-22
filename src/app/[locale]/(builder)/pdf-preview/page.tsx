@@ -123,12 +123,14 @@ export default function PdfPreviewPage() {
           </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-6">
-          <CardAction>
-            <Button onClick={handleExportPDF}>
-              <Printer className="mr-2 h-4 w-4" />
-              Exportar Currículo
-            </Button>
-          </CardAction>
+          <div className="flex w-full justify-center">
+            <CardAction>
+              <Button onClick={handleExportPDF}>
+                <Printer className="mr-2 h-4 w-4" />
+                Exportar Currículo
+              </Button>
+            </CardAction>
+          </div>
           <ButtonPaginate />
         </CardFooter>
       </Card>
