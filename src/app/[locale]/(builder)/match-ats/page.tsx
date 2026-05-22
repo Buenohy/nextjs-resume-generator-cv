@@ -20,6 +20,7 @@ import {
   CardHeader,
   CardAction,
   CardTitle,
+  CardFooter,
 } from "@/components/ui/card";
 import {
   Table,
@@ -362,7 +363,6 @@ export default function MatchAtsPage() {
       <h1 className="mb-6 text-2xl font-bold">Match ATS</h1>
 
       <Card className="border-muted shadow-primary/50 shadow-lg">
-        <ButtonPaginate />
         <CardHeader>
           <CardTitle>Match ATS</CardTitle>
           <CardDescription>
@@ -445,6 +445,9 @@ export default function MatchAtsPage() {
             </Table>
           </div>
         </CardContent>
+        <CardFooter>
+          <ButtonPaginate />
+        </CardFooter>
       </Card>
     </div>
   );
