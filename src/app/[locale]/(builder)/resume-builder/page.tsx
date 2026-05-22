@@ -36,7 +36,7 @@ interface ExperienceState {
   url: string;
   date: string;
   details: string[];
-  stacks: string;
+  stacks: string[];
 }
 
 const STATIC_SECTIONS: FormSection[] = [
@@ -123,7 +123,7 @@ export default function ResumeBuilderPage() {
   const [languages, setLanguages] = useState<string[]>([""]);
 
   const [experiences, setExperiences] = useState<ExperienceState[]>([
-    { role: "", company: "", url: "", date: "", details: [""], stacks: "" },
+    { role: "", company: "", url: "", date: "", details: [""], stacks: [""] },
   ]);
 
   const handleAddListItem = (
@@ -159,7 +159,14 @@ export default function ResumeBuilderPage() {
     if (experiences.length < 4) {
       setExperiences([
         ...experiences,
-        { role: "", company: "", url: "", date: "", details: [""], stacks: "" },
+        {
+          role: "",
+          company: "",
+          url: "",
+          date: "",
+          details: [""],
+          stacks: [""],
+        },
       ]);
     }
   };
@@ -173,7 +180,7 @@ export default function ResumeBuilderPage() {
 
   const handleUpdateExperienceField = (
     index: number,
-    field: keyof Omit<ExperienceState, "details">,
+    field: keyof Omit<ExperienceState, "details" | "stacks">,
     value: string
   ) => {
     const newExp = [...experiences];
@@ -206,6 +213,32 @@ export default function ResumeBuilderPage() {
   ) => {
     const newExp = [...experiences];
     newExp[expIndex].details[detailIndex] = value;
+    setExperiences(newExp);
+  };
+
+  const handleAddStack = (expIndex: number) => {
+    const newExp = [...experiences];
+    newExp[expIndex].stacks.push("");
+    setExperiences(newExp);
+  };
+
+  const handleRemoveStack = (expIndex: number, stackIndex: number) => {
+    const newExp = [...experiences];
+    if (newExp[expIndex].stacks.length > 1) {
+      newExp[expIndex].stacks = newExp[expIndex].stacks.filter(
+        (_, i) => i !== stackIndex
+      );
+      setExperiences(newExp);
+    }
+  };
+
+  const handleUpdateStack = (
+    expIndex: number,
+    stackIndex: number,
+    value: string
+  ) => {
+    const newExp = [...experiences];
+    newExp[expIndex].stacks[stackIndex] = value;
     setExperiences(newExp);
   };
 
@@ -360,13 +393,19 @@ export default function ResumeBuilderPage() {
                           placeholder={placeholder}
                           value={
                             exp[
-                              fieldId as keyof Omit<ExperienceState, "details">
+                              fieldId as keyof Omit<
+                                ExperienceState,
+                                "details" | "stacks"
+                              >
                             ] || ""
                           }
                           onChange={(e) =>
                             handleUpdateExperienceField(
                               expIndex,
-                              fieldId as keyof Omit<ExperienceState, "details">,
+                              fieldId as keyof Omit<
+                                ExperienceState,
+                                "details" | "stacks"
+                              >,
                               e.target.value
                             )
                           }
@@ -433,26 +472,59 @@ export default function ResumeBuilderPage() {
                   ))}
                 </div>
 
-                {/* Stacks Field */}
-                <Field className="mb-4">
-                  <div className="flex w-full items-center gap-4">
-                    <FieldLabel className="w-28 min-w-28 shrink-0 text-left font-medium whitespace-nowrap capitalize">
-                      stacks
-                    </FieldLabel>
-                    <Input
-                      className="w-full flex-1"
-                      placeholder="Coloque as stacks usadas na empresa"
-                      value={exp.stacks}
-                      onChange={(e) =>
-                        handleUpdateExperienceField(
-                          expIndex,
-                          "stacks",
-                          e.target.value
-                        )
-                      }
-                    />
+                {/* Sub-section: Dynamic Stacks */}
+                <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h5 className="text-sm font-semibold">
+                        Tecnologias (Stacks)
+                      </h5>
+                      <p className="text-muted-foreground text-xs">
+                        Adicione as tecnologias utilizadas nesta experiência
+                      </p>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="xs"
+                      onClick={() => handleAddStack(expIndex)}
+                    >
+                      <Plus className="mr-1 h-3.5 w-3.5" /> Adicionar Stack
+                    </Button>
                   </div>
-                </Field>
+
+                  {exp.stacks.map((stack, stackIndex) => (
+                    <Field key={stackIndex} className="mb-2">
+                      <div className="flex w-full items-center gap-4">
+                        <FieldLabel className="w-28 min-w-28 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize">
+                          Stack {stackIndex + 1}
+                        </FieldLabel>
+                        <Input
+                          className="w-full flex-1"
+                          placeholder="Ex: React, Node.js, TypeScript"
+                          value={stack}
+                          onChange={(e) =>
+                            handleUpdateStack(
+                              expIndex,
+                              stackIndex,
+                              e.target.value
+                            )
+                          }
+                        />
+                        {exp.stacks.length > 1 && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() =>
+                              handleRemoveStack(expIndex, stackIndex)
+                            }
+                          >
+                            <Trash2 className="text-destructive h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </Field>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
