@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Field, FieldLabel } from "@/components/ui/field";
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -249,10 +250,11 @@ export default function ResumeBuilderPage() {
           </CardContent>
         ))}
 
-        <CardContent className="pt-6">
-          <Button>Gerar currículo</Button>
-        </CardContent>
-        <CardFooter />
+        <CardFooter className="pt-6">
+          <CardAction>
+            <Button>Gerar currículo</Button>
+          </CardAction>
+        </CardFooter>
       </Card>
     </div>
   );

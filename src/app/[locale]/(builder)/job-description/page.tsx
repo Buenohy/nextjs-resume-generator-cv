@@ -4,6 +4,7 @@ import ButtonPaginate from "@/components/button-paginate";
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -26,7 +27,9 @@ export default function JobDescriptionPage() {
           <Textarea placeholder="Cole a descrição completa da vaga do Wellfound aqui..." />
         </CardContent>
         <CardFooter>
-          <Button>Enviar descrição da vaga</Button>
+          <CardAction>
+            <Button>Enviar descrição da vaga</Button>
+          </CardAction>
         </CardFooter>
       </Card>
     </div>
