@@ -20,7 +20,7 @@ export default function PdfPreviewPage() {
   };
 
   return (
-    <div className="container mx-auto min-h-screen p-6">
+    <div className="container mx-auto min-h-screen p-3 sm:p-6">
       <h1 className="mb-6 text-2xl font-bold">Pdf Preview</h1>
       <Card className="shadow-primary/50 mx-auto max-w-4xl shadow-lg print:m-0 print:border-none print:p-0 print:shadow-none">
         <CardHeader className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center print:hidden">

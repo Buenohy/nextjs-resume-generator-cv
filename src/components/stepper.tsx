@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +15,7 @@ const STEPS = [
 
 export function Stepper() {
   const pathname = usePathname();
+  const router = useRouter();
 
   const currentStepIndex = STEPS.findIndex((step) =>
     pathname.includes(step.path)
@@ -37,7 +38,10 @@ export function Stepper() {
                   !isLastStep ? "w-full" : ""
                 )}
               >
-                <div className="relative flex flex-col items-center gap-2">
+                <div
+                  onClick={() => router.push(step.path)}
+                  className="relative flex cursor-pointer flex-col items-center gap-2 hover:opacity-80"
+                >
                   <div
                     className={cn(
                       "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 font-semibold transition-colors",

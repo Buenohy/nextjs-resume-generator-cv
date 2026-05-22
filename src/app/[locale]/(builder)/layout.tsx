@@ -23,7 +23,7 @@ export default function BuilderLayout({
           <Stepper />
         </div>
 
-        <Card className="border-muted bg-background shadow-primary/5 min-h-125 p-0 shadow-lg">
+        <Card className="border-muted bg-background shadow-primary/5 p-0 shadow-lg">
           {children}
         </Card>
       </div>

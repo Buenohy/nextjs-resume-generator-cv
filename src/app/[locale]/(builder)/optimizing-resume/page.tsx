@@ -13,7 +13,7 @@ import ButtonPaginate from "@/components/button-paginate";
 
 export default function OptimizingResumePage() {
   return (
-    <div className="p-6">
+    <div className="p-3 sm:p-6">
       <h1 className="mb-6 text-2xl font-bold">Optimizing Resume</h1>
       <Card className="shadow-primary/50 shadow-lg">
         <CardHeader>
