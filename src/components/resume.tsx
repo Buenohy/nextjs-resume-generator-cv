@@ -181,7 +181,7 @@ export const Resume: React.FC<ResumeProps> = ({
         {experience.map((job, index) => (
           <div key={index} className="mb-2">
             <div className="mb-0.5 grid w-full grid-cols-[1fr_auto_1fr] items-baseline">
-              <span className="text-left text-[6pt] font-bold sm:text-[10pt]">
+              <span className="text-left text-[7pt] font-bold sm:text-[10pt]">
                 {job.role}
               </span>
               {job.url ? (
@@ -189,16 +189,16 @@ export const Resume: React.FC<ResumeProps> = ({
                   href={job.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-resume-accent decoration-resume-accent hover:text-resume-accent cursor-pointer text-center text-[6pt] font-normal whitespace-nowrap underline sm:text-[10pt]"
+                  className="text-resume-accent decoration-resume-accent hover:text-resume-accent cursor-pointer text-center text-[7pt] font-normal whitespace-nowrap underline sm:text-[10pt]"
                 >
                   {job.company}
                 </a>
               ) : (
-                <span className="text-resume-accent decoration-resume-accent text-center text-[6pt] font-normal whitespace-nowrap underline sm:text-[10pt]">
+                <span className="text-resume-accent decoration-resume-accent text-center text-[7pt] font-normal whitespace-nowrap underline sm:text-[10pt]">
                   {job.company}
                 </span>
               )}
-              <span className="text-resume-muted print:text-resume-print-muted text-right text-[6pt] font-normal whitespace-nowrap italic sm:text-[10pt]">
+              <span className="text-resume-muted print:text-resume-print-muted text-right text-[7pt] font-normal whitespace-nowrap italic sm:text-[10pt]">
                 {job.date}
               </span>
             </div>
