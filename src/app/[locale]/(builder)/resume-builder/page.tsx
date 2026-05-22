@@ -250,10 +250,11 @@ export default function ResumeBuilderPage() {
           </CardContent>
         ))}
 
-        <CardFooter className="pt-6">
+        <CardFooter className="flex flex-col gap-6">
           <CardAction>
             <Button>Gerar currículo</Button>
           </CardAction>
+          <ButtonPaginate />
         </CardFooter>
       </Card>
     </div>
