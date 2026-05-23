@@ -8,6 +8,7 @@ import {
   TableProperties,
   Sparkles,
   Loader2,
+  RefreshCw,
 } from "lucide-react";
 import {
   useReactTable,
@@ -31,6 +32,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -44,6 +46,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import ButtonPaginate from "@/components/button-paginate";
 import { cn } from "@/lib/utils";
 
 interface FormField {
@@ -405,6 +408,60 @@ export default function ResumeBuilderPage() {
     });
   };
 
+  const handleAddDetail = (expIndex: number) => {
+    updateCvData((draft) => {
+      if (draft.experiences[expIndex].details.length < 3) {
+        draft.experiences[expIndex].details.push("");
+      }
+    });
+  };
+
+  const handleRemoveDetail = (expIndex: number, detailIndex: number) => {
+    updateCvData((draft) => {
+      if (draft.experiences[expIndex].details.length > 1) {
+        draft.experiences[expIndex].details = draft.experiences[
+          expIndex
+        ].details.filter((_, i) => i !== detailIndex);
+      }
+    });
+  };
+
+  const handleUpdateDetail = (
+    expIndex: number,
+    detailIndex: number,
+    value: string
+  ) => {
+    updateCvData((draft) => {
+      draft.experiences[expIndex].details[detailIndex] = value;
+    });
+  };
+
+  const handleAddStack = (expIndex: number) => {
+    updateCvData((draft) => {
+      draft.experiences[expIndex].stacks.push("");
+    });
+  };
+
+  const handleRemoveStack = (expIndex: number, stackIndex: number) => {
+    updateCvData((draft) => {
+      if (draft.experiences[expIndex].stacks.length > 1) {
+        draft.experiences[expIndex].stacks = draft.experiences[
+          expIndex
+        ].stacks.filter((_, i) => i !== stackIndex);
+      }
+    });
+  };
+
+  const handleUpdateStack = (
+    expIndex: number,
+    stackIndex: number,
+    value: string
+  ) => {
+    updateCvData((draft) => {
+      draft.experiences[expIndex].stacks[stackIndex] = value;
+    });
+  };
+
   return (
     <div className="p-3 sm:p-6">
       <h1 className="mb-6 text-2xl font-bold">Resume Builder & Optimization</h1>
@@ -487,9 +544,11 @@ export default function ResumeBuilderPage() {
                 <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                   <div>
                     <h2 className="text-xl font-semibold">Habilidades</h2>
-                    <h3 className="border-b pb-2 text-lg">
-                      Coloque as suas habilidades
-                    </h3>
+                    <h3 className="text-lg">Coloque as suas habilidades</h3>
+                    <p className="text-muted-foreground mt-1 text-xs">
+                      Atualmente: {cvData.skills.length} habilidade(s)
+                      cadastrada(s).
+                    </p>
                   </div>
                   <Button
                     variant="outline"
@@ -553,6 +612,10 @@ export default function ResumeBuilderPage() {
                     <h3 className="text-lg">
                       Cadastre suas experiências de atuação
                     </h3>
+                    <p className="text-muted-foreground mt-1 text-xs">
+                      Limite máximo de 4 experiências. Atualmente usando:{" "}
+                      {cvData.experiences.length}/4
+                    </p>
                   </div>
                   {cvData.experiences.length < 4 && (
                     <Button
@@ -617,6 +680,146 @@ export default function ResumeBuilderPage() {
                         </Field>
                       )
                     )}
+
+                    <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
+                      <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+                        <div>
+                          <h5 className="text-sm font-semibold">
+                            Detalhes do Projeto
+                          </h5>
+                          <p className="text-muted-foreground text-xs">
+                            Limite máximo de 3 detalhes. Atualmente:{" "}
+                            {exp.details.length}/3
+                          </p>
+                        </div>
+                        {exp.details.length < 3 && (
+                          <Button
+                            variant="outline"
+                            size="xs"
+                            onClick={() => handleAddDetail(expIndex)}
+                          >
+                            <Plus className="mr-1 h-3.5 w-3.5" /> Adicionar
+                            Detalhe
+                          </Button>
+                        )}
+                      </div>
+
+                      {exp.details.map((detail, detailIndex) => (
+                        <Field key={detailIndex} className="mb-2">
+                          <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+                            <div className="flex w-full items-center justify-between sm:w-auto">
+                              <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+                                Detalhe {detailIndex + 1}
+                              </FieldLabel>
+                              {exp.details.length > 1 && (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() =>
+                                    handleRemoveDetail(expIndex, detailIndex)
+                                  }
+                                  className="h-8 w-8 sm:hidden"
+                                >
+                                  <Trash2 className="text-destructive h-4 w-4" />
+                                </Button>
+                              )}
+                            </div>
+                            <Input
+                              className="w-full flex-1"
+                              placeholder={`Coloque a descrição sobre o projeto ${detailIndex + 1}`}
+                              value={detail}
+                              onChange={(e) =>
+                                handleUpdateDetail(
+                                  expIndex,
+                                  detailIndex,
+                                  e.target.value
+                                )
+                              }
+                            />
+                            {exp.details.length > 1 && (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() =>
+                                  handleRemoveDetail(expIndex, detailIndex)
+                                }
+                                className="hidden sm:inline-flex"
+                              >
+                                <Trash2 className="text-destructive h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
+                        </Field>
+                      ))}
+                    </div>
+
+                    <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
+                      <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+                        <div>
+                          <h5 className="text-sm font-semibold">
+                            Tecnologias (Stacks)
+                          </h5>
+                          <p className="text-muted-foreground text-xs">
+                            Atualmente usando: {exp.stacks.length} tecnologia(s)
+                          </p>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="xs"
+                          onClick={() => handleAddStack(expIndex)}
+                        >
+                          <Plus className="mr-1 h-3.5 w-3.5" /> Adicionar Stack
+                        </Button>
+                      </div>
+
+                      {exp.stacks.map((stack, stackIndex) => (
+                        <Field key={stackIndex} className="mb-2">
+                          <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+                            <div className="flex w-full items-center justify-between sm:w-auto">
+                              <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+                                Stack {stackIndex + 1}
+                              </FieldLabel>
+                              {exp.stacks.length > 1 && (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() =>
+                                    handleRemoveStack(expIndex, stackIndex)
+                                  }
+                                  className="h-8 w-8 sm:hidden"
+                                >
+                                  <Trash2 className="text-destructive h-4 w-4" />
+                                </Button>
+                              )}
+                            </div>
+                            <Input
+                              className="w-full flex-1"
+                              placeholder="Ex: React, Node.js, TypeScript"
+                              value={stack}
+                              onChange={(e) =>
+                                handleUpdateStack(
+                                  expIndex,
+                                  stackIndex,
+                                  e.target.value
+                                )
+                              }
+                            />
+                            {exp.stacks.length > 1 && (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() =>
+                                  handleRemoveStack(expIndex, stackIndex)
+                                }
+                                className="hidden sm:inline-flex"
+                              >
+                                <Trash2 className="text-destructive h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
+                        </Field>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -832,9 +1035,25 @@ export default function ResumeBuilderPage() {
                 <CardTitle className="text-lg">
                   ATS Optimization Feedbacks
                 </CardTitle>
-                {isLoadingAnalysis && (
-                  <Loader2 className="text-primary h-5 w-5 animate-spin" />
-                )}
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={triggerAnalysis}
+                    disabled={isLoadingAnalysis}
+                    className="text-muted-foreground hover:text-foreground h-8 w-8"
+                  >
+                    <RefreshCw
+                      className={cn(
+                        "h-4 w-4",
+                        isLoadingAnalysis && "animate-spin"
+                      )}
+                    />
+                  </Button>
+                  {isLoadingAnalysis && (
+                    <Loader2 className="text-primary h-5 w-5 animate-spin" />
+                  )}
+                </div>
               </div>
               <CardDescription>
                 Analise os diagnósticos e ajuste o formulário ao lado
