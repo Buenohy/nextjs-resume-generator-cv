@@ -9,7 +9,7 @@ export default function BuilderLayout({
 }) {
   return (
     <div className="bg-muted/30 min-h-screen pt-8 pb-12">
-      <div className="mx-auto max-w-5xl sm:px-6">
+      <div className="max-w-8xl mx-auto sm:px-6">
         <div className="mb-8 flex flex-col gap-2">
           <h1 className="text-foreground text-3xl font-bold tracking-tight">
             Gerador de Currículo ATS
