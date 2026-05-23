@@ -21,11 +21,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowUpDownIcon } from "@hugeicons/core-free-icons";
 
-import {
-  useResumeStore,
-  ExperienceState,
-  KeywordData,
-} from "@/store/useResumeStore";
+import { useResumeStore, ExperienceState } from "@/store/useResumeStore";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,7 +31,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -49,7 +44,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import ButtonPaginate from "@/components/button-paginate";
+import { cn } from "@/lib/utils";
 
 interface FormField {
   id: string;
@@ -62,6 +57,15 @@ interface FormSection {
   title: string;
   subTitle: string;
   fields: FormField[];
+}
+
+export interface KeywordData {
+  id: string;
+  keyword: string;
+  inVacancy: number;
+  goal2x: number;
+  onResume: number;
+  status: "Pendente" | "Aprovado";
 }
 
 const STATIC_SECTIONS: FormSection[] = [
