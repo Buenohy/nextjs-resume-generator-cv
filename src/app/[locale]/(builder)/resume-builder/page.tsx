@@ -1069,10 +1069,10 @@ export default function ResumeBuilderPage() {
                   </div>
 
                   <div className="bg-card space-y-2 rounded-lg border p-4">
-                    <h3 className="font-semibold text-rose-500">
+                    <h3 className="text-destructive font-semibold">
                       Palavras Suspeitas Detectadas:
                     </h3>
-                    <p className="w-fit rounded bg-rose-500/10 px-3 py-1.5 font-bold text-rose-500">
+                    <p className="text-destructive w-fit rounded px-3 py-1.5 font-bold">
                       todo, url
                     </p>
                   </div>
