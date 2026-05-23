@@ -497,7 +497,7 @@ export default function ResumeBuilderPage() {
                   <div className="flex w-full flex-col gap-4">
                     <Textarea
                       placeholder="Coloque o seu resumo profissional"
-                      className="min-h-[120px]"
+                      className="sm:min-h-30 xl:min-h-60"
                     />
                   </div>
                 </Field>

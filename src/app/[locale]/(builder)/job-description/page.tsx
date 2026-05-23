@@ -23,7 +23,10 @@ export default function JobDescriptionPage() {
           <CardDescription>Coloque os detalhes da vaga abaixo</CardDescription>
         </CardHeader>
         <CardContent>
-          <Textarea placeholder="Cole a descrição completa da vaga do Wellfound aqui..." />
+          <Textarea
+            placeholder="Cole a descrição completa da vaga do Wellfound aqui..."
+            className="sm:min-h-30 xl:min-h-60"
+          />
         </CardContent>
         <CardFooter className="flex flex-col gap-6">
           <div className="flex w-full justify-center">

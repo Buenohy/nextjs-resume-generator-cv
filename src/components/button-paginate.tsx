@@ -9,10 +9,7 @@ import { Button } from "@/components/ui/button";
 const STEPS = [
   { id: 1, title: "Vaga", path: "/job-description" },
   { id: 2, title: "Currículo", path: "/resume-builder" },
-  { id: 3, title: "Análise", path: "/job-parse" },
-  { id: 4, title: "Match ATS", path: "/match-ats" },
-  { id: 5, title: "Otimizar", path: "/optimizing-resume" },
-  { id: 6, title: "Exportar PDF", path: "/pdf-preview" },
+  { id: 3, title: "Análise", path: "/pdf-preview" },
 ];
 
 export default function ButtonPaginate() {
