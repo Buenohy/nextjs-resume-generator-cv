@@ -1,4 +1,5 @@
 "use client";
+"use no memo";
 
 import { useState, useEffect } from "react";
 import {
@@ -68,6 +69,8 @@ export interface KeywordData {
   onResume: number;
   status: "Pendente" | "Aprovado";
 }
+
+const EMPTY_KEYWORDS: KeywordData[] = [];
 
 const STATIC_SECTIONS: FormSection[] = [
   {
@@ -293,7 +296,7 @@ export default function ResumeBuilderPage() {
   const isLoadingAnalysis = useResumeStore((state) => state.isLoadingAnalysis);
   const triggerAnalysis = useResumeStore((state) => state.triggerAnalysis);
 
-  const keywordsTableData = analysisResults?.keywordsTable || [];
+  const keywordsTableData = analysisResults?.keywordsTable || EMPTY_KEYWORDS;
 
   const table = useReactTable({
     data: keywordsTableData,
