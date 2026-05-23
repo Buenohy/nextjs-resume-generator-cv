@@ -854,10 +854,6 @@ export default function ResumeBuilderPage() {
                 ))}
               </div>
             </CardContent>
-
-            <CardFooter className="flex flex-col gap-6 pt-6">
-              <ButtonPaginate />
-            </CardFooter>
           </Card>
         </div>
 

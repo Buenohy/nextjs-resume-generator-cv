@@ -1,5 +1,6 @@
+import ButtonPaginate from "@/components/button-paginate";
 import { Stepper } from "@/components/stepper";
-import { Card } from "@/components/ui/card";
+import { Card, CardFooter } from "@/components/ui/card";
 
 export default function BuilderLayout({
   children,
@@ -23,8 +24,11 @@ export default function BuilderLayout({
           <Stepper />
         </div>
 
-        <Card className="border-muted bg-background shadow-primary/5 p-0 shadow-lg">
+        <Card className="border-muted bg-background shadow-primary/5 p-3 shadow-lg sm:p-6">
           {children}
+          <CardFooter className="flex flex-col gap-6">
+            <ButtonPaginate />
+          </CardFooter>
         </Card>
       </div>
     </div>
