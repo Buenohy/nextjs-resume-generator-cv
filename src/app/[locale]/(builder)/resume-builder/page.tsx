@@ -346,6 +346,11 @@ export default function ResumeBuilderPage() {
     });
   };
 
+  const handleAutoResize = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    e.target.style.height = "auto";
+    e.target.style.height = `${e.target.scrollHeight}px`;
+  };
+
   const handleAddListItem = (
     key: "skills" | "education" | "certifications" | "languages"
   ) => {
@@ -491,18 +496,38 @@ export default function ResumeBuilderPage() {
                         <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
                           {label}
                         </FieldLabel>
-                        <Input
-                          className="w-full flex-1"
-                          placeholder={placeholder}
-                          value={getFieldValue(section.id, fieldId)}
-                          onChange={(e) =>
-                            handleFieldChange(
-                              section.id,
-                              fieldId,
-                              e.target.value
-                            )
-                          }
-                        />
+                        {section.id === "meta_ats" &&
+                        (fieldId === "subject" ||
+                          fieldId === "keywords" ||
+                          fieldId === "rights") ? (
+                          <Textarea
+                            className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
+                            rows={1}
+                            placeholder={placeholder}
+                            value={getFieldValue(section.id, fieldId)}
+                            onChange={(e) => {
+                              handleAutoResize(e);
+                              handleFieldChange(
+                                section.id,
+                                fieldId,
+                                e.target.value
+                              );
+                            }}
+                          />
+                        ) : (
+                          <Input
+                            className="w-full flex-1"
+                            placeholder={placeholder}
+                            value={getFieldValue(section.id, fieldId)}
+                            onChange={(e) =>
+                              handleFieldChange(
+                                section.id,
+                                fieldId,
+                                e.target.value
+                              )
+                            }
+                          />
+                        )}
                       </div>
                     </Field>
                   ))}
@@ -527,12 +552,13 @@ export default function ResumeBuilderPage() {
                     <Textarea
                       placeholder="Coloque o seu resumo profissional"
                       value={cvData.summary}
-                      onChange={(e) =>
+                      onChange={(e) => {
+                        handleAutoResize(e);
                         updateCvData((draft) => {
                           draft.summary = e.target.value;
-                        })
-                      }
-                      className="sm:min-h-30 xl:min-h-60"
+                        });
+                      }}
+                      className="min-h-[120px] resize-none overflow-hidden"
                     />
                   </div>
                 </Field>
@@ -578,13 +604,15 @@ export default function ResumeBuilderPage() {
                           </Button>
                         )}
                       </div>
-                      <Input
-                        className="w-full flex-1"
+                      <Textarea
+                        className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
+                        rows={1}
                         placeholder="Coloque uma habilidade"
                         value={skill}
-                        onChange={(e) =>
-                          handleUpdateListItem("skills", index, e.target.value)
-                        }
+                        onChange={(e) => {
+                          handleAutoResize(e);
+                          handleUpdateListItem("skills", index, e.target.value);
+                        }}
                       />
                       {cvData.skills.length > 1 && (
                         <Button
@@ -599,6 +627,16 @@ export default function ResumeBuilderPage() {
                     </div>
                   </Field>
                 ))}
+                <div className="mt-2 flex justify-end">
+                  <Button
+                    variant="outline"
+                    size="xs"
+                    onClick={() => handleAddListItem("skills")}
+                    className="gap-1 text-xs"
+                  >
+                    <Plus className="h-3.5 w-3.5" /> Adicionar Habilidade
+                  </Button>
+                </div>
               </div>
             </CardContent>
 
@@ -724,17 +762,19 @@ export default function ResumeBuilderPage() {
                                 </Button>
                               )}
                             </div>
-                            <Input
-                              className="w-full flex-1"
+                            <Textarea
+                              className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
+                              rows={1}
                               placeholder={`Coloque a descrição sobre o projeto ${detailIndex + 1}`}
                               value={detail}
-                              onChange={(e) =>
+                              onChange={(e) => {
+                                handleAutoResize(e);
                                 handleUpdateDetail(
                                   expIndex,
                                   detailIndex,
                                   e.target.value
-                                )
-                              }
+                                );
+                              }}
                             />
                             {exp.details.length > 1 && (
                               <Button
@@ -792,17 +832,19 @@ export default function ResumeBuilderPage() {
                                 </Button>
                               )}
                             </div>
-                            <Input
-                              className="w-full flex-1"
+                            <Textarea
+                              className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
+                              rows={1}
                               placeholder="Ex: React, Node.js, TypeScript"
                               value={stack}
-                              onChange={(e) =>
+                              onChange={(e) => {
+                                handleAutoResize(e);
                                 handleUpdateStack(
                                   expIndex,
                                   stackIndex,
                                   e.target.value
-                                )
-                              }
+                                );
+                              }}
                             />
                             {exp.stacks.length > 1 && (
                               <Button
@@ -819,6 +861,16 @@ export default function ResumeBuilderPage() {
                           </div>
                         </Field>
                       ))}
+                      <div className="mt-2 flex justify-end">
+                        <Button
+                          variant="outline"
+                          size="xs"
+                          onClick={() => handleAddStack(expIndex)}
+                          className="gap-1 text-xs"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Adicionar Stack
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -862,17 +914,19 @@ export default function ResumeBuilderPage() {
                           </Button>
                         )}
                       </div>
-                      <Input
-                        className="w-full flex-1"
+                      <Textarea
+                        className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
+                        rows={1}
                         placeholder="Coloque a sua formação"
                         value={edu}
-                        onChange={(e) =>
+                        onChange={(e) => {
+                          handleAutoResize(e);
                           handleUpdateListItem(
                             "education",
                             index,
                             e.target.value
-                          )
-                        }
+                          );
+                        }}
                       />
                       {cvData.education.length > 1 && (
                         <Button
@@ -889,6 +943,16 @@ export default function ResumeBuilderPage() {
                     </div>
                   </Field>
                 ))}
+                <div className="mt-2 flex justify-end">
+                  <Button
+                    variant="outline"
+                    size="xs"
+                    onClick={() => handleAddListItem("education")}
+                    className="gap-1 text-xs"
+                  >
+                    <Plus className="h-3.5 w-3.5" /> Adicionar Formação
+                  </Button>
+                </div>
               </div>
             </CardContent>
 
@@ -929,17 +993,19 @@ export default function ResumeBuilderPage() {
                           </Button>
                         )}
                       </div>
-                      <Input
-                        className="w-full flex-1"
+                      <Textarea
+                        className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
+                        rows={1}
                         placeholder="Coloque o nome da sua certificação"
                         value={cert}
-                        onChange={(e) =>
+                        onChange={(e) => {
+                          handleAutoResize(e);
                           handleUpdateListItem(
                             "certifications",
                             index,
                             e.target.value
-                          )
-                        }
+                          );
+                        }}
                       />
                       {cvData.certifications.length > 1 && (
                         <Button
@@ -956,6 +1022,16 @@ export default function ResumeBuilderPage() {
                     </div>
                   </Field>
                 ))}
+                <div className="mt-2 flex justify-end">
+                  <Button
+                    variant="outline"
+                    size="xs"
+                    onClick={() => handleAddListItem("certifications")}
+                    className="gap-1 text-xs"
+                  >
+                    <Plus className="h-3.5 w-3.5" /> Adicionar Certificação
+                  </Button>
+                </div>
               </div>
             </CardContent>
 
@@ -996,17 +1072,19 @@ export default function ResumeBuilderPage() {
                           </Button>
                         )}
                       </div>
-                      <Input
-                        className="w-full flex-1"
+                      <Textarea
+                        className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
+                        rows={1}
                         placeholder="Coloque um idioma"
                         value={lang}
-                        onChange={(e) =>
+                        onChange={(e) => {
+                          handleAutoResize(e);
                           handleUpdateListItem(
                             "languages",
                             index,
                             e.target.value
-                          )
-                        }
+                          );
+                        }}
                       />
                       {cvData.languages.length > 1 && (
                         <Button
@@ -1023,6 +1101,16 @@ export default function ResumeBuilderPage() {
                     </div>
                   </Field>
                 ))}
+                <div className="mt-2 flex justify-end">
+                  <Button
+                    variant="outline"
+                    size="xs"
+                    onClick={() => handleAddListItem("languages")}
+                    className="gap-1 text-xs"
+                  >
+                    <Plus className="h-3.5 w-3.5" /> Adicionar Idioma
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -1322,5 +1410,5 @@ function analysisRoleValidationText(isMismatch: boolean, role: string) {
   if (isMismatch) {
     return `Atenção: O cargo '${role || "não informado"}' informado no formulário não parece estar relacionado à descrição da vaga.`;
   }
-  return `Sucesso! O cargo '${role}' está perfeitamente alinhado com a descrição da vaga analisada.`;
+  return `Sucesso! O cargo '${role}' está perfeitamente alinuado com a descrição da vaga analisada.`;
 }
