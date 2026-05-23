@@ -32,7 +32,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -46,7 +45,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import ButtonPaginate from "@/components/button-paginate";
 import { cn } from "@/lib/utils";
 
 interface FormField {
