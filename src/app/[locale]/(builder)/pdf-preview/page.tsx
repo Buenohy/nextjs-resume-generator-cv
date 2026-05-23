@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useResumeStore } from "@/store/useResumeStore";
 import {
   Card,
@@ -15,15 +15,67 @@ import { Button } from "@/components/ui/button";
 import { Resume } from "@/components/resume";
 import { Printer, Loader2 } from "lucide-react";
 import ButtonPaginate from "@/components/button-paginate";
-import { PDFViewer, PDFDownloadLink } from "@react-pdf/renderer";
+import dynamic from "next/dynamic";
+
+const PDFViewer = dynamic(
+  () => import("@react-pdf/renderer").then((m) => m.PDFViewer),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-full min-h-[400px] w-full items-center justify-center">
+        <Loader2 className="text-primary h-8 w-8 animate-spin" />
+      </div>
+    ),
+  }
+);
+
+const PDFDownloadLink = dynamic(
+  () => import("@react-pdf/renderer").then((m) => m.PDFDownloadLink),
+  { ssr: false }
+);
 
 export default function PdfPreviewPage() {
   const cvData = useResumeStore((state) => state.cvData);
-  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
+    const meta = cvData.meta_ats || {};
+    const prevTitle = document.title;
+
+    document.title = `${meta.role_target || "Resume"} - ${cvData.info.name || "Gabriel Bueno"}`;
+
+    const createdMetaTags: HTMLMetaElement[] = [];
+    const metaMappings = [
+      { name: "keywords", content: meta.keywords },
+      { name: "subject", content: meta.subject },
+      { name: "author", content: meta.contributor },
+      { name: "rights", content: meta.rights },
+      { name: "coverage", content: meta.coverage },
+      { name: "identifier", content: meta.identifier },
+      { name: "publisher", content: meta.publisher },
+      { name: "relation", content: meta.relation },
+      { name: "source", content: meta.source },
+      { name: "type", content: meta.type },
+    ];
+
+    metaMappings.forEach(({ name, content }) => {
+      if (content) {
+        const metaTag = document.createElement("meta");
+        metaTag.name = name;
+        metaTag.content = content;
+        document.head.appendChild(metaTag);
+        createdMetaTags.push(metaTag);
+      }
+    });
+
+    return () => {
+      document.title = prevTitle;
+      createdMetaTags.forEach((tag) => {
+        if (document.head.contains(tag)) {
+          document.head.removeChild(tag);
+        }
+      });
+    };
+  }, [cvData]);
 
   const infoProp = {
     name: cvData.info.name,
@@ -64,14 +116,6 @@ export default function PdfPreviewPage() {
   );
 
   const formattedFileName = `CV_${(cvData.info.name || "Resume").replace(/\s+/g, "_")}.pdf`;
-
-  if (!isClient) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className="text-primary h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
 
   return (
     <div className="container mx-auto min-h-screen p-3 sm:p-6">
