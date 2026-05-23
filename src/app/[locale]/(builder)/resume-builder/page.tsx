@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Plus,
   Trash2,
   ShieldAlert,
   TableProperties,
   Sparkles,
+  Loader2,
 } from "lucide-react";
 import {
   useReactTable,
@@ -19,6 +20,12 @@ import {
 } from "@tanstack/react-table";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowUpDownIcon } from "@hugeicons/core-free-icons";
+
+import {
+  useResumeStore,
+  ExperienceState,
+  KeywordData,
+} from "@/store/useResumeStore";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -55,24 +62,6 @@ interface FormSection {
   title: string;
   subTitle: string;
   fields: FormField[];
-}
-
-interface ExperienceState {
-  role: string;
-  company: string;
-  url: string;
-  date: string;
-  details: string[];
-  stacks: string[];
-}
-
-export interface KeywordData {
-  id: string;
-  keyword: string;
-  inVacancy: number;
-  goal2x: number;
-  onResume: number;
-  status: "Pendente" | "Aprovado";
 }
 
 const STATIC_SECTIONS: FormSection[] = [
@@ -210,81 +199,6 @@ const BASE_EXPERIENCE_FIELDS: FormField[] = [
   },
 ];
 
-const mockKeywordData: KeywordData[] = [
-  {
-    id: "1",
-    keyword: "API",
-    inVacancy: 3,
-    goal2x: 6,
-    onResume: 5,
-    status: "Pendente",
-  },
-  {
-    id: "2",
-    keyword: "REACT",
-    inVacancy: 2,
-    goal2x: 4,
-    onResume: 21,
-    status: "Aprovado",
-  },
-  {
-    id: "3",
-    keyword: "NEXT.JS",
-    inVacancy: 2,
-    goal2x: 4,
-    onResume: 3,
-    status: "Pendente",
-  },
-  {
-    id: "4",
-    keyword: "TAILWIND",
-    inVacancy: 2,
-    goal2x: 4,
-    onResume: 8,
-    status: "Aprovado",
-  },
-  {
-    id: "5",
-    keyword: "CSS",
-    inVacancy: 2,
-    goal2x: 4,
-    onResume: 11,
-    status: "Aprovado",
-  },
-  {
-    id: "6",
-    keyword: "TYPESCRIPT",
-    inVacancy: 1,
-    goal2x: 2,
-    onResume: 6,
-    status: "Aprovado",
-  },
-  {
-    id: "7",
-    keyword: "FULLSTACK",
-    inVacancy: 1,
-    goal2x: 2,
-    onResume: 0,
-    status: "Pendente",
-  },
-  {
-    id: "8",
-    keyword: "ENGINEER",
-    inVacancy: 1,
-    goal2x: 2,
-    onResume: 0,
-    status: "Pendente",
-  },
-  {
-    id: "9",
-    keyword: "FRONTEND",
-    inVacancy: 1,
-    goal2x: 2,
-    onResume: 6,
-    status: "Aprovado",
-  },
-];
-
 const SortableHeader = ({
   column,
   title,
@@ -367,16 +281,17 @@ export default function ResumeBuilderPage() {
     "parse"
   );
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [skills, setSkills] = useState<string[]>([""]);
-  const [education, setEducation] = useState<string[]>([""]);
-  const [certifications, setCertifications] = useState<string[]>([""]);
-  const [languages, setLanguages] = useState<string[]>([""]);
-  const [experiences, setExperiences] = useState<ExperienceState[]>([
-    { role: "", company: "", url: "", date: "", details: [""], stacks: [""] },
-  ]);
+
+  const cvData = useResumeStore((state) => state.cvData);
+  const updateCvData = useResumeStore((state) => state.updateCvData);
+  const analysisResults = useResumeStore((state) => state.analysisResults);
+  const isLoadingAnalysis = useResumeStore((state) => state.isLoadingAnalysis);
+  const triggerAnalysis = useResumeStore((state) => state.triggerAnalysis);
+
+  const keywordsTableData = analysisResults?.keywordsTable || [];
 
   const table = useReactTable({
-    data: mockKeywordData,
+    data: keywordsTableData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
@@ -384,61 +299,106 @@ export default function ResumeBuilderPage() {
     state: { sorting },
   });
 
-  const totalPendente = mockKeywordData.filter(
+  const totalPendente = keywordsTableData.filter(
     (item) => item.status === "Pendente"
   ).length;
-  const totalAprovado = mockKeywordData.filter(
+  const totalAprovado = keywordsTableData.filter(
     (item) => item.status === "Aprovado"
   ).length;
 
-  const handleAddListItem = (
-    list: string[],
-    setList: React.Dispatch<React.SetStateAction<string[]>>
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      triggerAnalysis();
+    }, 1500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [cvData, triggerAnalysis]);
+
+  const getFieldValue = (sectionId: string, fieldId: string) => {
+    if (sectionId === "header")
+      return cvData.info[fieldId as keyof typeof cvData.info] || "";
+    if (sectionId === "meta_ats")
+      return cvData.meta_ats[fieldId as keyof typeof cvData.meta_ats] || "";
+    if (sectionId === "links")
+      return cvData.links[fieldId as keyof typeof cvData.links] || "";
+    return "";
+  };
+
+  const handleFieldChange = (
+    sectionId: string,
+    fieldId: string,
+    value: string
   ) => {
-    setList([...list, ""]);
+    updateCvData((draft) => {
+      if (sectionId === "header")
+        draft.info[fieldId as keyof typeof draft.info] = value;
+      if (sectionId === "meta_ats")
+        draft.meta_ats[fieldId as keyof typeof draft.meta_ats] = value;
+      if (sectionId === "links")
+        draft.links[fieldId as keyof typeof draft.links] = value;
+    });
+  };
+
+  const handleAddListItem = (
+    key: "skills" | "education" | "certifications" | "languages"
+  ) => {
+    updateCvData((draft) => {
+      draft[key].push("");
+    });
   };
 
   const handleRemoveListItem = (
-    index: number,
-    list: string[],
-    setList: React.Dispatch<React.SetStateAction<string[]>>
+    key: "skills" | "education" | "certifications" | "languages",
+    index: number
   ) => {
-    if (list.length > 1) {
-      setList(list.filter((_, i) => i !== index));
-    }
+    updateCvData((draft) => {
+      if (draft[key].length > 1) {
+        draft[key] = draft[key].filter((_, i) => i !== index);
+      }
+    });
   };
 
   const handleUpdateListItem = (
+    key: "skills" | "education" | "certifications" | "languages",
     index: number,
-    value: string,
-    list: string[],
-    setList: React.Dispatch<React.SetStateAction<string[]>>
+    value: string
   ) => {
-    const newList = [...list];
-    newList[index] = value;
-    setList(newList);
+    updateCvData((draft) => {
+      draft[key][index] = value;
+    });
   };
 
   const handleAddExperience = () => {
-    if (experiences.length < 4) {
-      setExperiences([
-        ...experiences,
-        {
+    updateCvData((draft) => {
+      if (draft.experiences.length < 4) {
+        draft.experiences.push({
           role: "",
           company: "",
           url: "",
           date: "",
           details: [""],
           stacks: [""],
-        },
-      ]);
-    }
+        });
+      }
+    });
   };
 
   const handleRemoveExperience = (index: number) => {
-    if (experiences.length > 1) {
-      setExperiences(experiences.filter((_, i) => i !== index));
-    }
+    updateCvData((draft) => {
+      if (draft.experiences.length > 1) {
+        draft.experiences = draft.experiences.filter((_, i) => i !== index);
+      }
+    });
+  };
+
+  const handleUpdateExperienceField = (
+    index: number,
+    fieldId: keyof Omit<ExperienceState, "details" | "stacks">,
+    value: string
+  ) => {
+    updateCvData((draft) => {
+      draft.experiences[index][fieldId] = value;
+    });
   };
 
   return (
@@ -473,6 +433,14 @@ export default function ResumeBuilderPage() {
                         <Input
                           className="w-full flex-1"
                           placeholder={placeholder}
+                          value={getFieldValue(section.id, fieldId)}
+                          onChange={(e) =>
+                            handleFieldChange(
+                              section.id,
+                              fieldId,
+                              e.target.value
+                            )
+                          }
                         />
                       </div>
                     </Field>
@@ -497,6 +465,12 @@ export default function ResumeBuilderPage() {
                   <div className="flex w-full flex-col gap-4">
                     <Textarea
                       placeholder="Coloque o seu resumo profissional"
+                      value={cvData.summary}
+                      onChange={(e) =>
+                        updateCvData((draft) => {
+                          draft.summary = e.target.value;
+                        })
+                      }
                       className="sm:min-h-30 xl:min-h-60"
                     />
                   </div>
@@ -516,24 +490,24 @@ export default function ResumeBuilderPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => handleAddListItem(skills, setSkills)}
+                    onClick={() => handleAddListItem("skills")}
                   >
                     <Plus className="mr-2 h-4 w-4" /> Adicionar Habilidade
                   </Button>
                 </div>
-                {skills.map((skill, index) => (
+                {cvData.skills.map((skill, index) => (
                   <Field key={index} className="mb-2">
                     <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
                       <div className="flex w-full items-center justify-between sm:w-auto">
                         <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
                           Skill {index + 1}
                         </FieldLabel>
-                        {skills.length > 1 && (
+                        {cvData.skills.length > 1 && (
                           <Button
                             variant="ghost"
                             size="icon"
                             onClick={() =>
-                              handleRemoveListItem(index, skills, setSkills)
+                              handleRemoveListItem("skills", index)
                             }
                             className="h-8 w-8 sm:hidden"
                           >
@@ -546,21 +520,14 @@ export default function ResumeBuilderPage() {
                         placeholder="Coloque uma habilidade"
                         value={skill}
                         onChange={(e) =>
-                          handleUpdateListItem(
-                            index,
-                            e.target.value,
-                            skills,
-                            setSkills
-                          )
+                          handleUpdateListItem("skills", index, e.target.value)
                         }
                       />
-                      {skills.length > 1 && (
+                      {cvData.skills.length > 1 && (
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() =>
-                            handleRemoveListItem(index, skills, setSkills)
-                          }
+                          onClick={() => handleRemoveListItem("skills", index)}
                           className="hidden sm:inline-flex"
                         >
                           <Trash2 className="text-destructive h-4 w-4" />
@@ -583,7 +550,7 @@ export default function ResumeBuilderPage() {
                       Cadastre suas experiências de atuação
                     </h3>
                   </div>
-                  {experiences.length < 4 && (
+                  {cvData.experiences.length < 4 && (
                     <Button
                       variant="outline"
                       size="sm"
@@ -593,7 +560,7 @@ export default function ResumeBuilderPage() {
                     </Button>
                   )}
                 </div>
-                {experiences.map((exp, expIndex) => (
+                {cvData.experiences.map((exp, expIndex) => (
                   <div
                     key={expIndex}
                     className="flex flex-col gap-6 border-b pt-4 pb-8 last:border-0 last:pb-0"
@@ -602,7 +569,7 @@ export default function ResumeBuilderPage() {
                       <h4 className="text-lg font-semibold">
                         Experiência {expIndex + 1}
                       </h4>
-                      {experiences.length > 1 && (
+                      {cvData.experiences.length > 1 && (
                         <Button
                           variant="ghost"
                           size="sm"
@@ -623,6 +590,24 @@ export default function ResumeBuilderPage() {
                             <Input
                               className="w-full flex-1"
                               placeholder={placeholder}
+                              value={
+                                exp[
+                                  fieldId as keyof Omit<
+                                    ExperienceState,
+                                    "details" | "stacks"
+                                  >
+                                ] || ""
+                              }
+                              onChange={(e) =>
+                                handleUpdateExperienceField(
+                                  expIndex,
+                                  fieldId as keyof Omit<
+                                    ExperienceState,
+                                    "details" | "stacks"
+                                  >,
+                                  e.target.value
+                                )
+                              }
                             />
                           </div>
                         </Field>
@@ -645,28 +630,24 @@ export default function ResumeBuilderPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => handleAddListItem(education, setEducation)}
+                    onClick={() => handleAddListItem("education")}
                   >
                     <Plus className="mr-2 h-4 w-4" /> Adicionar Formação
                   </Button>
                 </div>
-                {education.map((edu, index) => (
+                {cvData.education.map((edu, index) => (
                   <Field key={index} className="mb-2">
                     <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
                       <div className="flex w-full items-center justify-between sm:w-auto">
                         <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
                           Educação {index + 1}
                         </FieldLabel>
-                        {education.length > 1 && (
+                        {cvData.education.length > 1 && (
                           <Button
                             variant="ghost"
                             size="icon"
                             onClick={() =>
-                              handleRemoveListItem(
-                                index,
-                                education,
-                                setEducation
-                              )
+                              handleRemoveListItem("education", index)
                             }
                             className="h-8 w-8 sm:hidden"
                           >
@@ -680,19 +661,18 @@ export default function ResumeBuilderPage() {
                         value={edu}
                         onChange={(e) =>
                           handleUpdateListItem(
+                            "education",
                             index,
-                            e.target.value,
-                            education,
-                            setEducation
+                            e.target.value
                           )
                         }
                       />
-                      {education.length > 1 && (
+                      {cvData.education.length > 1 && (
                         <Button
                           variant="ghost"
                           size="icon"
                           onClick={() =>
-                            handleRemoveListItem(index, education, setEducation)
+                            handleRemoveListItem("education", index)
                           }
                           className="hidden sm:inline-flex"
                         >
@@ -717,30 +697,24 @@ export default function ResumeBuilderPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() =>
-                      handleAddListItem(certifications, setCertifications)
-                    }
+                    onClick={() => handleAddListItem("certifications")}
                   >
                     <Plus className="mr-2 h-4 w-4" /> Adicionar Certificação
                   </Button>
                 </div>
-                {certifications.map((cert, index) => (
+                {cvData.certifications.map((cert, index) => (
                   <Field key={index} className="mb-2">
                     <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
                       <div className="flex w-full items-center justify-between sm:w-auto">
                         <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
                           Certificado {index + 1}
                         </FieldLabel>
-                        {certifications.length > 1 && (
+                        {cvData.certifications.length > 1 && (
                           <Button
                             variant="ghost"
                             size="icon"
                             onClick={() =>
-                              handleRemoveListItem(
-                                index,
-                                certifications,
-                                setCertifications
-                              )
+                              handleRemoveListItem("certifications", index)
                             }
                             className="h-8 w-8 sm:hidden"
                           >
@@ -754,23 +728,18 @@ export default function ResumeBuilderPage() {
                         value={cert}
                         onChange={(e) =>
                           handleUpdateListItem(
+                            "certifications",
                             index,
-                            e.target.value,
-                            certifications,
-                            setCertifications
+                            e.target.value
                           )
                         }
                       />
-                      {certifications.length > 1 && (
+                      {cvData.certifications.length > 1 && (
                         <Button
                           variant="ghost"
                           size="icon"
                           onClick={() =>
-                            handleRemoveListItem(
-                              index,
-                              certifications,
-                              setCertifications
-                            )
+                            handleRemoveListItem("certifications", index)
                           }
                           className="hidden sm:inline-flex"
                         >
@@ -795,28 +764,24 @@ export default function ResumeBuilderPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => handleAddListItem(languages, setLanguages)}
+                    onClick={() => handleAddListItem("languages")}
                   >
                     <Plus className="mr-2 h-4 w-4" /> Adicionar Idioma
                   </Button>
                 </div>
-                {languages.map((lang, index) => (
+                {cvData.languages.map((lang, index) => (
                   <Field key={index} className="mb-2">
                     <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
                       <div className="flex w-full items-center justify-between sm:w-auto">
                         <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
                           Idioma {index + 1}
                         </FieldLabel>
-                        {languages.length > 1 && (
+                        {cvData.languages.length > 1 && (
                           <Button
                             variant="ghost"
                             size="icon"
                             onClick={() =>
-                              handleRemoveListItem(
-                                index,
-                                languages,
-                                setLanguages
-                              )
+                              handleRemoveListItem("languages", index)
                             }
                             className="h-8 w-8 sm:hidden"
                           >
@@ -830,19 +795,18 @@ export default function ResumeBuilderPage() {
                         value={lang}
                         onChange={(e) =>
                           handleUpdateListItem(
+                            "languages",
                             index,
-                            e.target.value,
-                            languages,
-                            setLanguages
+                            e.target.value
                           )
                         }
                       />
-                      {languages.length > 1 && (
+                      {cvData.languages.length > 1 && (
                         <Button
                           variant="ghost"
                           size="icon"
                           onClick={() =>
-                            handleRemoveListItem(index, languages, setLanguages)
+                            handleRemoveListItem("languages", index)
                           }
                           className="hidden sm:inline-flex"
                         >
@@ -859,10 +823,15 @@ export default function ResumeBuilderPage() {
 
         <div className="space-y-6 lg:sticky lg:top-5 lg:col-span-5">
           <Card className="border-muted shadow-primary/50 shadow-lg">
-            <CardHeader className="border-b pb-3">
-              <CardTitle className="text-lg">
-                ATS Optimization Feedbacks
-              </CardTitle>
+            <CardHeader className="relative border-b pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg">
+                  ATS Optimization Feedbacks
+                </CardTitle>
+                {isLoadingAnalysis && (
+                  <Loader2 className="text-primary h-5 w-5 animate-spin" />
+                )}
+              </div>
               <CardDescription>
                 Analise os diagnósticos e ajuste o formulário ao lado
               </CardDescription>
@@ -898,185 +867,225 @@ export default function ResumeBuilderPage() {
             </CardHeader>
 
             <CardContent className="min-h-[400px] pt-6">
-              {activeTab === "parse" && (
-                <div className="flex flex-col gap-5 text-sm">
-                  <div className="bg-card space-y-4 rounded-lg border p-4">
-                    <h3 className="flex items-center gap-2 font-semibold text-rose-500">
-                      ⚠️ Inconsistências Detectadas
-                    </h3>
-                    <div className="space-y-3">
-                      <div>
-                        <p className="text-muted-foreground font-semibold">
-                          Keywords ausentes na vaga:
-                        </p>
-                        <Textarea
-                          readonly
-                          value="angular, wordpress, landing pages"
-                          className="bg-muted/50 mt-1.5 min-h-[60px] text-xs"
-                        />
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground font-semibold">
-                          Role target não encontrado:
-                        </p>
-                        <Textarea
-                          readonly
-                          value="desenvolvedor frontend"
-                          className="bg-muted/50 mt-1.5 min-h-[40px] text-xs"
-                        />
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground font-semibold">
-                          Palavras do subject ausentes:
-                        </p>
-                        <Textarea
-                          readonly
-                          value="desenvolvedor, especialista, angular, focado, criar"
-                          className="bg-muted/50 mt-1.5 min-h-[60px] text-xs"
-                        />
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground font-semibold">
-                          Validação do cargo declarado:
-                        </p>
-                        <Textarea
-                          readonly
-                          value="Atenção: O cargo 'frontend developer' informado no formulário não parece estar relacionado à descrição da vaga."
-                          className="bg-muted/50 mt-1.5 min-h-[60px] text-xs text-rose-500"
-                        />
+              {!analysisResults ? (
+                <div className="text-muted-foreground flex min-h-[300px] flex-col items-center justify-center gap-2 text-center text-sm">
+                  <Sparkles className="text-muted/60 h-8 w-8 animate-pulse" />
+                  <p>Aguardando preenchimento para analisar...</p>
+                </div>
+              ) : (
+                <>
+                  {activeTab === "parse" && (
+                    <div className="flex flex-col gap-5 text-sm">
+                      <div className="bg-card space-y-4 rounded-lg border p-4">
+                        <h3 className="flex items-center gap-2 font-semibold text-rose-500">
+                          ⚠️ Inconsistências Detectadas
+                        </h3>
+                        <div className="space-y-3">
+                          <div>
+                            <p className="text-muted-foreground font-semibold">
+                              Keywords ausentes na vaga:
+                            </p>
+                            <Textarea
+                              readOnly
+                              value={
+                                analysisResults.warnings.keywords.join(", ") ||
+                                "Nenhuma palavra-chave ausente!"
+                              }
+                              className="bg-muted/50 mt-1.5 min-h-[60px] text-xs"
+                            />
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground font-semibold">
+                              Role target não encontrado:
+                            </p>
+                            <Textarea
+                              readOnly
+                              value={
+                                analysisResults.warnings.roleTarget ||
+                                "Divergência de cargo não detectada!"
+                              }
+                              className="bg-muted/50 mt-1.5 min-h-[40px] text-xs"
+                            />
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground font-semibold">
+                              Palavras do subject ausentes:
+                            </p>
+                            <Textarea
+                              readOnly
+                              value={
+                                analysisResults.warnings.subjectWords.join(
+                                  ", "
+                                ) || "Nenhum termo do subject ausente!"
+                              }
+                              className="bg-muted/50 mt-1.5 min-h-[60px] text-xs"
+                            />
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground font-semibold">
+                              Validação do cargo declarado:
+                            </p>
+                            <Textarea
+                              readOnly
+                              value={analysisRoleValidationText(
+                                analysisResults.warnings.infoRoleMismatch,
+                                cvData.info.role
+                              )}
+                              className={cn(
+                                "bg-muted/50 mt-1.5 min-h-[60px] text-xs",
+                                analysisResults.warnings.infoRoleMismatch
+                                  ? "text-rose-500"
+                                  : "text-emerald-500"
+                              )}
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              )}
+                  )}
 
-              {activeTab === "match" && (
-                <div className="border-muted overflow-hidden rounded-md border shadow-sm">
-                  <Table>
-                    <TableHeader>
-                      {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
-                          {headerGroup.headers.map((header) => (
-                            <TableHead key={header.id} className="pt-2 text-xs">
-                              {header.isPlaceholder
-                                ? null
-                                : flexRender(
-                                    header.column.columnDef.header,
-                                    header.getContext()
-                                  )}
-                            </TableHead>
+                  {activeTab === "match" && (
+                    <div className="border-muted overflow-hidden rounded-md border shadow-sm">
+                      <Table>
+                        <TableHeader>
+                          {table.getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id}>
+                              {headerGroup.headers.map((header) => (
+                                <TableHead
+                                  key={header.id}
+                                  className="pt-2 text-xs"
+                                >
+                                  {header.isPlaceholder
+                                    ? null
+                                    : flexRender(
+                                        header.column.columnDef.header,
+                                        header.getContext()
+                                      )}
+                                </TableHead>
+                              ))}
+                            </TableRow>
                           ))}
-                        </TableRow>
-                      ))}
-                    </TableHeader>
-                    <TableBody className="text-xs">
-                      {table.getRowModel().rows?.length ? (
-                        table.getRowModel().rows.map((row) => (
-                          <TableRow key={row.id}>
-                            {row.getVisibleCells().map((cell) => (
+                        </TableHeader>
+                        <TableBody className="text-xs">
+                          {table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map((row) => (
+                              <TableRow key={row.id}>
+                                {row.getVisibleCells().map((cell) => (
+                                  <TableCell
+                                    key={cell.id}
+                                    className="py-2 align-middle"
+                                  >
+                                    {flexRender(
+                                      cell.column.columnDef.cell,
+                                      cell.getContext()
+                                    )}
+                                  </TableCell>
+                                ))}
+                              </TableRow>
+                            ))
+                          ) : (
+                            <TableRow>
                               <TableCell
-                                key={cell.id}
-                                className="py-2 align-middle"
+                                colSpan={columns.length}
+                                className="h-24 text-center"
                               >
-                                {flexRender(
-                                  cell.column.columnDef.cell,
-                                  cell.getContext()
-                                )}
+                                Nenhum resultado.
                               </TableCell>
-                            ))}
+                            </TableRow>
+                          )}
+                        </TableBody>
+                        <TableFooter className="border-muted border-t bg-transparent text-xs">
+                          <TableRow className="hover:bg-transparent">
+                            <TableCell
+                              colSpan={4}
+                              className="py-2 font-bold text-rose-500"
+                            >
+                              Total Pendente ❌
+                            </TableCell>
+                            <TableCell className="py-2 font-bold text-rose-500">
+                              {totalPendente} Pendentes
+                            </TableCell>
                           </TableRow>
-                        ))
+                          <TableRow className="hover:bg-transparent">
+                            <TableCell
+                              colSpan={4}
+                              className="py-2 font-bold text-emerald-500"
+                            >
+                              Total Aprovado ✅
+                            </TableCell>
+                            <TableCell className="py-2 font-bold text-emerald-500">
+                              {totalAprovado} Aprovados
+                            </TableCell>
+                          </TableRow>
+                        </TableFooter>
+                      </Table>
+                    </div>
+                  )}
+
+                  {activeTab === "optimize" && (
+                    <div className="space-y-4 text-xs">
+                      {analysisResults.verbIssues.length === 0 ? (
+                        <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-4 text-center font-bold text-emerald-500">
+                          ✨ Nenhum verbo fraco encontrado! Sua linguagem de
+                          atuação está forte.
+                        </div>
                       ) : (
-                        <TableRow>
-                          <TableCell
-                            colSpan={columns.length}
-                            className="h-24 text-center"
+                        analysisResults.verbIssues.map((issue, index) => (
+                          <div
+                            key={index}
+                            className="bg-card space-y-3 rounded-lg border p-4"
                           >
-                            Nenhum resultado.
-                          </TableCell>
-                        </TableRow>
+                            <h3 className="flex items-center gap-1.5 font-semibold text-yellow-500">
+                              ⚠️ Verbo Fraco Detectado ({issue.context})
+                            </h3>
+                            <div className="space-y-2">
+                              <p className="text-muted-foreground font-semibold">
+                                Original:
+                              </p>
+                              <p className="bg-muted w-fit rounded px-2 py-1 font-mono text-rose-500">
+                                ...{issue.original}...
+                              </p>
+                            </div>
+                            <div className="space-y-2">
+                              <p className="text-muted-foreground font-semibold">
+                                Contexto:
+                              </p>
+                              <p className="bg-muted/30 rounded border p-2.5 leading-relaxed italic">
+                                {issue.context}
+                              </p>
+                            </div>
+                            <div className="space-y-2">
+                              <p className="font-semibold text-emerald-500">
+                                🚀 Sugestões de Verbos de Ação:
+                              </p>
+                              <div className="flex gap-1.5">
+                                {issue.suggestions.map((suggestion, sIdx) => (
+                                  <span
+                                    key={sIdx}
+                                    className="rounded bg-emerald-500/10 px-2 py-1 font-bold text-emerald-500"
+                                  >
+                                    {suggestion}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        ))
                       )}
-                    </TableBody>
-                    <TableFooter className="border-muted border-t bg-transparent text-xs">
-                      <TableRow className="hover:bg-transparent">
-                        <TableCell
-                          colSpan={4}
-                          className="py-2 font-bold text-rose-500"
-                        >
-                          Total Pendente ❌
-                        </TableCell>
-                        <TableCell className="py-2 font-bold text-rose-500">
-                          {totalPendente} Pendentes
-                        </TableCell>
-                      </TableRow>
-                      <TableRow className="hover:bg-transparent">
-                        <TableCell
-                          colSpan={4}
-                          className="py-2 font-bold text-emerald-500"
-                        >
-                          Total Aprovado ✅
-                        </TableCell>
-                        <TableCell className="py-2 font-bold text-emerald-500">
-                          {totalAprovado} Aprovados
-                        </TableCell>
-                      </TableRow>
-                    </TableFooter>
-                  </Table>
-                </div>
-              )}
 
-              {activeTab === "optimize" && (
-                <div className="space-y-4 text-xs">
-                  <div className="bg-card space-y-3 rounded-lg border p-4">
-                    <h3 className="flex items-center gap-1.5 font-semibold text-yellow-500">
-                      ⚠️ Verbos Fracos Detectados
-                    </h3>
-                    <div className="space-y-2">
-                      <p className="text-muted-foreground font-semibold">
-                        Original:
-                      </p>
-                      <p className="bg-muted w-fit rounded px-2 py-1 font-mono">
-                        ...using...
-                      </p>
+                      {analysisResults.suspectWords.length > 0 && (
+                        <div className="bg-card space-y-2 rounded-lg border p-4">
+                          <h3 className="text-destructive font-semibold">
+                            Palavras Suspeitas Detectadas:
+                          </h3>
+                          <p className="text-destructive bg-destructive/10 w-fit rounded px-3 py-1.5 font-bold">
+                            {analysisResults.suspectWords.join(", ")}
+                          </p>
+                        </div>
+                      )}
                     </div>
-                    <div className="space-y-2">
-                      <p className="text-muted-foreground font-semibold">
-                        Contexto:
-                      </p>
-                      <p className="bg-muted/30 rounded border p-2.5 leading-relaxed italic">
-                        "Proactive and growth-focused Junior Front-End Developer
-                        with solid hands-on experience developing web
-                        applications using JavaScript, CSS, HTML, and the React
-                        ecosystem."
-                      </p>
-                    </div>
-                    <div className="space-y-2">
-                      <p className="font-semibold text-emerald-500">
-                        🚀 Sugestões de Verbos de Ação:
-                      </p>
-                      <div className="flex gap-1.5">
-                        <span className="rounded bg-emerald-500/10 px-2 py-1 font-bold text-emerald-500">
-                          OPTIMIZED
-                        </span>
-                        <span className="rounded bg-emerald-500/10 px-2 py-1 font-bold text-emerald-500">
-                          IMPLEMENTED
-                        </span>
-                        <span className="rounded bg-emerald-500/10 px-2 py-1 font-bold text-emerald-500">
-                          DEVELOPED
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-card space-y-2 rounded-lg border p-4">
-                    <h3 className="text-destructive font-semibold">
-                      Palavras Suspeitas Detectadas:
-                    </h3>
-                    <p className="text-destructive w-fit rounded px-3 py-1.5 font-bold">
-                      todo, url
-                    </p>
-                  </div>
-                </div>
+                  )}
+                </>
               )}
             </CardContent>
           </Card>
@@ -1084,4 +1093,11 @@ export default function ResumeBuilderPage() {
       </div>
     </div>
   );
+}
+
+function analysisRoleValidationText(isMismatch: boolean, role: string) {
+  if (isMismatch) {
+    return `Atenção: O cargo '${role || "não informado"}' informado no formulário não parece estar relacionado à descrição da vaga.`;
+  }
+  return `Sucesso! O cargo '${role}' está perfeitamente alinhado com a descrição da vaga analisada.`;
 }
