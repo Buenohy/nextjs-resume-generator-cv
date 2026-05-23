@@ -131,7 +131,6 @@ export default function PdfPreviewPage() {
               </Button>
             </CardAction>
           </div>
-          <ButtonPaginate />
         </CardFooter>
       </Card>
     </div>
