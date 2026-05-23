@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 export interface ExperienceState {
   role: string;
@@ -107,42 +108,50 @@ const initialCvData: CvDataState = {
   languages: [""],
 };
 
-export const useResumeStore = create<ResumeStore>((set, get) => ({
-  jobText: "",
-  setJobText: (text) => set({ jobText: text }),
+export const useResumeStore = create<ResumeStore>()(
+  persist(
+    (set, get) => ({
+      jobText: "",
+      setJobText: (text) => set({ jobText: text }),
 
-  cvData: initialCvData,
-  updateCvData: (updater) => {
-    const current = get().cvData;
-    const clone = JSON.parse(JSON.stringify(current)) as CvDataState;
-    updater(clone);
-    set({ cvData: clone });
-  },
+      cvData: initialCvData,
+      updateCvData: (updater) => {
+        const current = get().cvData;
+        const clone = JSON.parse(JSON.stringify(current)) as CvDataState;
+        updater(clone);
+        set({ cvData: clone });
+      },
 
-  analysisResults: null,
-  isLoadingAnalysis: false,
+      analysisResults: null,
+      isLoadingAnalysis: false,
 
-  triggerAnalysis: async () => {
-    const { jobText, cvData } = get();
-    if (!jobText.trim()) return;
+      triggerAnalysis: async () => {
+        const { jobText, cvData } = get();
+        if (!jobText.trim()) return;
 
-    set({ isLoadingAnalysis: true });
+        set({ isLoadingAnalysis: true });
 
-    try {
-      const response = await fetch("/api/analyze", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobText, cvData }),
-      });
+        try {
+          const response = await fetch("/api/analyze", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ jobText, cvData }),
+          });
 
-      if (response.ok) {
-        const data = await response.json();
-        set({ analysisResults: data });
-      }
-    } catch (error) {
-      console.error("Erro ao analisar currículo", error);
-    } finally {
-      set({ isLoadingAnalysis: false });
+          if (response.ok) {
+            const data = await response.json();
+            set({ analysisResults: data });
+          }
+        } catch (error) {
+          console.error("Erro ao analisar currículo", error);
+        } finally {
+          set({ isLoadingAnalysis: false });
+        }
+      },
+    }),
+    {
+      name: "ats-resume-builder-cache",
+      storage: createJSONStorage(() => localStorage),
     }
-  },
-}));
+  )
+);

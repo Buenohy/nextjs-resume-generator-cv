@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontFamily: "Helvetica-Bold",
     color: "#2563eb",
-    marginTop: 10,
+    marginTop: 4,
     marginBottom: 4,
     borderBottomWidth: 1,
     borderBottomColor: "#e5e7eb",
