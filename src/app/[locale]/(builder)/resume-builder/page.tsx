@@ -870,30 +870,33 @@ export default function ResumeBuilderPage() {
               <CardDescription>
                 Analise os diagnósticos e ajuste o formulário ao lado
               </CardDescription>
-              <div className="mt-4 flex items-center gap-1.5">
+              <div className="mt-4 grid w-full grid-cols-3 gap-1.5 sm:flex sm:flex-row sm:gap-1.5">
                 <Button
                   variant={activeTab === "parse" ? "default" : "outline"}
                   size="sm"
-                  className="h-9 flex-1 gap-1.5 text-xs"
+                  className="xs:text-xs h-9 w-full gap-1 px-1 text-[11px] sm:flex-1 sm:gap-1.5 sm:px-3"
                   onClick={() => setActiveTab("parse")}
                 >
-                  <ShieldAlert className="h-4 w-4" /> Análise
+                  <ShieldAlert className="h-4 w-4 shrink-0" />
+                  <span className="truncate">Análise</span>
                 </Button>
                 <Button
                   variant={activeTab === "match" ? "default" : "outline"}
                   size="sm"
-                  className="h-9 flex-1 gap-1.5 text-xs"
+                  className="xs:text-xs h-9 w-full gap-1 px-1 text-[11px] sm:flex-1 sm:gap-1.5 sm:px-3"
                   onClick={() => setActiveTab("match")}
                 >
-                  <TableProperties className="h-4 w-4" /> Keywords
+                  <TableProperties className="h-4 w-4 shrink-0" />
+                  <span className="truncate">Keywords</span>
                 </Button>
                 <Button
                   variant={activeTab === "optimize" ? "default" : "outline"}
                   size="sm"
-                  className="h-9 flex-1 gap-1.5 text-xs"
+                  className="xs:text-xs h-9 w-full gap-1 px-1 text-[11px] sm:flex-1 sm:gap-1.5 sm:px-3"
                   onClick={() => setActiveTab("optimize")}
                 >
-                  <Sparkles className="h-4 w-4" /> Verbos
+                  <Sparkles className="h-4 w-4 shrink-0" />
+                  <span className="truncate">Verbos</span>
                 </Button>
               </div>
             </CardHeader>
