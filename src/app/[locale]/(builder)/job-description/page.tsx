@@ -31,7 +31,6 @@ export default function JobDescriptionPage() {
               <Button>Enviar descrição da vaga</Button>
             </CardAction>
           </div>
-          <ButtonPaginate />
         </CardFooter>
       </Card>
     </div>
