@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useResumeStore } from "@/store/useResumeStore";
 import {
   Card,
@@ -13,55 +13,17 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Resume } from "@/components/resume";
-import { Printer } from "lucide-react";
+import { Printer, Loader2 } from "lucide-react";
 import ButtonPaginate from "@/components/button-paginate";
+import { PDFViewer, PDFDownloadLink } from "@react-pdf/renderer";
 
 export default function PdfPreviewPage() {
   const cvData = useResumeStore((state) => state.cvData);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    const meta = cvData.meta_ats || {};
-    const prevTitle = document.title;
-
-    document.title = `${meta.role_target || "Resume"} - ${cvData.info.name || "Gabriel Bueno"}`;
-
-    const createdMetaTags: HTMLMetaElement[] = [];
-    const metaMappings = [
-      { name: "keywords", content: meta.keywords },
-      { name: "subject", content: meta.subject },
-      { name: "author", content: meta.contributor },
-      { name: "rights", content: meta.rights },
-      { name: "coverage", content: meta.coverage },
-      { name: "identifier", content: meta.identifier },
-      { name: "publisher", content: meta.publisher },
-      { name: "relation", content: meta.relation },
-      { name: "source", content: meta.source },
-      { name: "type", content: meta.type },
-    ];
-
-    metaMappings.forEach(({ name, content }) => {
-      if (content) {
-        const metaTag = document.createElement("meta");
-        metaTag.name = name;
-        metaTag.content = content;
-        document.head.appendChild(metaTag);
-        createdMetaTags.push(metaTag);
-      }
-    });
-
-    return () => {
-      document.title = prevTitle;
-      createdMetaTags.forEach((tag) => {
-        if (document.head.contains(tag)) {
-          document.head.removeChild(tag);
-        }
-      });
-    };
-  }, [cvData]);
-
-  const handleExportPDF = () => {
-    window.print();
-  };
+    setIsClient(true);
+  }, []);
 
   const infoProp = {
     name: cvData.info.name,
@@ -88,11 +50,34 @@ export default function PdfPreviewPage() {
     stacks: Array.isArray(exp.stacks) ? exp.stacks.join(", ") : exp.stacks,
   }));
 
+  const resumeDocument = (
+    <Resume
+      info={infoProp}
+      meta={cvData.meta_ats}
+      summary={cvData.summary}
+      skills_list={cvData.skills}
+      experience={experienceProp}
+      education={cvData.education}
+      certifications={cvData.certifications}
+      languages={cvData.languages}
+    />
+  );
+
+  const formattedFileName = `CV_${(cvData.info.name || "Resume").replace(/\s+/g, "_")}.pdf`;
+
+  if (!isClient) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="text-primary h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto min-h-screen p-3 sm:p-6">
-      <h1 className="mb-6 text-2xl font-bold print:hidden">Pdf Preview</h1>
-      <Card className="shadow-primary/50 mx-auto max-w-4xl shadow-lg print:m-0 print:border-none print:p-0 print:shadow-none">
-        <CardHeader className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center print:hidden">
+      <h1 className="mb-6 text-2xl font-bold">Pdf Preview</h1>
+      <Card className="shadow-primary/50 mx-auto max-w-4xl shadow-lg">
+        <CardHeader className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <div>
             <CardTitle>Pdf Preview</CardTitle>
             <CardDescription>
@@ -101,26 +86,32 @@ export default function PdfPreviewPage() {
           </div>
         </CardHeader>
 
-        <CardContent className="flex flex-col gap-5 print:p-0">
-          <div className="bg-card overflow-x-auto rounded-lg border p-3 shadow-sm sm:p-6 print:m-0 print:border-none print:p-0 print:shadow-none">
-            <Resume
-              info={infoProp}
-              summary={cvData.summary}
-              skills_list={cvData.skills}
-              experience={experienceProp}
-              education={cvData.education}
-              certifications={cvData.certifications}
-              languages={cvData.languages}
-            />
+        <CardContent className="flex flex-col gap-5">
+          <div className="bg-card h-[600px] overflow-hidden rounded-lg border p-1 shadow-sm sm:h-[800px]">
+            <PDFViewer className="h-full w-full rounded-md border-0">
+              {resumeDocument}
+            </PDFViewer>
           </div>
         </CardContent>
-        <CardFooter className="flex flex-col gap-6 print:hidden">
+
+        <CardFooter className="flex flex-col gap-6">
           <div className="flex w-full justify-center">
             <CardAction>
-              <Button onClick={handleExportPDF}>
-                <Printer className="mr-2 h-4 w-4" />
-                Exportar Currículo
-              </Button>
+              <PDFDownloadLink
+                document={resumeDocument}
+                fileName={formattedFileName}
+              >
+                {({ loading }) => (
+                  <Button disabled={loading}>
+                    {loading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Printer className="mr-2 h-4 w-4" />
+                    )}
+                    {loading ? "Gerando PDF..." : "Exportar Currículo"}
+                  </Button>
+                )}
+              </PDFDownloadLink>
             </CardAction>
           </div>
           <ButtonPaginate />
