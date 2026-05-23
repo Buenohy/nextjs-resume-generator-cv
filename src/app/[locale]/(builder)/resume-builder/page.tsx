@@ -43,7 +43,6 @@ import {
 } from "@/components/ui/table";
 
 import ButtonPaginate from "@/components/button-paginate";
-import { cn } from "@/lib/utils";
 
 interface FormField {
   id: string;
@@ -78,6 +77,72 @@ export interface KeywordData {
 
 const STATIC_SECTIONS: FormSection[] = [
   {
+    id: "meta_ats",
+    title: "Metadados ATS",
+    subTitle: "Metadados para indexação do currículo",
+    fields: [
+      {
+        id: "role_target",
+        label: "role_target",
+        placeholder: "Ex: Developer Frontend",
+      },
+      {
+        id: "subject",
+        label: "subject",
+        placeholder:
+          "Ex: Developer specializing in React, Angular, and Next.js...",
+      },
+      {
+        id: "keywords",
+        label: "keywords",
+        placeholder: "Ex: React, Angular, Next.js, TypeScript, JavaScript...",
+      },
+      { id: "category", label: "category", placeholder: "Ex: Resume" },
+      {
+        id: "contributor",
+        label: "contributor",
+        placeholder: "Ex: Gabriel Bueno Hygino",
+      },
+      {
+        id: "coverage",
+        label: "coverage",
+        placeholder: "Ex: Global / Remote / Hybrid / In Person",
+      },
+      {
+        id: "identifier",
+        label: "identifier",
+        placeholder: "Ex: CV-Gabriel-Bueno-2026",
+      },
+      {
+        id: "publisher",
+        label: "publisher",
+        placeholder: "Ex: Self-published via Python Automation",
+      },
+      {
+        id: "relation",
+        label: "relation",
+        placeholder: "Ex: Application for Software Engineer Position",
+      },
+      {
+        id: "rights",
+        label: "rights",
+        placeholder:
+          "Ex: Copyright © 2026 Gabriel Bueno Hygino. All rights reserved.",
+      },
+      {
+        id: "source",
+        label: "source",
+        placeholder: "Ex: http://bueno-portfolio-web.vercel.app/",
+      },
+      { id: "type", label: "type", placeholder: "Ex: Text/PDF" },
+      {
+        id: "notes",
+        label: "notes",
+        placeholder: "Ex: Optimized for ATS systems.",
+      },
+    ],
+  },
+  {
     id: "header",
     title: "Header",
     subTitle: "Coloque os dados",
@@ -90,39 +155,6 @@ const STATIC_SECTIONS: FormSection[] = [
         placeholder: "Coloque a sua cidade e a sigla",
       },
       { id: "age", label: "age", placeholder: "Coloque a sua idade" },
-    ],
-  },
-  {
-    id: "meta_ats",
-    title: "Metadados ATS",
-    subTitle: "Metadados para indexação do currículo",
-    fields: [
-      {
-        id: "role_target",
-        label: "Target Role",
-        placeholder: "Ex: Developer Frontend",
-      },
-      {
-        id: "keywords",
-        label: "Keywords",
-        placeholder: "Ex: React, Next.js, TypeScript",
-      },
-      {
-        id: "subject",
-        label: "Subject",
-        placeholder: "Resumo curto focado em palavras-chave",
-      },
-      { id: "coverage", label: "Coverage", placeholder: "Ex: Global / Remote" },
-      {
-        id: "identifier",
-        label: "Identifier",
-        placeholder: "Ex: CV-Gabriel-Bueno-2026",
-      },
-      {
-        id: "publisher",
-        label: "Publisher",
-        placeholder: "Ex: Self-published via Next.js",
-      },
     ],
   },
   {
