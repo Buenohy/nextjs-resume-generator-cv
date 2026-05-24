@@ -36,6 +36,7 @@ export interface CvDataState {
     linkedin: string;
     phone: string;
     website: string;
+    website_url: string;
     email: string;
     github: string;
   };
