@@ -1,5 +1,4 @@
 "use client";
-"use no memo";
 
 import { useState, useEffect } from "react";
 import {
@@ -33,6 +32,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -45,7 +45,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
+import ButtonPaginate from "@/components/button-paginate";
 import { cn } from "@/lib/utils";
 
 interface FormField {
@@ -71,6 +79,25 @@ export interface KeywordData {
 }
 
 const EMPTY_KEYWORDS: KeywordData[] = [];
+
+const MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+const YEARS = Array.from({ length: 41 }, (_, i) =>
+  String(new Date().getFullYear() + 10 - i)
+);
 
 const STATIC_SECTIONS: FormSection[] = [
   {
@@ -199,11 +226,6 @@ const BASE_EXPERIENCE_FIELDS: FormField[] = [
     id: "url",
     label: "url",
     placeholder: "Coloque o url do deploy do projeto",
-  },
-  {
-    id: "date",
-    label: "date",
-    placeholder: "Coloque a data de início e termino",
   },
 ];
 
@@ -414,6 +436,34 @@ export default function ResumeBuilderPage() {
     });
   };
 
+  const parseDateString = (dateStr: string) => {
+    const [startStr, endStr] = dateStr.split(" - ");
+    const startParts = (startStr || "").trim().split(" ");
+    const endParts = (endStr || "").trim().split(" ");
+
+    return {
+      startMonth: startParts[0] || "",
+      startYear: startParts[1] || "",
+      endMonth: endParts[0] || "",
+      endYear: endParts[1] || "",
+    };
+  };
+
+  const handleExpDateChange = (
+    expIndex: number,
+    sm: string,
+    sy: string,
+    em: string,
+    ey: string
+  ) => {
+    const start = [sm, sy].filter(Boolean).join(" ");
+    const end =
+      em === "Present" ? "Present" : [em, ey].filter(Boolean).join(" ");
+    const finalDate =
+      start || end ? `${start}${start && end ? " - " : ""}${end}` : "";
+    handleUpdateExperienceField(expIndex, "date", finalDate);
+  };
+
   const handleAddDetail = (expIndex: number) => {
     updateCvData((draft) => {
       if (draft.experiences[expIndex].details.length < 3) {
@@ -610,6 +660,14 @@ export default function ResumeBuilderPage() {
                         rows={1}
                         placeholder="Coloque uma habilidade"
                         value={skill}
+                        onBlur={(e) => {
+                          if (
+                            !e.target.value.trim() &&
+                            cvData.skills.length > 1
+                          ) {
+                            handleRemoveListItem("skills", index);
+                          }
+                        }}
                         onChange={(e) => {
                           handleAutoResize(e);
                           handleUpdateListItem("skills", index, e.target.value);
@@ -628,16 +686,6 @@ export default function ResumeBuilderPage() {
                     </div>
                   </Field>
                 ))}
-                <div className="mt-2 flex justify-end">
-                  <Button
-                    variant="outline"
-                    size="xs"
-                    onClick={() => handleAddListItem("skills")}
-                    className="gap-1 text-xs"
-                  >
-                    <Plus className="h-3.5 w-3.5" /> Adicionar Habilidade
-                  </Button>
-                </div>
               </div>
             </CardContent>
 
@@ -666,90 +714,240 @@ export default function ResumeBuilderPage() {
                     </Button>
                   )}
                 </div>
-                {cvData.experiences.map((exp, expIndex) => (
-                  <div
-                    key={expIndex}
-                    className="flex flex-col gap-6 border-b pt-4 pb-8 last:border-0 last:pb-0"
-                  >
-                    <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-                      <h4 className="text-lg font-semibold">
-                        Experiência {expIndex + 1}
-                      </h4>
-                      {cvData.experiences.length > 1 && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleRemoveExperience(expIndex)}
-                        >
-                          <Trash2 className="text-destructive mr-1 h-4 w-4" />{" "}
-                          Remover Experiência
-                        </Button>
-                      )}
-                    </div>
-                    {BASE_EXPERIENCE_FIELDS.map(
-                      ({ id: fieldId, label, placeholder }) => (
-                        <Field key={fieldId} className="mb-4">
-                          <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center">
-                            <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-                              {label}
-                            </FieldLabel>
-                            <Input
-                              className="w-full flex-1"
-                              placeholder={placeholder}
-                              value={
-                                exp[
-                                  fieldId as keyof Omit<
-                                    ExperienceState,
-                                    "details" | "stacks"
-                                  >
-                                ] || ""
-                              }
-                              onChange={(e) =>
-                                handleUpdateExperienceField(
-                                  expIndex,
-                                  fieldId as keyof Omit<
-                                    ExperienceState,
-                                    "details" | "stacks"
-                                  >,
-                                  e.target.value
-                                )
-                              }
-                            />
-                          </div>
-                        </Field>
-                      )
-                    )}
+                {cvData.experiences.map((exp, expIndex) => {
+                  const dateParsed = parseDateString(exp.date);
 
-                    <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
+                  return (
+                    <div
+                      key={expIndex}
+                      className="flex flex-col gap-6 border-b pt-4 pb-8 last:border-0 last:pb-0"
+                    >
                       <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-                        <div>
-                          <h5 className="text-sm font-semibold">
-                            Detalhes do Projeto
-                          </h5>
-                          <p className="text-muted-foreground text-xs">
-                            Limite máximo de 3 detalhes. Atualmente:{" "}
-                            {exp.details.length}/3
-                          </p>
-                        </div>
-                        {exp.details.length < 3 && (
+                        <h4 className="text-lg font-semibold">
+                          Experiência {expIndex + 1}
+                        </h4>
+                        {cvData.experiences.length > 1 && (
                           <Button
-                            variant="outline"
-                            size="xs"
-                            onClick={() => handleAddDetail(expIndex)}
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleRemoveExperience(expIndex)}
                           >
-                            <Plus className="mr-1 h-3.5 w-3.5" /> Adicionar
-                            Detalhe
+                            <Trash2 className="text-destructive mr-1 h-4 w-4" />{" "}
+                            Remover Experiência
                           </Button>
                         )}
                       </div>
-
-                      {exp.details.map((detail, detailIndex) => (
-                        <Field key={detailIndex} className="mb-2">
-                          <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-                            <div className="flex w-full items-center justify-between sm:w-auto">
-                              <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-                                Detalhe {detailIndex + 1}
+                      {BASE_EXPERIENCE_FIELDS.map(
+                        ({ id: fieldId, label, placeholder }) => (
+                          <Field key={fieldId} className="mb-4">
+                            <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center">
+                              <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+                                {label}
                               </FieldLabel>
+                              <Input
+                                className="w-full flex-1"
+                                placeholder={placeholder}
+                                value={
+                                  exp[
+                                    fieldId as keyof Omit<
+                                      ExperienceState,
+                                      "details" | "stacks"
+                                    >
+                                  ] || ""
+                                }
+                                onChange={(e) =>
+                                  handleUpdateExperienceField(
+                                    expIndex,
+                                    fieldId as keyof Omit<
+                                      ExperienceState,
+                                      "details" | "stacks"
+                                    >,
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+                          </Field>
+                        )
+                      )}
+
+                      <Field className="mb-4">
+                        <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center">
+                          <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+                            Date
+                          </FieldLabel>
+                          <div className="flex flex-1 flex-col items-center gap-2 sm:flex-row">
+                            <div className="flex w-full items-center gap-2 sm:w-auto">
+                              <Select
+                                value={dateParsed.startMonth}
+                                onValueChange={(val) =>
+                                  handleExpDateChange(
+                                    expIndex,
+                                    val,
+                                    dateParsed.startYear,
+                                    dateParsed.endMonth,
+                                    dateParsed.endYear
+                                  )
+                                }
+                              >
+                                <SelectTrigger className="w-full sm:w-[110px]">
+                                  <SelectValue placeholder="Mês" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {MONTHS.map((m) => (
+                                    <SelectItem key={m} value={m}>
+                                      {m}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <Select
+                                value={dateParsed.startYear}
+                                onValueChange={(val) =>
+                                  handleExpDateChange(
+                                    expIndex,
+                                    dateParsed.startMonth,
+                                    val,
+                                    dateParsed.endMonth,
+                                    dateParsed.endYear
+                                  )
+                                }
+                              >
+                                <SelectTrigger className="w-full sm:w-[90px]">
+                                  <SelectValue placeholder="Ano" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {YEARS.map((y) => (
+                                    <SelectItem key={y} value={y}>
+                                      {y}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <span className="hidden sm:block">-</span>
+                            <div className="flex w-full items-center gap-2 sm:w-auto">
+                              <Select
+                                value={dateParsed.endMonth}
+                                onValueChange={(val) =>
+                                  handleExpDateChange(
+                                    expIndex,
+                                    dateParsed.startMonth,
+                                    dateParsed.startYear,
+                                    val,
+                                    dateParsed.endYear
+                                  )
+                                }
+                              >
+                                <SelectTrigger className="w-full sm:w-[110px]">
+                                  <SelectValue placeholder="Mês" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Present">
+                                    Present
+                                  </SelectItem>
+                                  {MONTHS.map((m) => (
+                                    <SelectItem key={m} value={m}>
+                                      {m}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              {dateParsed.endMonth !== "Present" && (
+                                <Select
+                                  value={dateParsed.endYear}
+                                  onValueChange={(val) =>
+                                    handleExpDateChange(
+                                      expIndex,
+                                      dateParsed.startMonth,
+                                      dateParsed.startYear,
+                                      dateParsed.endMonth,
+                                      val
+                                    )
+                                  }
+                                >
+                                  <SelectTrigger className="w-full sm:w-[90px]">
+                                    <SelectValue placeholder="Ano" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {YEARS.map((y) => (
+                                      <SelectItem key={y} value={y}>
+                                        {y}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </Field>
+
+                      <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
+                        <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+                          <div>
+                            <h5 className="text-sm font-semibold">
+                              Detalhes do Projeto
+                            </h5>
+                            <p className="text-muted-foreground text-xs">
+                              Limite máximo de 3 detalhes. Atualmente:{" "}
+                              {exp.details.length}/3
+                            </p>
+                          </div>
+                          {exp.details.length < 3 && (
+                            <Button
+                              variant="outline"
+                              size="xs"
+                              onClick={() => handleAddDetail(expIndex)}
+                            >
+                              <Plus className="mr-1 h-3.5 w-3.5" /> Adicionar
+                              Detalhe
+                            </Button>
+                          )}
+                        </div>
+
+                        {exp.details.map((detail, detailIndex) => (
+                          <Field key={detailIndex} className="mb-2">
+                            <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+                              <div className="flex w-full items-center justify-between sm:w-auto">
+                                <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+                                  Detalhe {detailIndex + 1}
+                                </FieldLabel>
+                                {exp.details.length > 1 && (
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() =>
+                                      handleRemoveDetail(expIndex, detailIndex)
+                                    }
+                                    className="h-8 w-8 sm:hidden"
+                                  >
+                                    <Trash2 className="text-destructive h-4 w-4" />
+                                  </Button>
+                                )}
+                              </div>
+                              <Textarea
+                                className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
+                                rows={1}
+                                placeholder={`Coloque a descrição sobre o projeto ${detailIndex + 1}`}
+                                value={detail}
+                                onBlur={(e) => {
+                                  if (
+                                    !e.target.value.trim() &&
+                                    exp.details.length > 1
+                                  ) {
+                                    handleRemoveDetail(expIndex, detailIndex);
+                                  }
+                                }}
+                                onChange={(e) => {
+                                  handleAutoResize(e);
+                                  handleUpdateDetail(
+                                    expIndex,
+                                    detailIndex,
+                                    e.target.value
+                                  );
+                                }}
+                              />
                               {exp.details.length > 1 && (
                                 <Button
                                   variant="ghost"
@@ -757,69 +955,79 @@ export default function ResumeBuilderPage() {
                                   onClick={() =>
                                     handleRemoveDetail(expIndex, detailIndex)
                                   }
-                                  className="h-8 w-8 sm:hidden"
+                                  className="hidden sm:inline-flex"
                                 >
                                   <Trash2 className="text-destructive h-4 w-4" />
                                 </Button>
                               )}
                             </div>
-                            <Textarea
-                              className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
-                              rows={1}
-                              placeholder={`Coloque a descrição sobre o projeto ${detailIndex + 1}`}
-                              value={detail}
-                              onChange={(e) => {
-                                handleAutoResize(e);
-                                handleUpdateDetail(
-                                  expIndex,
-                                  detailIndex,
-                                  e.target.value
-                                );
-                              }}
-                            />
-                            {exp.details.length > 1 && (
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() =>
-                                  handleRemoveDetail(expIndex, detailIndex)
-                                }
-                                className="hidden sm:inline-flex"
-                              >
-                                <Trash2 className="text-destructive h-4 w-4" />
-                              </Button>
-                            )}
-                          </div>
-                        </Field>
-                      ))}
-                    </div>
-
-                    <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
-                      <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-                        <div>
-                          <h5 className="text-sm font-semibold">
-                            Tecnologias (Stacks)
-                          </h5>
-                          <p className="text-muted-foreground text-xs">
-                            Atualmente usando: {exp.stacks.length} tecnologia(s)
-                          </p>
-                        </div>
-                        <Button
-                          variant="outline"
-                          size="xs"
-                          onClick={() => handleAddStack(expIndex)}
-                        >
-                          <Plus className="mr-1 h-3.5 w-3.5" /> Adicionar Stack
-                        </Button>
+                          </Field>
+                        ))}
                       </div>
 
-                      {exp.stacks.map((stack, stackIndex) => (
-                        <Field key={stackIndex} className="mb-2">
-                          <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-                            <div className="flex w-full items-center justify-between sm:w-auto">
-                              <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-                                Stack {stackIndex + 1}
-                              </FieldLabel>
+                      <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
+                        <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+                          <div>
+                            <h5 className="text-sm font-semibold">
+                              Tecnologias (Stacks)
+                            </h5>
+                            <p className="text-muted-foreground text-xs">
+                              Atualmente usando: {exp.stacks.length}{" "}
+                              tecnologia(s)
+                            </p>
+                          </div>
+                          <Button
+                            variant="outline"
+                            size="xs"
+                            onClick={() => handleAddStack(expIndex)}
+                          >
+                            <Plus className="mr-1 h-3.5 w-3.5" /> Adicionar
+                            Stack
+                          </Button>
+                        </div>
+
+                        {exp.stacks.map((stack, stackIndex) => (
+                          <Field key={stackIndex} className="mb-2">
+                            <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+                              <div className="flex w-full items-center justify-between sm:w-auto">
+                                <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+                                  Stack {stackIndex + 1}
+                                </FieldLabel>
+                                {exp.stacks.length > 1 && (
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() =>
+                                      handleRemoveStack(expIndex, stackIndex)
+                                    }
+                                    className="h-8 w-8 sm:hidden"
+                                  >
+                                    <Trash2 className="text-destructive h-4 w-4" />
+                                  </Button>
+                                )}
+                              </div>
+                              <Textarea
+                                className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
+                                rows={1}
+                                placeholder="Ex: React, Node.js, TypeScript"
+                                value={stack}
+                                onBlur={(e) => {
+                                  if (
+                                    !e.target.value.trim() &&
+                                    exp.stacks.length > 1
+                                  ) {
+                                    handleRemoveStack(expIndex, stackIndex);
+                                  }
+                                }}
+                                onChange={(e) => {
+                                  handleAutoResize(e);
+                                  handleUpdateStack(
+                                    expIndex,
+                                    stackIndex,
+                                    e.target.value
+                                  );
+                                }}
+                              />
                               {exp.stacks.length > 1 && (
                                 <Button
                                   variant="ghost"
@@ -827,54 +1035,18 @@ export default function ResumeBuilderPage() {
                                   onClick={() =>
                                     handleRemoveStack(expIndex, stackIndex)
                                   }
-                                  className="h-8 w-8 sm:hidden"
+                                  className="hidden sm:inline-flex"
                                 >
                                   <Trash2 className="text-destructive h-4 w-4" />
                                 </Button>
                               )}
                             </div>
-                            <Textarea
-                              className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
-                              rows={1}
-                              placeholder="Ex: React, Node.js, TypeScript"
-                              value={stack}
-                              onChange={(e) => {
-                                handleAutoResize(e);
-                                handleUpdateStack(
-                                  expIndex,
-                                  stackIndex,
-                                  e.target.value
-                                );
-                              }}
-                            />
-                            {exp.stacks.length > 1 && (
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() =>
-                                  handleRemoveStack(expIndex, stackIndex)
-                                }
-                                className="hidden sm:inline-flex"
-                              >
-                                <Trash2 className="text-destructive h-4 w-4" />
-                              </Button>
-                            )}
-                          </div>
-                        </Field>
-                      ))}
-                      <div className="mt-2 flex justify-end">
-                        <Button
-                          variant="outline"
-                          size="xs"
-                          onClick={() => handleAddStack(expIndex)}
-                          className="gap-1 text-xs"
-                        >
-                          <Plus className="h-3.5 w-3.5" /> Adicionar Stack
-                        </Button>
+                          </Field>
+                        ))}
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </CardContent>
 
@@ -886,6 +1058,10 @@ export default function ResumeBuilderPage() {
                     <h3 className="border-b pb-2 text-lg">
                       Coloque a sua formação acadêmica
                     </h3>
+                    <p className="text-muted-foreground mt-1 text-xs">
+                      Atualmente: {cvData.education.length} formação(ões)
+                      cadastrada(s).
+                    </p>
                   </div>
                   <Button
                     variant="outline"
@@ -920,6 +1096,14 @@ export default function ResumeBuilderPage() {
                         rows={1}
                         placeholder="Coloque a sua formação"
                         value={edu}
+                        onBlur={(e) => {
+                          if (
+                            !e.target.value.trim() &&
+                            cvData.education.length > 1
+                          ) {
+                            handleRemoveListItem("education", index);
+                          }
+                        }}
                         onChange={(e) => {
                           handleAutoResize(e);
                           handleUpdateListItem(
@@ -944,16 +1128,6 @@ export default function ResumeBuilderPage() {
                     </div>
                   </Field>
                 ))}
-                <div className="mt-2 flex justify-end">
-                  <Button
-                    variant="outline"
-                    size="xs"
-                    onClick={() => handleAddListItem("education")}
-                    className="gap-1 text-xs"
-                  >
-                    <Plus className="h-3.5 w-3.5" /> Adicionar Formação
-                  </Button>
-                </div>
               </div>
             </CardContent>
 
@@ -965,6 +1139,10 @@ export default function ResumeBuilderPage() {
                     <h3 className="border-b pb-2 text-lg">
                       Coloque as suas certificações relevantes
                     </h3>
+                    <p className="text-muted-foreground mt-1 text-xs">
+                      Atualmente: {cvData.certifications.length}{" "}
+                      certificação(ões) cadastrada(s).
+                    </p>
                   </div>
                   <Button
                     variant="outline"
@@ -999,6 +1177,14 @@ export default function ResumeBuilderPage() {
                         rows={1}
                         placeholder="Coloque o nome da sua certificação"
                         value={cert}
+                        onBlur={(e) => {
+                          if (
+                            !e.target.value.trim() &&
+                            cvData.certifications.length > 1
+                          ) {
+                            handleRemoveListItem("certifications", index);
+                          }
+                        }}
                         onChange={(e) => {
                           handleAutoResize(e);
                           handleUpdateListItem(
@@ -1023,16 +1209,6 @@ export default function ResumeBuilderPage() {
                     </div>
                   </Field>
                 ))}
-                <div className="mt-2 flex justify-end">
-                  <Button
-                    variant="outline"
-                    size="xs"
-                    onClick={() => handleAddListItem("certifications")}
-                    className="gap-1 text-xs"
-                  >
-                    <Plus className="h-3.5 w-3.5" /> Adicionar Certificação
-                  </Button>
-                </div>
               </div>
             </CardContent>
 
@@ -1044,6 +1220,10 @@ export default function ResumeBuilderPage() {
                     <h3 className="border-b pb-2 text-lg">
                       Coloque os idiomas que você fala
                     </h3>
+                    <p className="text-muted-foreground mt-1 text-xs">
+                      Atualmente: {cvData.languages.length} idioma(s)
+                      cadastrado(s).
+                    </p>
                   </div>
                   <Button
                     variant="outline"
@@ -1078,6 +1258,14 @@ export default function ResumeBuilderPage() {
                         rows={1}
                         placeholder="Coloque um idioma"
                         value={lang}
+                        onBlur={(e) => {
+                          if (
+                            !e.target.value.trim() &&
+                            cvData.languages.length > 1
+                          ) {
+                            handleRemoveListItem("languages", index);
+                          }
+                        }}
                         onChange={(e) => {
                           handleAutoResize(e);
                           handleUpdateListItem(
@@ -1102,16 +1290,6 @@ export default function ResumeBuilderPage() {
                     </div>
                   </Field>
                 ))}
-                <div className="mt-2 flex justify-end">
-                  <Button
-                    variant="outline"
-                    size="xs"
-                    onClick={() => handleAddListItem("languages")}
-                    className="gap-1 text-xs"
-                  >
-                    <Plus className="h-3.5 w-3.5" /> Adicionar Idioma
-                  </Button>
-                </div>
               </div>
             </CardContent>
           </Card>
@@ -1411,5 +1589,5 @@ function analysisRoleValidationText(isMismatch: boolean, role: string) {
   if (isMismatch) {
     return `Atenção: O cargo '${role || "não informado"}' informado no formulário não parece estar relacionado à descrição da vaga.`;
   }
-  return `Sucesso! O cargo '${role}' está perfeitamente alinuado com a descrição da vaga analisada.`;
+  return `Sucesso! O cargo '${role}' está perfeitamente alinhado com a descrição da vaga analisada.`;
 }
