@@ -84,13 +84,13 @@ export default function PdfPreviewPage() {
     location: cvData.info.city,
     age: cvData.info.age,
     email: cvData.links.email,
-    linkedin: cvData.links.linkedin ? "LinkedIn" : "",
+    linkedin: cvData.links.linkedin ? t("contactLabels.linkedin") : "",
     linkedin_url: cvData.links.linkedin,
-    phone: cvData.links.phone ? "Telefone" : "",
+    phone: cvData.links.phone ? t("contactLabels.phone") : "",
     phone_url: cvData.links.phone,
-    website: cvData.links.website ? "Site" : "",
-    website_url: cvData.links.website,
-    github: cvData.links.github ? "GitHub" : "",
+    website: cvData.links.website || "",
+    website_url: cvData.links.website_url || "",
+    github: cvData.links.github ? t("contactLabels.github") : "",
     github_url: cvData.links.github,
   };
 

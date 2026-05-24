@@ -115,52 +115,31 @@
         "title": "ATS Metadata",
         "subTitle": "Resume indexing metadata",
         "fields": {
-          "role_target": {
-            "label": "Role Target",
-            "placeholder": "E.g.: Developer Frontend"
-          },
+          "role_target": { "placeholder": "E.g: Developer Frontend" },
           "subject": {
-            "label": "Subject",
-            "placeholder": "E.g.: Developer specializing in React, Angular..."
+            "placeholder": "E.g: Developer specializing in React, Angular..."
           },
-          "keywords": {
-            "label": "Keywords",
-            "placeholder": "E.g.: React, Angular, Next.js..."
-          },
-          "category": { "label": "Category", "placeholder": "E.g.: Resume" },
-          "contributor": {
-            "label": "Contributor",
-            "placeholder": "E.g.: Gabriel Bueno Hygino"
-          },
+          "keywords": { "placeholder": "E.g: React, Angular, Next.js..." },
+          "category": { "placeholder": "E.g: Resume" },
+          "contributor": { "placeholder": "E.g: Gabriel Bueno Hygino" },
           "coverage": {
-            "label": "Coverage",
-            "placeholder": "E.g.: Global / Remote / Hybrid / In Person"
+            "placeholder": "E.g: Global / Remote / Hybrid / In Person"
           },
-          "identifier": {
-            "label": "Identifier",
-            "placeholder": "E.g.: CV-Gabriel-Bueno-2026"
-          },
+          "identifier": { "placeholder": "E.g: CV-Gabriel-Bueno-2026" },
           "publisher": {
-            "label": "Publisher",
-            "placeholder": "E.g.: Self-published via Python Automation"
+            "placeholder": "E.g: Self-published via Python Automation"
           },
           "relation": {
-            "label": "Relation",
-            "placeholder": "E.g.: Application for Software Engineer Position"
+            "placeholder": "E.g: Application for Software Engineer Position"
           },
           "rights": {
-            "label": "Rights",
-            "placeholder": "E.g.: Copyright © 2026 Gabriel Bueno Hygino."
+            "placeholder": "E.g: Copyright © 2026 Gabriel Bueno Hygino."
           },
           "source": {
-            "label": "Source",
-            "placeholder": "E.g.: http://bueno-portfolio-web.vercel.app/"
+            "placeholder": "E.g: http://bueno-portfolio-web.vercel.app/"
           },
-          "type": { "label": "Type", "placeholder": "E.g.: Text/PDF" },
-          "notes": {
-            "label": "Notes",
-            "placeholder": "E.g.: Optimized for ATS systems."
-          }
+          "type": { "placeholder": "E.g: Text/PDF" },
+          "notes": { "placeholder": "E.g: Optimized for ATS systems." }
         }
       },
       "header": {
@@ -188,8 +167,8 @@
         "placeholders": {
           "linkedin": "Enter your LinkedIn link",
           "phone": "Enter your Phone link/number",
-          "websiteName": "E.g.: bueno.com",
-          "websiteUrl": "E.g.: https://bueno-portfolio-web.vercel.app/",
+          "websiteName": "E.g: bueno.com",
+          "websiteUrl": "E.g: https://bueno-portfolio-web.vercel.app/",
           "email": "Enter your E-mail address",
           "github": "Enter your GitHub link"
         }
@@ -223,19 +202,19 @@
         "stacksCount": "Currently using: {count} technology(ies)",
         "addStackBtn": "Add Stack",
         "stackLabel": "Stack {num}",
-        "stackPlaceholder": "E.g.: React, Node.js, TypeScript",
+        "stackPlaceholder": "E.g: React, Node.js, TypeScript",
         "fields": {
           "role": {
             "label": "Role",
-            "placeholder": "E.g.: Frontend Developer"
+            "placeholder": "E.g: Frontend Developer"
           },
           "company": {
             "label": "Company",
-            "placeholder": "E.g.: Google"
+            "placeholder": "E.g: Google"
           },
           "url": {
             "label": "Company URL",
-            "placeholder": "E.g.: https://google.com"
+            "placeholder": "E.g: https://google.com"
           },
           "date": {
             "label": "Date",
@@ -272,7 +251,7 @@
         "count": "Currently: {count} language(s) registered.",
         "addBtn": "Add Language",
         "itemLabel": "Language {num}",
-        "placeholder": "E.g.: English",
+        "placeholder": "E.g: English",
         "levelPlaceholder": "Proficiency Level"
       }
     },
@@ -302,6 +281,11 @@
     "cardTitle": "PDF Preview",
     "cardDescription": "Verify your details and export the final document.",
     "generatingBtn": "Generating PDF...",
-    "exportBtn": "Export Resume"
+    "exportBtn": "Export Resume",
+    "contactLabels": {
+      "linkedin": "LinkedIn",
+      "github": "GitHub",
+      "phone": "Phone"
+    }
   }
 }

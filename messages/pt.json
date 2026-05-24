@@ -323,6 +323,11 @@
     "cardTitle": "Prévia do PDF",
     "cardDescription": "Verifique os seus dados e exporte o documento final.",
     "generatingBtn": "Gerando PDF...",
-    "exportBtn": "Exportar Currículo"
+    "exportBtn": "Exportar Currículo",
+    "contactLabels": {
+      "linkedin": "LinkedIn",
+      "github": "GitHub",
+      "phone": "Telefone"
+    }
   }
 }
