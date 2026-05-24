@@ -16,19 +16,25 @@ type ExperienceItem = FullContentState["savedExperiences"][number];
 interface ExperienceTableProps {
   experiences: ExperienceItem[];
   onDelete: (index: number) => void;
+  tFull: (key: string) => string;
 }
 
 export function ExperienceTable({
   experiences,
   onDelete,
+  tFull,
 }: ExperienceTableProps) {
   return (
     <div className="min-w-0 overflow-x-auto">
       <Table className="w-full table-fixed">
         <TableHeader>
           <TableRow>
-            <TableHead className="w-1/3">Experiência</TableHead>
-            <TableHead className="w-2/3">Dados</TableHead>
+            <TableHead className="w-1/3">
+              {tFull("tableHeaders.experience")}
+            </TableHead>
+            <TableHead className="w-2/3">
+              {tFull("tableHeaders.data")}
+            </TableHead>
             <TableHead className="w-10"></TableHead>
           </TableRow>
         </TableHeader>
@@ -64,7 +70,7 @@ export function ExperienceTable({
                           detail.trim() && (
                             <p
                               key={dIdx}
-                              className="wrap-break-words leading-relaxed whitespace-normal"
+                              className="leading-relaxed break-words whitespace-normal"
                             >
                               • {detail}
                             </p>
@@ -105,7 +111,7 @@ export function ExperienceTable({
           {experiences.length === 0 && (
             <TableRow>
               <TableCell colSpan={3} className="h-24 text-center">
-                Nenhuma experiência cadastrada.
+                {tFull("emptyMessage")}
               </TableCell>
             </TableRow>
           )}

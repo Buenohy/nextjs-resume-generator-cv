@@ -308,5 +308,22 @@
       "github": "GitHub",
       "phone": "Phone"
     }
+  },
+  "FullContentPage": {
+    "title": "Full Content Page",
+    "cardTitle": "Full Content",
+    "cardDescription": "All resume content",
+    "formSubtitle": "Fill in the new experience details",
+    "saveButton": "Save experience",
+    "savedTitle": "Saved Experiences",
+    "deleteDialogTitle": "Are you sure?",
+    "deleteDialogDescription": "This will permanently delete this experience. This action cannot be undone.",
+    "deleteDialogCancel": "Cancel",
+    "deleteDialogConfirm": "Yes, delete",
+    "tableHeaders": {
+      "experience": "Experience",
+      "data": "Data"
+    },
+    "emptyMessage": "No experiences registered."
   }
 }

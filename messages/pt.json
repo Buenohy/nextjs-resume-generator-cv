@@ -320,5 +320,22 @@
       "github": "GitHub",
       "phone": "Telefone"
     }
+  },
+  "FullContentPage": {
+    "title": "Repositório de Conteúdo",
+    "cardTitle": "Conteúdo Completo",
+    "cardDescription": "Todo o conteúdo do seu currículo",
+    "formSubtitle": "Preencha os dados da nova experiência",
+    "saveButton": "Salvar experiência",
+    "savedTitle": "Experiências Cadastradas",
+    "deleteDialogTitle": "Tem certeza?",
+    "deleteDialogDescription": "Isso excluirá permanentemente esta experiência. Essa ação não pode ser desfeita.",
+    "deleteDialogCancel": "Cancelar",
+    "deleteDialogConfirm": "Sim, apagar",
+    "tableHeaders": {
+      "experience": "Experiência",
+      "data": "Dados"
+    },
+    "emptyMessage": "Nenhuma experiência cadastrada."
   }
 }

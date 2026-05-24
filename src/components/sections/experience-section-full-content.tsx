@@ -21,7 +21,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useAutoResize } from "@/app/hooks/useAutoResize";
 import { MonthYearPicker } from "./ui/mouth-year-picker";
@@ -38,6 +37,7 @@ const emptyExperience: ExperienceItem = {
 
 export function ExperienceSectionFullContent() {
   const t = useTranslations("ResumeBuilderPage");
+  const tFull = useTranslations("FullContentPage");
   const useStore = useFullContentStore();
   const savedExperiences = useStore((s) => s.savedExperiences);
   const addSavedExperience = useStore((s) => s.addSavedExperience);
@@ -133,7 +133,6 @@ export function ExperienceSectionFullContent() {
   };
 
   const handleSave = () => {
-    // Filtra detalhes e stacks vazios antes de salvar
     const cleaned: ExperienceItem = {
       ...form,
       details: form.details.filter((d) => d.trim() !== ""),
@@ -152,7 +151,6 @@ export function ExperienceSectionFullContent() {
 
   return (
     <CardContent>
-      {/* Formulário de nova experiência */}
       <div className="flex flex-col gap-6 border-b py-4">
         <div>
           <h2 className="text-xl font-semibold">
@@ -160,7 +158,7 @@ export function ExperienceSectionFullContent() {
           </h2>
           <h3 className="text-lg">{t("sections.experience.subTitle")}</h3>
           <p className="text-muted-foreground mt-1 text-xs">
-            Preencha os dados da nova experiência
+            {tFull("formSubtitle")}
           </p>
         </div>
 
@@ -235,7 +233,6 @@ export function ExperienceSectionFullContent() {
           </div>
         </Field>
 
-        {/* Details */}
         <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
             <div>
@@ -249,7 +246,7 @@ export function ExperienceSectionFullContent() {
               </p>
             </div>
             {form.details.length < 3 && (
-              <Button variant="outline" size="sm" onClick={addDetail}>
+              <Button variant="outline" size="xs" onClick={addDetail}>
                 <Plus className="mr-1 h-3.5 w-3.5" />{" "}
                 {t("sections.experience.addDetailBtn")}
               </Button>
@@ -313,7 +310,6 @@ export function ExperienceSectionFullContent() {
           )}
         </div>
 
-        {/* Stacks */}
         <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
             <div>
@@ -326,7 +322,7 @@ export function ExperienceSectionFullContent() {
                 })}
               </p>
             </div>
-            <Button variant="outline" size="sm" onClick={addStack}>
+            <Button variant="outline" size="xs" onClick={addStack}>
               <Plus className="mr-1 h-3.5 w-3.5" />{" "}
               {t("sections.experience.addStackBtn")}
             </Button>
@@ -386,40 +382,38 @@ export function ExperienceSectionFullContent() {
         </div>
 
         <Button onClick={handleSave} className="mx-auto w-fit">
-          Salvar experiência
+          {tFull("saveButton")}
         </Button>
       </div>
 
-      {/* Tabela de experiências cadastradas */}
       <div className="pt-8">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold">Experiências Cadastradas</h2>
+          <h2 className="text-xl font-semibold">{tFull("savedTitle")}</h2>
         </div>
         <div className="border-muted overflow-x-auto rounded-md border shadow-sm">
           <ExperienceTable
             experiences={savedExperiences}
             onDelete={(index) => setExpToDelete(index)}
+            tFull={tFull}
           />
         </div>
       </div>
 
-      {/* Diálogo de confirmação de exclusão */}
       <AlertDialog
         open={expToDelete !== null}
         onOpenChange={(open) => !open && setExpToDelete(null)}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Tem certeza?</AlertDialogTitle>
+            <AlertDialogTitle>{tFull("deleteDialogTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Isso excluirá permanentemente esta experiência. Essa ação não pode
-              ser desfeita.
+              {tFull("deleteDialogDescription")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel>{tFull("deleteDialogCancel")}</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteConfirm}>
-              Sim, apagar
+              {tFull("deleteDialogConfirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
