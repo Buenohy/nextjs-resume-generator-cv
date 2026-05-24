@@ -67,6 +67,10 @@
     "prev": "Anterior",
     "next": "Próximo"
   },
+  "BuilderLayout": {
+    "title": "Gerador de Currículo ATS",
+    "subtitle": "Siga os passos abaixo para analisar e otimizar seu currículo para a vaga."
+  },
   "JobDescriptionPage": {
     "title": "Descrição da Vaga",
     "cardTitle": "Descrição da Vaga",

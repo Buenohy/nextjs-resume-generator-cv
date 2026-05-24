@@ -52,6 +52,10 @@
     "prev": "Previous",
     "next": "Next"
   },
+  "BuilderLayout": {
+    "title": "ATS Resume Generator",
+    "subtitle": "Follow the steps below to analyze and optimize your resume for the job."
+  },
   "JobDescriptionPage": {
     "title": "Job Description",
     "cardTitle": "Job Description",
