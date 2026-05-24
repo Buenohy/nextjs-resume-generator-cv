@@ -41,6 +41,10 @@
       "preview": { "title": "PDF Preview", "desc": "PDF preview page." }
     }
   },
+  "PaginationButtons": {
+    "prev": "Previous",
+    "next": "Next"
+  },
   "JobDescriptionPage": {
     "title": "Job Description",
     "cardTitle": "Job Description",

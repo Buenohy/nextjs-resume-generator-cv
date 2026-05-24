@@ -56,6 +56,10 @@
       }
     }
   },
+  "PaginationButtons": {
+    "prev": "Anterior",
+    "next": "Próximo"
+  },
   "JobDescriptionPage": {
     "title": "Descrição da Vaga",
     "cardTitle": "Descrição da Vaga",

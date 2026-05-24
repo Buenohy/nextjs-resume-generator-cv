@@ -1,4 +1,4 @@
-import ButtonPaginate from "@/components/button-paginate";
+import ButtonPaginate from "@/components/pagination-buttons";
 import { Stepper } from "@/components/stepper";
 import { Card, CardFooter } from "@/components/ui/card";
 

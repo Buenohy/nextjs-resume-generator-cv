@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import ButtonPaginate from "@/components/button-paginate";
+import ButtonPaginate from "@/components/pagination-buttons";
 
 export default function OptimizingResumePage() {
   return (

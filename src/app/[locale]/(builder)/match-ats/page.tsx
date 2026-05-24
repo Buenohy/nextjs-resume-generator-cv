@@ -34,7 +34,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { useRouter } from "next/navigation";
-import ButtonPaginate from "@/components/button-paginate";
+import ButtonPaginate from "@/components/pagination-buttons";
 
 export interface KeywordData {
   id: string;

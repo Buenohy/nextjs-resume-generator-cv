@@ -1,4 +1,4 @@
-import ButtonPaginate from "@/components/button-paginate";
+import ButtonPaginate from "@/components/pagination-buttons";
 import { useTranslations } from "next-intl";
 
 export default function Home() {

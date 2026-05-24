@@ -11,7 +11,7 @@ import {
 
 import { Textarea } from "@/components/ui/textarea";
 
-import ButtonPaginate from "@/components/button-paginate";
+import ButtonPaginate from "@/components/pagination-buttons";
 
 export default function JobParsePage() {
   return (
