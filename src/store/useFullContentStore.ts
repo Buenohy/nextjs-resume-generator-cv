@@ -19,7 +19,7 @@ export interface FullContentState {
   links: Record<string, string>;
   summary: string;
   skills: string[];
-  experiences: ExperienceItem[];
+  savedExperiences: ExperienceItem[];
   education: string[];
   certifications: string[];
   languages: string[];
@@ -27,6 +27,8 @@ export interface FullContentState {
 
 interface FullContentActions {
   updateFullContent: (updater: (draft: FullContentState) => void) => void;
+  addSavedExperience: (experience: ExperienceItem) => void;
+  removeSavedExperience: (index: number) => void;
 }
 
 export type FullContentStore = FullContentState & FullContentActions;
@@ -37,16 +39,7 @@ const initialState: FullContentState = {
   links: {},
   summary: "",
   skills: [""],
-  experiences: [
-    {
-      role: "",
-      company: "",
-      url: "",
-      date: "",
-      details: [""],
-      stacks: [""],
-    },
-  ],
+  savedExperiences: [],
   education: [""],
   certifications: [""],
   languages: [""],
@@ -66,9 +59,17 @@ function createFullContentStore(
         ...initialState,
         updateFullContent: (updater) =>
           set((state) => {
-            // immer permite mutar 'state' diretamente
             updater(state);
-            // não precisa retornar nada, o immer cuida da imutabilidade
+          }),
+        addSavedExperience: (experience) =>
+          set((state) => {
+            state.savedExperiences.push(experience);
+          }),
+        removeSavedExperience: (index) =>
+          set((state) => {
+            state.savedExperiences = state.savedExperiences.filter(
+              (_, i) => i !== index
+            );
           }),
       })),
       {
