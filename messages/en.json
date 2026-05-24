@@ -41,6 +41,10 @@
       "preview": { "title": "PDF Preview", "desc": "PDF preview page." }
     }
   },
+  "LangMenu": {
+    "pt": "Portuguese (pt-br)",
+    "en": "English (en-us)"
+  },
   "DarkMode": {
     "toggleTheme": "Toggle theme",
     "light": "Light",

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/navigation";
 
 import {
@@ -16,6 +16,7 @@ export function LangMenu() {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const t = useTranslations("LangMenu");
 
   const handleLocaleChange = (nextLocale: string) => {
     router.replace(pathname, { locale: nextLocale });
@@ -25,7 +26,7 @@ export function LangMenu() {
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="w-35 justify-start">
-          {locale === "pt" ? "Português (pt-br)" : "English (en-us)"}
+          {locale === "pt" ? t("pt") : t("en")}
         </Button>
       </DropdownMenuTrigger>
 
@@ -34,14 +35,14 @@ export function LangMenu() {
           onClick={() => handleLocaleChange("pt")}
           className={locale === "pt" ? "bg-muted font-bold" : ""}
         >
-          Português (pt-br)
+          {t("pt")}
         </DropdownMenuItem>
 
         <DropdownMenuItem
           onClick={() => handleLocaleChange("en")}
           className={locale === "en" ? "bg-muted font-bold" : ""}
         >
-          English (en-us)
+          {t("en")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -56,6 +56,10 @@
       }
     }
   },
+  "LangMenu": {
+    "pt": "Português (pt-br)",
+    "en": "Inglês (en-us)"
+  },
   "DarkMode": {
     "toggleTheme": "Alternar tema",
     "light": "Claro",
