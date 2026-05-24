@@ -24,7 +24,7 @@ export default function BuilderLayout({
           <Stepper />
         </div>
 
-        <Card className="border-muted bg-background shadow-primary/5 p-3 shadow-lg sm:p-6">
+        <Card className="border-muted bg-background shadow-primary/5 p-2.5 shadow-lg sm:p-5">
           {children}
           <CardFooter className="flex flex-col gap-6">
             <PaginationButtons />

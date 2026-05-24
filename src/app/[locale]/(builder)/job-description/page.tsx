@@ -31,7 +31,7 @@ export default function JobDescriptionPage() {
   };
 
   return (
-    <div className="p-4 sm:p-6">
+    <div>
       <h1 className="mb-6 text-2xl font-bold">{t("title")}</h1>
       <Card className="shadow-primary/50 shadow-lg">
         <CardHeader>
