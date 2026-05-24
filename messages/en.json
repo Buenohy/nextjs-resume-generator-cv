@@ -115,31 +115,55 @@
         "title": "ATS Metadata",
         "subTitle": "Resume indexing metadata",
         "fields": {
-          "role_target": { "placeholder": "E.g: Developer Frontend" },
+          "role_target": {
+            "label": "Role",
+            "placeholder": "E.g: Developer Frontend"
+          },
           "subject": {
+            "label": "Subject",
             "placeholder": "E.g: Developer specializing in React, Angular..."
           },
-          "keywords": { "placeholder": "E.g: React, Angular, Next.js..." },
-          "category": { "placeholder": "E.g: Resume" },
-          "contributor": { "placeholder": "E.g: Gabriel Bueno Hygino" },
+          "keywords": {
+            "label": "Keywords",
+            "placeholder": "E.g: React, Angular, Next.js..."
+          },
+          "category": {
+            "label": "Category",
+            "placeholder": "E.g: Resume"
+          },
+          "contributor": {
+            "label": "Contributor",
+            "placeholder": "E.g: Gabriel Bueno Hygino"
+          },
           "coverage": {
+            "label": "Coverage",
             "placeholder": "E.g: Global / Remote / Hybrid / In Person"
           },
-          "identifier": { "placeholder": "E.g: CV-Gabriel-Bueno-2026" },
+          "identifier": {
+            "label": "Identifier",
+            "placeholder": "E.g: CV-Gabriel-Bueno-2026"
+          },
           "publisher": {
+            "label": "Publisher",
             "placeholder": "E.g: Self-published via Python Automation"
           },
           "relation": {
+            "label": "Relation",
             "placeholder": "E.g: Application for Software Engineer Position"
           },
           "rights": {
+            "label": "Rights",
             "placeholder": "E.g: Copyright © 2026 Gabriel Bueno Hygino."
           },
           "source": {
+            "label": "Source",
             "placeholder": "E.g: http://bueno-portfolio-web.vercel.app/"
           },
-          "type": { "placeholder": "E.g: Text/PDF" },
-          "notes": { "placeholder": "E.g: Optimized for ATS systems." }
+          "type": { "label": "Type", "placeholder": "E.g: Text/PDF" },
+          "notes": {
+            "label": "Notes",
+            "placeholder": "E.g: Optimized for ATS systems."
+          }
         }
       },
       "header": {
