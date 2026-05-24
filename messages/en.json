@@ -47,5 +47,119 @@
     "cardDescription": "Enter the job details below",
     "placeholder": "Paste the full job description from LinkedIn, Wellfound, etc. here...",
     "button": "Submit job description"
+  },
+  "ResumeBuilderPage": {
+    "title": "Resume Builder & Optimization",
+    "formCard": {
+      "title": "Resume Content",
+      "description": "Assemble your resume content below"
+    },
+    "feedbackCard": {
+      "title": "ATS Optimization Feedbacks",
+      "description": "Analyze diagnostics and adjust the form",
+      "waiting": "Waiting for data to analyze...",
+      "tabs": {
+        "parse": "Analysis",
+        "match": "Keywords",
+        "optimize": "Verbs"
+      }
+    },
+    "sections": {
+      "header": {
+        "title": "Header",
+        "subTitle": "Personal details"
+      },
+      "meta_ats": {
+        "title": "ATS Metadata",
+        "subTitle": "Resume indexing metadata"
+      },
+      "links": {
+        "title": "Professional Links",
+        "subTitle": "Contact and portfolio links"
+      },
+      "summary": {
+        "title": "Professional Summary",
+        "subTitle": "Write your professional summary",
+        "placeholder": "Enter your professional summary"
+      },
+      "skills": {
+        "title": "Skills",
+        "subTitle": "Add your core skills",
+        "count": "Currently: {count} skill(s) registered.",
+        "addBtn": "Add Skill",
+        "itemLabel": "Skill {num}",
+        "placeholder": "Enter a skill"
+      },
+      "experience": {
+        "title": "Professional Experience",
+        "subTitle": "Register your work history",
+        "count": "Max limit of 4. Currently using: {count}/4",
+        "addBtn": "Add Experience",
+        "removeBtn": "Remove Experience",
+        "itemLabel": "Experience {num}",
+        "detailsTitle": "Project Details",
+        "detailsCount": "Max limit of 3. Currently: {count}/3",
+        "addDetailBtn": "Add Detail",
+        "detailLabel": "Detail {num}",
+        "detailPlaceholder": "Enter the project description {num}",
+        "stacksTitle": "Technologies (Stacks)",
+        "stacksCount": "Currently using: {count} technology(ies)",
+        "addStackBtn": "Add Stack",
+        "stackLabel": "Stack {num}",
+        "stackPlaceholder": "E.g.: React, Node.js, TypeScript"
+      },
+      "education": {
+        "title": "Education",
+        "subTitle": "Add your academic background",
+        "count": "Currently: {count} education(s) registered.",
+        "addBtn": "Add Education",
+        "itemLabel": "Education {num}",
+        "placeholder": "Enter your degree/course",
+        "period": "Period",
+        "start": "Start",
+        "end": "End",
+        "month": "Month",
+        "year": "Year"
+      },
+      "certifications": {
+        "title": "Certifications",
+        "subTitle": "Add relevant certifications",
+        "count": "Currently: {count} certification(s) registered.",
+        "addBtn": "Add Certification",
+        "itemLabel": "Certificate {num}",
+        "placeholder": "Enter the certification name",
+        "date": "Date",
+        "completion": "Completion"
+      },
+      "languages": {
+        "title": "Languages",
+        "subTitle": "Add languages you speak",
+        "count": "Currently: {count} language(s) registered.",
+        "addBtn": "Add Language",
+        "itemLabel": "Language {num}",
+        "placeholder": "E.g.: English",
+        "levelPlaceholder": "Proficiency Level"
+      }
+    },
+    "feedbackAnalysis": {
+      "inconsistencies": "⚠️ Inconsistencies Detected",
+      "missingKeywords": "Keywords missing from job description:",
+      "missingKeywordsEmpty": "No missing keywords!",
+      "roleNotFound": "Role target not found:",
+      "roleNotFoundEmpty": "No role divergence detected!",
+      "missingSubject": "Subject words missing:",
+      "missingSubjectEmpty": "No subject terms missing!",
+      "roleValidation": "Role validation:",
+      "roleMismatch": "Attention: The role '{role}' provided in the form does not seem related to the job description.",
+      "roleMatch": "Success! The role '{role}' is perfectly aligned with the job description."
+    },
+    "feedbackOptimize": {
+      "weakVerbsDetected": "⚠️ Weak Verbs Detected",
+      "noWeakVerbs": "✨ No weak verbs found! Your action language is strong.",
+      "original": "Original:",
+      "context": "Context:",
+      "suggestions": "🚀 Action Verb Suggestions:",
+      "suspectWords": "Suspect Words Detected:"
+    }
   }
 }

@@ -2,6 +2,7 @@
 "use no memo";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import {
   Plus,
   Trash2,
@@ -55,19 +56,6 @@ import {
 
 import { cn } from "@/lib/utils";
 
-interface FormField {
-  id: string;
-  label: string;
-  placeholder: string;
-}
-
-interface FormSection {
-  id: string;
-  title: string;
-  subTitle: string;
-  fields: FormField[];
-}
-
 export interface KeywordData {
   id: string;
   keyword: string;
@@ -106,214 +94,9 @@ const LANGUAGE_LEVELS = [
   "Native",
 ];
 
-const STATIC_SECTIONS: FormSection[] = [
-  {
-    id: "meta_ats",
-    title: "Metadados ATS",
-    subTitle: "Metadados para indexação do currículo",
-    fields: [
-      {
-        id: "role_target",
-        label: "role_target",
-        placeholder: "Ex: Developer Frontend",
-      },
-      {
-        id: "subject",
-        label: "subject",
-        placeholder:
-          "Ex: Developer specializing in React, Angular, and Next.js...",
-      },
-      {
-        id: "keywords",
-        label: "keywords",
-        placeholder: "Ex: React, Angular, Next.js, TypeScript, JavaScript...",
-      },
-      { id: "category", label: "category", placeholder: "Ex: Resume" },
-      {
-        id: "contributor",
-        label: "contributor",
-        placeholder: "Ex: Gabriel Bueno Hygino",
-      },
-      {
-        id: "coverage",
-        label: "coverage",
-        placeholder: "Ex: Global / Remote / Hybrid / In Person",
-      },
-      {
-        id: "identifier",
-        label: "identifier",
-        placeholder: "Ex: CV-Gabriel-Bueno-2026",
-      },
-      {
-        id: "publisher",
-        label: "publisher",
-        placeholder: "Ex: Self-published via Python Automation",
-      },
-      {
-        id: "relation",
-        label: "relation",
-        placeholder: "Ex: Application for Software Engineer Position",
-      },
-      {
-        id: "rights",
-        label: "rights",
-        placeholder:
-          "Ex: Copyright © 2026 Gabriel Bueno Hygino. All rights reserved.",
-      },
-      {
-        id: "source",
-        label: "source",
-        placeholder: "Ex: http://bueno-portfolio-web.vercel.app/",
-      },
-      { id: "type", label: "type", placeholder: "Ex: Text/PDF" },
-      {
-        id: "notes",
-        label: "notes",
-        placeholder: "Ex: Optimized for ATS systems.",
-      },
-    ],
-  },
-  {
-    id: "header",
-    title: "Header",
-    subTitle: "Coloque os dados",
-    fields: [
-      { id: "name", label: "name", placeholder: "Coloque o seu nome" },
-      { id: "role", label: "role", placeholder: "Coloque o cargo desejado" },
-      {
-        id: "city",
-        label: "city",
-        placeholder: "Coloque a sua cidade e a sigla",
-      },
-      { id: "age", label: "age", placeholder: "Coloque a sua idade" },
-    ],
-  },
-  {
-    id: "links",
-    title: "Links Profissionais",
-    subTitle: "Coloque os seus links",
-    fields: [
-      {
-        id: "linkedin",
-        label: "LinkedIn",
-        placeholder: "Coloque o link do seu LinkedIn",
-      },
-      {
-        id: "phone",
-        label: "Telefone",
-        placeholder: "Coloque o link do seu Telefone",
-      },
-      {
-        id: "website",
-        label: "Site",
-        placeholder: "Coloque o link do seu Site",
-      },
-      {
-        id: "email",
-        label: "E-mail",
-        placeholder: "Coloque o link do seu E-mail",
-      },
-      {
-        id: "github",
-        label: "GitHub",
-        placeholder: "Coloque o link do seu GitHub",
-      },
-    ],
-  },
-];
-
-const BASE_EXPERIENCE_FIELDS: FormField[] = [
-  {
-    id: "role",
-    label: "role",
-    placeholder: "Coloque a função que você exerceu na empresa",
-  },
-  { id: "company", label: "company", placeholder: "Coloque o nome da empresa" },
-  {
-    id: "url",
-    label: "url",
-    placeholder: "Coloque o url do deploy do projeto",
-  },
-];
-
-const SortableHeader = ({
-  column,
-  title,
-  align = "left",
-}: {
-  column: Column<KeywordData, unknown>;
-  title: string;
-  align?: "left" | "center";
-}) => {
-  return (
-    <Button
-      variant="ghost"
-      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      className={`hover:text-primary ${align === "left" ? "-ml-4" : ""}`}
-    >
-      {title}
-      <HugeiconsIcon icon={ArrowUpDownIcon} size={16} className="ml-2" />
-    </Button>
-  );
-};
-
-export const columns: ColumnDef<KeywordData>[] = [
-  {
-    accessorKey: "keyword",
-    header: ({ column }) => (
-      <SortableHeader column={column} title="Palavra-Chave" />
-    ),
-    cell: ({ row }) => (
-      <div className="font-medium text-cyan-400 capitalize">
-        {row.getValue("keyword")}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "inVacancy",
-    header: ({ column }) => (
-      <SortableHeader column={column} title="Na Vaga" align="center" />
-    ),
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("inVacancy")}</div>
-    ),
-  },
-  {
-    accessorKey: "goal2x",
-    header: ({ column }) => (
-      <SortableHeader column={column} title="Meta (2x)" align="center" />
-    ),
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("goal2x")}</div>
-    ),
-  },
-  {
-    accessorKey: "onResume",
-    header: ({ column }) => (
-      <SortableHeader column={column} title="No Currículo" align="center" />
-    ),
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("onResume")}</div>
-    ),
-  },
-  {
-    accessorKey: "status",
-    header: ({ column }) => <SortableHeader column={column} title="Status" />,
-    cell: ({ row }) => {
-      const status = row.getValue("status") as string;
-      const isApproved = status === "Aprovado";
-      return (
-        <div
-          className={`flex items-center gap-2 font-bold ${isApproved ? "text-emerald-500" : "text-rose-500"}`}
-        >
-          {isApproved ? "✅" : "❌"}
-        </div>
-      );
-    },
-  },
-];
-
 export default function ResumeBuilderPage() {
+  const t = useTranslations("ResumeBuilderPage");
+
   const [activeTab, setActiveTab] = useState<"parse" | "match" | "optimize">(
     "parse"
   );
@@ -326,6 +109,216 @@ export default function ResumeBuilderPage() {
   const triggerAnalysis = useResumeStore((state) => state.triggerAnalysis);
 
   const keywordsTableData = analysisResults?.keywordsTable || EMPTY_KEYWORDS;
+
+  // --- Dynamic Constants (Dependem da tradução) ---
+  const STATIC_SECTIONS = [
+    {
+      id: "meta_ats",
+      title: t("sections.meta_ats.title"),
+      subTitle: t("sections.meta_ats.subTitle"),
+      fields: [
+        {
+          id: "role_target",
+          label: "role_target",
+          placeholder: "Ex: Developer Frontend",
+        },
+        {
+          id: "subject",
+          label: "subject",
+          placeholder:
+            "Ex: Developer specializing in React, Angular, and Next.js...",
+        },
+        {
+          id: "keywords",
+          label: "keywords",
+          placeholder: "Ex: React, Angular, Next.js, TypeScript, JavaScript...",
+        },
+        { id: "category", label: "category", placeholder: "Ex: Resume" },
+        {
+          id: "contributor",
+          label: "contributor",
+          placeholder: "Ex: Gabriel Bueno Hygino",
+        },
+        {
+          id: "coverage",
+          label: "coverage",
+          placeholder: "Ex: Global / Remote / Hybrid / In Person",
+        },
+        {
+          id: "identifier",
+          label: "identifier",
+          placeholder: "Ex: CV-Gabriel-Bueno-2026",
+        },
+        {
+          id: "publisher",
+          label: "publisher",
+          placeholder: "Ex: Self-published via Python Automation",
+        },
+        {
+          id: "relation",
+          label: "relation",
+          placeholder: "Ex: Application for Software Engineer Position",
+        },
+        {
+          id: "rights",
+          label: "rights",
+          placeholder:
+            "Ex: Copyright © 2026 Gabriel Bueno Hygino. All rights reserved.",
+        },
+        {
+          id: "source",
+          label: "source",
+          placeholder: "Ex: http://bueno-portfolio-web.vercel.app/",
+        },
+        { id: "type", label: "type", placeholder: "Ex: Text/PDF" },
+        {
+          id: "notes",
+          label: "notes",
+          placeholder: "Ex: Optimized for ATS systems.",
+        },
+      ],
+    },
+    {
+      id: "header",
+      title: t("sections.header.title"),
+      subTitle: t("sections.header.subTitle"),
+      fields: [
+        { id: "name", label: "name", placeholder: "Coloque o seu nome" },
+        { id: "role", label: "role", placeholder: "Coloque o cargo desejado" },
+        {
+          id: "city",
+          label: "city",
+          placeholder: "Coloque a sua cidade e a sigla",
+        },
+        { id: "age", label: "age", placeholder: "Coloque a sua idade" },
+      ],
+    },
+    {
+      id: "links",
+      title: t("sections.links.title"),
+      subTitle: t("sections.links.subTitle"),
+      fields: [
+        {
+          id: "linkedin",
+          label: "LinkedIn",
+          placeholder: "Coloque o link do seu LinkedIn",
+        },
+        {
+          id: "phone",
+          label: "Telefone",
+          placeholder: "Coloque o link do seu Telefone",
+        },
+        {
+          id: "website",
+          label: "Site",
+          placeholder: "Coloque o link do seu Site",
+        },
+        {
+          id: "email",
+          label: "E-mail",
+          placeholder: "Coloque o link do seu E-mail",
+        },
+        {
+          id: "github",
+          label: "GitHub",
+          placeholder: "Coloque o link do seu GitHub",
+        },
+      ],
+    },
+  ];
+
+  const BASE_EXPERIENCE_FIELDS = [
+    {
+      id: "role",
+      label: "role",
+      placeholder: "Coloque a função que você exerceu na empresa",
+    },
+    {
+      id: "company",
+      label: "company",
+      placeholder: "Coloque o nome da empresa",
+    },
+    {
+      id: "url",
+      label: "url",
+      placeholder: "Coloque o url do deploy do projeto",
+    },
+  ];
+
+  const SortableHeader = ({
+    column,
+    title,
+    align = "left",
+  }: {
+    column: Column<KeywordData, unknown>;
+    title: string;
+    align?: "left" | "center";
+  }) => (
+    <Button
+      variant="ghost"
+      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      className={`hover:text-primary ${align === "left" ? "-ml-4" : ""}`}
+    >
+      {title}
+      <HugeiconsIcon icon={ArrowUpDownIcon} size={16} className="ml-2" />
+    </Button>
+  );
+
+  const columns: ColumnDef<KeywordData>[] = [
+    {
+      accessorKey: "keyword",
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Palavra-Chave" />
+      ),
+      cell: ({ row }) => (
+        <div className="font-medium text-cyan-400 capitalize">
+          {row.getValue("keyword")}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "inVacancy",
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Na Vaga" align="center" />
+      ),
+      cell: ({ row }) => (
+        <div className="text-center">{row.getValue("inVacancy")}</div>
+      ),
+    },
+    {
+      accessorKey: "goal2x",
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Meta (2x)" align="center" />
+      ),
+      cell: ({ row }) => (
+        <div className="text-center">{row.getValue("goal2x")}</div>
+      ),
+    },
+    {
+      accessorKey: "onResume",
+      header: ({ column }) => (
+        <SortableHeader column={column} title="No Currículo" align="center" />
+      ),
+      cell: ({ row }) => (
+        <div className="text-center">{row.getValue("onResume")}</div>
+      ),
+    },
+    {
+      accessorKey: "status",
+      header: ({ column }) => <SortableHeader column={column} title="Status" />,
+      cell: ({ row }) => {
+        const status = row.getValue("status") as string;
+        const isApproved = status === "Aprovado";
+        return (
+          <div
+            className={`flex items-center gap-2 font-bold ${isApproved ? "text-emerald-500" : "text-rose-500"}`}
+          >
+            {isApproved ? "✅" : "❌"}
+          </div>
+        );
+      },
+    },
+  ];
 
   const table = useReactTable({
     data: keywordsTableData,
@@ -587,7 +580,6 @@ export default function ResumeBuilderPage() {
         text = parts.join(" | ");
       }
     }
-
     const dateParts = (dateStr || "").trim().split(" ");
 
     return {
@@ -622,7 +614,6 @@ export default function ResumeBuilderPage() {
         text = parts.join(" - ");
       }
     }
-
     return {
       text: text.trim(),
       level: levelStr.trim(),
@@ -636,16 +627,14 @@ export default function ResumeBuilderPage() {
 
   return (
     <div className="p-3 sm:p-6">
-      <h1 className="mb-6 text-2xl font-bold">Resume Builder & Optimization</h1>
+      <h1 className="mb-6 text-2xl font-bold">{t("title")}</h1>
 
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
         <div className="space-y-6 lg:col-span-7">
           <Card className="border-muted shadow-primary/50 shadow-lg">
             <CardHeader>
-              <CardTitle>Resume Content</CardTitle>
-              <CardDescription>
-                Monte o conteúdo do seu currículo abaixo
-              </CardDescription>
+              <CardTitle>{t("formCard.title")}</CardTitle>
+              <CardDescription>{t("formCard.description")}</CardDescription>
             </CardHeader>
 
             {STATIC_SECTIONS.map((section) => (
@@ -707,17 +696,17 @@ export default function ResumeBuilderPage() {
                 <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                   <div>
                     <h2 className="text-xl font-semibold">
-                      Resumo Profissional
+                      {t("sections.summary.title")}
                     </h2>
                     <h3 className="border-b pb-2 text-lg">
-                      Coloque o seu resumo profissional
+                      {t("sections.summary.subTitle")}
                     </h3>
                   </div>
                 </div>
                 <Field className="mb-4">
                   <div className="flex w-full flex-col gap-4">
                     <Textarea
-                      placeholder="Coloque o seu resumo profissional"
+                      placeholder={t("sections.summary.placeholder")}
                       value={cvData.summary}
                       onChange={(e) => {
                         handleAutoResize(e);
@@ -736,11 +725,14 @@ export default function ResumeBuilderPage() {
               <div className="flex flex-col gap-6 border-b py-4">
                 <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                   <div>
-                    <h2 className="text-xl font-semibold">Habilidades</h2>
-                    <h3 className="text-lg">Coloque as suas habilidades</h3>
+                    <h2 className="text-xl font-semibold">
+                      {t("sections.skills.title")}
+                    </h2>
+                    <h3 className="text-lg">{t("sections.skills.subTitle")}</h3>
                     <p className="text-muted-foreground mt-1 text-xs">
-                      Atualmente: {cvData.skills.length} habilidade(s)
-                      cadastrada(s).
+                      {t("sections.skills.count", {
+                        count: cvData.skills.length,
+                      })}
                     </p>
                   </div>
                   <Button
@@ -748,7 +740,8 @@ export default function ResumeBuilderPage() {
                     size="sm"
                     onClick={() => handleAddListItem("skills")}
                   >
-                    <Plus className="mr-2 h-4 w-4" /> Adicionar Habilidade
+                    <Plus className="mr-2 h-4 w-4" />{" "}
+                    {t("sections.skills.addBtn")}
                   </Button>
                 </div>
                 {cvData.skills.map((skill, index) => (
@@ -756,7 +749,7 @@ export default function ResumeBuilderPage() {
                     <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
                       <div className="flex w-full items-center justify-between sm:w-auto">
                         <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-                          Skill {index + 1}
+                          {t("sections.skills.itemLabel", { num: index + 1 })}
                         </FieldLabel>
                         {cvData.skills.length > 1 && (
                           <Button
@@ -774,7 +767,7 @@ export default function ResumeBuilderPage() {
                       <Textarea
                         className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
                         rows={1}
-                        placeholder="Coloque uma habilidade"
+                        placeholder={t("sections.skills.placeholder")}
                         value={skill}
                         onBlur={(e) => {
                           if (
@@ -809,7 +802,8 @@ export default function ResumeBuilderPage() {
                     onClick={() => handleAddListItem("skills")}
                     className="gap-1 text-xs"
                   >
-                    <Plus className="h-3.5 w-3.5" /> Adicionar Habilidade
+                    <Plus className="h-3.5 w-3.5" />{" "}
+                    {t("sections.skills.addBtn")}
                   </Button>
                 </div>
               </div>
@@ -820,14 +814,15 @@ export default function ResumeBuilderPage() {
                 <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                   <div>
                     <h2 className="text-xl font-semibold">
-                      Experiências Profissionais
+                      {t("sections.experience.title")}
                     </h2>
                     <h3 className="text-lg">
-                      Cadastre suas experiências de atuação
+                      {t("sections.experience.subTitle")}
                     </h3>
                     <p className="text-muted-foreground mt-1 text-xs">
-                      Limite máximo de 4 experiências. Atualmente usando:{" "}
-                      {cvData.experiences.length}/4
+                      {t("sections.experience.count", {
+                        count: cvData.experiences.length,
+                      })}
                     </p>
                   </div>
                   {cvData.experiences.length < 4 && (
@@ -836,7 +831,8 @@ export default function ResumeBuilderPage() {
                       size="sm"
                       onClick={handleAddExperience}
                     >
-                      <Plus className="mr-2 h-4 w-4" /> Adicionar Experiência
+                      <Plus className="mr-2 h-4 w-4" />{" "}
+                      {t("sections.experience.addBtn")}
                     </Button>
                   )}
                 </div>
@@ -850,7 +846,9 @@ export default function ResumeBuilderPage() {
                     >
                       <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                         <h4 className="text-lg font-semibold">
-                          Experiência {expIndex + 1}
+                          {t("sections.experience.itemLabel", {
+                            num: expIndex + 1,
+                          })}
                         </h4>
                         {cvData.experiences.length > 1 && (
                           <Button
@@ -859,7 +857,7 @@ export default function ResumeBuilderPage() {
                             onClick={() => handleRemoveExperience(expIndex)}
                           >
                             <Trash2 className="text-destructive mr-1 h-4 w-4" />{" "}
-                            Remover Experiência
+                            {t("sections.experience.removeBtn")}
                           </Button>
                         )}
                       </div>
@@ -905,7 +903,7 @@ export default function ResumeBuilderPage() {
                           <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-end sm:gap-2">
                             <div className="flex w-full flex-col gap-1.5 sm:w-auto">
                               <span className="text-muted-foreground pl-1 text-[10px] font-semibold uppercase">
-                                Início
+                                {t("sections.education.start")}
                               </span>
                               <div className="flex w-full items-center gap-2 sm:w-auto">
                                 <Select
@@ -921,7 +919,11 @@ export default function ResumeBuilderPage() {
                                   }
                                 >
                                   <SelectTrigger className="w-full sm:w-[110px]">
-                                    <SelectValue placeholder="Mês" />
+                                    <SelectValue
+                                      placeholder={t(
+                                        "sections.education.month"
+                                      )}
+                                    />
                                   </SelectTrigger>
                                   <SelectContent>
                                     {MONTHS.map((m) => (
@@ -944,7 +946,9 @@ export default function ResumeBuilderPage() {
                                   }
                                 >
                                   <SelectTrigger className="w-full sm:w-[90px]">
-                                    <SelectValue placeholder="Ano" />
+                                    <SelectValue
+                                      placeholder={t("sections.education.year")}
+                                    />
                                   </SelectTrigger>
                                   <SelectContent>
                                     {YEARS.map((y) => (
@@ -963,7 +967,7 @@ export default function ResumeBuilderPage() {
 
                             <div className="flex w-full flex-col gap-1.5 sm:w-auto">
                               <span className="text-muted-foreground pl-1 text-[10px] font-semibold uppercase">
-                                Término
+                                {t("sections.education.end")}
                               </span>
                               <div className="flex w-full items-center gap-2 sm:w-auto">
                                 <Select
@@ -979,7 +983,11 @@ export default function ResumeBuilderPage() {
                                   }
                                 >
                                   <SelectTrigger className="w-full sm:w-[110px]">
-                                    <SelectValue placeholder="Mês" />
+                                    <SelectValue
+                                      placeholder={t(
+                                        "sections.education.month"
+                                      )}
+                                    />
                                   </SelectTrigger>
                                   <SelectContent>
                                     <SelectItem value="Present">
@@ -1006,7 +1014,11 @@ export default function ResumeBuilderPage() {
                                     }
                                   >
                                     <SelectTrigger className="w-full sm:w-[90px]">
-                                      <SelectValue placeholder="Ano" />
+                                      <SelectValue
+                                        placeholder={t(
+                                          "sections.education.year"
+                                        )}
+                                      />
                                     </SelectTrigger>
                                     <SelectContent>
                                       {YEARS.map((y) => (
@@ -1027,11 +1039,12 @@ export default function ResumeBuilderPage() {
                         <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                           <div>
                             <h5 className="text-sm font-semibold">
-                              Detalhes do Projeto
+                              {t("sections.experience.detailsTitle")}
                             </h5>
                             <p className="text-muted-foreground text-xs">
-                              Limite máximo de 3 detalhes. Atualmente:{" "}
-                              {exp.details.length}/3
+                              {t("sections.experience.detailsCount", {
+                                count: exp.details.length,
+                              })}
                             </p>
                           </div>
                           {exp.details.length < 3 && (
@@ -1040,8 +1053,8 @@ export default function ResumeBuilderPage() {
                               size="xs"
                               onClick={() => handleAddDetail(expIndex)}
                             >
-                              <Plus className="mr-1 h-3.5 w-3.5" /> Adicionar
-                              Detalhe
+                              <Plus className="mr-1 h-3.5 w-3.5" />{" "}
+                              {t("sections.experience.addDetailBtn")}
                             </Button>
                           )}
                         </div>
@@ -1051,7 +1064,9 @@ export default function ResumeBuilderPage() {
                             <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
                               <div className="flex w-full items-center justify-between sm:w-auto">
                                 <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-                                  Detalhe {detailIndex + 1}
+                                  {t("sections.experience.detailLabel", {
+                                    num: detailIndex + 1,
+                                  })}
                                 </FieldLabel>
                                 {exp.details.length > 1 && (
                                   <Button
@@ -1069,7 +1084,10 @@ export default function ResumeBuilderPage() {
                               <Textarea
                                 className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
                                 rows={1}
-                                placeholder={`Coloque a descrição sobre o projeto ${detailIndex + 1}`}
+                                placeholder={t(
+                                  "sections.experience.detailPlaceholder",
+                                  { num: detailIndex + 1 }
+                                )}
                                 value={detail}
                                 onBlur={(e) => {
                                   if (
@@ -1109,11 +1127,12 @@ export default function ResumeBuilderPage() {
                         <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                           <div>
                             <h5 className="text-sm font-semibold">
-                              Tecnologias (Stacks)
+                              {t("sections.experience.stacksTitle")}
                             </h5>
                             <p className="text-muted-foreground text-xs">
-                              Atualmente usando: {exp.stacks.length}{" "}
-                              tecnologia(s)
+                              {t("sections.experience.stacksCount", {
+                                count: exp.stacks.length,
+                              })}
                             </p>
                           </div>
                           <Button
@@ -1121,8 +1140,8 @@ export default function ResumeBuilderPage() {
                             size="xs"
                             onClick={() => handleAddStack(expIndex)}
                           >
-                            <Plus className="mr-1 h-3.5 w-3.5" /> Adicionar
-                            Stack
+                            <Plus className="mr-1 h-3.5 w-3.5" />{" "}
+                            {t("sections.experience.addStackBtn")}
                           </Button>
                         </div>
 
@@ -1131,7 +1150,9 @@ export default function ResumeBuilderPage() {
                             <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
                               <div className="flex w-full items-center justify-between sm:w-auto">
                                 <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-                                  Stack {stackIndex + 1}
+                                  {t("sections.experience.stackLabel", {
+                                    num: stackIndex + 1,
+                                  })}
                                 </FieldLabel>
                                 {exp.stacks.length > 1 && (
                                   <Button
@@ -1149,7 +1170,9 @@ export default function ResumeBuilderPage() {
                               <Textarea
                                 className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
                                 rows={1}
-                                placeholder="Ex: React, Node.js, TypeScript"
+                                placeholder={t(
+                                  "sections.experience.stackPlaceholder"
+                                )}
                                 value={stack}
                                 onBlur={(e) => {
                                   if (
@@ -1181,18 +1204,21 @@ export default function ResumeBuilderPage() {
                                 </Button>
                               )}
                             </div>
+                            {stackIndex === exp.stacks.length - 1 && (
+                              <div className="mt-2 flex justify-end">
+                                <Button
+                                  variant="outline"
+                                  size="xs"
+                                  onClick={() => handleAddStack(expIndex)}
+                                  className="gap-1 text-xs"
+                                >
+                                  <Plus className="h-3.5 w-3.5" />{" "}
+                                  {t("sections.experience.addStackBtn")}
+                                </Button>
+                              </div>
+                            )}
                           </Field>
                         ))}
-                        <div className="mt-2 flex justify-end">
-                          <Button
-                            variant="outline"
-                            size="xs"
-                            onClick={() => handleAddStack(expIndex)}
-                            className="gap-1 text-xs"
-                          >
-                            <Plus className="h-3.5 w-3.5" /> Adicionar Stack
-                          </Button>
-                        </div>
                       </div>
                     </div>
                   );
@@ -1204,13 +1230,16 @@ export default function ResumeBuilderPage() {
               <div className="flex flex-col gap-6 border-b py-4">
                 <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                   <div>
-                    <h2 className="text-xl font-semibold">Educação</h2>
+                    <h2 className="text-xl font-semibold">
+                      {t("sections.education.title")}
+                    </h2>
                     <h3 className="border-b pb-2 text-lg">
-                      Coloque a sua formação acadêmica
+                      {t("sections.education.subTitle")}
                     </h3>
                     <p className="text-muted-foreground mt-1 text-xs">
-                      Atualmente: {cvData.education.length} formação(ões)
-                      cadastrada(s).
+                      {t("sections.education.count", {
+                        count: cvData.education.length,
+                      })}
                     </p>
                   </div>
                   <Button
@@ -1218,7 +1247,8 @@ export default function ResumeBuilderPage() {
                     size="sm"
                     onClick={() => handleAddListItem("education")}
                   >
-                    <Plus className="mr-2 h-4 w-4" /> Adicionar Formação
+                    <Plus className="mr-2 h-4 w-4" />{" "}
+                    {t("sections.education.addBtn")}
                   </Button>
                 </div>
                 {cvData.education.map((edu, index) => {
@@ -1233,7 +1263,9 @@ export default function ResumeBuilderPage() {
                         <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
                           <div className="flex w-full items-center justify-between sm:w-auto">
                             <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-                              Educação {index + 1}
+                              {t("sections.education.itemLabel", {
+                                num: index + 1,
+                              })}
                             </FieldLabel>
                             {cvData.education.length > 1 && (
                               <Button
@@ -1251,7 +1283,7 @@ export default function ResumeBuilderPage() {
                           <Textarea
                             className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
                             rows={1}
-                            placeholder="Coloque a sua formação"
+                            placeholder={t("sections.education.placeholder")}
                             value={parsed.text}
                             onBlur={(e) => {
                               if (
@@ -1289,12 +1321,12 @@ export default function ResumeBuilderPage() {
 
                         <div className="mt-1 flex w-full flex-col gap-4 sm:flex-row sm:items-center">
                           <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-                            Período
+                            {t("sections.education.period")}
                           </FieldLabel>
                           <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-end sm:gap-2">
                             <div className="flex w-full flex-col gap-1.5 sm:w-auto">
                               <span className="text-muted-foreground pl-1 text-[10px] font-semibold uppercase">
-                                Início
+                                {t("sections.education.start")}
                               </span>
                               <div className="flex w-full items-center gap-2 sm:w-auto">
                                 <Select
@@ -1311,7 +1343,11 @@ export default function ResumeBuilderPage() {
                                   }
                                 >
                                   <SelectTrigger className="w-full sm:w-[110px]">
-                                    <SelectValue placeholder="Mês" />
+                                    <SelectValue
+                                      placeholder={t(
+                                        "sections.education.month"
+                                      )}
+                                    />
                                   </SelectTrigger>
                                   <SelectContent>
                                     {MONTHS.map((m) => (
@@ -1335,7 +1371,9 @@ export default function ResumeBuilderPage() {
                                   }
                                 >
                                   <SelectTrigger className="w-full sm:w-[90px]">
-                                    <SelectValue placeholder="Ano" />
+                                    <SelectValue
+                                      placeholder={t("sections.education.year")}
+                                    />
                                   </SelectTrigger>
                                   <SelectContent>
                                     {YEARS.map((y) => (
@@ -1354,7 +1392,7 @@ export default function ResumeBuilderPage() {
 
                             <div className="flex w-full flex-col gap-1.5 sm:w-auto">
                               <span className="text-muted-foreground pl-1 text-[10px] font-semibold uppercase">
-                                Término
+                                {t("sections.education.end")}
                               </span>
                               <div className="flex w-full items-center gap-2 sm:w-auto">
                                 <Select
@@ -1371,7 +1409,11 @@ export default function ResumeBuilderPage() {
                                   }
                                 >
                                   <SelectTrigger className="w-full sm:w-[110px]">
-                                    <SelectValue placeholder="Mês" />
+                                    <SelectValue
+                                      placeholder={t(
+                                        "sections.education.month"
+                                      )}
+                                    />
                                   </SelectTrigger>
                                   <SelectContent>
                                     <SelectItem value="Present">
@@ -1399,7 +1441,11 @@ export default function ResumeBuilderPage() {
                                     }
                                   >
                                     <SelectTrigger className="w-full sm:w-[90px]">
-                                      <SelectValue placeholder="Ano" />
+                                      <SelectValue
+                                        placeholder={t(
+                                          "sections.education.year"
+                                        )}
+                                      />
                                     </SelectTrigger>
                                     <SelectContent>
                                       {YEARS.map((y) => (
@@ -1425,7 +1471,8 @@ export default function ResumeBuilderPage() {
                     onClick={() => handleAddListItem("education")}
                     className="gap-1 text-xs"
                   >
-                    <Plus className="h-3.5 w-3.5" /> Adicionar Formação
+                    <Plus className="mr-1 h-3.5 w-3.5" />{" "}
+                    {t("sections.education.addBtn")}
                   </Button>
                 </div>
               </div>
@@ -1435,13 +1482,16 @@ export default function ResumeBuilderPage() {
               <div className="flex flex-col gap-6 border-b py-4">
                 <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                   <div>
-                    <h2 className="text-xl font-semibold">Certificações</h2>
+                    <h2 className="text-xl font-semibold">
+                      {t("sections.certifications.title")}
+                    </h2>
                     <h3 className="border-b pb-2 text-lg">
-                      Coloque as suas certificações relevantes
+                      {t("sections.certifications.subTitle")}
                     </h3>
                     <p className="text-muted-foreground mt-1 text-xs">
-                      Atualmente: {cvData.certifications.length}{" "}
-                      certificação(ões) cadastrada(s).
+                      {t("sections.certifications.count", {
+                        count: cvData.certifications.length,
+                      })}
                     </p>
                   </div>
                   <Button
@@ -1449,7 +1499,8 @@ export default function ResumeBuilderPage() {
                     size="sm"
                     onClick={() => handleAddListItem("certifications")}
                   >
-                    <Plus className="mr-2 h-4 w-4" /> Adicionar Certificação
+                    <Plus className="mr-2 h-4 w-4" />{" "}
+                    {t("sections.certifications.addBtn")}
                   </Button>
                 </div>
                 {cvData.certifications.map((cert, index) => {
@@ -1464,7 +1515,9 @@ export default function ResumeBuilderPage() {
                         <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
                           <div className="flex w-full items-center justify-between sm:w-auto">
                             <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-                              Certificado {index + 1}
+                              {t("sections.certifications.itemLabel", {
+                                num: index + 1,
+                              })}
                             </FieldLabel>
                             {cvData.certifications.length > 1 && (
                               <Button
@@ -1482,7 +1535,9 @@ export default function ResumeBuilderPage() {
                           <Textarea
                             className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
                             rows={1}
-                            placeholder="Coloque o nome da sua certificação"
+                            placeholder={t(
+                              "sections.certifications.placeholder"
+                            )}
                             value={parsed.text}
                             onBlur={(e) => {
                               if (
@@ -1518,12 +1573,12 @@ export default function ResumeBuilderPage() {
 
                         <div className="mt-1 flex w-full flex-col gap-4 sm:flex-row sm:items-center">
                           <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-                            Data
+                            {t("sections.certifications.date")}
                           </FieldLabel>
                           <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-end sm:gap-2">
                             <div className="flex w-full flex-col gap-1.5 sm:w-auto">
                               <span className="text-muted-foreground pl-1 text-[10px] font-semibold uppercase">
-                                Conclusão
+                                {t("sections.certifications.completion")}
                               </span>
                               <div className="flex w-full items-center gap-2 sm:w-auto">
                                 <Select
@@ -1538,7 +1593,11 @@ export default function ResumeBuilderPage() {
                                   }
                                 >
                                   <SelectTrigger className="w-full sm:w-[110px]">
-                                    <SelectValue placeholder="Mês" />
+                                    <SelectValue
+                                      placeholder={t(
+                                        "sections.education.month"
+                                      )}
+                                    />
                                   </SelectTrigger>
                                   <SelectContent>
                                     {MONTHS.map((m) => (
@@ -1560,7 +1619,9 @@ export default function ResumeBuilderPage() {
                                   }
                                 >
                                   <SelectTrigger className="w-full sm:w-[90px]">
-                                    <SelectValue placeholder="Ano" />
+                                    <SelectValue
+                                      placeholder={t("sections.education.year")}
+                                    />
                                   </SelectTrigger>
                                   <SelectContent>
                                     {YEARS.map((y) => (
@@ -1585,7 +1646,8 @@ export default function ResumeBuilderPage() {
                     onClick={() => handleAddListItem("certifications")}
                     className="gap-1 text-xs"
                   >
-                    <Plus className="h-3.5 w-3.5" /> Adicionar Certificação
+                    <Plus className="mr-1 h-3.5 w-3.5" />{" "}
+                    {t("sections.certifications.addBtn")}
                   </Button>
                 </div>
               </div>
@@ -1595,13 +1657,16 @@ export default function ResumeBuilderPage() {
               <div className="flex flex-col gap-6 py-4">
                 <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                   <div>
-                    <h2 className="text-xl font-semibold">Idiomas</h2>
+                    <h2 className="text-xl font-semibold">
+                      {t("sections.languages.title")}
+                    </h2>
                     <h3 className="border-b pb-2 text-lg">
-                      Coloque os idiomas que você fala
+                      {t("sections.languages.subTitle")}
                     </h3>
                     <p className="text-muted-foreground mt-1 text-xs">
-                      Atualmente: {cvData.languages.length} idioma(s)
-                      cadastrado(s).
+                      {t("sections.languages.count", {
+                        count: cvData.languages.length,
+                      })}
                     </p>
                   </div>
                   <Button
@@ -1609,7 +1674,8 @@ export default function ResumeBuilderPage() {
                     size="sm"
                     onClick={() => handleAddListItem("languages")}
                   >
-                    <Plus className="mr-2 h-4 w-4" /> Adicionar Idioma
+                    <Plus className="mr-2 h-4 w-4" />{" "}
+                    {t("sections.languages.addBtn")}
                   </Button>
                 </div>
                 {cvData.languages.map((lang, index) => {
@@ -1620,7 +1686,9 @@ export default function ResumeBuilderPage() {
                       <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
                         <div className="flex w-full items-center justify-between sm:w-auto">
                           <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-                            Idioma {index + 1}
+                            {t("sections.languages.itemLabel", {
+                              num: index + 1,
+                            })}
                           </FieldLabel>
                           {cvData.languages.length > 1 && (
                             <Button
@@ -1639,7 +1707,7 @@ export default function ResumeBuilderPage() {
                           <Textarea
                             className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
                             rows={1}
-                            placeholder="Ex: English"
+                            placeholder={t("sections.languages.placeholder")}
                             value={parsedLang.text}
                             onBlur={(e) => {
                               if (
@@ -1665,7 +1733,11 @@ export default function ResumeBuilderPage() {
                             }
                           >
                             <SelectTrigger className="w-full sm:w-[220px]">
-                              <SelectValue placeholder="Nível de Proficiência" />
+                              <SelectValue
+                                placeholder={t(
+                                  "sections.languages.levelPlaceholder"
+                                )}
+                              />
                             </SelectTrigger>
                             <SelectContent>
                               {LANGUAGE_LEVELS.map((level) => (
@@ -1699,7 +1771,8 @@ export default function ResumeBuilderPage() {
                     onClick={() => handleAddListItem("languages")}
                     className="gap-1 text-xs"
                   >
-                    <Plus className="h-3.5 w-3.5" /> Adicionar Idioma
+                    <Plus className="mr-1 h-3.5 w-3.5" />{" "}
+                    {t("sections.languages.addBtn")}
                   </Button>
                 </div>
               </div>
@@ -1712,7 +1785,7 @@ export default function ResumeBuilderPage() {
             <CardHeader className="relative border-b pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">
-                  ATS Optimization Feedbacks
+                  {t("feedbackCard.title")}
                 </CardTitle>
                 <div className="flex items-center gap-2">
                   <Button
@@ -1734,9 +1807,7 @@ export default function ResumeBuilderPage() {
                   )}
                 </div>
               </div>
-              <CardDescription>
-                Analise os diagnósticos e ajuste o formulário ao lado
-              </CardDescription>
+              <CardDescription>{t("feedbackCard.description")}</CardDescription>
               <div className="mt-4 grid w-full grid-cols-3 gap-1.5 sm:flex sm:flex-row sm:gap-1.5">
                 <Button
                   variant={activeTab === "parse" ? "default" : "outline"}
@@ -1745,7 +1816,9 @@ export default function ResumeBuilderPage() {
                   onClick={() => setActiveTab("parse")}
                 >
                   <ShieldAlert className="h-4 w-4 shrink-0" />
-                  <span className="truncate">Análise</span>
+                  <span className="truncate">
+                    {t("feedbackCard.tabs.parse")}
+                  </span>
                 </Button>
                 <Button
                   variant={activeTab === "match" ? "default" : "outline"}
@@ -1754,7 +1827,9 @@ export default function ResumeBuilderPage() {
                   onClick={() => setActiveTab("match")}
                 >
                   <TableProperties className="h-4 w-4 shrink-0" />
-                  <span className="truncate">Keywords</span>
+                  <span className="truncate">
+                    {t("feedbackCard.tabs.match")}
+                  </span>
                 </Button>
                 <Button
                   variant={activeTab === "optimize" ? "default" : "outline"}
@@ -1763,7 +1838,9 @@ export default function ResumeBuilderPage() {
                   onClick={() => setActiveTab("optimize")}
                 >
                   <Sparkles className="h-4 w-4 shrink-0" />
-                  <span className="truncate">Verbos</span>
+                  <span className="truncate">
+                    {t("feedbackCard.tabs.optimize")}
+                  </span>
                 </Button>
               </div>
             </CardHeader>
@@ -1772,7 +1849,7 @@ export default function ResumeBuilderPage() {
               {!analysisResults ? (
                 <div className="text-muted-foreground flex min-h-[300px] flex-col items-center justify-center gap-2 text-center text-sm">
                   <Sparkles className="text-muted/60 h-8 w-8 animate-pulse" />
-                  <p>Aguardando preenchimento para analisar...</p>
+                  <p>{t("feedbackCard.waiting")}</p>
                 </div>
               ) : (
                 <>
@@ -1780,58 +1857,64 @@ export default function ResumeBuilderPage() {
                     <div className="flex flex-col gap-5 text-sm">
                       <div className="bg-card space-y-4 rounded-lg border p-4">
                         <h3 className="flex items-center gap-2 font-semibold text-rose-500">
-                          ⚠️ Inconsistências Detectadas
+                          {t("feedbackAnalysis.inconsistencies")}
                         </h3>
                         <div className="space-y-3">
                           <div>
                             <p className="text-muted-foreground font-semibold">
-                              Keywords ausentes na vaga:
+                              {t("feedbackAnalysis.missingKeywords")}
                             </p>
                             <Textarea
                               readOnly
                               value={
                                 analysisResults.warnings.keywords.join(", ") ||
-                                "Nenhuma palavra-chave ausente!"
+                                t("feedbackAnalysis.missingKeywordsEmpty")
                               }
                               className="bg-muted/50 mt-1.5 min-h-[60px] text-xs"
                             />
                           </div>
                           <div>
                             <p className="text-muted-foreground font-semibold">
-                              Role target não encontrado:
+                              {t("feedbackAnalysis.roleNotFound")}
                             </p>
                             <Textarea
                               readOnly
                               value={
                                 analysisResults.warnings.roleTarget ||
-                                "Divergência de cargo não detectada!"
+                                t("feedbackAnalysis.roleNotFoundEmpty")
                               }
                               className="bg-muted/50 mt-1.5 min-h-[40px] text-xs"
                             />
                           </div>
                           <div>
                             <p className="text-muted-foreground font-semibold">
-                              Palavras do subject ausentes:
+                              {t("feedbackAnalysis.missingSubject")}
                             </p>
                             <Textarea
                               readOnly
                               value={
                                 analysisResults.warnings.subjectWords.join(
                                   ", "
-                                ) || "Nenhum termo do subject ausente!"
+                                ) || t("feedbackAnalysis.missingSubjectEmpty")
                               }
                               className="bg-muted/50 mt-1.5 min-h-[60px] text-xs"
                             />
                           </div>
                           <div>
                             <p className="text-muted-foreground font-semibold">
-                              Validação do cargo declarado:
+                              {t("feedbackAnalysis.roleValidation")}
                             </p>
                             <Textarea
                               readOnly
                               value={analysisRoleValidationText(
                                 analysisResults.warnings.infoRoleMismatch,
-                                cvData.info.role
+                                cvData.info.role,
+                                t("feedbackAnalysis.roleMismatch", {
+                                  role: cvData.info.role || "N/A",
+                                }),
+                                t("feedbackAnalysis.roleMatch", {
+                                  role: cvData.info.role || "N/A",
+                                })
                               )}
                               className={cn(
                                 "bg-muted/50 mt-1.5 min-h-[60px] text-xs",
@@ -1928,8 +2011,7 @@ export default function ResumeBuilderPage() {
                     <div className="space-y-4 text-xs">
                       {analysisResults.verbIssues.length === 0 ? (
                         <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-4 text-center font-bold text-emerald-500">
-                          ✨ Nenhum verbo fraco encontrado! Sua linguagem de
-                          atuação está forte.
+                          {t("feedbackOptimize.noWeakVerbs")}
                         </div>
                       ) : (
                         analysisResults.verbIssues.map((issue, index) => (
@@ -1938,11 +2020,12 @@ export default function ResumeBuilderPage() {
                             className="bg-card space-y-3 rounded-lg border p-4"
                           >
                             <h3 className="flex items-center gap-1.5 font-semibold text-yellow-500">
-                              ⚠️ Verbo Fraco Detectado ({issue.context})
+                              {t("feedbackOptimize.weakVerbsDetected")} (
+                              {issue.context})
                             </h3>
                             <div className="space-y-2">
                               <p className="text-muted-foreground font-semibold">
-                                Original:
+                                {t("feedbackOptimize.original")}
                               </p>
                               <p className="bg-muted w-fit rounded px-2 py-1 font-mono text-rose-500">
                                 ...{issue.original}...
@@ -1950,7 +2033,7 @@ export default function ResumeBuilderPage() {
                             </div>
                             <div className="space-y-2">
                               <p className="text-muted-foreground font-semibold">
-                                Contexto:
+                                {t("feedbackOptimize.context")}
                               </p>
                               <p className="bg-muted/30 rounded border p-2.5 leading-relaxed italic">
                                 {issue.context}
@@ -1958,7 +2041,7 @@ export default function ResumeBuilderPage() {
                             </div>
                             <div className="space-y-2">
                               <p className="font-semibold text-emerald-500">
-                                🚀 Sugestões de Verbos de Ação:
+                                {t("feedbackOptimize.suggestions")}
                               </p>
                               <div className="flex gap-1.5">
                                 {issue.suggestions.map((suggestion, sIdx) => (
@@ -1978,7 +2061,7 @@ export default function ResumeBuilderPage() {
                       {analysisResults.suspectWords.length > 0 && (
                         <div className="bg-card space-y-2 rounded-lg border p-4">
                           <h3 className="text-destructive font-semibold">
-                            Palavras Suspeitas Detectadas:
+                            {t("feedbackOptimize.suspectWords")}
                           </h3>
                           <p className="text-destructive bg-destructive/10 w-fit rounded px-3 py-1.5 font-bold">
                             {analysisResults.suspectWords.join(", ")}
@@ -1997,9 +2080,12 @@ export default function ResumeBuilderPage() {
   );
 }
 
-function analysisRoleValidationText(isMismatch: boolean, role: string) {
-  if (isMismatch) {
-    return `Atenção: O cargo '${role || "não informado"}' informado no formulário não parece estar relacionado à descrição da vaga.`;
-  }
-  return `Sucesso! O cargo '${role}' está perfeitamente alinhado com a descrição da vaga analisada.`;
+function analysisRoleValidationText(
+  isMismatch: boolean,
+  role: string,
+  mismatchMsg: string,
+  matchMsg: string
+) {
+  if (isMismatch) return mismatchMsg;
+  return matchMsg;
 }

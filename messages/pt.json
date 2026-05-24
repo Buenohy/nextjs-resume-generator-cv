@@ -62,5 +62,119 @@
     "cardDescription": "Coloque os detalhes da vaga abaixo",
     "placeholder": "Cole a descrição completa da vaga do LinkedIn, Wellfound, etc. aqui...",
     "button": "Enviar descrição da vaga"
+  },
+  "ResumeBuilderPage": {
+    "title": "Construtor e Otimização do Currículo",
+    "formCard": {
+      "title": "Conteúdo do Currículo",
+      "description": "Monte o conteúdo do seu currículo abaixo"
+    },
+    "feedbackCard": {
+      "title": "Feedbacks de Otimização ATS",
+      "description": "Analise os diagnósticos e ajuste o formulário",
+      "waiting": "Aguardando preenchimento para analisar...",
+      "tabs": {
+        "parse": "Análise",
+        "match": "Palavras-chave",
+        "optimize": "Verbos"
+      }
+    },
+    "sections": {
+      "header": {
+        "title": "Cabeçalho",
+        "subTitle": "Coloque seus dados pessoais"
+      },
+      "meta_ats": {
+        "title": "Metadados ATS",
+        "subTitle": "Metadados para indexação nos sistemas"
+      },
+      "links": {
+        "title": "Links Profissionais",
+        "subTitle": "Coloque os seus links de contato e portfólio"
+      },
+      "summary": {
+        "title": "Resumo Profissional",
+        "subTitle": "Escreva seu resumo profissional",
+        "placeholder": "Digite o seu resumo profissional"
+      },
+      "skills": {
+        "title": "Habilidades",
+        "subTitle": "Coloque as suas habilidades técnicas",
+        "count": "Atualmente: {count} habilidade(s) cadastrada(s).",
+        "addBtn": "Adicionar Habilidade",
+        "itemLabel": "Habilidade {num}",
+        "placeholder": "Digite uma habilidade"
+      },
+      "experience": {
+        "title": "Experiências Profissionais",
+        "subTitle": "Cadastre suas experiências de atuação",
+        "count": "Limite máximo de 4. Atualmente usando: {count}/4",
+        "addBtn": "Adicionar Experiência",
+        "removeBtn": "Remover Experiência",
+        "itemLabel": "Experiência {num}",
+        "detailsTitle": "Detalhes do Projeto",
+        "detailsCount": "Limite máximo de 3. Atualmente: {count}/3",
+        "addDetailBtn": "Adicionar Detalhe",
+        "detailLabel": "Detalhe {num}",
+        "detailPlaceholder": "Digite a descrição do projeto {num}",
+        "stacksTitle": "Tecnologias (Stacks)",
+        "stacksCount": "Atualmente usando: {count} tecnologia(s)",
+        "addStackBtn": "Adicionar Stack",
+        "stackLabel": "Stack {num}",
+        "stackPlaceholder": "Ex: React, Node.js, TypeScript"
+      },
+      "education": {
+        "title": "Educação",
+        "subTitle": "Coloque a sua formação acadêmica",
+        "count": "Atualmente: {count} formação(ões) cadastrada(s).",
+        "addBtn": "Adicionar Formação",
+        "itemLabel": "Educação {num}",
+        "placeholder": "Coloque a sua formação",
+        "period": "Período",
+        "start": "Início",
+        "end": "Término",
+        "month": "Mês",
+        "year": "Ano"
+      },
+      "certifications": {
+        "title": "Certificações",
+        "subTitle": "Coloque certificações relevantes",
+        "count": "Atualmente: {count} certificação(ões) cadastrada(s).",
+        "addBtn": "Adicionar Certificação",
+        "itemLabel": "Certificado {num}",
+        "placeholder": "Coloque o nome da certificação",
+        "date": "Data",
+        "completion": "Conclusão"
+      },
+      "languages": {
+        "title": "Idiomas",
+        "subTitle": "Coloque os idiomas que você fala",
+        "count": "Atualmente: {count} idioma(s) cadastrado(s).",
+        "addBtn": "Adicionar Idioma",
+        "itemLabel": "Idioma {num}",
+        "placeholder": "Ex: Inglês",
+        "levelPlaceholder": "Nível de Proficiência"
+      }
+    },
+    "feedbackAnalysis": {
+      "inconsistencies": "⚠️ Inconsistências Detectadas",
+      "missingKeywords": "Keywords ausentes na vaga:",
+      "missingKeywordsEmpty": "Nenhuma palavra-chave ausente!",
+      "roleNotFound": "Role target não encontrado:",
+      "roleNotFoundEmpty": "Divergência de cargo não detectada!",
+      "missingSubject": "Palavras do subject ausentes:",
+      "missingSubjectEmpty": "Nenhum termo do subject ausente!",
+      "roleValidation": "Validação do cargo declarado:",
+      "roleMismatch": "Atenção: O cargo '{role}' informado no formulário não parece estar relacionado à descrição da vaga.",
+      "roleMatch": "Sucesso! O cargo '{role}' está perfeitamente alinhado com a descrição da vaga analisada."
+    },
+    "feedbackOptimize": {
+      "weakVerbsDetected": "⚠️ Verbo Fraco Detectado",
+      "noWeakVerbs": "✨ Nenhum verbo fraco encontrado! Sua linguagem de atuação está forte.",
+      "original": "Original:",
+      "context": "Contexto:",
+      "suggestions": "🚀 Sugestões de Verbos de Ação:",
+      "suspectWords": "Palavras Suspeitas Detectadas:"
+    }
   }
 }
