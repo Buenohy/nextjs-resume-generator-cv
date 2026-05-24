@@ -18,8 +18,9 @@ type ExperienceItem = FullContentState["experiences"][number];
 
 export function ExperienceSectionFullContent() {
   const t = useTranslations("ResumeBuilderPage");
-  const experiences = useFullContentStore((s) => s.experiences);
-  const updateFullContent = useFullContentStore((s) => s.updateFullContent);
+  const useStore = useFullContentStore();
+  const experiences = useStore((s) => s.experiences);
+  const updateFullContent = useStore((s) => s.updateFullContent);
   const handleAutoResize = useAutoResize();
 
   const MONTHS = t.raw("months") as string[];
@@ -161,7 +162,7 @@ export function ExperienceSectionFullContent() {
             </p>
           </div>
           {experiences.length < 4 && (
-            <Button variant="outline" size="sm" onClick={addExperience}>
+            <Button variant="outline" size="lg" onClick={addExperience}>
               <Plus className="mr-2 h-4 w-4" />{" "}
               {t("sections.experience.addBtn")}
             </Button>
@@ -194,7 +195,6 @@ export function ExperienceSectionFullContent() {
                 )}
               </div>
 
-              {/* Campos: role, company, url (sem date) */}
               {experienceFields.map(({ id, label, placeholder }) => (
                 <Field key={id} className="mb-4">
                   <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center">
@@ -220,7 +220,6 @@ export function ExperienceSectionFullContent() {
                 </Field>
               ))}
 
-              {/* Date Picker */}
               <Field className="mb-4">
                 <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center">
                   <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
@@ -275,7 +274,6 @@ export function ExperienceSectionFullContent() {
                 </div>
               </Field>
 
-              {/* Details */}
               <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
                 <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                   <div>
@@ -291,7 +289,7 @@ export function ExperienceSectionFullContent() {
                   {exp.details.length < 3 && (
                     <Button
                       variant="outline"
-                      size="xs"
+                      size="sm"
                       onClick={() => addDetail(expIndex)}
                     >
                       <Plus className="mr-1 h-3.5 w-3.5" />{" "}
@@ -368,7 +366,6 @@ export function ExperienceSectionFullContent() {
                 )}
               </div>
 
-              {/* Stacks */}
               <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
                 <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                   <div>
@@ -383,7 +380,7 @@ export function ExperienceSectionFullContent() {
                   </div>
                   <Button
                     variant="outline"
-                    size="xs"
+                    size="sm"
                     onClick={() => addStack(expIndex)}
                   >
                     <Plus className="mr-1 h-3.5 w-3.5" />{" "}
