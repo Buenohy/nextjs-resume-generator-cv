@@ -1,7 +1,7 @@
 .
 ├── messages/                           # 🌐 Dicionários de Tradução (next-intl)
-│   ├── en.json                         # Textos e dados do site em Inglês
-│   └── pt.json                         # Textos e dados do site em Português
+│   ├── en.json                         # Textos e dados do site em Inglês (inclui FullContentPage)
+│   └── pt.json                         # Textos e dados do site em Português (inclui FullContentPage)
 │
 ├── src/
 │   ├── app/
@@ -10,16 +10,16 @@
 │   │   │   │   ├── job-description/
 │   │   │   │   │   └── page.tsx        # Passo 1: Input da vaga
 │   │   │   │   ├── resume-builder/
-│   │   │   │   │   └── page.tsx        # Passo 2: Montagem e análise do currículo (unifica antigos passos 3,4,5: análise de inconsistências, tabela de palavras‑chave e otimização de verbos)
+│   │   │   │   │   └── page.tsx        # Passo 2: Montagem e análise do currículo (unifica antigos passos 3,4,5)
 │   │   │   │   ├── pdf-preview/
 │   │   │   │   │   └── page.tsx        # Passo 3: Pré‑visualização e exportação do PDF
-│   │   │   │   └── layout.tsx          # Layout do construtor (contém <Stepper /> e <PaginationButtons />)
+│   │   │   │   └── layout.tsx          # Layout do construtor (<Stepper /> e <PaginationButtons />)
 │   │   │   │
 │   │   │   ├── components/
 │   │   │   │   └── page.tsx            # Página de testes de componentes
 │   │   │   │
 │   │   │   ├── full-content/
-│   │   │   │   └── page.tsx            # Currículo completo (Base de Dados)
+│   │   │   │   └── page.tsx            # Repositório de conteúdo (Base de Dados) – agora usa ExperienceSectionFullContent
 │   │   │   │
 │   │   │   ├── layout.tsx              # Layout principal (root)
 │   │   │   └── page.tsx                # Landing Page
@@ -35,9 +35,9 @@
 │   │   ├── dark-mode.tsx               # Botão de tema
 │   │   ├── lang-menu.tsx               # Menu de idioma
 │   │   ├── nav-menu.tsx                # Menu principal (header)
-│   │   ├── pagination-buttons.tsx      # Botões de navegação entre passos ("Anterior"/"Próximo")
+│   │   ├── pagination-buttons.tsx      # Botões de navegação entre passos
 │   │   ├── resume.tsx                  # Componente do currículo em PDF (@react-pdf/renderer)
-│   │   ├── stepper.tsx                 # Barra de progresso (lê a URL e pinta o passo atual)
+│   │   ├── stepper.tsx                 # Barra de progresso
 │   │   ├── theme-provider.tsx          # Contexto do Next-Themes
 │   │   ├── sections/                   # Seções do formulário (resume-builder)
 │   │   │   ├── meta-ats-section.tsx    # Metadados ATS
@@ -45,12 +45,14 @@
 │   │   │   ├── links-section.tsx       # Links profissionais
 │   │   │   ├── summary-section.tsx     # Resumo profissional
 │   │   │   ├── skills-section.tsx      # Habilidades
-│   │   │   ├── experience-section.tsx  # Experiências profissionais
+│   │   │   ├── experience-section.tsx  # Experiências profissionais (para o builder)
 │   │   │   ├── education-section.tsx   # Formação acadêmica
 │   │   │   ├── certifications-section.tsx # Certificações
-│   │   │   └── languages-section.tsx   # Idiomas
+│   │   │   ├── languages-section.tsx   # Idiomas
+│   │   │   ├── experience-section-full-content.tsx  # Experiências para Full Content (formulário + tabela)
+│   │   │   └── experience-table.tsx    # Tabela de experiências cadastradas (usada no Full Content)
 │   │   └── ui/                         # Componentes de interface (Shadcn + customizados)
-│   │       ├── ...                     # (button, input, card, table, select, etc.)
+│   │       ├── ...                     # (button, input, card, table, select, badge, alert-dialog, etc.)
 │   │       ├── columns.tsx             # Definição das colunas da tabela de palavras-chave
 │   │       ├── feedback-card.tsx       # Cartão de feedback ATS (abas de análise, match, otimização)
 │   │       └── month-year-picker.tsx   # Seletor de mês/ano reutilizável
@@ -63,22 +65,23 @@
 │   │   ├── request.ts
 │   │   └── routing.ts
 │   │
-│   ├── lib/                            # 🧠 Lógica de negócio (parsers, validadores)
+│   ├── lib/                            # 🧠 Lógica de negócio
 │   │   ├── auto-optimizer.ts           # Sugestão de verbos fortes
 │   │   ├── job-parser.ts               # Parser da descrição da vaga
 │   │   ├── meta-validator.ts           # Validador de consistência dos metadados
-│   │   └── utils.ts                    # Funções auxiliares (ex.: cn)
+│   │   └── utils.ts                    # Funções auxiliares (cn)
 │   │
 │   ├── store/                          # 📦 Estado global (Zustand)
-│   │   └── useResumeStore.ts
+│   │   ├── useResumeStore.ts           # Store do builder (volátil)
+│   │   └── useFullContentStore.ts      # Store do repositório (persistida por idioma, com Zustand + immer + persist)
 │   │
 │   ├── types/                          # 🏷️ Tipagens TypeScript
 │   │   ├── Input.ts                    # Tipos de entrada genéricos
 │   │   └── resume.ts                   # Tipos específicos do currículo (KeywordData, etc.)
 │   │
-│   └── proxy.ts                        # Configurações de proxy (se necessário)
+│   └── proxy.ts                        # Configurações de proxy
 │
 ├── next.config.ts
-├── middleware.ts (implícito)
+├── middleware.ts
 ├── package.json
 └── tsconfig.json
