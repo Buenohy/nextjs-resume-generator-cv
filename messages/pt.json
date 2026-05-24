@@ -22,13 +22,9 @@
         "desc": "Página de descrição da vaga."
       }
     },
-    "contents": {
-      "trigger": "Conteúdos",
-      "full": {
-        "title": "Conteúdo Completo",
-        "desc": "Página de conteúdo completo."
-      },
-      "builder": {
+    "resume": {
+      "trigger": "Resumo",
+      "description": {
         "title": "Construtor de Currículo",
         "desc": "Página do construtor de currículo."
       }
@@ -38,6 +34,13 @@
       "preview": {
         "title": "Prévia do PDF",
         "desc": "Página de pré-visualização do PDF."
+      }
+    },
+    "contents": {
+      "trigger": "Conteúdos",
+      "description": {
+        "title": "Conteúdo Completo",
+        "desc": "Página de conteúdo completo."
       }
     }
   },
@@ -127,7 +130,10 @@
             "label": "Palavras-chave",
             "placeholder": "Ex: React, Angular, Next.js..."
           },
-          "category": { "label": "Categoria", "placeholder": "Ex: Currículo" },
+          "category": {
+            "label": "Categoria",
+            "placeholder": "Ex: Currículo"
+          },
           "contributor": {
             "label": "Contribuinte",
             "placeholder": "Ex: Gabriel Bueno Hygino"

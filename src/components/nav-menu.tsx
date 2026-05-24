@@ -64,15 +64,10 @@ export default function NavigationMenuDemo() {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
 
-            <DropdownMenuLabel>{t("contents.trigger")}</DropdownMenuLabel>
-            <DropdownMenuItem asChild>
-              <Link href="/full-content" className="cursor-pointer">
-                {t("contents.full.title")}
-              </Link>
-            </DropdownMenuItem>
+            <DropdownMenuLabel>{t("resume.trigger")}</DropdownMenuLabel>
             <DropdownMenuItem asChild>
               <Link href="/resume-builder" className="cursor-pointer">
-                {t("contents.builder.title")}
+                {t("resume.description.title")}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -82,7 +77,23 @@ export default function NavigationMenuDemo() {
               <Link href="/pdf-preview" className="cursor-pointer">
                 {t("pdf.preview.title")}
               </Link>
+
+              <DropdownMenuLabel>{t("contents.trigger")}</DropdownMenuLabel>
+              <DropdownMenuItem asChild>
+                <Link href="/full-content" className="cursor-pointer">
+                  {t("contents.description.title")}
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
             </DropdownMenuItem>
+
+            <DropdownMenuLabel>{t("contents.trigger")}</DropdownMenuLabel>
+            <DropdownMenuItem asChild>
+              <Link href="/full-content" className="cursor-pointer">
+                {t("contents.full.title")}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -125,21 +136,15 @@ export default function NavigationMenuDemo() {
 
             <NavigationMenuItem>
               <NavigationMenuTrigger>
-                {t("contents.trigger")}
+                {t("resume.trigger")}
               </NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="flex w-72 flex-col gap-3 p-4">
                   <ListItem
-                    href="/full-content"
-                    title={t("contents.full.title")}
-                  >
-                    {t("contents.full.desc")}
-                  </ListItem>
-                  <ListItem
                     href="/resume-builder"
-                    title={t("contents.builder.title")}
+                    title={t("resume.description.title")}
                   >
-                    {t("contents.builder.desc")}
+                    {t("resume.description.desc")}
                   </ListItem>
                 </ul>
               </NavigationMenuContent>
@@ -151,6 +156,22 @@ export default function NavigationMenuDemo() {
                 <ul className="flex w-72 flex-col gap-3 p-4">
                   <ListItem href="/pdf-preview" title={t("pdf.preview.title")}>
                     {t("pdf.preview.desc")}
+                  </ListItem>
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>
+                {t("contents.trigger")}
+              </NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="flex w-72 flex-col gap-3 p-4">
+                  <ListItem
+                    href="/full-content"
+                    title={t("contents.description.title")}
+                  >
+                    {t("contents.description.desc")}
                   </ListItem>
                 </ul>
               </NavigationMenuContent>

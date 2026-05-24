@@ -22,14 +22,20 @@
         "desc": "Job description page."
       }
     },
-    "contents": {
-      "trigger": "Contents",
-      "full": { "title": "Full Content", "desc": "Full content page." },
-      "builder": { "title": "Resume Builder", "desc": "Resume Builder page." }
+    "resume": {
+      "trigger": "Resume",
+      "description": {
+        "title": "Resume Builder",
+        "desc": "Resume Builder page."
+      }
     },
     "pdf": {
       "trigger": "PDF Preview",
       "preview": { "title": "PDF Preview", "desc": "PDF preview page." }
+    },
+    "contents": {
+      "trigger": "Contents",
+      "description": { "title": "Full Content", "desc": "Full content page." }
     }
   },
   "LangMenu": {
