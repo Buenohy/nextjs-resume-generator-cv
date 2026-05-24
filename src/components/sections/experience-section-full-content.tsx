@@ -46,7 +46,7 @@ export function ExperienceSectionFullContent() {
 
   const [form, setForm] = useState<ExperienceItem>({ ...emptyExperience });
   const [expToDelete, setExpToDelete] = useState<number | null>(null);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [showValidationError, setShowValidationError] = useState(false);
 
   const MONTHS = t.raw("months") as string[];
   const YEARS = Array.from({ length: 41 }, (_, i) =>
@@ -84,7 +84,6 @@ export function ExperienceSectionFullContent() {
     const date =
       start || end ? `${start}${start && end ? " - " : ""}${end}` : "";
     setForm({ ...form, date });
-    setErrorMessage("");
   };
 
   const updateField = (
@@ -92,7 +91,6 @@ export function ExperienceSectionFullContent() {
     value: string
   ) => {
     setForm({ ...form, [fieldId]: value });
-    setErrorMessage("");
   };
 
   const addDetail = () => {
@@ -137,12 +135,12 @@ export function ExperienceSectionFullContent() {
 
   const handleSave = () => {
     if (!form.role.trim() || !form.company.trim() || !form.date.trim()) {
-      setErrorMessage(tFull("validationError"));
+      setShowValidationError(true);
       return;
     }
     const hasDetail = form.details.some((d) => d.trim() !== "");
     if (!hasDetail) {
-      setErrorMessage(tFull("validationError"));
+      setShowValidationError(true);
       return;
     }
 
@@ -153,7 +151,6 @@ export function ExperienceSectionFullContent() {
     };
     addSavedExperience(cleaned);
     setForm({ ...emptyExperience });
-    setErrorMessage("");
   };
 
   const handleDeleteConfirm = () => {
@@ -398,11 +395,6 @@ export function ExperienceSectionFullContent() {
         <Button onClick={handleSave} className="mx-auto w-fit">
           {tFull("saveButton")}
         </Button>
-        {errorMessage && (
-          <p className="text-destructive mx-auto mt-1 text-sm">
-            {errorMessage}
-          </p>
-        )}
       </div>
 
       <div className="pt-8">
@@ -418,6 +410,7 @@ export function ExperienceSectionFullContent() {
         </div>
       </div>
 
+      {/* Diálogo de confirmação de exclusão */}
       <AlertDialog
         open={expToDelete !== null}
         onOpenChange={(open) => !open && setExpToDelete(null)}
@@ -433,6 +426,28 @@ export function ExperienceSectionFullContent() {
             <AlertDialogCancel>{tFull("deleteDialogCancel")}</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteConfirm}>
               {tFull("deleteDialogConfirm")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Diálogo de validação */}
+      <AlertDialog
+        open={showValidationError}
+        onOpenChange={setShowValidationError}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {tFull("validationDialogTitle")}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {tFull("validationDialogDescription")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setShowValidationError(false)}>
+              {tFull("validationDialogConfirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -337,6 +337,8 @@
       "data": "Dados"
     },
     "emptyMessage": "Nenhuma experiência cadastrada.",
-    "validationError": "Por favor, preencha todos os campos obrigatórios (cargo, empresa, data e pelo menos um detalhe)."
+    "validationDialogTitle": "Campos obrigatórios",
+    "validationDialogDescription": "Por favor, preencha todos os campos obrigatórios (cargo, empresa, data e pelo menos um detalhe).",
+    "validationDialogConfirm": "OK"
   }
 }

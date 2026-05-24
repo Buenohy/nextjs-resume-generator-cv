@@ -325,6 +325,8 @@
       "data": "Data"
     },
     "emptyMessage": "No experiences registered.",
-    "validationError": "Please fill in all required fields (role, company, date, and at least one detail)."
+    "validationDialogTitle": "Required fields",
+    "validationDialogDescription": "Please fill in all required fields (role, company, date, and at least one detail).",
+    "validationDialogConfirm": "OK"
   }
 }
