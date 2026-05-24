@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { useResumeStore } from "@/store/useResumeStore";
 
-import ButtonPaginate from "@/components/button-paginate";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -53,7 +52,6 @@ export default function JobDescriptionPage() {
               </Button>
             </CardAction>
           </div>
-          <ButtonPaginate />
         </CardFooter>
       </Card>
     </div>
