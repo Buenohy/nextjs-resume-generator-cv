@@ -1,4 +1,4 @@
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -8,17 +8,22 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import type { FullContentState } from "@/store/useFullContentStore";
 
-type ExperienceItem = FullContentState["experiences"][number];
+type ExperienceItem = FullContentState["savedExperiences"][number];
 
 interface ExperienceTableProps {
   experiences: ExperienceItem[];
+  onDelete: (index: number) => void;
 }
 
-export function ExperienceTable({ experiences }: ExperienceTableProps) {
+export function ExperienceTable({
+  experiences,
+  onDelete,
+}: ExperienceTableProps) {
   return (
-    <div className="border-muted overflow-x-auto rounded-md border shadow-sm">
+    <div className="overflow-x-auto">
       <Table className="w-full">
         <TableHeader>
           <TableRow>
@@ -26,6 +31,7 @@ export function ExperienceTable({ experiences }: ExperienceTableProps) {
               Experiência
             </TableHead>
             <TableHead>Dados</TableHead>
+            <TableHead className="w-[60px]"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -53,7 +59,7 @@ export function ExperienceTable({ experiences }: ExperienceTableProps) {
                       {exp.url}
                     </a>
                   )}
-                  {exp.details.some((d) => d.trim()) && (
+                  {exp.details.length > 0 && (
                     <div className="flex flex-col gap-2">
                       {exp.details.map(
                         (detail, dIdx) =>
@@ -68,7 +74,7 @@ export function ExperienceTable({ experiences }: ExperienceTableProps) {
                       )}
                     </div>
                   )}
-                  {exp.stacks.some((s) => s.trim()) && (
+                  {exp.stacks.length > 0 && (
                     <div className="mt-1 flex flex-wrap gap-1.5">
                       {exp.stacks.map(
                         (stack, sIdx) =>
@@ -86,11 +92,21 @@ export function ExperienceTable({ experiences }: ExperienceTableProps) {
                   )}
                 </div>
               </TableCell>
+              <TableCell className="pt-4 align-top">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => onDelete(index)}
+                  className="text-destructive hover:text-destructive h-8 w-8"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
           {experiences.length === 0 && (
             <TableRow>
-              <TableCell colSpan={2} className="h-24 text-center">
+              <TableCell colSpan={3} className="h-24 text-center">
                 Nenhuma experiência cadastrada.
               </TableCell>
             </TableRow>
