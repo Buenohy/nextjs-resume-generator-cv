@@ -56,6 +56,13 @@
       }
     }
   },
+  "Stepper": {
+    "steps": {
+      "job": "Vaga",
+      "resume": "Currículo & Otimização",
+      "pdf": "Exportar PDF"
+    }
+  },
   "PaginationButtons": {
     "prev": "Anterior",
     "next": "Próximo"

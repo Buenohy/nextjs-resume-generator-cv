@@ -41,6 +41,13 @@
       "preview": { "title": "PDF Preview", "desc": "PDF preview page." }
     }
   },
+  "Stepper": {
+    "steps": {
+      "job": "Job",
+      "resume": "Resume & Optimization",
+      "pdf": "Export PDF"
+    }
+  },
   "PaginationButtons": {
     "prev": "Previous",
     "next": "Next"
