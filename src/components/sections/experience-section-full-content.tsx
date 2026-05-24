@@ -399,7 +399,9 @@ export function ExperienceSectionFullContent() {
           {tFull("saveButton")}
         </Button>
         {errorMessage && (
-          <p className="text-destructive mt-1 text-sm">{errorMessage}</p>
+          <p className="text-destructive mx-auto mt-1 text-sm">
+            {errorMessage}
+          </p>
         )}
       </div>
 
