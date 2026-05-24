@@ -1,4 +1,5 @@
 "use client";
+"use no memo";
 
 import { useState, useEffect } from "react";
 import {
@@ -516,6 +517,91 @@ export default function ResumeBuilderPage() {
     });
   };
 
+  // --- Helpers Educação ---
+  const parseEduString = (str: string) => {
+    const parts = str.split(" | ");
+    let text = str;
+    let dateStr = "";
+
+    if (parts.length > 1) {
+      const lastPart = parts[parts.length - 1];
+      const hasYear = YEARS.some((y) => lastPart.includes(y));
+      const hasMonth =
+        MONTHS.some((m) => lastPart.includes(m)) ||
+        lastPart.includes("Present");
+
+      if (hasYear || hasMonth) {
+        dateStr = parts.pop() || "";
+        text = parts.join(" | ");
+      }
+    }
+
+    const [startStr, endStr] = dateStr.split(" - ");
+    const startParts = (startStr || "").trim().split(" ");
+    const endParts = (endStr || "").trim().split(" ");
+
+    return {
+      text: text.trim(),
+      startMonth: startParts[0] || "",
+      startYear: startParts[1] || "",
+      endMonth: endParts[0] || "",
+      endYear: endParts[1] || "",
+    };
+  };
+
+  const handleEduChange = (
+    index: number,
+    text: string,
+    sm: string,
+    sy: string,
+    em: string,
+    ey: string
+  ) => {
+    const start = [sm, sy].filter(Boolean).join(" ");
+    const end =
+      em === "Present" ? "Present" : [em, ey].filter(Boolean).join(" ");
+    const datePart = [start, end].filter(Boolean).join(" - ");
+    const finalVal = datePart ? `${text} | ${datePart}` : text;
+    handleUpdateListItem("education", index, finalVal);
+  };
+
+  // --- Helpers Certificações ---
+  const parseCertString = (str: string) => {
+    const parts = str.split(" | ");
+    let text = str;
+    let dateStr = "";
+
+    if (parts.length > 1) {
+      const lastPart = parts[parts.length - 1];
+      const hasYear = YEARS.some((y) => lastPart.includes(y));
+      const hasMonth = MONTHS.some((m) => lastPart.includes(m));
+
+      if (hasYear || hasMonth) {
+        dateStr = parts.pop() || "";
+        text = parts.join(" | ");
+      }
+    }
+
+    const dateParts = (dateStr || "").trim().split(" ");
+
+    return {
+      text: text.trim(),
+      month: dateParts[0] || "",
+      year: dateParts[1] || "",
+    };
+  };
+
+  const handleCertChange = (
+    index: number,
+    text: string,
+    m: string,
+    y: string
+  ) => {
+    const datePart = [m, y].filter(Boolean).join(" ");
+    const finalVal = datePart ? `${text} | ${datePart}` : text;
+    handleUpdateListItem("certifications", index, finalVal);
+  };
+
   return (
     <div className="p-3 sm:p-6">
       <h1 className="mb-6 text-2xl font-bold">Resume Builder & Optimization</h1>
@@ -684,16 +770,6 @@ export default function ResumeBuilderPage() {
                     </div>
                   </Field>
                 ))}
-                <div className="mt-2 flex justify-end">
-                  <Button
-                    variant="outline"
-                    size="xs"
-                    onClick={() => handleAddListItem("skills")}
-                    className="gap-1 text-xs"
-                  >
-                    <Plus className="h-3.5 w-3.5" /> Adicionar Habilidade
-                  </Button>
-                </div>
               </div>
             </CardContent>
 
@@ -1065,16 +1141,6 @@ export default function ResumeBuilderPage() {
                             </div>
                           </Field>
                         ))}
-                        <div className="mt-2 flex justify-end">
-                          <Button
-                            variant="outline"
-                            size="xs"
-                            onClick={() => handleAddStack(expIndex)}
-                            className="gap-1 text-xs"
-                          >
-                            <Plus className="h-3.5 w-3.5" /> Adicionar Stack
-                          </Button>
-                        </div>
                       </div>
                     </div>
                   );
@@ -1103,73 +1169,203 @@ export default function ResumeBuilderPage() {
                     <Plus className="mr-2 h-4 w-4" /> Adicionar Formação
                   </Button>
                 </div>
-                {cvData.education.map((edu, index) => (
-                  <Field key={index} className="mb-2">
-                    <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-                      <div className="flex w-full items-center justify-between sm:w-auto">
-                        <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-                          Educação {index + 1}
-                        </FieldLabel>
-                        {cvData.education.length > 1 && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() =>
-                              handleRemoveListItem("education", index)
-                            }
-                            className="h-8 w-8 sm:hidden"
-                          >
-                            <Trash2 className="text-destructive h-4 w-4" />
-                          </Button>
-                        )}
+                {cvData.education.map((edu, index) => {
+                  const parsed = parseEduString(edu);
+
+                  return (
+                    <Field
+                      key={index}
+                      className="border-muted/50 mb-4 border-b pb-4 last:border-0 last:pb-0"
+                    >
+                      <div className="flex w-full flex-col gap-4">
+                        <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+                          <div className="flex w-full items-center justify-between sm:w-auto">
+                            <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+                              Educação {index + 1}
+                            </FieldLabel>
+                            {cvData.education.length > 1 && (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() =>
+                                  handleRemoveListItem("education", index)
+                                }
+                                className="h-8 w-8 sm:hidden"
+                              >
+                                <Trash2 className="text-destructive h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
+                          <Textarea
+                            className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
+                            rows={1}
+                            placeholder="Coloque a sua formação"
+                            value={parsed.text}
+                            onBlur={(e) => {
+                              if (
+                                !e.target.value.trim() &&
+                                cvData.education.length > 1
+                              ) {
+                                handleRemoveListItem("education", index);
+                              }
+                            }}
+                            onChange={(e) => {
+                              handleAutoResize(e);
+                              handleEduChange(
+                                index,
+                                e.target.value,
+                                parsed.startMonth,
+                                parsed.startYear,
+                                parsed.endMonth,
+                                parsed.endYear
+                              );
+                            }}
+                          />
+                          {cvData.education.length > 1 && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() =>
+                                handleRemoveListItem("education", index)
+                              }
+                              className="hidden sm:inline-flex"
+                            >
+                              <Trash2 className="text-destructive h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
+
+                        <div className="mt-1 flex w-full flex-col gap-4 sm:flex-row sm:items-center">
+                          <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+                            Período
+                          </FieldLabel>
+                          <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-end sm:gap-2">
+                            <div className="flex w-full flex-col gap-1.5 sm:w-auto">
+                              <span className="text-muted-foreground pl-1 text-[10px] font-semibold uppercase">
+                                Início
+                              </span>
+                              <div className="flex w-full items-center gap-2 sm:w-auto">
+                                <Select
+                                  value={parsed.startMonth}
+                                  onValueChange={(val) =>
+                                    handleEduChange(
+                                      index,
+                                      parsed.text,
+                                      val,
+                                      parsed.startYear,
+                                      parsed.endMonth,
+                                      parsed.endYear
+                                    )
+                                  }
+                                >
+                                  <SelectTrigger className="w-full sm:w-[110px]">
+                                    <SelectValue placeholder="Mês" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {MONTHS.map((m) => (
+                                      <SelectItem key={m} value={m}>
+                                        {m}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                <Select
+                                  value={parsed.startYear}
+                                  onValueChange={(val) =>
+                                    handleEduChange(
+                                      index,
+                                      parsed.text,
+                                      parsed.startMonth,
+                                      val,
+                                      parsed.endMonth,
+                                      parsed.endYear
+                                    )
+                                  }
+                                >
+                                  <SelectTrigger className="w-full sm:w-[90px]">
+                                    <SelectValue placeholder="Ano" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {YEARS.map((y) => (
+                                      <SelectItem key={y} value={y}>
+                                        {y}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+
+                            <span className="text-muted-foreground hidden pb-2.5 sm:block">
+                              -
+                            </span>
+
+                            <div className="flex w-full flex-col gap-1.5 sm:w-auto">
+                              <span className="text-muted-foreground pl-1 text-[10px] font-semibold uppercase">
+                                Término
+                              </span>
+                              <div className="flex w-full items-center gap-2 sm:w-auto">
+                                <Select
+                                  value={parsed.endMonth}
+                                  onValueChange={(val) =>
+                                    handleEduChange(
+                                      index,
+                                      parsed.text,
+                                      parsed.startMonth,
+                                      parsed.startYear,
+                                      val,
+                                      parsed.endYear
+                                    )
+                                  }
+                                >
+                                  <SelectTrigger className="w-full sm:w-[110px]">
+                                    <SelectValue placeholder="Mês" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="Present">
+                                      Present
+                                    </SelectItem>
+                                    {MONTHS.map((m) => (
+                                      <SelectItem key={m} value={m}>
+                                        {m}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                {parsed.endMonth !== "Present" && (
+                                  <Select
+                                    value={parsed.endYear}
+                                    onValueChange={(val) =>
+                                      handleEduChange(
+                                        index,
+                                        parsed.text,
+                                        parsed.startMonth,
+                                        parsed.startYear,
+                                        parsed.endMonth,
+                                        val
+                                      )
+                                    }
+                                  >
+                                    <SelectTrigger className="w-full sm:w-[90px]">
+                                      <SelectValue placeholder="Ano" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {YEARS.map((y) => (
+                                        <SelectItem key={y} value={y}>
+                                          {y}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <Textarea
-                        className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
-                        rows={1}
-                        placeholder="Coloque a sua formação"
-                        value={edu}
-                        onBlur={(e) => {
-                          if (
-                            !e.target.value.trim() &&
-                            cvData.education.length > 1
-                          ) {
-                            handleRemoveListItem("education", index);
-                          }
-                        }}
-                        onChange={(e) => {
-                          handleAutoResize(e);
-                          handleUpdateListItem(
-                            "education",
-                            index,
-                            e.target.value
-                          );
-                        }}
-                      />
-                      {cvData.education.length > 1 && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() =>
-                            handleRemoveListItem("education", index)
-                          }
-                          className="hidden sm:inline-flex"
-                        >
-                          <Trash2 className="text-destructive h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
-                  </Field>
-                ))}
-                <div className="mt-2 flex justify-end">
-                  <Button
-                    variant="outline"
-                    size="xs"
-                    onClick={() => handleAddListItem("education")}
-                    className="gap-1 text-xs"
-                  >
-                    <Plus className="h-3.5 w-3.5" /> Adicionar Formação
-                  </Button>
-                </div>
+                    </Field>
+                  );
+                })}
               </div>
             </CardContent>
 
@@ -1194,73 +1390,132 @@ export default function ResumeBuilderPage() {
                     <Plus className="mr-2 h-4 w-4" /> Adicionar Certificação
                   </Button>
                 </div>
-                {cvData.certifications.map((cert, index) => (
-                  <Field key={index} className="mb-2">
-                    <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-                      <div className="flex w-full items-center justify-between sm:w-auto">
-                        <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-                          Certificado {index + 1}
-                        </FieldLabel>
-                        {cvData.certifications.length > 1 && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() =>
-                              handleRemoveListItem("certifications", index)
-                            }
-                            className="h-8 w-8 sm:hidden"
-                          >
-                            <Trash2 className="text-destructive h-4 w-4" />
-                          </Button>
-                        )}
+                {cvData.certifications.map((cert, index) => {
+                  const parsed = parseCertString(cert);
+
+                  return (
+                    <Field
+                      key={index}
+                      className="border-muted/50 mb-4 border-b pb-4 last:border-0 last:pb-0"
+                    >
+                      <div className="flex w-full flex-col gap-4">
+                        <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+                          <div className="flex w-full items-center justify-between sm:w-auto">
+                            <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+                              Certificado {index + 1}
+                            </FieldLabel>
+                            {cvData.certifications.length > 1 && (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() =>
+                                  handleRemoveListItem("certifications", index)
+                                }
+                                className="h-8 w-8 sm:hidden"
+                              >
+                                <Trash2 className="text-destructive h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
+                          <Textarea
+                            className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
+                            rows={1}
+                            placeholder="Coloque o nome da sua certificação"
+                            value={parsed.text}
+                            onBlur={(e) => {
+                              if (
+                                !e.target.value.trim() &&
+                                cvData.certifications.length > 1
+                              ) {
+                                handleRemoveListItem("certifications", index);
+                              }
+                            }}
+                            onChange={(e) => {
+                              handleAutoResize(e);
+                              handleCertChange(
+                                index,
+                                e.target.value,
+                                parsed.month,
+                                parsed.year
+                              );
+                            }}
+                          />
+                          {cvData.certifications.length > 1 && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() =>
+                                handleRemoveListItem("certifications", index)
+                              }
+                              className="hidden sm:inline-flex"
+                            >
+                              <Trash2 className="text-destructive h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
+
+                        <div className="mt-1 flex w-full flex-col gap-4 sm:flex-row sm:items-center">
+                          <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+                            Data
+                          </FieldLabel>
+                          <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-end sm:gap-2">
+                            <div className="flex w-full flex-col gap-1.5 sm:w-auto">
+                              <span className="text-muted-foreground pl-1 text-[10px] font-semibold uppercase">
+                                Conclusão
+                              </span>
+                              <div className="flex w-full items-center gap-2 sm:w-auto">
+                                <Select
+                                  value={parsed.month}
+                                  onValueChange={(val) =>
+                                    handleCertChange(
+                                      index,
+                                      parsed.text,
+                                      val,
+                                      parsed.year
+                                    )
+                                  }
+                                >
+                                  <SelectTrigger className="w-full sm:w-[110px]">
+                                    <SelectValue placeholder="Mês" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {MONTHS.map((m) => (
+                                      <SelectItem key={m} value={m}>
+                                        {m}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                <Select
+                                  value={parsed.year}
+                                  onValueChange={(val) =>
+                                    handleCertChange(
+                                      index,
+                                      parsed.text,
+                                      parsed.month,
+                                      val
+                                    )
+                                  }
+                                >
+                                  <SelectTrigger className="w-full sm:w-[90px]">
+                                    <SelectValue placeholder="Ano" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {YEARS.map((y) => (
+                                      <SelectItem key={y} value={y}>
+                                        {y}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <Textarea
-                        className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
-                        rows={1}
-                        placeholder="Coloque o nome da sua certificação"
-                        value={cert}
-                        onBlur={(e) => {
-                          if (
-                            !e.target.value.trim() &&
-                            cvData.certifications.length > 1
-                          ) {
-                            handleRemoveListItem("certifications", index);
-                          }
-                        }}
-                        onChange={(e) => {
-                          handleAutoResize(e);
-                          handleUpdateListItem(
-                            "certifications",
-                            index,
-                            e.target.value
-                          );
-                        }}
-                      />
-                      {cvData.certifications.length > 1 && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() =>
-                            handleRemoveListItem("certifications", index)
-                          }
-                          className="hidden sm:inline-flex"
-                        >
-                          <Trash2 className="text-destructive h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
-                  </Field>
-                ))}
-                <div className="mt-2 flex justify-end">
-                  <Button
-                    variant="outline"
-                    size="xs"
-                    onClick={() => handleAddListItem("certifications")}
-                    className="gap-1 text-xs"
-                  >
-                    <Plus className="h-3.5 w-3.5" /> Adicionar Certificação
-                  </Button>
-                </div>
+                    </Field>
+                  );
+                })}
               </div>
             </CardContent>
 
