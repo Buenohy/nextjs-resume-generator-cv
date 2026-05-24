@@ -90,7 +90,7 @@ export default function NavigationMenuDemo() {
             <DropdownMenuLabel>{t("contents.trigger")}</DropdownMenuLabel>
             <DropdownMenuItem asChild>
               <Link href="/full-content" className="cursor-pointer">
-                {t("contents.full.title")}
+                {t("contents.description.title")}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
