@@ -257,7 +257,7 @@ export function ExperienceSectionFullContent() {
               </p>
             </div>
             {form.details.length < 3 && (
-              <Button variant="outline" size="xs" onClick={addDetail}>
+              <Button variant="outline" size="sm" onClick={addDetail}>
                 <Plus className="mr-1 h-3.5 w-3.5" />{" "}
                 {t("sections.experience.addDetailBtn")}
               </Button>
@@ -333,7 +333,7 @@ export function ExperienceSectionFullContent() {
                 })}
               </p>
             </div>
-            <Button variant="outline" size="xs" onClick={addStack}>
+            <Button variant="outline" size="sm" onClick={addStack}>
               <Plus className="mr-1 h-3.5 w-3.5" />{" "}
               {t("sections.experience.addStackBtn")}
             </Button>
