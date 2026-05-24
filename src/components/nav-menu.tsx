@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { Menu } from "lucide-react"; // Importamos o ícone do Menu Hamburguer
+import { Menu } from "lucide-react";
 
 import {
   NavigationMenu,
@@ -14,7 +14,6 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 
-// Importamos o DropdownMenu para construir a versão Mobile
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -61,11 +60,6 @@ export default function NavigationMenuDemo() {
             <DropdownMenuItem asChild>
               <Link href="/job-description" className="cursor-pointer">
                 {t("jobs.description.title")}
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/job-parse" className="cursor-pointer">
-                {t("jobs.parse.title")}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -137,9 +131,6 @@ export default function NavigationMenuDemo() {
                     title={t("jobs.description.title")}
                   >
                     {t("jobs.description.desc")}
-                  </ListItem>
-                  <ListItem href="/job-parse" title={t("jobs.parse.title")}>
-                    {t("jobs.parse.desc")}
                   </ListItem>
                 </ul>
               </NavigationMenuContent>

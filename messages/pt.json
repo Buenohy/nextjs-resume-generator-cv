@@ -20,10 +20,6 @@
       "description": {
         "title": "Descrição da Vaga",
         "desc": "Página de descrição da vaga."
-      },
-      "parse": {
-        "title": "Análise da Vaga",
-        "desc": "Página de análise da vaga."
       }
     },
     "ats": {
