@@ -41,6 +41,12 @@
       "preview": { "title": "PDF Preview", "desc": "PDF preview page." }
     }
   },
+  "DarkMode": {
+    "toggleTheme": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
   "Stepper": {
     "steps": {
       "job": "Job",

@@ -56,6 +56,12 @@
       }
     }
   },
+  "DarkMode": {
+    "toggleTheme": "Alternar tema",
+    "light": "Claro",
+    "dark": "Escuro",
+    "system": "Sistema"
+  },
   "Stepper": {
     "steps": {
       "job": "Vaga",
