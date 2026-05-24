@@ -23,21 +23,19 @@ export function ExperienceTable({
   onDelete,
 }: ExperienceTableProps) {
   return (
-    <div className="overflow-x-auto">
-      <Table className="w-full">
+    <div className="min-w-0 overflow-x-auto">
+      <Table className="w-full table-fixed">
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[180px] sm:w-[220px]">
-              Experiência
-            </TableHead>
-            <TableHead>Dados</TableHead>
-            <TableHead className="w-[60px]"></TableHead>
+            <TableHead className="w-1/3">Experiência</TableHead>
+            <TableHead className="w-2/3">Dados</TableHead>
+            <TableHead className="w-10"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {experiences.map((exp, index) => (
             <TableRow key={index}>
-              <TableCell className="pt-4 align-top font-medium wrap-break-word">
+              <TableCell className="min-w-0 pt-4 align-top font-medium wrap-break-word">
                 <div className="flex flex-col gap-1">
                   <span className="text-sm font-bold">{exp.role || "—"}</span>
                   <span className="text-muted-foreground text-xs">
@@ -46,7 +44,7 @@ export function ExperienceTable({
                   <span className="text-xs italic">{exp.date || "—"}</span>
                 </div>
               </TableCell>
-              <TableCell className="pt-4 align-top wrap-break-word">
+              <TableCell className="max-w-0 min-w-0 overflow-hidden pt-4 align-top">
                 <div className="flex flex-col gap-3 text-sm">
                   {exp.url && (
                     <a
@@ -66,7 +64,7 @@ export function ExperienceTable({
                           detail.trim() && (
                             <p
                               key={dIdx}
-                              className="leading-relaxed wrap-break-word"
+                              className="wrap-break-words leading-relaxed whitespace-normal"
                             >
                               • {detail}
                             </p>
