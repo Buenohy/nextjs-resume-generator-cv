@@ -1,70 +1,84 @@
 .
 ├── messages/                           # 🌐 Dicionários de Tradução (next-intl)
-│   ├── en.json                         # O que: Textos e dados do site em Inglês. / Por que: Para gerar o site dinamicamente sem hardcode no HTML.
-│   └── pt.json                         # O que: Textos e dados do site em Português. / Por que: Mesma lógica, carregado quando a URL for /pt.
+│   ├── en.json                         # Textos e dados do site em Inglês
+│   └── pt.json                         # Textos e dados do site em Português
 │
 ├── src/
 │   ├── app/
-│   │   ├── [locale]/                   # 🌍 Rota Dinâmica de Idioma (Tudo aqui dentro tem "pt" ou "en" na URL)
-│   │   │   ├── (builder)/              # 🏗️ Grupo de Rotas do "Passo a Passo" (O parêntese faz com que "(builder)" não apareça na URL)
+│   │   ├── [locale]/                   # 🌍 Rota Dinâmica de Idioma
+│   │   │   ├── (builder)/              # 🏗️ Grupo de Rotas do Construtor
 │   │   │   │   ├── job-description/
-│   │   │   │   │   └── page.tsx        # O que: Passo 1 (Input da Vaga). / Por que: Onde o usuário cola o texto da vaga alvo.
+│   │   │   │   │   └── page.tsx        # Passo 1: Input da vaga
 │   │   │   │   ├── resume-builder/
-│   │   │   │   │   └── page.tsx        # O que: Passo 2 (Montar Currículo). / Por que: Edita/filtra os dados do JSON convertidos do YAML.
-│   │   │   │   ├── job-parse/
-│   │   │   │   │   └── page.tsx        # O que: Passo 3 (Análise de Inconsistências). / Por que: Mostra avisos se o cargo/meta não bate com a vaga.
-│   │   │   │   ├── match-ats/
-│   │   │   │   │   └── page.tsx        # O que: Passo 4 (Tabela de Palavras-Chave). / Por que: Mostra o que falta no currículo (Meta 2x).
-│   │   │   │   ├── optimizing-resume/
-│   │   │   │   │   └── page.tsx        # O que: Passo 5 (Melhoria de Verbos). / Por que: A IA (RegEx/Dicionário) sugere verbos mais fortes.
+│   │   │   │   │   └── page.tsx        # Passo 2: Montagem e análise do currículo (unifica antigos passos 3,4,5: análise de inconsistências, tabela de palavras‑chave e otimização de verbos)
 │   │   │   │   ├── pdf-preview/
-│   │   │   │   │   └── page.tsx        # O que: Passo 6 (Resultado Final). / Por que: Renderiza o @react-pdf para baixar com metadados injetados.
-│   │   │   │   └── layout.tsx          # O que: Layout exclusivo do Construtor. / Por que: É aqui que fica o componente <Stepper /> (A barra de progresso visual).
+│   │   │   │   │   └── page.tsx        # Passo 3: Pré‑visualização e exportação do PDF
+│   │   │   │   └── layout.tsx          # Layout do construtor (contém <Stepper /> e <PaginationButtons />)
 │   │   │   │
 │   │   │   ├── components/
-│   │   │   │   └── page.tsx            # O que: Página de testes. / Por que: Usada para testar componentes do Shadcn e traduções isoladamente.
+│   │   │   │   └── page.tsx            # Página de testes de componentes
 │   │   │   │
 │   │   │   ├── full-content/
-│   │   │   │   └── page.tsx            # O que: Base de Dados (Master CV). / Por que: Exibe o currículo completo sem filtros ATS.
+│   │   │   │   └── page.tsx            # Currículo completo (Base de Dados)
 │   │   │   │
-│   │   │   ├── layout.tsx              # O que: Layout Principal Root. / Por que: Injeta Fontes, Tema (Dark/Light) e o NextIntlClientProvider.
-│   │   │   └── page.tsx                # O que: Landing Page (/). / Por que: Tela inicial que recebe o usuário antes do construtor.
+│   │   │   ├── layout.tsx              # Layout principal (root)
+│   │   │   └── page.tsx                # Landing Page
 │   │   │
 │   │   ├── api/
 │   │   │   └── analyze/
-│   │   │       └── route.ts            # ⚙️ O que: Rota de Backend (Node.js). / Por que: Substitui o Python CLI. Processa palavras-chave e verbos sem travar o navegador.
+│   │   │       └── route.ts            # Backend de análise (Node.js)
 │   │   │
-│   │   ├── globals.css                 # O que: Estilos globais. / Por que: Configurações base do Tailwind CSS e variáveis do Shadcn.
-│   │   └── layout-old.tsx              # O que: Arquivo antigo. / Por que: Backup do layout original, pode ser deletado.
+│   │   ├── globals.css                 # Estilos globais (Tailwind + Shadcn)
+│   │   └── layout-old.tsx              # Backup do layout antigo
 │   │
-│   ├── components/                     # 🧩 Componentes React (Reutilizáveis)
-│   │   ├── dark-mode.tsx               # O que: Botão de Tema. / Por que: Alterna entre Light/Dark mode.
-│   │   ├── lang-menu.tsx               # O que: Menu de Idioma. / Por que: Troca a URL de /pt para /en mantendo o usuário na mesma tela.
-│   │   ├── nav-menu.tsx                # O que: Menu Principal (Header). / Por que: Facilita a navegação usando traduções (t("NavMenu")).
-│   │   ├── resume.tsx                  # O que: Visualizador de PDF. / Por que: O componente @react-pdf/renderer puro (Document, Page, Text).
-│   │   ├── stepper.tsx                 # O que: Barra de Progresso. / Por que: Lê a URL (pathname) e pinta de verde o passo atual do construtor.
-│   │   ├── theme-provider.tsx          # O que: Contexto do Next-Themes. / Por que: Permite o funcionamento do dark mode sem dar "flicker" na tela.
-│   │   └── ui/                         # O que: Shadcn UI. / Por que: Componentes visuais base da aplicação (Botões, Inputs, Tabelas).
+│   ├── components/                     # 🧩 Componentes reutilizáveis
+│   │   ├── dark-mode.tsx               # Botão de tema
+│   │   ├── lang-menu.tsx               # Menu de idioma
+│   │   ├── nav-menu.tsx                # Menu principal (header)
+│   │   ├── pagination-buttons.tsx      # Botões de navegação entre passos ("Anterior"/"Próximo")
+│   │   ├── resume.tsx                  # Componente do currículo em PDF (@react-pdf/renderer)
+│   │   ├── stepper.tsx                 # Barra de progresso (lê a URL e pinta o passo atual)
+│   │   ├── theme-provider.tsx          # Contexto do Next-Themes
+│   │   ├── sections/                   # Seções do formulário (resume-builder)
+│   │   │   ├── meta-ats-section.tsx    # Metadados ATS
+│   │   │   ├── header-section.tsx      # Cabeçalho pessoal
+│   │   │   ├── links-section.tsx       # Links profissionais
+│   │   │   ├── summary-section.tsx     # Resumo profissional
+│   │   │   ├── skills-section.tsx      # Habilidades
+│   │   │   ├── experience-section.tsx  # Experiências profissionais
+│   │   │   ├── education-section.tsx   # Formação acadêmica
+│   │   │   ├── certifications-section.tsx # Certificações
+│   │   │   └── languages-section.tsx   # Idiomas
+│   │   └── ui/                         # Componentes de interface (Shadcn + customizados)
+│   │       ├── ...                     # (button, input, card, table, select, etc.)
+│   │       ├── columns.tsx             # Definição das colunas da tabela de palavras-chave
+│   │       ├── feedback-card.tsx       # Cartão de feedback ATS (abas de análise, match, otimização)
+│   │       └── month-year-picker.tsx   # Seletor de mês/ano reutilizável
 │   │
-│   ├── i18n/                           # 🌍 Configurações de Internacionalização
-│   │   ├── navigation.ts               # O que: Hooks do next-intl. / Por que: Exporta o Link e useRouter customizados para não perder o prefixo /pt ou /en.
-│   │   ├── request.ts                  # O que: Loader de arquivos JSON. / Por que: Lê a rota e manda o arquivo pt.json ou en.json certo pro servidor.
-│   │   └── routing.ts                  # O que: Regras de Rota. / Por que: Define quais idiomas existem no app ("en", "pt") e o padrão.
+│   ├── hooks/                          # 🪝 Hooks customizados
+│   │   └── use-auto-resize.ts          # Auto‑resize para textareas
 │   │
-│   ├── lib/                            # 🧠 O Cérebro da Aplicação (Regras de Negócio)
-│   │   ├── auto-optimizer.ts           # O que: NLP em TypeScript. / Por que: Substitui o "auto_optimizer.py". Busca verbos fracos (fazer, usar) e sugere fortes.
-│   │   ├── job-parser.ts               # O que: Parser da Vaga. / Por que: Substitui o "job_parser.py". Usa RegEx para achar "react", "ci/cd" e calcular a Meta 2x.
-│   │   ├── meta-validator.ts           # O que: Validador de Consistência. / Por que: Confere se o Cargo e Metadados do CV batem com a Vaga (gera as tags "Atenção!").
-│   │   └── utils.ts                    # O que: Funções utilitárias. / Por que: Geralmente usado pelo Shadcn (função `cn` para juntar classes do Tailwind).
+│   ├── i18n/                           # 🌍 Configurações de internacionalização
+│   │   ├── navigation.ts
+│   │   ├── request.ts
+│   │   └── routing.ts
 │   │
-│   ├── store/                          # 📦 Gerenciamento de Estado Global
-│   │   └── useResumeStore.ts           # O que: Zustand Store. / Por que: Guarda os dados do Passo 1 (Vaga) para serem lidos no Passo 6 (PDF) sem perder no refresh.
+│   ├── lib/                            # 🧠 Lógica de negócio (parsers, validadores)
+│   │   ├── auto-optimizer.ts           # Sugestão de verbos fortes
+│   │   ├── job-parser.ts               # Parser da descrição da vaga
+│   │   ├── meta-validator.ts           # Validador de consistência dos metadados
+│   │   └── utils.ts                    # Funções auxiliares (ex.: cn)
 │   │
-│   ├── proxy.ts                        # O que: Configurações de Proxy (se aplicável). / Por que: Evitar erros de CORS ao consultar APIs externas.
-│   └── types/                          # 🏷️ Tipagens Estáticas
-│       └── Input.ts                    # O que: Tipagem TypeScript. / Por que: Garante que os dados (vaga, currículo, meta) tenham o formato correto sem bugs.
+│   ├── store/                          # 📦 Estado global (Zustand)
+│   │   └── useResumeStore.ts
+│   │
+│   ├── types/                          # 🏷️ Tipagens TypeScript
+│   │   ├── Input.ts                    # Tipos de entrada genéricos
+│   │   └── resume.ts                   # Tipos específicos do currículo (KeywordData, etc.)
+│   │
+│   └── proxy.ts                        # Configurações de proxy (se necessário)
 │
-├── next.config.ts                      # O que: Config do Next. / Por que: Configura compilação e injeta o plugin do next-intl.
-├── middleware.ts (Implícito)           # O que: Interceptador. / Por que: Força o redirecionamento para /[locale] dependendo do idioma do navegador.
-├── package.json                        # O que: Dependências. / Por que: Onde ficam instalados Next, Shadcn, Zustand, React-PDF, etc.
-└── tsconfig.json                       # O que: Config do TypeScript. / Por que: Define regras de importação (como o uso do "@/" para pastas).
+├── next.config.ts
+├── middleware.ts (implícito)
+├── package.json
+└── tsconfig.json
