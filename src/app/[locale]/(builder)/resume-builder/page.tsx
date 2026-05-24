@@ -98,6 +98,14 @@ const YEARS = Array.from({ length: 41 }, (_, i) =>
   String(new Date().getFullYear() + 10 - i)
 );
 
+const LANGUAGE_LEVELS = [
+  "Basic",
+  "Intermediate",
+  "Advanced",
+  "Professional Working Proficiency",
+  "Native",
+];
+
 const STATIC_SECTIONS: FormSection[] = [
   {
     id: "meta_ats",
@@ -517,7 +525,6 @@ export default function ResumeBuilderPage() {
     });
   };
 
-  // --- Helpers Educação ---
   const parseEduString = (str: string) => {
     const parts = str.split(" | ");
     let text = str;
@@ -565,7 +572,6 @@ export default function ResumeBuilderPage() {
     handleUpdateListItem("education", index, finalVal);
   };
 
-  // --- Helpers Certificações ---
   const parseCertString = (str: string) => {
     const parts = str.split(" | ");
     let text = str;
@@ -600,6 +606,32 @@ export default function ResumeBuilderPage() {
     const datePart = [m, y].filter(Boolean).join(" ");
     const finalVal = datePart ? `${text} | ${datePart}` : text;
     handleUpdateListItem("certifications", index, finalVal);
+  };
+
+  const parseLangString = (str: string) => {
+    const parts = str.split(" - ");
+    let text = str;
+    let levelStr = "";
+
+    if (parts.length > 1) {
+      const lastPart = parts[parts.length - 1];
+      const hasLevel = LANGUAGE_LEVELS.some((l) => lastPart.includes(l));
+
+      if (hasLevel) {
+        levelStr = parts.pop() || "";
+        text = parts.join(" - ");
+      }
+    }
+
+    return {
+      text: text.trim(),
+      level: levelStr.trim(),
+    };
+  };
+
+  const handleLangChange = (index: number, text: string, level: string) => {
+    const finalVal = level ? `${text} - ${level}` : text;
+    handleUpdateListItem("languages", index, finalVal);
   };
 
   return (
@@ -770,6 +802,16 @@ export default function ResumeBuilderPage() {
                     </div>
                   </Field>
                 ))}
+                <div className="mt-2 flex justify-end">
+                  <Button
+                    variant="outline"
+                    size="xs"
+                    onClick={() => handleAddListItem("skills")}
+                    className="gap-1 text-xs"
+                  >
+                    <Plus className="h-3.5 w-3.5" /> Adicionar Habilidade
+                  </Button>
+                </div>
               </div>
             </CardContent>
 
@@ -1141,6 +1183,16 @@ export default function ResumeBuilderPage() {
                             </div>
                           </Field>
                         ))}
+                        <div className="mt-2 flex justify-end">
+                          <Button
+                            variant="outline"
+                            size="xs"
+                            onClick={() => handleAddStack(expIndex)}
+                            className="gap-1 text-xs"
+                          >
+                            <Plus className="h-3.5 w-3.5" /> Adicionar Stack
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   );
@@ -1366,6 +1418,16 @@ export default function ResumeBuilderPage() {
                     </Field>
                   );
                 })}
+                <div className="mt-2 flex justify-end">
+                  <Button
+                    variant="outline"
+                    size="xs"
+                    onClick={() => handleAddListItem("education")}
+                    className="gap-1 text-xs"
+                  >
+                    <Plus className="h-3.5 w-3.5" /> Adicionar Formação
+                  </Button>
+                </div>
               </div>
             </CardContent>
 
@@ -1516,6 +1578,16 @@ export default function ResumeBuilderPage() {
                     </Field>
                   );
                 })}
+                <div className="mt-2 flex justify-end">
+                  <Button
+                    variant="outline"
+                    size="xs"
+                    onClick={() => handleAddListItem("certifications")}
+                    className="gap-1 text-xs"
+                  >
+                    <Plus className="h-3.5 w-3.5" /> Adicionar Certificação
+                  </Button>
+                </div>
               </div>
             </CardContent>
 
@@ -1540,13 +1612,70 @@ export default function ResumeBuilderPage() {
                     <Plus className="mr-2 h-4 w-4" /> Adicionar Idioma
                   </Button>
                 </div>
-                {cvData.languages.map((lang, index) => (
-                  <Field key={index} className="mb-2">
-                    <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-                      <div className="flex w-full items-center justify-between sm:w-auto">
-                        <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-                          Idioma {index + 1}
-                        </FieldLabel>
+                {cvData.languages.map((lang, index) => {
+                  const parsedLang = parseLangString(lang);
+
+                  return (
+                    <Field key={index} className="mb-2">
+                      <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+                        <div className="flex w-full items-center justify-between sm:w-auto">
+                          <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+                            Idioma {index + 1}
+                          </FieldLabel>
+                          {cvData.languages.length > 1 && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() =>
+                                handleRemoveListItem("languages", index)
+                              }
+                              className="h-8 w-8 sm:hidden"
+                            >
+                              <Trash2 className="text-destructive h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
+                        <div className="flex w-full flex-1 flex-col gap-2 sm:flex-row sm:items-center">
+                          <Textarea
+                            className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
+                            rows={1}
+                            placeholder="Ex: English"
+                            value={parsedLang.text}
+                            onBlur={(e) => {
+                              if (
+                                !e.target.value.trim() &&
+                                cvData.languages.length > 1
+                              ) {
+                                handleRemoveListItem("languages", index);
+                              }
+                            }}
+                            onChange={(e) => {
+                              handleAutoResize(e);
+                              handleLangChange(
+                                index,
+                                e.target.value,
+                                parsedLang.level
+                              );
+                            }}
+                          />
+                          <Select
+                            value={parsedLang.level}
+                            onValueChange={(val) =>
+                              handleLangChange(index, parsedLang.text, val)
+                            }
+                          >
+                            <SelectTrigger className="w-full sm:w-[220px]">
+                              <SelectValue placeholder="Nível de Proficiência" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {LANGUAGE_LEVELS.map((level) => (
+                                <SelectItem key={level} value={level}>
+                                  {level}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
                         {cvData.languages.length > 1 && (
                           <Button
                             variant="ghost"
@@ -1554,49 +1683,15 @@ export default function ResumeBuilderPage() {
                             onClick={() =>
                               handleRemoveListItem("languages", index)
                             }
-                            className="h-8 w-8 sm:hidden"
+                            className="hidden sm:inline-flex"
                           >
                             <Trash2 className="text-destructive h-4 w-4" />
                           </Button>
                         )}
                       </div>
-                      <Textarea
-                        className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
-                        rows={1}
-                        placeholder="Coloque um idioma"
-                        value={lang}
-                        onBlur={(e) => {
-                          if (
-                            !e.target.value.trim() &&
-                            cvData.languages.length > 1
-                          ) {
-                            handleRemoveListItem("languages", index);
-                          }
-                        }}
-                        onChange={(e) => {
-                          handleAutoResize(e);
-                          handleUpdateListItem(
-                            "languages",
-                            index,
-                            e.target.value
-                          );
-                        }}
-                      />
-                      {cvData.languages.length > 1 && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() =>
-                            handleRemoveListItem("languages", index)
-                          }
-                          className="hidden sm:inline-flex"
-                        >
-                          <Trash2 className="text-destructive h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
-                  </Field>
-                ))}
+                    </Field>
+                  );
+                })}
                 <div className="mt-2 flex justify-end">
                   <Button
                     variant="outline"
