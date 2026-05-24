@@ -46,6 +46,7 @@ export function ExperienceSectionFullContent() {
 
   const [form, setForm] = useState<ExperienceItem>({ ...emptyExperience });
   const [expToDelete, setExpToDelete] = useState<number | null>(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const MONTHS = t.raw("months") as string[];
   const YEARS = Array.from({ length: 41 }, (_, i) =>
@@ -83,6 +84,7 @@ export function ExperienceSectionFullContent() {
     const date =
       start || end ? `${start}${start && end ? " - " : ""}${end}` : "";
     setForm({ ...form, date });
+    setErrorMessage("");
   };
 
   const updateField = (
@@ -90,6 +92,7 @@ export function ExperienceSectionFullContent() {
     value: string
   ) => {
     setForm({ ...form, [fieldId]: value });
+    setErrorMessage("");
   };
 
   const addDetail = () => {
@@ -133,6 +136,16 @@ export function ExperienceSectionFullContent() {
   };
 
   const handleSave = () => {
+    if (!form.role.trim() || !form.company.trim() || !form.date.trim()) {
+      setErrorMessage(tFull("validationError"));
+      return;
+    }
+    const hasDetail = form.details.some((d) => d.trim() !== "");
+    if (!hasDetail) {
+      setErrorMessage(tFull("validationError"));
+      return;
+    }
+
     const cleaned: ExperienceItem = {
       ...form,
       details: form.details.filter((d) => d.trim() !== ""),
@@ -140,6 +153,7 @@ export function ExperienceSectionFullContent() {
     };
     addSavedExperience(cleaned);
     setForm({ ...emptyExperience });
+    setErrorMessage("");
   };
 
   const handleDeleteConfirm = () => {
@@ -384,6 +398,9 @@ export function ExperienceSectionFullContent() {
         <Button onClick={handleSave} className="mx-auto w-fit">
           {tFull("saveButton")}
         </Button>
+        {errorMessage && (
+          <p className="text-destructive mt-1 text-sm">{errorMessage}</p>
+        )}
       </div>
 
       <div className="pt-8">

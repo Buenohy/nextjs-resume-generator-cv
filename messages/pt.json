@@ -336,6 +336,7 @@
       "experience": "Experiência",
       "data": "Dados"
     },
-    "emptyMessage": "Nenhuma experiência cadastrada."
+    "emptyMessage": "Nenhuma experiência cadastrada.",
+    "validationError": "Por favor, preencha todos os campos obrigatórios (cargo, empresa, data e pelo menos um detalhe)."
   }
 }

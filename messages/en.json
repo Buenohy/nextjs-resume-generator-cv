@@ -324,6 +324,7 @@
       "experience": "Experience",
       "data": "Data"
     },
-    "emptyMessage": "No experiences registered."
+    "emptyMessage": "No experiences registered.",
+    "validationError": "Please fill in all required fields (role, company, date, and at least one detail)."
   }
 }
