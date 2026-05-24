@@ -22,17 +22,6 @@
         "desc": "Página de descrição da vaga."
       }
     },
-    "ats": {
-      "trigger": "ATS",
-      "match": {
-        "title": "Match ATS",
-        "desc": "Página de correspondência ATS."
-      },
-      "optimize": {
-        "title": "Otimizar Currículo",
-        "desc": "Página de otimização de currículo."
-      }
-    },
     "contents": {
       "trigger": "Conteúdos",
       "full": {

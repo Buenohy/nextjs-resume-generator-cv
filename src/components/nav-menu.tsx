@@ -64,7 +64,7 @@ export default function NavigationMenuDemo() {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
 
-            <DropdownMenuLabel>{t("ats.trigger")}</DropdownMenuLabel>
+            {/* <DropdownMenuLabel>{t("ats.trigger")}</DropdownMenuLabel>
             <DropdownMenuItem asChild>
               <Link href="/match-ats" className="cursor-pointer">
                 {t("ats.match.title")}
@@ -75,7 +75,7 @@ export default function NavigationMenuDemo() {
                 {t("ats.optimize.title")}
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator /> */}
 
             <DropdownMenuLabel>{t("contents.trigger")}</DropdownMenuLabel>
             <DropdownMenuItem asChild>
@@ -136,7 +136,7 @@ export default function NavigationMenuDemo() {
               </NavigationMenuContent>
             </NavigationMenuItem>
 
-            <NavigationMenuItem>
+            {/* <NavigationMenuItem>
               <NavigationMenuTrigger>{t("ats.trigger")}</NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="flex w-72 flex-col gap-3 p-4">
@@ -151,7 +151,7 @@ export default function NavigationMenuDemo() {
                   </ListItem>
                 </ul>
               </NavigationMenuContent>
-            </NavigationMenuItem>
+            </NavigationMenuItem> */}
 
             <NavigationMenuItem>
               <NavigationMenuTrigger>

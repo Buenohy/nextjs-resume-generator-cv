@@ -22,14 +22,6 @@
         "desc": "Job description page."
       }
     },
-    "ats": {
-      "trigger": "ATS",
-      "match": { "title": "Match ATS", "desc": "Match ATS page." },
-      "optimize": {
-        "title": "Optimizing Resume",
-        "desc": "Optimizing resume page."
-      }
-    },
     "contents": {
       "trigger": "Contents",
       "full": { "title": "Full Content", "desc": "Full content page." },
