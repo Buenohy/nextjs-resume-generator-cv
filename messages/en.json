@@ -75,6 +75,27 @@
   },
   "ResumeBuilderPage": {
     "title": "Resume Builder & Optimization",
+    "months": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    "language_levels": [
+      "Basic",
+      "Intermediate",
+      "Advanced",
+      "Professional Working Proficiency",
+      "Native"
+    ],
     "formCard": {
       "title": "Resume Content",
       "description": "Assemble your resume content below"
@@ -90,17 +111,88 @@
       }
     },
     "sections": {
-      "header": {
-        "title": "Header",
-        "subTitle": "Personal details"
-      },
       "meta_ats": {
         "title": "ATS Metadata",
-        "subTitle": "Resume indexing metadata"
+        "subTitle": "Resume indexing metadata",
+        "fields": {
+          "role_target": {
+            "label": "Role Target",
+            "placeholder": "E.g.: Developer Frontend"
+          },
+          "subject": {
+            "label": "Subject",
+            "placeholder": "E.g.: Developer specializing in React, Angular..."
+          },
+          "keywords": {
+            "label": "Keywords",
+            "placeholder": "E.g.: React, Angular, Next.js..."
+          },
+          "category": { "label": "Category", "placeholder": "E.g.: Resume" },
+          "contributor": {
+            "label": "Contributor",
+            "placeholder": "E.g.: Gabriel Bueno Hygino"
+          },
+          "coverage": {
+            "label": "Coverage",
+            "placeholder": "E.g.: Global / Remote / Hybrid / In Person"
+          },
+          "identifier": {
+            "label": "Identifier",
+            "placeholder": "E.g.: CV-Gabriel-Bueno-2026"
+          },
+          "publisher": {
+            "label": "Publisher",
+            "placeholder": "E.g.: Self-published via Python Automation"
+          },
+          "relation": {
+            "label": "Relation",
+            "placeholder": "E.g.: Application for Software Engineer Position"
+          },
+          "rights": {
+            "label": "Rights",
+            "placeholder": "E.g.: Copyright © 2026 Gabriel Bueno Hygino."
+          },
+          "source": {
+            "label": "Source",
+            "placeholder": "E.g.: http://bueno-portfolio-web.vercel.app/"
+          },
+          "type": { "label": "Type", "placeholder": "E.g.: Text/PDF" },
+          "notes": {
+            "label": "Notes",
+            "placeholder": "E.g.: Optimized for ATS systems."
+          }
+        }
+      },
+      "header": {
+        "title": "Header",
+        "subTitle": "Personal details",
+        "fields": {
+          "name": { "label": "Name", "placeholder": "Enter your name" },
+          "role": { "label": "Role", "placeholder": "Enter desired role" },
+          "city": {
+            "label": "City/State",
+            "placeholder": "Enter your city and state abbreviation"
+          },
+          "age": { "label": "Age", "placeholder": "Enter your age" }
+        }
       },
       "links": {
         "title": "Professional Links",
-        "subTitle": "Contact and portfolio links"
+        "subTitle": "Contact and portfolio links",
+        "labels": {
+          "phone": "Phone",
+          "websiteName": "Website Name",
+          "websiteUrl": "Website URL",
+          "email": "E-mail"
+        },
+        "placeholders": {
+          "linkedin": "Enter your LinkedIn link",
+          "phone": "Enter your Phone link/number",
+          "websiteName": "E.g.: bueno.com",
+          "websiteUrl": "E.g.: https://bueno-portfolio-web.vercel.app/",
+          "email": "Enter your E-mail address",
+          "github": "Enter your GitHub link"
+        }
       },
       "summary": {
         "title": "Professional Summary",
@@ -131,7 +223,25 @@
         "stacksCount": "Currently using: {count} technology(ies)",
         "addStackBtn": "Add Stack",
         "stackLabel": "Stack {num}",
-        "stackPlaceholder": "E.g.: React, Node.js, TypeScript"
+        "stackPlaceholder": "E.g.: React, Node.js, TypeScript",
+        "fields": {
+          "role": {
+            "label": "Role",
+            "placeholder": "E.g.: Frontend Developer"
+          },
+          "company": {
+            "label": "Company",
+            "placeholder": "E.g.: Google"
+          },
+          "url": {
+            "label": "Company URL",
+            "placeholder": "E.g.: https://google.com"
+          },
+          "date": {
+            "label": "Date",
+            "placeholder": "Start - End"
+          }
+        }
       },
       "education": {
         "title": "Education",
@@ -167,7 +277,7 @@
       }
     },
     "feedbackAnalysis": {
-      "inconsistencies": "⚠️ Inconsistencies Detected",
+      "inconsistencies": "⚠️ Inconsistências Detectadas",
       "missingKeywords": "Keywords missing from job description:",
       "missingKeywordsEmpty": "No missing keywords!",
       "roleNotFound": "Role target not found:",

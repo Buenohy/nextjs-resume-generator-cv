@@ -67,31 +67,85 @@ export interface KeywordData {
 
 const EMPTY_KEYWORDS: KeywordData[] = [];
 
-const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
 const YEARS = Array.from({ length: 41 }, (_, i) =>
   String(new Date().getFullYear() + 10 - i)
 );
 
-const LANGUAGE_LEVELS = [
-  "Basic",
-  "Intermediate",
-  "Advanced",
-  "Professional Working Proficiency",
-  "Native",
+const SortableHeader = ({
+  column,
+  title,
+  align = "left",
+}: {
+  column: Column<KeywordData, unknown>;
+  title: string;
+  align?: "left" | "center";
+}) => {
+  return (
+    <Button
+      variant="ghost"
+      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      className={`hover:text-primary ${align === "left" ? "-ml-4" : ""}`}
+    >
+      {title}
+      <HugeiconsIcon icon={ArrowUpDownIcon} size={16} className="ml-2" />
+    </Button>
+  );
+};
+
+export const columns: ColumnDef<KeywordData>[] = [
+  {
+    accessorKey: "keyword",
+    header: ({ column }) => (
+      <SortableHeader column={column} title="Palavra-Chave" />
+    ),
+    cell: ({ row }) => (
+      <div className="font-medium text-cyan-400 capitalize">
+        {row.getValue("keyword")}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "inVacancy",
+    header: ({ column }) => (
+      <SortableHeader column={column} title="Na Vaga" align="center" />
+    ),
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("inVacancy")}</div>
+    ),
+  },
+  {
+    accessorKey: "goal2x",
+    header: ({ column }) => (
+      <SortableHeader column={column} title="Meta (2x)" align="center" />
+    ),
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("goal2x")}</div>
+    ),
+  },
+  {
+    accessorKey: "onResume",
+    header: ({ column }) => (
+      <SortableHeader column={column} title="No Currículo" align="center" />
+    ),
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("onResume")}</div>
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: ({ column }) => <SortableHeader column={column} title="Status" />,
+    cell: ({ row }) => {
+      const status = row.getValue("status") as string;
+      const isApproved = status === "Aprovado";
+      return (
+        <div
+          className={`flex items-center gap-2 font-bold ${isApproved ? "text-emerald-500" : "text-rose-500"}`}
+        >
+          {isApproved ? "✅" : "❌"}
+        </div>
+      );
+    },
+  },
 ];
 
 export default function ResumeBuilderPage() {
@@ -110,88 +164,33 @@ export default function ResumeBuilderPage() {
 
   const keywordsTableData = analysisResults?.keywordsTable || EMPTY_KEYWORDS;
 
-  // --- Dynamic Constants (Dependem da tradução) ---
+  const MONTHS = t.raw("months") as string[];
+  const LANGUAGE_LEVELS = t.raw("language_levels") as string[];
+
   const STATIC_SECTIONS = [
     {
       id: "meta_ats",
       title: t("sections.meta_ats.title"),
       subTitle: t("sections.meta_ats.subTitle"),
-      fields: [
-        {
-          id: "role_target",
-          label: "role_target",
-          placeholder: "Ex: Developer Frontend",
-        },
-        {
-          id: "subject",
-          label: "subject",
-          placeholder:
-            "Ex: Developer specializing in React, Angular, and Next.js...",
-        },
-        {
-          id: "keywords",
-          label: "keywords",
-          placeholder: "Ex: React, Angular, Next.js, TypeScript, JavaScript...",
-        },
-        { id: "category", label: "category", placeholder: "Ex: Resume" },
-        {
-          id: "contributor",
-          label: "contributor",
-          placeholder: "Ex: Gabriel Bueno Hygino",
-        },
-        {
-          id: "coverage",
-          label: "coverage",
-          placeholder: "Ex: Global / Remote / Hybrid / In Person",
-        },
-        {
-          id: "identifier",
-          label: "identifier",
-          placeholder: "Ex: CV-Gabriel-Bueno-2026",
-        },
-        {
-          id: "publisher",
-          label: "publisher",
-          placeholder: "Ex: Self-published via Python Automation",
-        },
-        {
-          id: "relation",
-          label: "relation",
-          placeholder: "Ex: Application for Software Engineer Position",
-        },
-        {
-          id: "rights",
-          label: "rights",
-          placeholder:
-            "Ex: Copyright © 2026 Gabriel Bueno Hygino. All rights reserved.",
-        },
-        {
-          id: "source",
-          label: "source",
-          placeholder: "Ex: http://bueno-portfolio-web.vercel.app/",
-        },
-        { id: "type", label: "type", placeholder: "Ex: Text/PDF" },
-        {
-          id: "notes",
-          label: "notes",
-          placeholder: "Ex: Optimized for ATS systems.",
-        },
-      ],
+      fields: Object.entries(t.raw("sections.meta_ats.fields")).map(
+        ([key, value]: [string, any]) => ({
+          id: key,
+          label: value.label,
+          placeholder: value.placeholder,
+        })
+      ),
     },
     {
       id: "header",
       title: t("sections.header.title"),
       subTitle: t("sections.header.subTitle"),
-      fields: [
-        { id: "name", label: "name", placeholder: "Coloque o seu nome" },
-        { id: "role", label: "role", placeholder: "Coloque o cargo desejado" },
-        {
-          id: "city",
-          label: "city",
-          placeholder: "Coloque a sua cidade e a sigla",
-        },
-        { id: "age", label: "age", placeholder: "Coloque a sua idade" },
-      ],
+      fields: Object.entries(t.raw("sections.header.fields")).map(
+        ([key, value]: [string, any]) => ({
+          id: key,
+          label: value.label,
+          placeholder: value.placeholder,
+        })
+      ),
     },
     {
       id: "links",
@@ -201,124 +200,44 @@ export default function ResumeBuilderPage() {
         {
           id: "linkedin",
           label: "LinkedIn",
-          placeholder: "Coloque o link do seu LinkedIn",
+          placeholder: t("sections.links.placeholders.linkedin"),
         },
         {
           id: "phone",
-          label: "Telefone",
-          placeholder: "Coloque o link do seu Telefone",
+          label: t("sections.links.labels.phone"),
+          placeholder: t("sections.links.placeholders.phone"),
         },
         {
           id: "website",
-          label: "Site",
-          placeholder: "Coloque o link do seu Site",
+          label: t("sections.links.labels.websiteName"),
+          placeholder: t("sections.links.placeholders.websiteName"),
+        },
+        {
+          id: "website_url",
+          label: t("sections.links.labels.websiteUrl"),
+          placeholder: t("sections.links.placeholders.websiteUrl"),
         },
         {
           id: "email",
-          label: "E-mail",
-          placeholder: "Coloque o link do seu E-mail",
+          label: t("sections.links.labels.email"),
+          placeholder: t("sections.links.placeholders.email"),
         },
         {
           id: "github",
           label: "GitHub",
-          placeholder: "Coloque o link do seu GitHub",
+          placeholder: t("sections.links.placeholders.github"),
         },
       ],
     },
   ];
 
-  const BASE_EXPERIENCE_FIELDS = [
-    {
-      id: "role",
-      label: "role",
-      placeholder: "Coloque a função que você exerceu na empresa",
-    },
-    {
-      id: "company",
-      label: "company",
-      placeholder: "Coloque o nome da empresa",
-    },
-    {
-      id: "url",
-      label: "url",
-      placeholder: "Coloque o url do deploy do projeto",
-    },
-  ];
-
-  const SortableHeader = ({
-    column,
-    title,
-    align = "left",
-  }: {
-    column: Column<KeywordData, unknown>;
-    title: string;
-    align?: "left" | "center";
-  }) => (
-    <Button
-      variant="ghost"
-      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      className={`hover:text-primary ${align === "left" ? "-ml-4" : ""}`}
-    >
-      {title}
-      <HugeiconsIcon icon={ArrowUpDownIcon} size={16} className="ml-2" />
-    </Button>
-  );
-
-  const columns: ColumnDef<KeywordData>[] = [
-    {
-      accessorKey: "keyword",
-      header: ({ column }) => (
-        <SortableHeader column={column} title="Palavra-Chave" />
-      ),
-      cell: ({ row }) => (
-        <div className="font-medium text-cyan-400 capitalize">
-          {row.getValue("keyword")}
-        </div>
-      ),
-    },
-    {
-      accessorKey: "inVacancy",
-      header: ({ column }) => (
-        <SortableHeader column={column} title="Na Vaga" align="center" />
-      ),
-      cell: ({ row }) => (
-        <div className="text-center">{row.getValue("inVacancy")}</div>
-      ),
-    },
-    {
-      accessorKey: "goal2x",
-      header: ({ column }) => (
-        <SortableHeader column={column} title="Meta (2x)" align="center" />
-      ),
-      cell: ({ row }) => (
-        <div className="text-center">{row.getValue("goal2x")}</div>
-      ),
-    },
-    {
-      accessorKey: "onResume",
-      header: ({ column }) => (
-        <SortableHeader column={column} title="No Currículo" align="center" />
-      ),
-      cell: ({ row }) => (
-        <div className="text-center">{row.getValue("onResume")}</div>
-      ),
-    },
-    {
-      accessorKey: "status",
-      header: ({ column }) => <SortableHeader column={column} title="Status" />,
-      cell: ({ row }) => {
-        const status = row.getValue("status") as string;
-        const isApproved = status === "Aprovado";
-        return (
-          <div
-            className={`flex items-center gap-2 font-bold ${isApproved ? "text-emerald-500" : "text-rose-500"}`}
-          >
-            {isApproved ? "✅" : "❌"}
-          </div>
-        );
-      },
-    },
-  ];
+  const BASE_EXPERIENCE_FIELDS = Object.entries(
+    t.raw("sections.experience.fields")
+  ).map(([key, value]: [string, any]) => ({
+    id: key,
+    label: value.label,
+    placeholder: value.placeholder,
+  }));
 
   const table = useReactTable({
     data: keywordsTableData,
@@ -349,8 +268,7 @@ export default function ResumeBuilderPage() {
       return cvData.info[fieldId as keyof typeof cvData.info] || "";
     if (sectionId === "meta_ats")
       return cvData.meta_ats[fieldId as keyof typeof cvData.meta_ats] || "";
-    if (sectionId === "links")
-      return cvData.links[fieldId as keyof typeof cvData.links] || "";
+    if (sectionId === "links") return (cvData.links as any)[fieldId] || "";
     return "";
   };
 
@@ -364,8 +282,7 @@ export default function ResumeBuilderPage() {
         draft.info[fieldId as keyof typeof draft.info] = value;
       if (sectionId === "meta_ats")
         draft.meta_ats[fieldId as keyof typeof draft.meta_ats] = value;
-      if (sectionId === "links")
-        draft.links[fieldId as keyof typeof draft.links] = value;
+      if (sectionId === "links") (draft.links as any)[fieldId] = value;
     });
   };
 
@@ -436,7 +353,15 @@ export default function ResumeBuilderPage() {
     });
   };
 
-  const parseDateString = (dateStr: string) => {
+  const parseDateString = (dateStr?: string) => {
+    if (!dateStr) {
+      return {
+        startMonth: "",
+        startYear: "",
+        endMonth: "",
+        endYear: "",
+      };
+    }
     const [startStr, endStr] = dateStr.split(" - ");
     const startParts = (startStr || "").trim().split(" ");
     const endParts = (endStr || "").trim().split(" ");
@@ -518,7 +443,16 @@ export default function ResumeBuilderPage() {
     });
   };
 
-  const parseEduString = (str: string) => {
+  const parseEduString = (str?: string) => {
+    if (!str) {
+      return {
+        text: "",
+        startMonth: "",
+        startYear: "",
+        endMonth: "",
+        endYear: "",
+      };
+    }
     const parts = str.split(" | ");
     let text = str;
     let dateStr = "";
@@ -565,7 +499,14 @@ export default function ResumeBuilderPage() {
     handleUpdateListItem("education", index, finalVal);
   };
 
-  const parseCertString = (str: string) => {
+  const parseCertString = (str?: string) => {
+    if (!str) {
+      return {
+        text: "",
+        month: "",
+        year: "",
+      };
+    }
     const parts = str.split(" | ");
     let text = str;
     let dateStr = "";
@@ -600,7 +541,13 @@ export default function ResumeBuilderPage() {
     handleUpdateListItem("certifications", index, finalVal);
   };
 
-  const parseLangString = (str: string) => {
+  const parseLangString = (str?: string) => {
+    if (!str) {
+      return {
+        text: "",
+        level: "",
+      };
+    }
     const parts = str.split(" - ");
     let text = str;
     let levelStr = "";
@@ -1121,6 +1068,19 @@ export default function ResumeBuilderPage() {
                             </div>
                           </Field>
                         ))}
+                        {exp.details.length < 3 && (
+                          <div className="mt-2 flex justify-end">
+                            <Button
+                              variant="outline"
+                              size="xs"
+                              onClick={() => handleAddDetail(expIndex)}
+                              className="gap-1 text-xs"
+                            >
+                              <Plus className="h-3.5 w-3.5" />{" "}
+                              {t("sections.experience.addDetailBtn")}
+                            </Button>
+                          </div>
+                        )}
                       </div>
 
                       <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
@@ -1204,21 +1164,19 @@ export default function ResumeBuilderPage() {
                                 </Button>
                               )}
                             </div>
-                            {stackIndex === exp.stacks.length - 1 && (
-                              <div className="mt-2 flex justify-end">
-                                <Button
-                                  variant="outline"
-                                  size="xs"
-                                  onClick={() => handleAddStack(expIndex)}
-                                  className="gap-1 text-xs"
-                                >
-                                  <Plus className="h-3.5 w-3.5" />{" "}
-                                  {t("sections.experience.addStackBtn")}
-                                </Button>
-                              </div>
-                            )}
                           </Field>
                         ))}
+                        <div className="mt-2 flex justify-end">
+                          <Button
+                            variant="outline"
+                            size="xs"
+                            onClick={() => handleAddStack(expIndex)}
+                            className="gap-1 text-xs"
+                          >
+                            <Plus className="h-3.5 w-3.5" />{" "}
+                            {t("sections.experience.addStackBtn")}
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   );
@@ -1771,7 +1729,7 @@ export default function ResumeBuilderPage() {
                     onClick={() => handleAddListItem("languages")}
                     className="gap-1 text-xs"
                   >
-                    <Plus className="mr-1 h-3.5 w-3.5" />{" "}
+                    <Plus className="h-3.5 w-3.5" />{" "}
                     {t("sections.languages.addBtn")}
                   </Button>
                 </div>
