@@ -161,5 +161,12 @@
       "suggestions": "🚀 Action Verb Suggestions:",
       "suspectWords": "Suspect Words Detected:"
     }
+  },
+  "PdfPreviewPage": {
+    "title": "PDF Preview",
+    "cardTitle": "PDF Preview",
+    "cardDescription": "Verify your details and export the final document.",
+    "generatingBtn": "Generating PDF...",
+    "exportBtn": "Export Resume"
   }
 }

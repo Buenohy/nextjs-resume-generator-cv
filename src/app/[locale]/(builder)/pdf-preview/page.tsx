@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { useResumeStore } from "@/store/useResumeStore";
 import {
   Card,
@@ -14,7 +15,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Resume } from "@/components/resume";
 import { Printer, Loader2 } from "lucide-react";
-import ButtonPaginate from "@/components/button-paginate";
 import dynamic from "next/dynamic";
 
 const PDFViewer = dynamic(
@@ -35,6 +35,7 @@ const PDFDownloadLink = dynamic(
 );
 
 export default function PdfPreviewPage() {
+  const t = useTranslations("PdfPreviewPage");
   const cvData = useResumeStore((state) => state.cvData);
 
   useEffect(() => {
@@ -119,14 +120,12 @@ export default function PdfPreviewPage() {
 
   return (
     <div className="container mx-auto min-h-screen p-3 sm:p-6">
-      <h1 className="mb-6 text-2xl font-bold">Pdf Preview</h1>
+      <h1 className="mb-6 text-2xl font-bold">{t("title")}</h1>
       <Card className="shadow-primary/50 mx-auto max-w-4xl shadow-lg">
         <CardHeader className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <div>
-            <CardTitle>Pdf Preview</CardTitle>
-            <CardDescription>
-              Verifique os seus dados e exporte o documento final.
-            </CardDescription>
+            <CardTitle>{t("cardTitle")}</CardTitle>
+            <CardDescription>{t("cardDescription")}</CardDescription>
           </div>
         </CardHeader>
 
@@ -152,13 +151,12 @@ export default function PdfPreviewPage() {
                     ) : (
                       <Printer className="mr-2 h-4 w-4" />
                     )}
-                    {loading ? "Gerando PDF..." : "Exportar Currículo"}
+                    {loading ? t("generatingBtn") : t("exportBtn")}
                   </Button>
                 )}
               </PDFDownloadLink>
             </CardAction>
           </div>
-          <ButtonPaginate />
         </CardFooter>
       </Card>
     </div>

@@ -176,5 +176,12 @@
       "suggestions": "🚀 Sugestões de Verbos de Ação:",
       "suspectWords": "Palavras Suspeitas Detectadas:"
     }
+  },
+  "PdfPreviewPage": {
+    "title": "Prévia do PDF",
+    "cardTitle": "Prévia do PDF",
+    "cardDescription": "Verifique os seus dados e exporte o documento final.",
+    "generatingBtn": "Gerando PDF...",
+    "exportBtn": "Exportar Currículo"
   }
 }
