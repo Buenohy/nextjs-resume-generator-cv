@@ -119,7 +119,7 @@ export default function PdfPreviewPage() {
   const formattedFileName = `CV_${(cvData.info.name || "Resume").replace(/\s+/g, "_")}.pdf`;
 
   return (
-    <div className="container mx-auto min-h-screen p-3 sm:p-6">
+    <div className="container mx-auto min-h-screen">
       <h1 className="mb-6 text-2xl font-bold">{t("title")}</h1>
       <Card className="shadow-primary/50 mx-auto max-w-4xl shadow-lg">
         <CardHeader className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
