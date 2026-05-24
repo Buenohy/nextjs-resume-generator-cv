@@ -55,5 +55,12 @@
         "desc": "Página de pré-visualização do PDF."
       }
     }
+  },
+  "JobDescriptionPage": {
+    "title": "Descrição da Vaga",
+    "cardTitle": "Descrição da Vaga",
+    "cardDescription": "Coloque os detalhes da vaga abaixo",
+    "placeholder": "Cole a descrição completa da vaga do LinkedIn, Wellfound, etc. aqui...",
+    "button": "Enviar descrição da vaga"
   }
 }

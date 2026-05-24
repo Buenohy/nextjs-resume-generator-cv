@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { useResumeStore } from "@/store/useResumeStore";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 export default function JobDescriptionPage() {
   const router = useRouter();
+  const t = useTranslations("JobDescriptionPage");
   const globalJobText = useResumeStore((state) => state.jobText);
   const setGlobalJobText = useResumeStore((state) => state.setJobText);
 
@@ -30,15 +32,15 @@ export default function JobDescriptionPage() {
 
   return (
     <div className="p-4 sm:p-6">
-      <h1 className="mb-6 text-2xl font-bold">Job Description</h1>
+      <h1 className="mb-6 text-2xl font-bold">{t("title")}</h1>
       <Card className="shadow-primary/50 shadow-lg">
         <CardHeader>
-          <CardTitle>Job Description</CardTitle>
-          <CardDescription>Coloque os detalhes da vaga abaixo</CardDescription>
+          <CardTitle>{t("cardTitle")}</CardTitle>
+          <CardDescription>{t("cardDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Textarea
-            placeholder="Cole a descrição completa da vaga do Wellfound aqui..."
+            placeholder={t("placeholder")}
             value={localText}
             onChange={(e) => setLocalText(e.target.value)}
             className="sm:min-h-62.5"
@@ -48,7 +50,7 @@ export default function JobDescriptionPage() {
           <div className="flex w-full justify-center">
             <CardAction>
               <Button onClick={handleSubmit} disabled={!localText.trim()}>
-                Enviar descrição da vaga
+                {t("button")}
               </Button>
             </CardAction>
           </div>

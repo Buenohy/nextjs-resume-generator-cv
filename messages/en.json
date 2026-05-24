@@ -40,5 +40,12 @@
       "trigger": "PDF Preview",
       "preview": { "title": "PDF Preview", "desc": "PDF preview page." }
     }
+  },
+  "JobDescriptionPage": {
+    "title": "Job Description",
+    "cardTitle": "Job Description",
+    "cardDescription": "Enter the job details below",
+    "placeholder": "Paste the full job description from LinkedIn, Wellfound, etc. here...",
+    "button": "Submit job description"
   }
 }
