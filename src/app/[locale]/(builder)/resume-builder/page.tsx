@@ -32,7 +32,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -53,7 +52,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import ButtonPaginate from "@/components/button-paginate";
 import { cn } from "@/lib/utils";
 
 interface FormField {
@@ -686,6 +684,16 @@ export default function ResumeBuilderPage() {
                     </div>
                   </Field>
                 ))}
+                <div className="mt-2 flex justify-end">
+                  <Button
+                    variant="outline"
+                    size="xs"
+                    onClick={() => handleAddListItem("skills")}
+                    className="gap-1 text-xs"
+                  >
+                    <Plus className="h-3.5 w-3.5" /> Adicionar Habilidade
+                  </Button>
+                </div>
               </div>
             </CardContent>
 
@@ -776,93 +784,44 @@ export default function ResumeBuilderPage() {
                           <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
                             Date
                           </FieldLabel>
-                          <div className="flex flex-1 flex-col items-center gap-2 sm:flex-row">
-                            <div className="flex w-full items-center gap-2 sm:w-auto">
-                              <Select
-                                value={dateParsed.startMonth}
-                                onValueChange={(val) =>
-                                  handleExpDateChange(
-                                    expIndex,
-                                    val,
-                                    dateParsed.startYear,
-                                    dateParsed.endMonth,
-                                    dateParsed.endYear
-                                  )
-                                }
-                              >
-                                <SelectTrigger className="w-full sm:w-[110px]">
-                                  <SelectValue placeholder="Mês" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {MONTHS.map((m) => (
-                                    <SelectItem key={m} value={m}>
-                                      {m}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <Select
-                                value={dateParsed.startYear}
-                                onValueChange={(val) =>
-                                  handleExpDateChange(
-                                    expIndex,
-                                    dateParsed.startMonth,
-                                    val,
-                                    dateParsed.endMonth,
-                                    dateParsed.endYear
-                                  )
-                                }
-                              >
-                                <SelectTrigger className="w-full sm:w-[90px]">
-                                  <SelectValue placeholder="Ano" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {YEARS.map((y) => (
-                                    <SelectItem key={y} value={y}>
-                                      {y}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            <span className="hidden sm:block">-</span>
-                            <div className="flex w-full items-center gap-2 sm:w-auto">
-                              <Select
-                                value={dateParsed.endMonth}
-                                onValueChange={(val) =>
-                                  handleExpDateChange(
-                                    expIndex,
-                                    dateParsed.startMonth,
-                                    dateParsed.startYear,
-                                    val,
-                                    dateParsed.endYear
-                                  )
-                                }
-                              >
-                                <SelectTrigger className="w-full sm:w-[110px]">
-                                  <SelectValue placeholder="Mês" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="Present">
-                                    Present
-                                  </SelectItem>
-                                  {MONTHS.map((m) => (
-                                    <SelectItem key={m} value={m}>
-                                      {m}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              {dateParsed.endMonth !== "Present" && (
+                          <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-end sm:gap-2">
+                            <div className="flex w-full flex-col gap-1.5 sm:w-auto">
+                              <span className="text-muted-foreground pl-1 text-[10px] font-semibold uppercase">
+                                Início
+                              </span>
+                              <div className="flex w-full items-center gap-2 sm:w-auto">
                                 <Select
-                                  value={dateParsed.endYear}
+                                  value={dateParsed.startMonth}
+                                  onValueChange={(val) =>
+                                    handleExpDateChange(
+                                      expIndex,
+                                      val,
+                                      dateParsed.startYear,
+                                      dateParsed.endMonth,
+                                      dateParsed.endYear
+                                    )
+                                  }
+                                >
+                                  <SelectTrigger className="w-full sm:w-[110px]">
+                                    <SelectValue placeholder="Mês" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {MONTHS.map((m) => (
+                                      <SelectItem key={m} value={m}>
+                                        {m}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                <Select
+                                  value={dateParsed.startYear}
                                   onValueChange={(val) =>
                                     handleExpDateChange(
                                       expIndex,
                                       dateParsed.startMonth,
-                                      dateParsed.startYear,
+                                      val,
                                       dateParsed.endMonth,
-                                      val
+                                      dateParsed.endYear
                                     )
                                   }
                                 >
@@ -877,7 +836,70 @@ export default function ResumeBuilderPage() {
                                     ))}
                                   </SelectContent>
                                 </Select>
-                              )}
+                              </div>
+                            </div>
+
+                            <span className="text-muted-foreground hidden pb-2.5 sm:block">
+                              -
+                            </span>
+
+                            <div className="flex w-full flex-col gap-1.5 sm:w-auto">
+                              <span className="text-muted-foreground pl-1 text-[10px] font-semibold uppercase">
+                                Término
+                              </span>
+                              <div className="flex w-full items-center gap-2 sm:w-auto">
+                                <Select
+                                  value={dateParsed.endMonth}
+                                  onValueChange={(val) =>
+                                    handleExpDateChange(
+                                      expIndex,
+                                      dateParsed.startMonth,
+                                      dateParsed.startYear,
+                                      val,
+                                      dateParsed.endYear
+                                    )
+                                  }
+                                >
+                                  <SelectTrigger className="w-full sm:w-[110px]">
+                                    <SelectValue placeholder="Mês" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="Present">
+                                      Present
+                                    </SelectItem>
+                                    {MONTHS.map((m) => (
+                                      <SelectItem key={m} value={m}>
+                                        {m}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                {dateParsed.endMonth !== "Present" && (
+                                  <Select
+                                    value={dateParsed.endYear}
+                                    onValueChange={(val) =>
+                                      handleExpDateChange(
+                                        expIndex,
+                                        dateParsed.startMonth,
+                                        dateParsed.startYear,
+                                        dateParsed.endMonth,
+                                        val
+                                      )
+                                    }
+                                  >
+                                    <SelectTrigger className="w-full sm:w-[90px]">
+                                      <SelectValue placeholder="Ano" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {YEARS.map((y) => (
+                                        <SelectItem key={y} value={y}>
+                                          {y}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -1043,6 +1065,16 @@ export default function ResumeBuilderPage() {
                             </div>
                           </Field>
                         ))}
+                        <div className="mt-2 flex justify-end">
+                          <Button
+                            variant="outline"
+                            size="xs"
+                            onClick={() => handleAddStack(expIndex)}
+                            className="gap-1 text-xs"
+                          >
+                            <Plus className="h-3.5 w-3.5" /> Adicionar Stack
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   );
@@ -1128,6 +1160,16 @@ export default function ResumeBuilderPage() {
                     </div>
                   </Field>
                 ))}
+                <div className="mt-2 flex justify-end">
+                  <Button
+                    variant="outline"
+                    size="xs"
+                    onClick={() => handleAddListItem("education")}
+                    className="gap-1 text-xs"
+                  >
+                    <Plus className="h-3.5 w-3.5" /> Adicionar Formação
+                  </Button>
+                </div>
               </div>
             </CardContent>
 
@@ -1209,6 +1251,16 @@ export default function ResumeBuilderPage() {
                     </div>
                   </Field>
                 ))}
+                <div className="mt-2 flex justify-end">
+                  <Button
+                    variant="outline"
+                    size="xs"
+                    onClick={() => handleAddListItem("certifications")}
+                    className="gap-1 text-xs"
+                  >
+                    <Plus className="h-3.5 w-3.5" /> Adicionar Certificação
+                  </Button>
+                </div>
               </div>
             </CardContent>
 
@@ -1290,6 +1342,16 @@ export default function ResumeBuilderPage() {
                     </div>
                   </Field>
                 ))}
+                <div className="mt-2 flex justify-end">
+                  <Button
+                    variant="outline"
+                    size="xs"
+                    onClick={() => handleAddListItem("languages")}
+                    className="gap-1 text-xs"
+                  >
+                    <Plus className="h-3.5 w-3.5" /> Adicionar Idioma
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
