@@ -98,7 +98,14 @@ const initialCvData: CvDataState = {
     type: "Text/PDF",
     notes: "",
   },
-  links: { linkedin: "", phone: "", website: "", email: "", github: "" },
+  links: {
+    linkedin: "",
+    phone: "",
+    website: "",
+    website_url: "",
+    email: "",
+    github: "",
+  },
   summary: "",
   skills: [""],
   experiences: [
