@@ -333,8 +333,7 @@
     "deleteDialogCancel": "Cancelar",
     "deleteDialogConfirm": "Sim, apagar",
     "tableHeaders": {
-      "experience": "Experiência",
-      "data": "Dados"
+      "experience": "Experiência"
     },
     "emptyMessage": "Nenhuma experiência cadastrada.",
     "validationDialogTitle": "Campos obrigatórios",

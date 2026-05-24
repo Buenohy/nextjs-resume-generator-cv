@@ -27,37 +27,59 @@ export function ExperienceTable({
   return (
     <div className="min-w-0 overflow-x-auto">
       <Table className="w-full table-fixed">
-        <TableHeader>
+        <TableHeader className="hidden sm:table-header-group">
           <TableRow>
-            <TableHead className="w-1/3">
+            <TableHead className="px-3 py-2 text-sm whitespace-nowrap">
               {tFull("tableHeaders.experience")}
             </TableHead>
-            <TableHead className="w-2/3">
-              {tFull("tableHeaders.data")}
-            </TableHead>
-            <TableHead className="w-10"></TableHead>
           </TableRow>
         </TableHeader>
+
         <TableBody>
           {experiences.map((exp, index) => (
-            <TableRow key={index}>
-              <TableCell className="min-w-0 pt-4 align-top font-medium wrap-break-word">
-                <div className="flex flex-col gap-1">
-                  <span className="text-sm font-bold">{exp.role || "—"}</span>
-                  <span className="text-muted-foreground text-xs">
-                    {exp.company || "—"}
-                  </span>
-                  <span className="text-xs italic">{exp.date || "—"}</span>
+            <TableRow
+              key={index}
+              className="border-border mb-4 block border-b pb-4 sm:mb-0 sm:table-row sm:border-b-0 sm:pb-0"
+            >
+              <TableCell className="block w-full min-w-0 px-3 pt-4 align-top wrap-break-word sm:table-cell">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
+                  <div className="flex items-center justify-between sm:contents">
+                    <span className="text-sm font-bold">{exp.role || "—"}</span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onDelete(index)}
+                      className="text-destructive h-8 w-8 sm:hidden"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
+                    <span className="text-muted-foreground text-xs">
+                      {exp.company || "—"}
+                    </span>
+                    <span className="text-xs italic">{exp.date || "—"}</span>
+                  </div>
+
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onDelete(index)}
+                    className="text-destructive ml-auto hidden h-8 w-8 sm:inline-flex"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
-              </TableCell>
-              <TableCell className="max-w-0 min-w-0 overflow-hidden pt-4 align-top">
-                <div className="flex flex-col gap-3 text-sm">
+
+                {/* Conteúdo extra (url, detalhes, stacks) */}
+                <div className="mt-3 flex flex-col gap-3 text-sm">
                   {exp.url && (
                     <a
                       href={exp.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-primary flex items-center gap-1 break-all hover:underline"
+                      className="text-primary wrap-break-words flex items-center gap-1 break-all whitespace-normal hover:underline"
                     >
                       <ExternalLink className="h-3.5 w-3.5 shrink-0" />
                       {exp.url}
@@ -70,7 +92,7 @@ export function ExperienceTable({
                           detail.trim() && (
                             <p
                               key={dIdx}
-                              className="leading-relaxed break-words whitespace-normal"
+                              className="wrap-break-words leading-relaxed whitespace-normal"
                             >
                               • {detail}
                             </p>
@@ -96,21 +118,11 @@ export function ExperienceTable({
                   )}
                 </div>
               </TableCell>
-              <TableCell className="pt-4 align-top">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onDelete(index)}
-                  className="text-destructive hover:text-destructive h-8 w-8"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </TableCell>
             </TableRow>
           ))}
           {experiences.length === 0 && (
             <TableRow>
-              <TableCell colSpan={3} className="h-24 text-center">
+              <TableCell className="h-24 text-center">
                 {tFull("emptyMessage")}
               </TableCell>
             </TableRow>

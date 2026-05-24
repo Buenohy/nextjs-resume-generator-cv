@@ -321,8 +321,7 @@
     "deleteDialogCancel": "Cancel",
     "deleteDialogConfirm": "Yes, delete",
     "tableHeaders": {
-      "experience": "Experience",
-      "data": "Data"
+      "experience": "Experience"
     },
     "emptyMessage": "No experiences registered.",
     "validationDialogTitle": "Required fields",
