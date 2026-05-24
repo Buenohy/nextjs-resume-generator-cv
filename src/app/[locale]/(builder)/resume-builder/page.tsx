@@ -23,7 +23,7 @@ export default function ResumeBuilderPage() {
   const t = useTranslations("ResumeBuilderPage");
 
   return (
-    <div className="p-3 sm:p-6">
+    <div>
       <h1 className="mb-6 text-2xl font-bold">{t("title")}</h1>
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
         <div className="space-y-6 lg:col-span-7">
