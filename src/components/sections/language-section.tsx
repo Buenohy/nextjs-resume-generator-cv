@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, Trash2 } from "lucide-react";
 import { useResumeStore } from "@/store/useResumeStore";
@@ -15,12 +16,27 @@ import {
 } from "@/components/ui/select";
 import { CardContent } from "@/components/ui/card";
 import { useAutoResize } from "@/app/hooks/useAutoResize";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function LanguagesSection() {
   const t = useTranslations("ResumeBuilderPage");
   const cvData = useResumeStore((s) => s.cvData);
-  const updateCvData = useResumeStore((s) => s.cvData);
+  const updateCvData = useResumeStore((s) => s.updateCvData);
   const handleAutoResize = useAutoResize();
+  const [isMounted, setIsMounted] = useState(false);
+
+  {
+    /* 
+    DEFERRED MOUNT EFFECT
+    - Defers rendering the fully interactive state to prevent hydration issues.
+  */
+  }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   const LANGUAGE_LEVELS = t.raw("language_levels") as string[];
 
@@ -65,6 +81,54 @@ export function LanguagesSection() {
     updateItem(index, finalVal);
   };
 
+  {
+    /* 
+    HIGH-FIDELITY SKELETON LOADER
+    - Matches the layout, dynamic loops, and 50/50 inputs split of the Languages component.
+  */
+  }
+  if (!isMounted) {
+    return (
+      <CardContent>
+        <div className="flex flex-col gap-4 py-4">
+          {/* Section Header Skeleton */}
+          <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+            <div className="flex flex-col gap-2">
+              <Skeleton className="h-6 w-40" />
+              <Skeleton className="h-4 w-72" />
+              <Skeleton className="mt-1 h-3 w-16" />
+            </div>
+            <Skeleton className="h-9 w-28 rounded-md" />
+          </div>
+
+          {/* Dynamic Languages Skeletons mapping exactly the same amount of items */}
+          {cvData.languages.map((_, index) => (
+            <Field key={index}>
+              <div className="flex w-full flex-col gap-4">
+                {/* Row 1: Label & Trash Skeletons */}
+                <div className="flex w-full items-center justify-between">
+                  <Skeleton className="h-4 w-28" />
+                  <Skeleton className="h-8 w-8 rounded-md" />
+                </div>
+
+                {/* Row 2: Double inputs 50/50 split Skeletons */}
+                <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+                  <Skeleton className="h-10 w-full flex-1 rounded-md" />
+                  <Skeleton className="h-10 w-full flex-1 rounded-md" />
+                </div>
+              </div>
+            </Field>
+          ))}
+
+          {/* Bottom Add Button Skeleton */}
+          <div className="mt-2 flex justify-end">
+            <Skeleton className="h-7 w-24 rounded-md" />
+          </div>
+        </div>
+      </CardContent>
+    );
+  }
+
   return (
     <CardContent>
       <div className="flex flex-col gap-4 py-4">
@@ -93,7 +157,6 @@ export function LanguagesSection() {
           const parsed = parseLangString(lang);
 
           return (
-            // Removed mb-4 from Field component as requested
             <Field key={index}>
               {/* 
                 MAIN CONTAINER FOR EACH LANGUAGE ITEM
@@ -118,7 +181,7 @@ export function LanguagesSection() {
                       variant="ghost"
                       size="icon"
                       onClick={() => removeItem(index)}
-                      className="h-8 w-8 shrink-0" /* Prevents button from squishing */
+                      className="h-8 w-8 shrink-0"
                     >
                       <Trash2 className="text-destructive h-4 w-4" />
                     </Button>
