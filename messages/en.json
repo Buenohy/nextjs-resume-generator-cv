@@ -111,6 +111,11 @@
       "meta_ats": {
         "title": "ATS Metadata",
         "subTitle": "Resume indexing metadata",
+        "addKeywordBtn": "Add Keyword",
+        "keywordsOptimizerTitle": "Keywords Optimizer (ATS)",
+        "keywordsCount": "Currently: {count} keywords registered.",
+        "keywordLabel": "Keyword {num}",
+        "keywordPlaceholder": "Enter a keyword",
         "fields": {
           "role_target": {
             "label": "Role",

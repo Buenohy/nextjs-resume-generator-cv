@@ -36,11 +36,12 @@ export interface Job {
 }
 
 export interface ResumeProps {
+  locale?: string; // Optional site locale prop passed from PdfPreviewPage
   info: Info;
   meta?: {
     role_target?: string;
     subject?: string;
-    keywords?: string;
+    keywords?: string | string[]; // Can now dynamically accept string or array
     publisher?: string;
     contributor?: string;
     rights?: string;
@@ -199,6 +200,7 @@ const Icon = ({ path }: { path: string }) => (
 );
 
 export const Resume: React.FC<ResumeProps> = ({
+  locale = "en", // Default locale fallback
   info,
   meta = {},
   summary,
@@ -209,15 +211,33 @@ export const Resume: React.FC<ResumeProps> = ({
   certifications,
   languages,
 }) => {
+  {
+    /* 
+    LOCALE CONVERSION
+    - Dynamically maps 'pt' or 'en' site locales to specific standard PDF ISO language tags.
+  */
+  }
+  const pdfLanguage = locale === "pt" ? "pt-BR" : "en-US";
+
+  {
+    /* 
+    KEYWORDS FORMATTER
+    - Flattens keywords array into a standard comma-separated string for PDF metadata indexing.
+  */
+  }
+  const keywordsStr = Array.isArray(meta.keywords)
+    ? meta.keywords.join(", ")
+    : meta.keywords || "";
+
   return (
     <Document
       title={`${meta.role_target || "Resume"} - ${info.name}`}
       author={meta.contributor || info.name}
       subject={meta.subject || ""}
-      keywords={meta.keywords || ""}
+      keywords={keywordsStr}
       creator={meta.publisher || "Next.js ATS Engine"}
       producer="React-PDF Generator"
-      language={info.location ? "pt-BR" : "en-US"}
+      language={pdfLanguage} // Correctly binds the dynamic locale value
     >
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>

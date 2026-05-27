@@ -117,6 +117,11 @@
       "meta_ats": {
         "title": "Metadados ATS",
         "subTitle": "Metadados para indexação nos sistemas",
+        "addKeywordBtn": "Adicionar Palavra-chave",
+        "keywordsOptimizerTitle": "Otimizador de Palavras-chave (ATS)",
+        "keywordsCount": "Atualmente: {count} palavra(s)-chave cadastrada(s).",
+        "keywordLabel": "Palavra-chave {num}",
+        "keywordPlaceholder": "Digite uma palavra-chave",
         "fields": {
           "role_target": {
             "label": "Cargo Alvo",

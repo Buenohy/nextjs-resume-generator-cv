@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl"; // Added useLocale hook
 import { useResumeStore } from "@/store/useResumeStore";
 import {
   Card,
@@ -36,6 +36,7 @@ const PDFDownloadLink = dynamic(
 
 export default function PdfPreviewPage() {
   const t = useTranslations("PdfPreviewPage");
+  const locale = useLocale(); // Fetches active site language (pt/en)
   const cvData = useResumeStore((state) => state.cvData);
 
   useEffect(() => {
@@ -45,8 +46,19 @@ export default function PdfPreviewPage() {
     document.title = `${meta.role_target || "Resume"} - ${cvData.info.name || "Gabriel Bueno"}`;
 
     const createdMetaTags: HTMLMetaElement[] = [];
+
+    {
+      /* 
+      KEYWORDS CONVERSION
+      - Safely joins the keywords array into a comma-separated string for HTML meta tags.
+    */
+    }
+    const keywordsStr = Array.isArray(meta.keywords)
+      ? meta.keywords.join(", ")
+      : meta.keywords || "";
+
     const metaMappings = [
-      { name: "keywords", content: meta.keywords },
+      { name: "keywords", content: keywordsStr },
       { name: "subject", content: meta.subject },
       { name: "author", content: meta.contributor },
       { name: "rights", content: meta.rights },
@@ -105,6 +117,7 @@ export default function PdfPreviewPage() {
 
   const resumeDocument = (
     <Resume
+      locale={locale} // Passes down the active site locale (language) to the PDF
       info={infoProp}
       meta={cvData.meta_ats}
       summary={cvData.summary}
