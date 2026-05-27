@@ -175,7 +175,7 @@ export function CertificationsSection() {
                   {/* DATE SELECTS CONTAINER */}
                   <div className="flex flex-col gap-1.5">
                     {/* SUB-LABEL: "CONCLUSÃO" */}
-                    <span className="text-muted-foreground text-[10px] font-semibold uppercase">
+                    <span className="text-muted-foreground pl-1 text-[10px] font-semibold uppercase">
                       {t("sections.certifications.completion")}
                     </span>
 
