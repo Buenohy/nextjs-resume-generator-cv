@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, Trash2 } from "lucide-react";
 import { useResumeStore, ExperienceState } from "@/store/useResumeStore";
@@ -10,12 +11,27 @@ import { Textarea } from "@/components/ui/textarea";
 import { CardContent } from "@/components/ui/card";
 import { useAutoResize } from "@/app/hooks/useAutoResize";
 import { MonthYearPicker } from "@/components/sections/ui/mouth-year-picker";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function ExperienceSection() {
   const t = useTranslations("ResumeBuilderPage");
   const cvData = useResumeStore((s) => s.cvData);
   const updateCvData = useResumeStore((s) => s.updateCvData);
   const handleAutoResize = useAutoResize();
+  const [isMounted, setIsMounted] = useState(false);
+
+  {
+    /* 
+    DEFERRED MOUNT EFFECT
+    - Defers rendering the fully interactive state to prevent hydration issues.
+  */
+  }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   const MONTHS = t.raw("months") as string[];
   const YEARS = Array.from({ length: 41 }, (_, i) =>
@@ -141,6 +157,92 @@ export function ExperienceSection() {
       draft.experiences[expIndex].stacks[sIdx] = value;
     });
   };
+
+  {
+    /* 
+    HIGH-FIDELITY SKELETON LOADER
+    - Matches the layout, nested layers, gaps, and heights of all experience sub-components exactly.
+  */
+  }
+  if (!isMounted) {
+    return (
+      <CardContent>
+        <div className="flex flex-col gap-6 border-b py-4">
+          {/* Main Section Header Skeleton */}
+          <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+            <div className="flex flex-col gap-2">
+              <Skeleton className="h-6 w-40" />
+              <Skeleton className="h-4 w-72" />
+              <Skeleton className="mt-1 h-3 w-16" />
+            </div>
+            <Skeleton className="h-9 w-28 rounded-md" />
+          </div>
+
+          {/* Dynamic Experiences Skeletons mapping exactly the same amount of items */}
+          {cvData.experiences.map((exp, expIndex) => (
+            <div
+              key={expIndex}
+              className="flex flex-col gap-6 border-b pt-4 pb-8 last:border-0 last:pb-0"
+            >
+              {/* Individual Experience Header Skeletons */}
+              <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+                <Skeleton className="h-5.5 w-32" />
+                <Skeleton className="h-8 w-24 rounded-md" />
+              </div>
+
+              {/* Standard inputs + date picker field Skeletons (4 fields in total) */}
+              {[1, 2, 3, 4].map((fieldIndex) => (
+                <Field key={fieldIndex} className="mb-2">
+                  <div className="flex w-full flex-col gap-2">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-10 w-full rounded-md" />
+                  </div>
+                </Field>
+              ))}
+
+              {/* Dynamic Details List Skeletons mapping exactly the same amount of items */}
+              <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
+                <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+                  <div className="flex flex-col gap-2">
+                    <Skeleton className="h-4.5 w-28" />
+                    <Skeleton className="h-3 w-16" />
+                  </div>
+                  <Skeleton className="h-7 w-24 rounded-md" />
+                </div>
+                {exp.details.map((_, dIdx) => (
+                  <Field key={dIdx} className="mb-2">
+                    <div className="flex w-full flex-col gap-2">
+                      <Skeleton className="h-3.5 w-20" />
+                      <Skeleton className="h-10 w-full rounded-md" />
+                    </div>
+                  </Field>
+                ))}
+              </div>
+
+              {/* Dynamic Tech Stacks List Skeletons mapping exactly the same amount of items */}
+              <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
+                <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+                  <div className="flex flex-col gap-2">
+                    <Skeleton className="h-4.5 w-28" />
+                    <Skeleton className="h-3 w-16" />
+                  </div>
+                  <Skeleton className="h-7 w-24 rounded-md" />
+                </div>
+                {exp.stacks.map((_, sIdx) => (
+                  <Field key={sIdx} className="mb-2">
+                    <div className="flex w-full flex-col gap-2">
+                      <Skeleton className="h-3.5 w-20" />
+                      <Skeleton className="h-10 w-full rounded-md" />
+                    </div>
+                  </Field>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    );
+  }
 
   return (
     <CardContent>
