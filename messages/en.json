@@ -111,6 +111,7 @@
       "meta_ats": {
         "title": "ATS Metadata",
         "subTitle": "Resume indexing metadata",
+        "metadataLanguageLabel": "Metadata Language",
         "addKeywordBtn": "Add Keyword",
         "keywordsOptimizerTitle": "Keywords Optimizer (ATS)",
         "keywordsCount": "Currently: {count} keywords registered.",

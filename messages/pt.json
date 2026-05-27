@@ -117,6 +117,7 @@
       "meta_ats": {
         "title": "Metadados ATS",
         "subTitle": "Metadados para indexação nos sistemas",
+        "metadataLanguageLabel": "Idioma dos Metadados",
         "addKeywordBtn": "Adicionar Palavra-chave",
         "keywordsOptimizerTitle": "Otimizador de Palavras-chave (ATS)",
         "keywordsCount": "Atualmente: {count} palavra(s)-chave cadastrada(s).",

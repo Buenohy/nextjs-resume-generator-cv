@@ -1,18 +1,19 @@
 "use client";
 
 import { useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Plus, Trash2 } from "lucide-react";
 import { useResumeStore } from "@/store/useResumeStore";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CardContent } from "@/components/ui/card";
-import { useAutoResize } from "@/app/hooks/useAutoResize";
 import { Button } from "@/components/ui/button";
+import { useAutoResize } from "@/app/hooks/useAutoResize";
 
 export function MetaAtsSection() {
   const t = useTranslations("ResumeBuilderPage");
+  const locale = useLocale(); // Fetches active site language (pt/en)
   const cvData = useResumeStore((s) => s.cvData);
   const updateCvData = useResumeStore((s) => s.updateCvData);
   const handleAutoResize = useAutoResize();
@@ -127,6 +128,24 @@ export function MetaAtsSection() {
             <h3 className="border-b pb-2 text-lg">{sectionDef.subTitle}</h3>
           </div>
         </div>
+
+        {/* 
+          READ-ONLY INFORMATIONAL FIELD (Metadata Language)
+          - Displays the localized system language dynamically.
+          - Helps users see which ISO standard language metadata will be embedded into the PDF.
+        */}
+        <Field className="mb-4">
+          <div className="flex w-full flex-col gap-2">
+            <FieldLabel className="text-left font-medium capitalize">
+              {t("sections.meta_ats.metadataLanguageLabel")}
+            </FieldLabel>
+            <Input
+              className="bg-muted w-full cursor-not-allowed opacity-80"
+              disabled
+              value={locale === "pt" ? "Português (pt-BR)" : "English (en-US)"}
+            />
+          </div>
+        </Field>
 
         {/* RENDER FLAT METADATA FIELDS */}
         {sectionDef.fields.map(({ id, label, placeholder }) => (
