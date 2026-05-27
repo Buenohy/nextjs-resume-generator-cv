@@ -37,7 +37,9 @@ export function SkillsSection() {
 
   return (
     <CardContent>
-      <div className="flex flex-col gap-6 border-b py-4">
+      {/* Outer container spacing set to gap-4 for consistency */}
+      <div className="flex flex-col gap-4 border-b py-4">
+        {/* SECTION HEADER */}
         <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
           <div>
             <h2 className="text-xl font-semibold">
@@ -53,26 +55,45 @@ export function SkillsSection() {
           </Button>
         </div>
 
+        {/* SKILLS LIST */}
         {cvData.skills.map((skill, index) => (
-          <Field key={index} className="mb-2">
-            <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-              <div className="flex w-full items-center justify-between sm:w-auto">
-                <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+          <Field key={index}>
+            {/* 
+              MAIN ITEM CONTAINER
+              - flex-col: Stacks the Label+Trash row on top of the Textarea input.
+              - gap-2: Small space between the Label row and the Input row.
+            */}
+            <div className="flex w-full flex-col gap-2">
+              {/* 
+                ROW 1: LABEL & TRASH BUTTON
+                - flex w-full: Takes full width.
+                - items-center: Vertically aligns elements to the center.
+                - justify-between: Pushes label to the left and trash to the far right.
+              */}
+              <div className="flex w-full items-center justify-between">
+                <FieldLabel className="text-left font-medium capitalize">
                   {t("sections.skills.itemLabel", { num: index + 1 })}
                 </FieldLabel>
+
+                {/* Trash Button - aligned right next to the label */}
                 {cvData.skills.length > 1 && (
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => removeItem(index)}
-                    className="h-8 w-8 sm:hidden"
+                    className="h-8 w-8 shrink-0" /* Prevents button from shrinking */
                   >
                     <Trash2 className="text-destructive h-4 w-4" />
                   </Button>
                 )}
               </div>
+
+              {/* 
+                ROW 2: INPUT FIELD (Textarea)
+                - w-full: Takes 100% of the available layout width.
+              */}
               <Textarea
-                className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
+                className="min-h-[38px] w-full resize-none overflow-hidden py-2"
                 rows={1}
                 placeholder={t("sections.skills.placeholder")}
                 value={skill}
@@ -86,20 +107,11 @@ export function SkillsSection() {
                   updateItem(index, e.target.value);
                 }}
               />
-              {cvData.skills.length > 1 && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => removeItem(index)}
-                  className="hidden sm:inline-flex"
-                >
-                  <Trash2 className="text-destructive h-4 w-4" />
-                </Button>
-              )}
             </div>
           </Field>
         ))}
 
+        {/* ADD ITEM BUTTON (Bottom) */}
         <div className="mt-2 flex justify-end">
           <Button
             variant="outline"
