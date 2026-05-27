@@ -11,7 +11,7 @@ export default function BuilderLayout({
   const t = useTranslations("BuilderLayout");
 
   return (
-    <Card className="bg-muted/30">
+    <div className="bg-muted/30 rounded-[20px] py-6">
       <div className="mx-auto max-w-7xl sm:px-6">
         <div className="mb-8 flex flex-col gap-2">
           <h1 className="text-foreground text-3xl font-bold tracking-tight">
@@ -31,6 +31,6 @@ export default function BuilderLayout({
           </CardFooter>
         </Card>
       </div>
-    </Card>
+    </div>
   );
 }

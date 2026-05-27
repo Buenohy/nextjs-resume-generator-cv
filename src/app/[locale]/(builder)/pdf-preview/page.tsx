@@ -134,7 +134,7 @@ export default function PdfPreviewPage() {
   return (
     <div className="container mx-auto min-h-screen">
       <h1 className="mb-6 text-2xl font-bold">{t("title")}</h1>
-      <Card className="shadow-primary/50 mx-auto max-w-4xl shadow-lg">
+      <Card className="shadow-primary/50 mx-auto w-full shadow-lg">
         <CardHeader className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <div>
             <CardTitle>{t("cardTitle")}</CardTitle>
@@ -143,7 +143,7 @@ export default function PdfPreviewPage() {
         </CardHeader>
 
         <CardContent className="flex flex-col gap-5">
-          <div className="bg-card h-[600px] overflow-hidden rounded-lg border p-1 shadow-sm sm:h-[800px]">
+          <div className="bg-card h-150 overflow-hidden rounded-lg border p-1 shadow-sm sm:h-200">
             <PDFViewer className="h-full w-full rounded-md border-0">
               {resumeDocument}
             </PDFViewer>
