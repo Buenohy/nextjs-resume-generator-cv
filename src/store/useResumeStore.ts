@@ -20,7 +20,7 @@ export interface CvDataState {
   meta_ats: {
     role_target: string;
     subject: string;
-    keywords: string;
+    keywords: string[];
     category: string;
     contributor: string;
     coverage: string;
@@ -86,7 +86,7 @@ const initialCvData: CvDataState = {
   meta_ats: {
     role_target: "",
     subject: "",
-    keywords: "",
+    keywords: [""],
     category: "Resume",
     contributor: "",
     coverage: "",
