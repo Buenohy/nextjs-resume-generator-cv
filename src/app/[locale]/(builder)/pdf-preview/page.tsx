@@ -160,7 +160,7 @@ export default function PdfPreviewPage() {
           <CardHeader>
             {/* Header Title & Subtitle Skeletons */}
             <Skeleton className="mb-2 h-6 w-40" />
-            <Skeleton className="h-4 w-72" />
+            <Skeleton className="h-4 w-56 sm:w-72" />
           </CardHeader>
           <CardContent className="flex flex-col gap-5">
             {/* 
