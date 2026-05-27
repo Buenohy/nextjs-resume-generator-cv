@@ -11,43 +11,20 @@ export function LinksSection() {
   const cvData = useResumeStore((s) => s.cvData);
   const updateCvData = useResumeStore((s) => s.updateCvData);
 
-  const sectionDef = {
-    id: "links",
-    title: t("sections.links.title"),
-    subTitle: t("sections.links.subTitle"),
-    fields: [
-      {
-        id: "linkedin",
-        label: "LinkedIn",
-        placeholder: t("sections.links.placeholders.linkedin"),
-      },
-      {
-        id: "phone",
-        label: t("sections.links.labels.phone"),
-        placeholder: t("sections.links.placeholders.phone"),
-      },
-      {
-        id: "website",
-        label: t("sections.links.labels.websiteName"),
-        placeholder: t("sections.links.placeholders.websiteName"),
-      },
-      {
-        id: "website_url",
-        label: t("sections.links.labels.websiteUrl"),
-        placeholder: t("sections.links.placeholders.websiteUrl"),
-      },
-      {
-        id: "email",
-        label: t("sections.links.labels.email"),
-        placeholder: t("sections.links.placeholders.email"),
-      },
-      {
-        id: "github",
-        label: "GitHub",
-        placeholder: t("sections.links.placeholders.github"),
-      },
-    ],
-  };
+  {
+    /* 
+    DYNAMIC FIELDS EXTRACTION
+    - Fetches the raw translation object from JSON files (en.json / pt.json).
+    - Map entries into an array of objects containing the id, localized label, and placeholder.
+  */
+  }
+  const fields = Object.entries(t.raw("sections.links.fields")).map(
+    ([key, value]: [string, any]) => ({
+      id: key,
+      label: value.label,
+      placeholder: value.placeholder,
+    })
+  );
 
   const getFieldValue = (fieldId: string) =>
     (cvData.links as any)[fieldId] || "";
@@ -61,11 +38,16 @@ export function LinksSection() {
   return (
     <CardContent>
       <div className="flex flex-col gap-6 border-b py-4">
+        {/* SECTION HEADER */}
         <div>
-          <h2 className="text-xl font-semibold">{sectionDef.title}</h2>
-          <h3 className="border-b pb-2 text-lg">{sectionDef.subTitle}</h3>
+          <h2 className="text-xl font-semibold">{t("sections.links.title")}</h2>
+          <h3 className="border-b pb-2 text-lg">
+            {t("sections.links.subTitle")}
+          </h3>
         </div>
-        {sectionDef.fields.map(({ id, label, placeholder }) => (
+
+        {/* DYNAMIC FIELDS MAP */}
+        {fields.map(({ id, label, placeholder }) => (
           <Field key={id} className="mb-4">
             {/* 
               STACKED CONTAINER FOR THE FIELD

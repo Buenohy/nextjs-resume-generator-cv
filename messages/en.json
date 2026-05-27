@@ -179,19 +179,31 @@
       "links": {
         "title": "Professional Links",
         "subTitle": "Contact and portfolio links",
-        "labels": {
-          "phone": "Phone",
-          "websiteName": "Website Name",
-          "websiteUrl": "Website URL",
-          "email": "E-mail"
-        },
-        "placeholders": {
-          "linkedin": "Enter your LinkedIn link",
-          "phone": "Enter your Phone link/number",
-          "websiteName": "E.g: bueno.com",
-          "websiteUrl": "E.g: https://bueno-portfolio-web.vercel.app/",
-          "email": "Enter your E-mail address",
-          "github": "Enter your GitHub link"
+        "fields": {
+          "linkedin": {
+            "label": "LinkedIn",
+            "placeholder": "Enter your LinkedIn link"
+          },
+          "phone": {
+            "label": "Phone",
+            "placeholder": "Enter your Phone link/number"
+          },
+          "website": {
+            "label": "Website Name",
+            "placeholder": "E.g: bueno.com"
+          },
+          "website_url": {
+            "label": "Website URL",
+            "placeholder": "E.g: https://bueno-portfolio-web.vercel.app/"
+          },
+          "email": {
+            "label": "E-mail",
+            "placeholder": "Enter your E-mail address"
+          },
+          "github": {
+            "label": "GitHub",
+            "placeholder": "Enter your GitHub link"
+          }
         }
       },
       "summary": {

@@ -191,19 +191,31 @@
       "links": {
         "title": "Links Profissionais",
         "subTitle": "Coloque os seus links de contato e portfólio",
-        "labels": {
-          "phone": "Telefone",
-          "websiteName": "Nome do site",
-          "websiteUrl": "Url do site",
-          "email": "E-mail"
-        },
-        "placeholders": {
-          "linkedin": "Coloque o link do seu LinkedIn",
-          "phone": "Coloque o link do seu Telefone",
-          "websiteName": "Ex: bueno.com",
-          "websiteUrl": "Ex: https://bueno-portfolio-web.vercel.app/",
-          "email": "Coloque o link do seu E-mail",
-          "github": "Coloque o link do seu GitHub"
+        "fields": {
+          "linkedin": {
+            "label": "LinkedIn",
+            "placeholder": "Coloque o link do seu LinkedIn"
+          },
+          "phone": {
+            "label": "Telefone",
+            "placeholder": "Coloque o link do seu Telefone"
+          },
+          "website": {
+            "label": "Nome do site",
+            "placeholder": "Ex: bueno.com"
+          },
+          "website_url": {
+            "label": "Url do site",
+            "placeholder": "Ex: https://bueno-portfolio-web.vercel.app/"
+          },
+          "email": {
+            "label": "E-mail",
+            "placeholder": "Coloque o link do seu E-mail"
+          },
+          "github": {
+            "label": "GitHub",
+            "placeholder": "Coloque o link do seu GitHub"
+          }
         }
       },
       "summary": {
