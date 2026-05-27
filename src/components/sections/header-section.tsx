@@ -42,12 +42,19 @@ export function HeaderSection() {
         </div>
         {sectionDef.fields.map(({ id, label, placeholder }) => (
           <Field key={id} className="mb-4">
-            <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center">
-              <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+            {/* 
+              STACKED CONTAINER FOR THE FIELD
+              - flex-col: Positions the label at the top and the input field directly below it.
+              - gap-2: Small, consistent gap between the Label and the Input.
+            */}
+            <div className="flex w-full flex-col gap-2">
+              {/* Label on top */}
+              <FieldLabel className="text-left font-medium capitalize">
                 {label}
               </FieldLabel>
+              {/* Input field on bottom taking full width */}
               <Input
-                className="w-full flex-1"
+                className="w-full"
                 placeholder={placeholder}
                 value={getFieldValue(id)}
                 onChange={(e) => handleChange(id, e.target.value)}
