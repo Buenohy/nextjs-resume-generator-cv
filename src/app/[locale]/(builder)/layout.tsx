@@ -30,7 +30,7 @@ export default function BuilderLayout({
   }, []);
 
   return (
-    <div className="bg-muted/30 rounded-[20px] py-6">
+    <div className="bg-muted/30 rounded-[20px] p-2.5 py-6 sm:p-6">
       <div className="mx-auto max-w-7xl sm:px-6">
         {/* LAYOUT HEADER SECTION */}
         {!isMounted ? (
@@ -40,7 +40,7 @@ export default function BuilderLayout({
           */
           <div className="mb-8 flex flex-col gap-2">
             <Skeleton className="h-9 w-64" />
-            <Skeleton className="h-5 w-72 sm:w-96" />
+            <Skeleton className="h-5 w-70 sm:w-96" />
           </div>
         ) : (
           <div className="mb-8 flex flex-col gap-2">
