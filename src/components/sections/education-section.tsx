@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, Trash2 } from "lucide-react";
 import { useResumeStore } from "@/store/useResumeStore";
@@ -15,12 +16,27 @@ import {
 } from "@/components/ui/select";
 import { CardContent } from "@/components/ui/card";
 import { useAutoResize } from "@/app/hooks/useAutoResize";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function EducationSection() {
   const t = useTranslations("ResumeBuilderPage");
   const cvData = useResumeStore((s) => s.cvData);
   const updateCvData = useResumeStore((s) => s.updateCvData);
   const handleAutoResize = useAutoResize();
+  const [isMounted, setIsMounted] = useState(false);
+
+  {
+    /* 
+    DEFERRED MOUNT EFFECT
+    - Defers rendering the fully interactive state to prevent hydration issues.
+  */
+  }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   const MONTHS = t.raw("months") as string[];
   const YEARS = Array.from({ length: 41 }, (_, i) =>
@@ -97,6 +113,83 @@ export function EducationSection() {
     const finalVal = datePart ? `${text} | ${datePart}` : text;
     updateItem(index, finalVal);
   };
+
+  {
+    /* 
+    HIGH-FIDELITY SKELETON LOADER
+    - Matches the layout, dynamic loops, and structural sizes of the entire Education component.
+  */
+  }
+  if (!isMounted) {
+    return (
+      <CardContent>
+        <div className="flex flex-col gap-4 border-b py-4">
+          {/* Section Header Skeleton */}
+          <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+            <div className="flex flex-col gap-2">
+              <Skeleton className="h-6 w-40" />
+              <Skeleton className="h-4 w-72" />
+              <Skeleton className="mt-1 h-3 w-16" />
+            </div>
+            <Skeleton className="h-9 w-28 rounded-md" />
+          </div>
+
+          {/* Dynamic Education Skeletons mapping exactly the same amount of items */}
+          {cvData.education.map((_, index) => (
+            <Field
+              key={index}
+              className="border-muted/50 mb-4 border-b pb-6 last:border-0 last:pb-0"
+            >
+              <div className="flex w-full flex-col gap-6">
+                {/* Part 1: Education Name Skeleton */}
+                <div className="flex w-full flex-col gap-2">
+                  <div className="flex w-full items-center justify-between">
+                    <Skeleton className="h-4 w-28" />
+                    <Skeleton className="h-8 w-8 rounded-md" />
+                  </div>
+                  <Skeleton className="h-[38px] w-full rounded-md" />
+                </div>
+
+                {/* Part 2: Period / Date Selects Skeletons */}
+                <div className="flex w-full flex-col gap-2">
+                  <Skeleton className="h-4 w-20" />
+
+                  <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-end sm:gap-4">
+                    {/* Start Date Skeletons */}
+                    <div className="flex w-full flex-col gap-1.5 sm:w-auto">
+                      <Skeleton className="h-3 w-12" />
+                      <div className="flex w-full items-center gap-2 sm:w-auto">
+                        <Skeleton className="h-10 w-full rounded-md sm:w-28" />
+                        <Skeleton className="h-10 w-full rounded-md sm:w-24" />
+                      </div>
+                    </div>
+
+                    <span className="text-muted-foreground hidden pb-2.5 sm:block">
+                      -
+                    </span>
+
+                    {/* End Date Skeletons */}
+                    <div className="flex w-full flex-col gap-1.5 sm:w-auto">
+                      <Skeleton className="h-3 w-12" />
+                      <div className="flex w-full items-center gap-2 sm:w-auto">
+                        <Skeleton className="h-10 w-full rounded-md sm:w-28" />
+                        <Skeleton className="h-10 w-full rounded-md sm:w-24" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Field>
+          ))}
+
+          {/* Bottom Add Button Skeleton */}
+          <div className="mt-2 flex justify-end">
+            <Skeleton className="h-7 w-24 rounded-md" />
+          </div>
+        </div>
+      </CardContent>
+    );
+  }
 
   return (
     <CardContent>
@@ -215,12 +308,16 @@ export function EducationSection() {
                           }
                           modal={false}
                         >
-                          <SelectTrigger className="w-full sm:w-[110px]">
+                          <SelectTrigger className="w-full sm:w-28">
                             <SelectValue
                               placeholder={t("sections.education.month")}
                             />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent
+                            position="popper"
+                            className="max-h-48"
+                            onCloseAutoFocus={(e) => e.preventDefault()}
+                          >
                             {MONTHS.map((m) => (
                               <SelectItem key={m} value={m}>
                                 {m}
@@ -243,12 +340,16 @@ export function EducationSection() {
                           }
                           modal={false}
                         >
-                          <SelectTrigger className="w-full sm:w-[90px]">
+                          <SelectTrigger className="w-full sm:w-24">
                             <SelectValue
                               placeholder={t("sections.education.year")}
                             />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent
+                            position="popper"
+                            className="max-h-48"
+                            onCloseAutoFocus={(e) => e.preventDefault()}
+                          >
                             {YEARS.map((y) => (
                               <SelectItem key={y} value={y}>
                                 {y}
@@ -285,12 +386,16 @@ export function EducationSection() {
                           }
                           modal={false}
                         >
-                          <SelectTrigger className="w-full sm:w-[110px]">
+                          <SelectTrigger className="w-full sm:w-28">
                             <SelectValue
                               placeholder={t("sections.education.month")}
                             />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent
+                            position="popper"
+                            className="max-h-48"
+                            onCloseAutoFocus={(e) => e.preventDefault()}
+                          >
                             <SelectItem value="Present">Present</SelectItem>
                             {MONTHS.map((m) => (
                               <SelectItem key={m} value={m}>
@@ -316,12 +421,16 @@ export function EducationSection() {
                             }
                             modal={false}
                           >
-                            <SelectTrigger className="w-full sm:w-[90px]">
+                            <SelectTrigger className="w-full sm:w-24">
                               <SelectValue
                                 placeholder={t("sections.education.year")}
                               />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent
+                              position="popper"
+                              className="max-h-48"
+                              onCloseAutoFocus={(e) => e.preventDefault()}
+                            >
                               {YEARS.map((y) => (
                                 <SelectItem key={y} value={y}>
                                   {y}
