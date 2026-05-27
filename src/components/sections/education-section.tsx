@@ -100,7 +100,8 @@ export function EducationSection() {
 
   return (
     <CardContent>
-      <div className="flex flex-col gap-6 border-b py-4">
+      <div className="flex flex-col gap-4 border-b py-4">
+        {/* HEADER SECTION */}
         <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
           <div>
             <h2 className="text-xl font-semibold">
@@ -120,33 +121,41 @@ export function EducationSection() {
           </Button>
         </div>
 
+        {/* EDUCATION LIST */}
         {cvData.education.map((edu, index) => {
           const parsed = parseEduString(edu);
 
           return (
             <Field
               key={index}
-              className="border-muted/50 mb-4 border-b pb-4 last:border-0 last:pb-0"
+              className="border-muted/50 mb-4 border-b pb-6 last:border-0 last:pb-0"
             >
-              <div className="flex w-full flex-col gap-4">
-                <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-                  <div className="flex w-full items-center justify-between sm:w-auto">
-                    <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+              {/* MAIN CONTAINER: Separates the Name area from the Date area */}
+              <div className="flex w-full flex-col gap-6">
+                {/* === PART 1: EDUCATION NAME === */}
+                <div className="flex w-full flex-col gap-2">
+                  {/* ROW 1: LABEL & TRASH BUTTON */}
+                  <div className="flex w-full items-center justify-between">
+                    <FieldLabel className="text-left font-medium capitalize">
                       {t("sections.education.itemLabel", { num: index + 1 })}
                     </FieldLabel>
+
+                    {/* Trash Button - aligned right next to the label */}
                     {cvData.education.length > 1 && (
                       <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => removeItem(index)}
-                        className="h-8 w-8 sm:hidden"
+                        className="h-8 w-8 shrink-0"
                       >
                         <Trash2 className="text-destructive h-4 w-4" />
                       </Button>
                     )}
                   </div>
+
+                  {/* ROW 2: TEXTAREA (Course/School Name) */}
                   <Textarea
-                    className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
+                    className="min-h-[38px] w-full min-w-0 flex-1 resize-none overflow-hidden py-2"
                     rows={1}
                     placeholder={t("sections.education.placeholder")}
                     value={parsed.text}
@@ -170,27 +179,27 @@ export function EducationSection() {
                       );
                     }}
                   />
-                  {cvData.education.length > 1 && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeItem(index)}
-                      className="hidden sm:inline-flex"
-                    >
-                      <Trash2 className="text-destructive h-4 w-4" />
-                    </Button>
-                  )}
                 </div>
 
-                <div className="mt-1 flex w-full flex-col gap-4 sm:flex-row sm:items-center lg:flex-col lg:items-start xl:flex-row xl:items-center">
-                  <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+                {/* === PART 2: PERIOD / DATE SECTION === */}
+                <div className="flex w-full flex-col gap-2">
+                  {/* LABEL ON TOP */}
+                  <FieldLabel className="text-left font-medium capitalize">
                     {t("sections.education.period")}
                   </FieldLabel>
-                  <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-end sm:gap-2">
+
+                  {/* 
+                    DATE SELECTS CONTAINER 
+                    - Mobile: Stacks Start and End dates vertically (flex-col).
+                    - Desktop: Puts them inline (sm:flex-row) aligned to bottom (sm:items-end).
+                  */}
+                  <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-end sm:gap-4">
+                    {/* --- START DATE BLOCK --- */}
                     <div className="flex w-full flex-col gap-1.5 sm:w-auto">
                       <span className="text-muted-foreground pl-1 text-[10px] font-semibold uppercase">
                         {t("sections.education.start")}
                       </span>
+
                       <div className="flex w-full items-center gap-2 sm:w-auto">
                         <Select
                           value={parsed.startMonth}
@@ -219,6 +228,7 @@ export function EducationSection() {
                             ))}
                           </SelectContent>
                         </Select>
+
                         <Select
                           value={parsed.startYear}
                           onValueChange={(val) =>
@@ -248,13 +258,18 @@ export function EducationSection() {
                         </Select>
                       </div>
                     </div>
+
+                    {/* SEPARATOR (Hidden on mobile, visible on desktop) */}
                     <span className="text-muted-foreground hidden pb-2.5 sm:block">
                       -
                     </span>
+
+                    {/* --- END DATE BLOCK --- */}
                     <div className="flex w-full flex-col gap-1.5 sm:w-auto">
                       <span className="text-muted-foreground pl-1 text-[10px] font-semibold uppercase">
                         {t("sections.education.end")}
                       </span>
+
                       <div className="flex w-full items-center gap-2 sm:w-auto">
                         <Select
                           value={parsed.endMonth}
@@ -284,6 +299,8 @@ export function EducationSection() {
                             ))}
                           </SelectContent>
                         </Select>
+
+                        {/* Render End Year only if End Month is not 'Present' */}
                         {parsed.endMonth !== "Present" && (
                           <Select
                             value={parsed.endYear}
@@ -322,6 +339,7 @@ export function EducationSection() {
           );
         })}
 
+        {/* ADD ITEM BUTTON */}
         <div className="mt-2 flex justify-end">
           <Button
             variant="outline"
