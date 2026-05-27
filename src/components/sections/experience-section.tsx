@@ -217,7 +217,7 @@ export function ExperienceSection() {
 
               {/* Date Picker */}
               <Field className="mb-4">
-                <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center">
+                <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center lg:flex-col lg:items-start xl:flex-row xl:items-center">
                   <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
                     Date
                   </FieldLabel>
