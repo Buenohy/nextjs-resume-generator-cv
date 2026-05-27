@@ -110,7 +110,7 @@ export function LanguagesSection() {
                 </div>
                 <div className="flex w-full flex-1 flex-col gap-2 sm:flex-row sm:items-center">
                   <Textarea
-                    className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
+                    className="min-h-9.5 w-full flex-1 resize-none overflow-hidden py-2"
                     rows={1}
                     placeholder={t("sections.languages.placeholder")}
                     value={parsed.text}
@@ -134,7 +134,7 @@ export function LanguagesSection() {
                     }
                     modal={false}
                   >
-                    <SelectTrigger className="w-full sm:w-[220px]">
+                    <SelectTrigger className="w-full sm:w-55 lg:w-45 xl:w-55">
                       <SelectValue
                         placeholder={t("sections.languages.levelPlaceholder")}
                       />
