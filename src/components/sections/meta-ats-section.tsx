@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Plus, Trash2 } from "lucide-react";
 import { useResumeStore } from "@/store/useResumeStore";
@@ -10,20 +10,29 @@ import { Textarea } from "@/components/ui/textarea";
 import { CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAutoResize } from "@/app/hooks/useAutoResize";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function MetaAtsSection() {
   const t = useTranslations("ResumeBuilderPage");
-  const locale = useLocale(); // Fetches active site language (pt/en)
+  const locale = useLocale();
   const cvData = useResumeStore((s) => s.cvData);
   const updateCvData = useResumeStore((s) => s.updateCvData);
   const handleAutoResize = useAutoResize();
+  const [isMounted, setIsMounted] = useState(false);
 
   {
     /* 
-    DYNAMIC FLAT FIELDS
-    - Filters out 'keywords' from flat rendering, since keywords are now managed as an array.
+    DEFERRED MOUNT EFFECT
+    - Defers rendering the fully interactive state to prevent hydration issues.
   */
   }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
+
   const sectionDef = {
     id: "meta_ats",
     title: t("sections.meta_ats.title"),
@@ -40,12 +49,6 @@ export function MetaAtsSection() {
   const getFieldValue = (fieldId: string) =>
     cvData.meta_ats[fieldId as keyof typeof cvData.meta_ats] || "";
 
-  {
-    /* 
-    STATE HANDLER WITH SYNCHRONIZATION
-    - When 'contributor' changes, it automatically generates 'identifier' and 'rights' values.
-  */
-  }
   const handleChange = (fieldId: string, value: string) => {
     updateCvData((draft) => {
       draft.meta_ats[fieldId as keyof typeof draft.meta_ats] = value;
@@ -61,22 +64,10 @@ export function MetaAtsSection() {
 
   const textareaFields = ["subject", "rights"];
 
-  {
-    /* 
-    DYNAMIC KEYWORDS LIST HANDLING
-    - Ensures keywords list is safely retrieved as an array.
-  */
-  }
   const keywordsList = Array.isArray(cvData.meta_ats.keywords)
     ? cvData.meta_ats.keywords
     : [];
 
-  {
-    /* 
-    AUTOMATIC INITIALIZATION EFFECT
-    - If the keywords array is empty or undefined, automatically initialize it with 1 empty keyword.
-  */
-  }
   useEffect(() => {
     if (
       !Array.isArray(cvData.meta_ats.keywords) ||
@@ -117,6 +108,72 @@ export function MetaAtsSection() {
       }
     });
   };
+
+  {
+    /* 
+    HIGH-FIDELITY SKELETON LOADER
+    - Matches the layout, gaps, and heights of both flat and dynamic components exactly.
+  */
+  }
+  if (!isMounted) {
+    return (
+      <CardContent>
+        <div className="flex flex-col gap-6 border-b py-4">
+          {/* Header Skeletons */}
+          <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+            <div className="flex flex-col gap-2">
+              <Skeleton className="h-6 w-44" />
+              <Skeleton className="h-4.5 w-72" />
+            </div>
+          </div>
+
+          {/* Metadata Language Input Skeleton */}
+          <Field className="mb-4">
+            <div className="flex w-full flex-col gap-2">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-10 w-full rounded-md" />
+            </div>
+          </Field>
+
+          {/* Standard Inputs Skeletons mapping exactly the same amount of fields */}
+          {sectionDef.fields.map(({ id }) => (
+            <Field key={id} className="mb-4">
+              <div className="flex w-full flex-col gap-2">
+                <Skeleton className="h-4 w-28" />
+                <Skeleton className="h-10 w-full rounded-md" />
+              </div>
+            </Field>
+          ))}
+
+          {/* Keywords Array Skeletons */}
+          <div className="mt-4 flex flex-col gap-4 border-t pt-6">
+            <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+              <div className="flex flex-col gap-2">
+                <Skeleton className="h-5 w-48" />
+                <Skeleton className="h-3.5 w-40" />
+              </div>
+              <Skeleton className="h-9 w-28 rounded-md" />
+            </div>
+
+            {(keywordsList.length > 0 ? keywordsList : [""]).map((_, index) => (
+              <Field key={index}>
+                <div className="flex w-full flex-col gap-2">
+                  <div className="flex w-full items-center justify-between">
+                    <Skeleton className="h-3.5 w-20" />
+                  </div>
+                  <Skeleton className="h-10 w-full rounded-md" />
+                </div>
+              </Field>
+            ))}
+
+            <div className="mt-2 flex justify-end">
+              <Skeleton className="h-7 w-24 rounded-md" />
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    );
+  }
 
   return (
     <CardContent>
