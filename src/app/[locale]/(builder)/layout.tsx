@@ -40,7 +40,7 @@ export default function BuilderLayout({
           */
           <div className="mb-8 flex flex-col gap-2">
             <Skeleton className="h-9 w-64" />
-            <Skeleton className="h-5 w-96" />
+            <Skeleton className="h-5 w-72 sm:w-96" />
           </div>
         ) : (
           <div className="mb-8 flex flex-col gap-2">
