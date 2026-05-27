@@ -333,6 +333,7 @@
     "cardTitle": "Full Content",
     "cardDescription": "All resume content",
     "formSubtitle": "Fill in the new experience details",
+    "dateLabel": "Date",
     "saveButton": "Save experience",
     "savedTitle": "Saved Experiences",
     "deleteDialogTitle": "Are you sure?",

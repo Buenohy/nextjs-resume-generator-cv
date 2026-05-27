@@ -173,14 +173,20 @@ export function ExperienceSectionFullContent() {
           </p>
         </div>
 
+        {/* STANDARD FLAT FIELDS (Role, Company, URL) */}
         {experienceFields.map(({ id, label, placeholder }) => (
           <Field key={id} className="mb-4">
-            <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center">
-              <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+            {/* 
+              STACKED FLAT FIELD CONTAINER
+              - flex-col: Positions the label at the top and the input field directly below it.
+              - gap-2: Small, consistent spacing between label and input.
+            */}
+            <div className="flex w-full flex-col gap-2">
+              <FieldLabel className="text-left font-medium capitalize">
                 {label}
               </FieldLabel>
               <Input
-                className="w-full flex-1"
+                className="w-full"
                 placeholder={placeholder}
                 value={form[id as keyof typeof form] || ""}
                 onChange={(e) =>
@@ -194,10 +200,17 @@ export function ExperienceSectionFullContent() {
           </Field>
         ))}
 
+        {/* DATE PICKER FIELD */}
         <Field className="mb-4">
-          <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center">
-            <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-              Date
+          {/* 
+            STACKED DATE FIELD CONTAINER
+            - flex-col: Positions the dynamic Date label at the top and the custom date pickers directly below.
+            - gap-2: Small, consistent vertical spacing.
+          */}
+          <div className="flex w-full flex-col gap-2">
+            <FieldLabel className="text-left font-medium capitalize">
+              {t("sections.certifications.date")}{" "}
+              {/* Standardized global Date Label */}
             </FieldLabel>
             <MonthYearPicker
               startMonth={dateParsed.startMonth}
@@ -244,6 +257,7 @@ export function ExperienceSectionFullContent() {
           </div>
         </Field>
 
+        {/* === DETAILS SECTION === */}
         <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
             <div>
@@ -263,26 +277,38 @@ export function ExperienceSectionFullContent() {
               </Button>
             )}
           </div>
+
+          {/* DETAILS ARRAY MAP */}
           {form.details.map((detail, dIdx) => (
             <Field key={dIdx} className="mb-2">
-              <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-                <div className="flex w-full items-center justify-between sm:w-auto">
-                  <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+              {/* 
+                STACKED DETAIL FIELD CONTAINER
+                - flex-col: Label+Trash row on top, Textarea input on bottom.
+                - gap-2: Small, consistent vertical spacing.
+              */}
+              <div className="flex w-full flex-col gap-2">
+                {/* ROW 1: LABEL & TRASH BUTTON */}
+                <div className="flex w-full items-center justify-between">
+                  <FieldLabel className="text-left text-xs font-medium capitalize">
                     {t("sections.experience.detailLabel", { num: dIdx + 1 })}
                   </FieldLabel>
+
+                  {/* Trash button aligned right next to the label */}
                   {form.details.length > 1 && (
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => removeDetail(dIdx)}
-                      className="h-8 w-8 sm:hidden"
+                      className="h-8 w-8 shrink-0"
                     >
                       <Trash2 className="text-destructive h-4 w-4" />
                     </Button>
                   )}
                 </div>
+
+                {/* ROW 2: TEXTAREA (Full Width) */}
                 <Textarea
-                  className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
+                  className="min-h-[38px] w-full resize-none overflow-hidden py-2"
                   rows={1}
                   placeholder={t("sections.experience.detailPlaceholder", {
                     num: dIdx + 1,
@@ -293,19 +319,10 @@ export function ExperienceSectionFullContent() {
                     updateDetail(dIdx, e.target.value);
                   }}
                 />
-                {form.details.length > 1 && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => removeDetail(dIdx)}
-                    className="hidden sm:inline-flex"
-                  >
-                    <Trash2 className="text-destructive h-4 w-4" />
-                  </Button>
-                )}
               </div>
             </Field>
           ))}
+
           {form.details.length < 3 && (
             <div className="mt-2 flex justify-end">
               <Button
@@ -321,6 +338,7 @@ export function ExperienceSectionFullContent() {
           )}
         </div>
 
+        {/* === TECH STACKS SECTION === */}
         <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
             <div>
@@ -338,26 +356,38 @@ export function ExperienceSectionFullContent() {
               {t("sections.experience.addStackBtn")}
             </Button>
           </div>
+
+          {/* STACKS ARRAY MAP */}
           {form.stacks.map((stack, sIdx) => (
             <Field key={sIdx} className="mb-2">
-              <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-                <div className="flex w-full items-center justify-between sm:w-auto">
-                  <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+              {/* 
+                STACKED STACK FIELD CONTAINER
+                - flex-col: Label+Trash row on top, Textarea input on bottom.
+                - gap-2: Small, consistent vertical spacing.
+              */}
+              <div className="flex w-full flex-col gap-2">
+                {/* ROW 1: LABEL & TRASH BUTTON */}
+                <div className="flex w-full items-center justify-between">
+                  <FieldLabel className="text-left text-xs font-medium capitalize">
                     {t("sections.experience.stackLabel", { num: sIdx + 1 })}
                   </FieldLabel>
+
+                  {/* Trash button aligned right next to the label */}
                   {form.stacks.length > 1 && (
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => removeStack(sIdx)}
-                      className="h-8 w-8 sm:hidden"
+                      className="h-8 w-8 shrink-0"
                     >
                       <Trash2 className="text-destructive h-4 w-4" />
                     </Button>
                   )}
                 </div>
+
+                {/* ROW 2: TEXTAREA (Full Width) */}
                 <Textarea
-                  className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
+                  className="min-h-[38px] w-full resize-none overflow-hidden py-2"
                   rows={1}
                   placeholder={t("sections.experience.stackPlaceholder")}
                   value={stack}
@@ -366,19 +396,10 @@ export function ExperienceSectionFullContent() {
                     updateStack(sIdx, e.target.value);
                   }}
                 />
-                {form.stacks.length > 1 && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => removeStack(sIdx)}
-                    className="hidden sm:inline-flex"
-                  >
-                    <Trash2 className="text-destructive h-4 w-4" />
-                  </Button>
-                )}
               </div>
             </Field>
           ))}
+
           <div className="mt-2 flex justify-end">
             <Button
               variant="outline"
