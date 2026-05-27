@@ -123,7 +123,7 @@ export function MetaAtsSection() {
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
             <div className="flex flex-col gap-2">
               <Skeleton className="h-6 w-44" />
-              <Skeleton className="h-4.5 w-72" />
+              <Skeleton className="h-4.5 w-56 sm:w-72" />
             </div>
           </div>
 
