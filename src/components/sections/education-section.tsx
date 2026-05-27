@@ -182,7 +182,7 @@ export function EducationSection() {
                   )}
                 </div>
 
-                <div className="mt-1 flex w-full flex-col gap-4 sm:flex-row sm:items-center">
+                <div className="mt-1 flex w-full flex-col gap-4 sm:flex-row sm:items-center lg:flex-col lg:items-start xl:flex-row xl:items-center">
                   <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
                     {t("sections.education.period")}
                   </FieldLabel>
