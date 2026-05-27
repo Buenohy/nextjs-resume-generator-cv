@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import {
   ShieldAlert,
@@ -37,6 +37,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useResumeStore } from "@/store/useResumeStore";
 import { columns } from "./columns";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const EMPTY_KEYWORDS: any[] = [];
 
@@ -46,6 +47,20 @@ export function FeedbackCard() {
     "parse"
   );
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [isMounted, setIsMounted] = useState(false);
+
+  {
+    /* 
+    DEFERRED MOUNT EFFECT
+    - Defers rendering the fully interactive state to prevent hydration issues.
+  */
+  }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   const analysisResults = useResumeStore((s) => s.analysisResults);
   const isLoadingAnalysis = useResumeStore((s) => s.isLoadingAnalysis);
@@ -69,6 +84,49 @@ export function FeedbackCard() {
   const totalAprovado = keywordsTableData.filter(
     (item) => item.status === "Aprovado"
   ).length;
+
+  {
+    /* 
+    HIGH-FIDELITY SKELETON LOADER
+    - Matches the structural layout, responsive tabs, and cards of the Feedback system perfectly.
+  */
+  }
+  if (!isMounted) {
+    return (
+      <Card className="border-muted shadow-primary/50 shadow-lg">
+        {/* Header Skeleton */}
+        <CardHeader className="relative border-b pb-3">
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-6 w-36" />
+            <Skeleton className="h-8 w-8 rounded-md" />
+          </div>
+          <Skeleton className="mt-2 h-4 w-72" />
+
+          {/* Action Tabs Skeletons */}
+          <div className="mt-4 grid w-full grid-cols-3 gap-1.5 sm:flex sm:flex-row sm:gap-1.5">
+            <Skeleton className="h-9 flex-1 rounded-md" />
+            <Skeleton className="h-9 flex-1 rounded-md" />
+            <Skeleton className="h-9 flex-1 rounded-md" />
+          </div>
+        </CardHeader>
+
+        {/* Content Skeletons (Mimics the inner panel details block) */}
+        <CardContent className="flex min-h-[400px] flex-col gap-5 pt-6">
+          <div className="bg-card space-y-4 rounded-lg border p-4">
+            <Skeleton className="mb-3 h-5 w-40" />
+            <div className="space-y-3">
+              {[1, 2, 3].map((idx) => (
+                <div key={idx} className="flex flex-col gap-1.5">
+                  <Skeleton className="h-3.5 w-24" />
+                  <Skeleton className="h-12 w-full rounded-md" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="border-muted shadow-primary/50 shadow-lg">
