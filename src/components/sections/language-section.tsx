@@ -67,7 +67,8 @@ export function LanguagesSection() {
 
   return (
     <CardContent>
-      <div className="flex flex-col gap-6 py-4">
+      <div className="flex flex-col gap-4 py-4">
+        {/* HEADER SECTION */}
         <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
           <div>
             <h2 className="text-xl font-semibold">
@@ -87,30 +88,39 @@ export function LanguagesSection() {
           </Button>
         </div>
 
+        {/* LANGUAGES LIST */}
         {cvData.languages.map((lang, index) => {
           const parsed = parseLangString(lang);
 
           return (
-            <Field key={index} className="mb-2">
-              <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-                <div className="flex w-full items-center justify-between sm:w-auto">
-                  <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
-                    {t("sections.languages.itemLabel", { num: index + 1 })}
-                  </FieldLabel>
-                  {cvData.languages.length > 1 && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeItem(index)}
-                      className="h-8 w-8 sm:hidden"
-                    >
-                      <Trash2 className="text-destructive h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-                <div className="flex w-full flex-1 flex-col gap-2 sm:flex-row sm:items-center">
+            <Field key={index} className="mb-4">
+              {/* 
+                MAIN CONTAINER FOR EACH LANGUAGE ITEM
+                - flex-col: Stacks the Label on top of the Inputs.
+                - gap-4: Creates the required space between the Label row and the Inputs row.
+              */}
+              <div className="flex w-full flex-col gap-4">
+                {/* 
+                  TOP ROW: LABEL ONLY
+                  - Sits alone at the top for a cleaner layout.
+                */}
+                <FieldLabel className="text-left font-medium capitalize">
+                  {t("sections.languages.itemLabel", { num: index + 1 })}
+                </FieldLabel>
+
+                {/* 
+                  BOTTOM ROW: INPUTS & DELETE BUTTON
+                  - Mobile (< sm): Stacks items vertically (flex-col).
+                  - Tablet/Desktop (sm+): Horizontal row (sm:flex-row) with items aligned to center.
+                */}
+                <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+                  {/* 
+                    FIELD 1: LANGUAGE NAME (Textarea)
+                    - flex-1: Takes exactly 50% of the remaining space on desktop.
+                    - min-w-0: Prevents Flexbox from breaking if the user types a very long word.
+                  */}
                   <Textarea
-                    className="min-h-9.5 w-full flex-1 resize-none overflow-hidden py-2"
+                    className="min-h-9.5 w-full min-w-0 flex-1 resize-none overflow-hidden py-2"
                     rows={1}
                     placeholder={t("sections.languages.placeholder")}
                     value={parsed.text}
@@ -127,42 +137,59 @@ export function LanguagesSection() {
                       handleLangChange(index, e.target.value, parsed.level);
                     }}
                   />
-                  <Select
-                    value={parsed.level}
-                    onValueChange={(val) =>
-                      handleLangChange(index, parsed.text, val)
-                    }
-                    modal={false}
-                  >
-                    <SelectTrigger className="w-full sm:w-55 lg:w-45 xl:w-55">
-                      <SelectValue
-                        placeholder={t("sections.languages.levelPlaceholder")}
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {LANGUAGE_LEVELS.map((level) => (
-                        <SelectItem key={level} value={level}>
-                          {level}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+
+                  {/* 
+                    FIELD 2: LANGUAGE LEVEL (Select)
+                    - flex-1: Takes the other 50% of the space on desktop.
+                    - min-w-0: Required for Shadcn UI select to truncate text with "..." correctly.
+                  */}
+                  <div className="w-full min-w-0 flex-1">
+                    <Select
+                      value={parsed.level}
+                      onValueChange={(val) =>
+                        handleLangChange(index, parsed.text, val)
+                      }
+                      modal={false}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue
+                          placeholder={t("sections.languages.levelPlaceholder")}
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {LANGUAGE_LEVELS.map((level) => (
+                          <SelectItem key={level} value={level}>
+                            {level}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* 
+                    DELETE BUTTON (Visible on all breakpoints now)
+                    - shrink-0: Prevents the button from squishing.
+                    - flex justify-end: Aligns the button to the right side on mobile screens.
+                    - sm:block: Reverts to normal block flow on tablet/desktop.
+                  */}
+                  {cvData.languages.length > 1 && (
+                    <div className="flex shrink-0 justify-end sm:block">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeItem(index)}
+                      >
+                        <Trash2 className="text-destructive h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
                 </div>
-                {cvData.languages.length > 1 && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => removeItem(index)}
-                    className="hidden sm:inline-flex"
-                  >
-                    <Trash2 className="text-destructive h-4 w-4" />
-                  </Button>
-                )}
               </div>
             </Field>
           );
         })}
 
+        {/* ADD ITEM BUTTON */}
         <div className="mt-2 flex justify-end">
           <Button
             variant="outline"
