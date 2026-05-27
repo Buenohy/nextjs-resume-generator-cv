@@ -63,7 +63,7 @@ export default function JobDescriptionPage() {
           <CardHeader>
             {/* Card Title & Description Skeletons */}
             <Skeleton className="mb-2 h-6 w-48" />
-            <Skeleton className="h-4 w-80" />
+            <Skeleton className="h-4 w-56 sm:w-80" />
           </CardHeader>
           <CardContent>
             {/* 
