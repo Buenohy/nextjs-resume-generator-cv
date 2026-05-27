@@ -62,7 +62,7 @@ export function HeaderSection() {
           {/* Header Skeletons */}
           <div className="flex flex-col gap-2">
             <Skeleton className="h-6 w-40" />
-            <Skeleton className="h-4 w-72" />
+            <Skeleton className="h-4 w-56 sm:w-72" />
           </div>
 
           {/* Standard Inputs Skeletons mapping exactly the same amount of fields */}
