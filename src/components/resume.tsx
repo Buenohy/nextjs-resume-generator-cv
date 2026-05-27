@@ -36,12 +36,12 @@ export interface Job {
 }
 
 export interface ResumeProps {
-  locale?: string; // Optional site locale prop passed from PdfPreviewPage
+  locale?: string;
   info: Info;
   meta?: {
     role_target?: string;
     subject?: string;
-    keywords?: string | string[]; // Can now dynamically accept string or array
+    keywords?: string | string[];
     publisher?: string;
     contributor?: string;
     rights?: string;
@@ -200,7 +200,7 @@ const Icon = ({ path }: { path: string }) => (
 );
 
 export const Resume: React.FC<ResumeProps> = ({
-  locale = "en", // Default locale fallback
+  locale = "en",
   info,
   meta = {},
   summary,
@@ -237,7 +237,7 @@ export const Resume: React.FC<ResumeProps> = ({
       keywords={keywordsStr}
       creator={meta.publisher || "Next.js ATS Engine"}
       producer="React-PDF Generator"
-      language={pdfLanguage} // Correctly binds the dynamic locale value
+      language={pdfLanguage}
     >
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>

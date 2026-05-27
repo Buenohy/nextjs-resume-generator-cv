@@ -117,7 +117,7 @@ export default function PdfPreviewPage() {
 
   const resumeDocument = (
     <Resume
-      locale={locale} // Passes down the active site locale (language) to the PDF
+      locale={locale}
       info={infoProp}
       meta={cvData.meta_ats}
       summary={cvData.summary}
