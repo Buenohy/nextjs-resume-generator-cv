@@ -62,7 +62,7 @@ export default function ResumeBuilderPage() {
               {!isMounted ? (
                 <div className="flex flex-col gap-2">
                   <Skeleton className="h-6 w-56" />
-                  <Skeleton className="h-4 w-96" />
+                  <Skeleton className="h-4 w-58 sm:w-96" />
                 </div>
               ) : (
                 <>
