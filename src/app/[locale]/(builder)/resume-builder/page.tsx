@@ -1,6 +1,7 @@
 "use client";
 "use no memo";
 
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import {
   Card,
@@ -8,6 +9,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { MetaAtsSection } from "@/components/sections/meta-ats-section";
 import { HeaderSection } from "@/components/sections/header-section";
 import { LinksSection } from "@/components/sections/links-section";
@@ -21,18 +23,56 @@ import { FeedbackCard } from "@/components/sections/ui/feed-back-card";
 
 export default function ResumeBuilderPage() {
   const t = useTranslations("ResumeBuilderPage");
+  const [isMounted, setIsMounted] = useState(false);
+
+  {
+    /* 
+    DEFERRED MOUNT EFFECT
+    - Ensures the client-side persisted store is completely hydrated 
+      before swapping out global heading skeletons with actual translation texts.
+  */
+  }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold">{t("title")}</h1>
+      {/* 
+        PAGE TITLE SECTION
+        - Renders a pulsing text bar matching the exact height of text-2xl on mount.
+      */}
+      {!isMounted ? (
+        <Skeleton className="mb-6 h-8 w-64" />
+      ) : (
+        <h1 className="mb-6 text-2xl font-bold">{t("title")}</h1>
+      )}
+
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
         <div className="space-y-6 lg:col-span-7">
           <Card className="border-muted shadow-primary/50 shadow-lg">
+            {/* 
+              CARD HEADER SECTION
+              - Displays structured pulsing shapes for both the title and description on load.
+            */}
             <CardHeader>
-              <CardTitle>{t("formCard.title")}</CardTitle>
-              <CardDescription>{t("formCard.description")}</CardDescription>
+              {!isMounted ? (
+                <div className="flex flex-col gap-2">
+                  <Skeleton className="h-6 w-56" />
+                  <Skeleton className="h-4 w-96" />
+                </div>
+              ) : (
+                <>
+                  <CardTitle>{t("formCard.title")}</CardTitle>
+                  <CardDescription>{t("formCard.description")}</CardDescription>
+                </>
+              )}
             </CardHeader>
 
+            {/* Sub-sections are let through and will handle their own inner skeletons */}
             <MetaAtsSection />
             <HeaderSection />
             <LinksSection />
