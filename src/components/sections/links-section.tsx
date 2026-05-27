@@ -1,15 +1,31 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useResumeStore } from "@/store/useResumeStore";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function LinksSection() {
   const t = useTranslations("ResumeBuilderPage");
   const cvData = useResumeStore((s) => s.cvData);
   const updateCvData = useResumeStore((s) => s.updateCvData);
+  const [isMounted, setIsMounted] = useState(false);
+
+  {
+    /* 
+    DEFERRED MOUNT EFFECT
+    - Defers rendering the fully interactive state to prevent hydration issues.
+  */
+  }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   {
     /* 
@@ -34,6 +50,36 @@ export function LinksSection() {
       (draft.links as any)[fieldId] = value;
     });
   };
+
+  {
+    /* 
+    HIGH-FIDELITY SKELETON LOADER
+    - Matches the layout, gaps, and heights of both flat and dynamic components exactly.
+  */
+  }
+  if (!isMounted) {
+    return (
+      <CardContent>
+        <div className="flex flex-col gap-6 border-b py-4">
+          {/* Header Skeletons */}
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-6 w-40" />
+            <Skeleton className="h-4 w-72" />
+          </div>
+
+          {/* Standard Inputs Skeletons mapping exactly the same amount of fields */}
+          {fields.map(({ id }) => (
+            <Field key={id} className="mb-4">
+              <div className="flex w-full flex-col gap-2">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-10 w-full rounded-md" />
+              </div>
+            </Field>
+          ))}
+        </div>
+      </CardContent>
+    );
+  }
 
   return (
     <CardContent>
