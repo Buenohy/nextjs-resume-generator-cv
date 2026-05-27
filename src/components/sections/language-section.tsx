@@ -19,7 +19,7 @@ import { useAutoResize } from "@/app/hooks/useAutoResize";
 export function LanguagesSection() {
   const t = useTranslations("ResumeBuilderPage");
   const cvData = useResumeStore((s) => s.cvData);
-  const updateCvData = useResumeStore((s) => s.updateCvData);
+  const updateCvData = useResumeStore((s) => s.cvData);
   const handleAutoResize = useAutoResize();
 
   const LANGUAGE_LEVELS = t.raw("language_levels") as string[];
@@ -93,31 +93,50 @@ export function LanguagesSection() {
           const parsed = parseLangString(lang);
 
           return (
-            <Field key={index} className="mb-4">
+            // Removed mb-4 from Field component as requested
+            <Field key={index}>
               {/* 
                 MAIN CONTAINER FOR EACH LANGUAGE ITEM
-                - flex-col: Stacks the Label on top of the Inputs.
-                - gap-4: Creates the required space between the Label row and the Inputs row.
+                - flex-col: Stacks the Label+Trash row on top of the Inputs row.
+                - gap-4: Creates the required space between the two rows.
               */}
               <div className="flex w-full flex-col gap-4">
                 {/* 
-                  TOP ROW: LABEL ONLY
-                  - Sits alone at the top for a cleaner layout.
+                  ROW 1: LABEL & TRASH BUTTON
+                  - flex w-full: Makes it a flex container taking full width.
+                  - items-center: Vertically aligns items in the center.
+                  - justify-between: Pushes FieldLabel to the start and Button to the end.
                 */}
-                <FieldLabel className="text-left font-medium capitalize">
-                  {t("sections.languages.itemLabel", { num: index + 1 })}
-                </FieldLabel>
+                <div className="flex w-full items-center justify-between">
+                  <FieldLabel className="text-left font-medium capitalize">
+                    {t("sections.languages.itemLabel", { num: index + 1 })}
+                  </FieldLabel>
+
+                  {/* Trash Button - aligned right next to the label */}
+                  {cvData.languages.length > 1 && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeItem(index)}
+                      className="h-8 w-8 shrink-0" /* Prevents button from squishing */
+                    >
+                      <Trash2 className="text-destructive h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
 
                 {/* 
-                  BOTTOM ROW: INPUTS & DELETE BUTTON
-                  - Mobile (< sm): Stacks items vertically (flex-col).
-                  - Tablet/Desktop (sm+): Horizontal row (sm:flex-row) with items aligned to center.
+                  ROW 2: INPUTS (Textarea & Select)
+                  - flex w-full: Takes full width for the input group.
+                  - flex-col (mobile): Stacks inputs vertically on small screens.
+                  - sm:flex-row (tablet+): Arranges inputs horizontally on larger screens.
+                  - sm:items-center: Aligns inputs vertically in the middle on larger screens.
                 */}
                 <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
                   {/* 
                     FIELD 1: LANGUAGE NAME (Textarea)
-                    - flex-1: Takes exactly 50% of the remaining space on desktop.
-                    - min-w-0: Prevents Flexbox from breaking if the user types a very long word.
+                    - flex-1: Takes exactly 50% of the available space on tablet+ screens.
+                    - min-w-0: Essential. Prevents the flex item from overflowing if content is too large.
                   */}
                   <Textarea
                     className="min-h-9.5 w-full min-w-0 flex-1 resize-none overflow-hidden py-2"
@@ -140,8 +159,8 @@ export function LanguagesSection() {
 
                   {/* 
                     FIELD 2: LANGUAGE LEVEL (Select)
-                    - flex-1: Takes the other 50% of the space on desktop.
-                    - min-w-0: Required for Shadcn UI select to truncate text with "..." correctly.
+                    - flex-1: Takes the other 50% of the space, creating an equal split on tablet+ screens.
+                    - min-w-0: Crucial flexbox fix. It allows Shadcn's internal truncation (...) to work on tight spaces.
                   */}
                   <div className="w-full min-w-0 flex-1">
                     <Select
@@ -165,31 +184,13 @@ export function LanguagesSection() {
                       </SelectContent>
                     </Select>
                   </div>
-
-                  {/* 
-                    DELETE BUTTON (Visible on all breakpoints now)
-                    - shrink-0: Prevents the button from squishing.
-                    - flex justify-end: Aligns the button to the right side on mobile screens.
-                    - sm:block: Reverts to normal block flow on tablet/desktop.
-                  */}
-                  {cvData.languages.length > 1 && (
-                    <div className="flex shrink-0 justify-end sm:block">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeItem(index)}
-                      >
-                        <Trash2 className="text-destructive h-4 w-4" />
-                      </Button>
-                    </div>
-                  )}
                 </div>
               </div>
             </Field>
           );
         })}
 
-        {/* ADD ITEM BUTTON */}
+        {/* ADD ITEM BUTTON (Bottom) */}
         <div className="mt-2 flex justify-end">
           <Button
             variant="outline"
