@@ -22,7 +22,7 @@ export function ExperienceSection() {
     String(new Date().getFullYear() + 10 - i)
   );
 
-  // Campos base SEM "date" (pois usaremos o MonthYearPicker)
+  // Base fields WITHOUT "date" (since we use MonthYearPicker)
   const experienceFields = Object.entries(t.raw("sections.experience.fields"))
     .filter(([key]) => key !== "date")
     .map(([key, value]: [string, any]) => ({
@@ -62,7 +62,7 @@ export function ExperienceSection() {
     });
   };
 
-  // Handlers para adicionar/remover experiências e detalhes/stack
+  // Handlers for adding/removing experiences, details, and stacks
   const addExperience = () => {
     updateCvData((draft) => {
       if (draft.experiences.length < 4) {
@@ -145,6 +145,7 @@ export function ExperienceSection() {
   return (
     <CardContent>
       <div className="flex flex-col gap-6 border-b py-4">
+        {/* SECTION HEADER */}
         <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
           <div>
             <h2 className="text-xl font-semibold">
@@ -165,6 +166,7 @@ export function ExperienceSection() {
           )}
         </div>
 
+        {/* EXPERIENCES LIST */}
         {cvData.experiences.map((exp, expIndex) => {
           const dateParsed = parseDateString(exp.date);
 
@@ -173,6 +175,7 @@ export function ExperienceSection() {
               key={expIndex}
               className="flex flex-col gap-6 border-b pt-4 pb-8 last:border-0 last:pb-0"
             >
+              {/* EXPERIENCE ITEM HEADER & REMOVE BUTTON */}
               <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                 <h4 className="text-lg font-semibold">
                   {t("sections.experience.itemLabel", { num: expIndex + 1 })}
@@ -189,15 +192,15 @@ export function ExperienceSection() {
                 )}
               </div>
 
-              {/* Campos: role, company, url (sem date) */}
+              {/* STANDARD FIELDS (Role, Company, URL) */}
               {experienceFields.map(({ id, label, placeholder }) => (
-                <Field key={id} className="mb-4">
-                  <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center">
-                    <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+                <Field key={id} className="mb-2">
+                  <div className="flex w-full flex-col gap-2">
+                    <FieldLabel className="text-left font-medium capitalize">
                       {label}
                     </FieldLabel>
                     <Input
-                      className="w-full flex-1"
+                      className="w-full"
                       placeholder={placeholder}
                       value={exp[id as keyof typeof exp] || ""}
                       onChange={(e) =>
@@ -215,10 +218,10 @@ export function ExperienceSection() {
                 </Field>
               ))}
 
-              {/* Date Picker */}
-              <Field className="mb-4">
-                <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center lg:flex-col lg:items-start xl:flex-row xl:items-center">
-                  <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+              {/* DATE PICKER FIELD */}
+              <Field className="mb-2">
+                <div className="flex w-full flex-col gap-2">
+                  <FieldLabel className="text-left font-medium capitalize">
                     Date
                   </FieldLabel>
                   <MonthYearPicker
@@ -270,8 +273,9 @@ export function ExperienceSection() {
                 </div>
               </Field>
 
-              {/* Details */}
+              {/* === DETAILS SECTION === */}
               <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
+                {/* DETAILS HEADER */}
                 <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                   <div>
                     <h5 className="text-sm font-semibold">
@@ -294,28 +298,35 @@ export function ExperienceSection() {
                     </Button>
                   )}
                 </div>
+
+                {/* DETAILS LIST */}
                 {exp.details.map((detail, dIdx) => (
                   <Field key={dIdx} className="mb-2">
-                    <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-                      <div className="flex w-full items-center justify-between sm:w-auto">
-                        <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+                    <div className="flex w-full flex-col gap-2">
+                      {/* ROW 1: LABEL & TRASH BUTTON */}
+                      <div className="flex w-full items-center justify-between">
+                        <FieldLabel className="text-left text-xs font-medium capitalize">
                           {t("sections.experience.detailLabel", {
                             num: dIdx + 1,
                           })}
                         </FieldLabel>
+
+                        {/* Trash Button - aligned right next to the label */}
                         {exp.details.length > 1 && (
                           <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => removeDetail(expIndex, dIdx)}
-                            className="h-8 w-8 sm:hidden"
+                            className="h-8 w-8 shrink-0"
                           >
                             <Trash2 className="text-destructive h-4 w-4" />
                           </Button>
                         )}
                       </div>
+
+                      {/* ROW 2: TEXTAREA */}
                       <Textarea
-                        className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
+                        className="min-h-[38px] w-full resize-none overflow-hidden py-2"
                         rows={1}
                         placeholder={t(
                           "sections.experience.detailPlaceholder",
@@ -335,19 +346,11 @@ export function ExperienceSection() {
                           updateDetail(expIndex, dIdx, e.target.value);
                         }}
                       />
-                      {exp.details.length > 1 && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removeDetail(expIndex, dIdx)}
-                          className="hidden sm:inline-flex"
-                        >
-                          <Trash2 className="text-destructive h-4 w-4" />
-                        </Button>
-                      )}
                     </div>
                   </Field>
                 ))}
+
+                {/* ADD DETAIL BUTTON (Bottom) */}
                 {exp.details.length < 3 && (
                   <div className="mt-2 flex justify-end">
                     <Button
@@ -363,8 +366,9 @@ export function ExperienceSection() {
                 )}
               </div>
 
-              {/* Stacks */}
+              {/* === STACKS SECTION === */}
               <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
+                {/* STACKS HEADER */}
                 <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                   <div>
                     <h5 className="text-sm font-semibold">
@@ -385,28 +389,35 @@ export function ExperienceSection() {
                     {t("sections.experience.addStackBtn")}
                   </Button>
                 </div>
+
+                {/* STACKS LIST */}
                 {exp.stacks.map((stack, sIdx) => (
                   <Field key={sIdx} className="mb-2">
-                    <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-                      <div className="flex w-full items-center justify-between sm:w-auto">
-                        <FieldLabel className="w-20 min-w-20 shrink-0 text-left text-xs font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+                    <div className="flex w-full flex-col gap-2">
+                      {/* ROW 1: LABEL & TRASH BUTTON */}
+                      <div className="flex w-full items-center justify-between">
+                        <FieldLabel className="text-left text-xs font-medium capitalize">
                           {t("sections.experience.stackLabel", {
                             num: sIdx + 1,
                           })}
                         </FieldLabel>
+
+                        {/* Trash Button - aligned right next to the label */}
                         {exp.stacks.length > 1 && (
                           <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => removeStack(expIndex, sIdx)}
-                            className="h-8 w-8 sm:hidden"
+                            className="h-8 w-8 shrink-0"
                           >
                             <Trash2 className="text-destructive h-4 w-4" />
                           </Button>
                         )}
                       </div>
+
+                      {/* ROW 2: TEXTAREA */}
                       <Textarea
-                        className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
+                        className="min-h-[38px] w-full resize-none overflow-hidden py-2"
                         rows={1}
                         placeholder={t("sections.experience.stackPlaceholder")}
                         value={stack}
@@ -420,19 +431,11 @@ export function ExperienceSection() {
                           updateStack(expIndex, sIdx, e.target.value);
                         }}
                       />
-                      {exp.stacks.length > 1 && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removeStack(expIndex, sIdx)}
-                          className="hidden sm:inline-flex"
-                        >
-                          <Trash2 className="text-destructive h-4 w-4" />
-                        </Button>
-                      )}
                     </div>
                   </Field>
                 ))}
+
+                {/* ADD STACK BUTTON (Bottom) */}
                 <div className="mt-2 flex justify-end">
                   <Button
                     variant="outline"
