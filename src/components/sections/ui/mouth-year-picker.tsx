@@ -44,12 +44,8 @@ export function MonthYearPicker({
           {t("sections.education.start")}
         </span>
         <div className="flex w-full items-center gap-2 sm:w-auto">
-          <Select
-            value={startMonth}
-            onValueChange={onStartMonthChange}
-            modal={false}
-          >
-            <SelectTrigger className="w-full sm:w-[110px]">
+          <Select value={startMonth} onValueChange={onStartMonthChange}>
+            <SelectTrigger className="w-full sm:w-27.5">
               <SelectValue placeholder={t("sections.education.month")} />
             </SelectTrigger>
             <SelectContent>
@@ -60,12 +56,8 @@ export function MonthYearPicker({
               ))}
             </SelectContent>
           </Select>
-          <Select
-            value={startYear}
-            onValueChange={onStartYearChange}
-            modal={false}
-          >
-            <SelectTrigger className="w-full sm:w-[90px]">
+          <Select value={startYear} onValueChange={onStartYearChange}>
+            <SelectTrigger className="w-full sm:w-22.5">
               <SelectValue placeholder={t("sections.education.year")} />
             </SelectTrigger>
             <SelectContent>
@@ -86,12 +78,8 @@ export function MonthYearPicker({
           {t("sections.education.end")}
         </span>
         <div className="flex w-full items-center gap-2 sm:w-auto">
-          <Select
-            value={endMonth}
-            onValueChange={onEndMonthChange}
-            modal={false}
-          >
-            <SelectTrigger className="w-full sm:w-[110px]">
+          <Select value={endMonth} onValueChange={onEndMonthChange}>
+            <SelectTrigger className="w-full sm:w-27.5">
               <SelectValue placeholder={t("sections.education.month")} />
             </SelectTrigger>
             <SelectContent>
@@ -104,12 +92,8 @@ export function MonthYearPicker({
             </SelectContent>
           </Select>
           {(!showPresent || endMonth !== "Present") && (
-            <Select
-              value={endYear}
-              onValueChange={onEndYearChange}
-              modal={false}
-            >
-              <SelectTrigger className="w-full sm:w-[90px]">
+            <Select value={endYear} onValueChange={onEndYearChange}>
+              <SelectTrigger className="w-full sm:w-22.5">
                 <SelectValue placeholder={t("sections.education.year")} />
               </SelectTrigger>
               <SelectContent>
