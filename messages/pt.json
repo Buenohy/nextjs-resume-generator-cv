@@ -225,6 +225,7 @@
         "count": "Limite máximo de 4. Atualmente usando: {count}/4",
         "addBtn": "Adicionar Experiência",
         "removeBtn": "Remover Experiência",
+        "dateTitle": "Data",
         "itemLabel": "Experiência {num}",
         "detailsTitle": "Detalhes do Projeto",
         "detailsCount": "Limite máximo de 3. Atualmente: {count}/3",

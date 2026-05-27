@@ -213,6 +213,7 @@
         "count": "Max limit of 4. Currently using: {count}/4",
         "addBtn": "Add Experience",
         "removeBtn": "Remove Experience",
+        "dateTitle": "Date",
         "itemLabel": "Experience {num}",
         "detailsTitle": "Project Details",
         "detailsCount": "Max limit of 3. Currently: {count}/3",

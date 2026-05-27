@@ -222,7 +222,7 @@ export function ExperienceSection() {
               <Field className="mb-2">
                 <div className="flex w-full flex-col gap-2">
                   <FieldLabel className="text-left font-medium capitalize">
-                    Date
+                    {t("sections.experience.dateTitle")}
                   </FieldLabel>
                   <MonthYearPicker
                     startMonth={dateParsed.startMonth}
