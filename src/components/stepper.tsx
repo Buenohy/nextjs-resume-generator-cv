@@ -22,60 +22,77 @@ export function Stepper() {
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-6">
-      <div className="w-full overflow-x-auto pt-2 pb-8 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <div className="relative flex min-w-160 items-center justify-between px-2 md:min-w-full">
-          {STEPS.map((step, index) => {
-            const isActive = index === currentStepIndex;
-            const isCompleted = currentStepIndex > index;
-            const isLastStep = index === STEPS.length - 1;
+      {/* 
+        FLUID STEPPER CONTAINER
+        - w-full: Stretches/shrinks dynamically to match 100% of any screen size.
+        - pb-6: Padding bottom provides safe spacing for the absolutely positioned labels.
+        - No horizontal scrollbars are needed anymore.
+      */}
+      <div className="relative flex w-full items-center justify-between px-2 pb-6">
+        {STEPS.map((step, index) => {
+          const isActive = index === currentStepIndex;
+          const isCompleted = currentStepIndex > index;
+          const isLastStep = index === STEPS.length - 1;
 
-            return (
+          return (
+            <div
+              key={step.id}
+              className={cn(
+                "relative z-10 flex items-center",
+                !isLastStep ? "w-full" : ""
+              )}
+            >
+              {/* Individual step item */}
               <div
-                key={step.id}
-                className={cn(
-                  "relative z-10 flex items-center",
-                  !isLastStep ? "w-full" : ""
-                )}
+                onClick={() => router.push(step.path)}
+                className="relative flex cursor-pointer flex-col items-center hover:opacity-80"
               >
+                {/* Step circle indicator */}
                 <div
-                  onClick={() => router.push(step.path)}
-                  className="relative flex cursor-pointer flex-col items-center gap-2 hover:opacity-80"
-                >
-                  <div
-                    className={cn(
-                      "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 font-semibold transition-colors",
-                      isActive
+                  className={cn(
+                    "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 font-semibold transition-colors",
+                    isActive
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : isCompleted
                         ? "border-primary bg-primary text-primary-foreground"
-                        : isCompleted
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-muted bg-background text-muted-foreground"
-                    )}
-                  >
-                    {isCompleted ? <Check className="h-5 w-5" /> : step.id}
-                  </div>
-
-                  <span
-                    className={cn(
-                      "absolute -bottom-6 w-max text-[10px] font-medium transition-colors sm:text-xs md:text-sm",
-                      isActive ? "text-foreground" : "text-muted-foreground"
-                    )}
-                  >
-                    {t(step.translationKey)}
-                  </span>
+                        : "border-muted bg-background text-muted-foreground"
+                  )}
+                >
+                  {isCompleted ? <Check className="h-5 w-5" /> : step.id}
                 </div>
 
-                {!isLastStep && (
-                  <div
-                    className={cn(
-                      "mx-2 h-0.5 flex-1 transition-colors sm:mx-6",
-                      isCompleted ? "bg-primary" : "bg-muted"
-                    )}
-                  />
-                )}
+                {/* 
+                  STEP FLOATING TEXT LABEL
+                  - left-1/2 -translate-x-1/2: Absolutely centers the label under the circle.
+                  - text-center: Centers multi-line text nicely.
+                */}
+                <span
+                  className={cn(
+                    "absolute -bottom-6 left-1/2 w-max -translate-x-1/2 text-center text-[10px] font-medium transition-colors sm:text-xs md:text-sm",
+                    isActive ? "text-foreground" : "text-muted-foreground"
+                  )}
+                >
+                  {t(step.translationKey)}
+                </span>
               </div>
-            );
-          })}
-        </div>
+
+              {/* 
+                FLUID CONNECTOR LINE
+                - flex-1: Scales and shrinks dynamically based on viewport width.
+                - mx-1: Tighter margins on mobile to make the stepper fit small screens beautifully.
+                - sm:mx-4 md:mx-6: Restores standard padding on larger screens.
+              */}
+              {!isLastStep && (
+                <div
+                  className={cn(
+                    "mx-1 h-0.5 flex-1 transition-colors sm:mx-4 md:mx-6",
+                    isCompleted ? "bg-primary" : "bg-muted"
+                  )}
+                />
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
