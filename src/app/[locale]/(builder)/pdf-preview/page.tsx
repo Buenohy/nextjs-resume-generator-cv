@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { useTranslations, useLocale } from "next-intl"; // Added useLocale hook
+import { useEffect, useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { useResumeStore } from "@/store/useResumeStore";
 import {
   Card,
@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Resume } from "@/components/resume";
 import { Printer, Loader2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import dynamic from "next/dynamic";
 
 const PDFViewer = dynamic(
@@ -36,10 +37,27 @@ const PDFDownloadLink = dynamic(
 
 export default function PdfPreviewPage() {
   const t = useTranslations("PdfPreviewPage");
-  const locale = useLocale(); // Fetches active site language (pt/en)
+  const locale = useLocale();
   const cvData = useResumeStore((state) => state.cvData);
+  const [isMounted, setIsMounted] = useState(false);
+
+  {
+    /* 
+    DEFERRED MOUNT EFFECT
+    - Ensures client-side state is completely hydrated before initializing the PDF document.
+    - Prevents Next.js Server-Side Rendering (SSR) hydration mismatches.
+  */
+  }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
+    if (!isMounted) return;
+
     const meta = cvData.meta_ats || {};
     const prevTitle = document.title;
 
@@ -47,12 +65,6 @@ export default function PdfPreviewPage() {
 
     const createdMetaTags: HTMLMetaElement[] = [];
 
-    {
-      /* 
-      KEYWORDS CONVERSION
-      - Safely joins the keywords array into a comma-separated string for HTML meta tags.
-    */
-    }
     const keywordsStr = Array.isArray(meta.keywords)
       ? meta.keywords.join(", ")
       : meta.keywords || "";
@@ -88,7 +100,7 @@ export default function PdfPreviewPage() {
         }
       });
     };
-  }, [cvData]);
+  }, [cvData, isMounted]);
 
   const infoProp = {
     name: cvData.info.name,
@@ -131,6 +143,43 @@ export default function PdfPreviewPage() {
 
   const formattedFileName = `CV_${(cvData.info.name || "Resume").replace(/\s+/g, "_")}.pdf`;
 
+  {
+    /* 
+    HIGH-FIDELITY SKELETON LOADER
+    - Rendered only on first mount to hold layout positions.
+    - Prevents horizontal and vertical layout shifts.
+  */
+  }
+  if (!isMounted) {
+    return (
+      <div className="container mx-auto min-h-screen">
+        {/* Title Page Skeleton */}
+        <Skeleton className="mb-6 h-8 w-48" />
+
+        <Card className="shadow-primary/50 mx-auto w-full shadow-lg">
+          <CardHeader>
+            {/* Header Title & Subtitle Skeletons */}
+            <Skeleton className="mb-2 h-6 w-40" />
+            <Skeleton className="h-4 w-72" />
+          </CardHeader>
+          <CardContent className="flex flex-col gap-5">
+            {/* 
+              PDF Viewer Box Skeleton 
+              - Matches the identical responsive height variables.
+            */}
+            <Skeleton className="h-150 w-full rounded-lg sm:h-200" />
+          </CardContent>
+          <CardFooter className="flex flex-col gap-6">
+            {/* Centered Export Button Skeleton */}
+            <div className="flex w-full justify-center">
+              <Skeleton className="h-10 w-36 rounded-md" />
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto min-h-screen">
       <h1 className="mb-6 text-2xl font-bold">{t("title")}</h1>
@@ -144,7 +193,10 @@ export default function PdfPreviewPage() {
 
         <CardContent className="flex flex-col gap-5">
           <div className="bg-card h-150 overflow-hidden rounded-lg border p-1 shadow-sm sm:h-200">
-            <PDFViewer className="h-full w-full rounded-md border-0">
+            <PDFViewer
+              showToolbar={false}
+              className="h-full w-full rounded-md border-0"
+            >
               {resumeDocument}
             </PDFViewer>
           </div>
