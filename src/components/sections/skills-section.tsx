@@ -65,7 +65,7 @@ export function SkillsSection() {
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
             <div className="flex flex-col gap-2">
               <Skeleton className="h-6 w-40" />
-              <Skeleton className="h-4 w-72" />
+              <Skeleton className="h-4 w-56 sm:w-72" />
               <Skeleton className="mt-1 h-3 w-16" />
             </div>
             <Skeleton className="h-9 w-28 rounded-md" />
