@@ -42,7 +42,7 @@ export function SummarySection() {
           {/* Header Skeletons */}
           <div className="flex flex-col gap-2">
             <Skeleton className="h-6 w-40" />
-            <Skeleton className="h-4 w-72" />
+            <Skeleton className="h-4 w-56 sm:w-72" />
           </div>
 
           {/* Textarea Input Skeleton mimicking identical minimum height */}
