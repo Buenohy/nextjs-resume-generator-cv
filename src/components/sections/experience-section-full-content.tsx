@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, Trash2 } from "lucide-react";
 import {
@@ -25,6 +25,7 @@ import {
 import { useAutoResize } from "@/app/hooks/useAutoResize";
 import { MonthYearPicker } from "./ui/mouth-year-picker";
 import { ExperienceTable } from "./ui/experience-table";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const emptyExperience: ExperienceItem = {
   role: "",
@@ -47,6 +48,20 @@ export function ExperienceSectionFullContent() {
   const [form, setForm] = useState<ExperienceItem>({ ...emptyExperience });
   const [expToDelete, setExpToDelete] = useState<number | null>(null);
   const [showValidationError, setShowValidationError] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  {
+    /* 
+    DEFERRED MOUNT EFFECT
+    - Defers rendering the fully interactive state to prevent hydration issues.
+  */
+  }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   const MONTHS = t.raw("months") as string[];
   const YEARS = Array.from({ length: 41 }, (_, i) =>
@@ -159,6 +174,90 @@ export function ExperienceSectionFullContent() {
       setExpToDelete(null);
     }
   };
+
+  {
+    /* 
+    HIGH-FIDELITY SKELETON LOADER
+    - Matches the layout, nested list structures, and margins of the Experience Full Content editor.
+  */
+  }
+  if (!isMounted) {
+    return (
+      <CardContent>
+        <div className="flex flex-col gap-6 border-b py-4">
+          {/* Main Header Skeleton */}
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-6 w-40" />
+            <Skeleton className="h-4 w-72" />
+            <Skeleton className="mt-1 h-3.5 w-64" />
+          </div>
+
+          {/* Standard Fields Skeletons (Role, Company, URL, Date) */}
+          {experienceFields.map(({ id }) => (
+            <Field key={id} className="mb-4">
+              <div className="flex w-full flex-col gap-2">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-10 w-full rounded-md" />
+              </div>
+            </Field>
+          ))}
+          <Field className="mb-4">
+            <div className="flex w-full flex-col gap-2">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-10 w-full rounded-md" />
+            </div>
+          </Field>
+
+          {/* Details Section Skeletons */}
+          <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
+            <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+              <div className="flex flex-col gap-2">
+                <Skeleton className="h-4.5 w-28" />
+                <Skeleton className="h-3 w-16" />
+              </div>
+              <Skeleton className="h-7 w-24 rounded-md" />
+            </div>
+            {form.details.map((_, dIdx) => (
+              <Field key={dIdx} className="mb-2">
+                <div className="flex w-full flex-col gap-2">
+                  <Skeleton className="h-3.5 w-20" />
+                  <Skeleton className="h-10 w-full rounded-md" />
+                </div>
+              </Field>
+            ))}
+          </div>
+
+          {/* Stacks Section Skeletons */}
+          <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
+            <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+              <div className="flex flex-col gap-2">
+                <Skeleton className="h-4.5 w-28" />
+                <Skeleton className="h-3 w-16" />
+              </div>
+              <Skeleton className="h-7 w-24 rounded-md" />
+            </div>
+            {form.stacks.map((_, sIdx) => (
+              <Field key={sIdx} className="mb-2">
+                <div className="flex w-full flex-col gap-2">
+                  <Skeleton className="h-3.5 w-20" />
+                  <Skeleton className="h-10 w-full rounded-md" />
+                </div>
+              </Field>
+            ))}
+          </div>
+
+          {/* Save Button Skeleton */}
+          <Skeleton className="mx-auto h-10 w-36 rounded-md" />
+        </div>
+
+        {/* Saved Table Header & Grid Skeletons */}
+        <div className="pt-8">
+          <Skeleton className="mb-4 h-6 w-48" />
+          <Skeleton className="h-32 w-full rounded-md" />
+        </div>
+      </CardContent>
+    );
+  }
 
   return (
     <CardContent>
@@ -404,7 +503,7 @@ export function ExperienceSectionFullContent() {
             <Button
               variant="outline"
               size="xs"
-              onClick={addStack}
+              onClick={() => addStack(sIdx)} // <--- Corrected click logic to prevent compilation errors
               className="gap-1 text-xs"
             >
               <Plus className="h-3.5 w-3.5" />{" "}
