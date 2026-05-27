@@ -47,13 +47,20 @@ export function MetaAtsSection() {
         </div>
         {sectionDef.fields.map(({ id, label, placeholder }) => (
           <Field key={id} className="mb-4">
-            <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center">
-              <FieldLabel className="w-20 min-w-20 shrink-0 text-left font-medium whitespace-nowrap capitalize sm:w-28 sm:min-w-28">
+            {/* 
+              STACKED CONTAINER FOR THE FIELD
+              - flex-col: Positions the label at the top and the field directly below it.
+              - gap-2: Small, consistent gap between the Label and the Input/Textarea.
+            */}
+            <div className="flex w-full flex-col gap-2">
+              {/* Label on top */}
+              <FieldLabel className="text-left font-medium capitalize">
                 {label}
               </FieldLabel>
+              {/* Conditional rendering for either a Textarea or an Input taking full width */}
               {textareaFields.includes(id) ? (
                 <Textarea
-                  className="min-h-[38px] w-full flex-1 resize-none overflow-hidden py-2"
+                  className="min-h-[38px] w-full resize-none overflow-hidden py-2"
                   rows={1}
                   placeholder={placeholder}
                   value={getFieldValue(id)}
@@ -64,7 +71,7 @@ export function MetaAtsSection() {
                 />
               ) : (
                 <Input
-                  className="w-full flex-1"
+                  className="w-full"
                   placeholder={placeholder}
                   value={getFieldValue(id)}
                   onChange={(e) => handleChange(id, e.target.value)}
