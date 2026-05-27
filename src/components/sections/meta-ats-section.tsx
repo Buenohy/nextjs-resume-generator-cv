@@ -178,7 +178,7 @@ export function MetaAtsSection() {
         ))}
 
         {/* === KEYWORDS SECTION (DYNAMIC ARRAY) === */}
-        <div className="border-muted mt-4 flex flex-col gap-4 border-t pt-6">
+        <div className="mt-4 flex flex-col gap-4 border-t pt-6">
           {/* KEYWORDS HEADER */}
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
             <div>
