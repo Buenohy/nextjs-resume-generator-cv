@@ -47,7 +47,6 @@ export function SectionNav({ t }: SectionNavProps) {
 
   useEffect(() => {
     setIsMounted(true);
-    // Expandir seções principais por padrão ao montar
     setExpandedNodes((prev) => {
       const initial: Record<string, boolean> = {};
       [
@@ -75,7 +74,7 @@ export function SectionNav({ t }: SectionNavProps) {
   };
 
   const toggleNode = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation(); // Evita rolar a tela ao clicar apenas no chevron para encolher
+    e.stopPropagation();
     setExpandedNodes((prev) => ({
       ...prev,
       [id]: !prev[id],
@@ -111,79 +110,95 @@ export function SectionNav({ t }: SectionNavProps) {
             : `Stack ${sIdx + 1}`,
         }));
 
+        const expSubChildren = [
+          {
+            id: `experience-${expIndex}-role`,
+            label: getLabel("sections.experience.fields.role.label", "Role"),
+          },
+          {
+            id: `experience-${expIndex}-company`,
+            label: getLabel(
+              "sections.experience.fields.company.label",
+              "Company"
+            ),
+          },
+          {
+            id: `experience-${expIndex}-url`,
+            label: getLabel(
+              "sections.experience.fields.url.label",
+              "Company URL"
+            ),
+          },
+          {
+            id: `experience-${expIndex}-date`,
+            label: getLabel("sections.experience.dateTitle", "Date"),
+          },
+          {
+            id: `experience-details-${expIndex}`,
+            label: `${getLabel(
+              "sections.experience.detailsTitle",
+              "Project Details"
+            )} (${detailChildren.length})`,
+            children: detailChildren,
+          },
+          {
+            id: `experience-stacks-${expIndex}`,
+            label: `${getLabel(
+              "sections.experience.stacksTitle",
+              "Technologies (Stacks)"
+            )} (${stackChildren.length})`,
+            children: stackChildren,
+          },
+        ];
+
         return {
           id: `experience-item-${expIndex}`,
-          label: t.has("sections.experience.itemLabel")
-            ? t("sections.experience.itemLabel", { num: expIndex + 1 })
-            : `Experience ${expIndex + 1}`,
-          children: [
-            {
-              id: `experience-${expIndex}-role`,
-              label: getLabel("sections.experience.fields.role.label", "Role"),
-            },
-            {
-              id: `experience-${expIndex}-company`,
-              label: getLabel(
-                "sections.experience.fields.company.label",
-                "Company"
-              ),
-            },
-            {
-              id: `experience-${expIndex}-url`,
-              label: getLabel(
-                "sections.experience.fields.url.label",
-                "Company URL"
-              ),
-            },
-            {
-              id: `experience-${expIndex}-date`,
-              label: getLabel("sections.experience.dateTitle", "Date"),
-            },
-            {
-              id: `experience-details-${expIndex}`,
-              label: getLabel(
-                "sections.experience.detailsTitle",
-                "Project Details"
-              ),
-              children: detailChildren,
-            },
-            {
-              id: `experience-stacks-${expIndex}`,
-              label: getLabel(
-                "sections.experience.stacksTitle",
-                "Technologies (Stacks)"
-              ),
-              children: stackChildren,
-            },
-          ],
+          label: `${
+            t.has("sections.experience.itemLabel")
+              ? t("sections.experience.itemLabel", { num: expIndex + 1 })
+              : `Experience ${expIndex + 1}`
+          } (${expSubChildren.length})`,
+          children: expSubChildren,
         };
       });
 
-      const dynamicEducation = educationList.map((_, index) => ({
-        id: `education-item-${index}`,
-        label: t.has("sections.education.itemLabel")
-          ? t("sections.education.itemLabel", { num: index + 1 })
-          : `Education ${index + 1}`,
-        children: [
+      const dynamicEducation = educationList.map((_, index) => {
+        const eduSubChildren = [
           {
             id: `education-${index}-period`,
             label: getLabel("sections.education.period", "Period"),
           },
-        ],
-      }));
+        ];
 
-      const dynamicCertifications = certificationsList.map((_, index) => ({
-        id: `certification-item-${index}`,
-        label: t.has("sections.certifications.itemLabel")
-          ? t("sections.certifications.itemLabel", { num: index + 1 })
-          : `Certificate ${index + 1}`,
-        children: [
+        return {
+          id: `education-item-${index}`,
+          label: `${
+            t.has("sections.education.itemLabel")
+              ? t("sections.education.itemLabel", { num: index + 1 })
+              : `Education ${index + 1}`
+          } (${eduSubChildren.length})`,
+          children: eduSubChildren,
+        };
+      });
+
+      const dynamicCertifications = certificationsList.map((_, index) => {
+        const certSubChildren = [
           {
             id: `certification-${index}-date`,
             label: getLabel("sections.certifications.date", "Date"),
           },
-        ],
-      }));
+        ];
+
+        return {
+          id: `certification-item-${index}`,
+          label: `${
+            t.has("sections.certifications.itemLabel")
+              ? t("sections.certifications.itemLabel", { num: index + 1 })
+              : `Certificate ${index + 1}`
+          } (${certSubChildren.length})`,
+          children: certSubChildren,
+        };
+      });
 
       const dynamicLanguages = languagesList.map((_, index) => ({
         id: `languages-item-${index}`,
@@ -192,195 +207,186 @@ export function SectionNav({ t }: SectionNavProps) {
           : `Language ${index + 1}`,
       }));
 
+      const metaAtsChildren = [
+        {
+          id: "meta-lang",
+          label: getLabel(
+            "sections.meta_ats.metadataLanguageLabel",
+            "Metadata Language"
+          ),
+        },
+        {
+          id: "meta-role_target",
+          label: getLabel("sections.meta_ats.fields.role_target.label", "Role"),
+        },
+        {
+          id: "meta-subject",
+          label: getLabel("sections.meta_ats.fields.subject.label", "Subject"),
+        },
+        {
+          id: "meta-category",
+          label: getLabel(
+            "sections.meta_ats.fields.category.label",
+            "Category"
+          ),
+        },
+        {
+          id: "meta-contributor",
+          label: getLabel(
+            "sections.meta_ats.fields.contributor.label",
+            "Contributor"
+          ),
+        },
+        {
+          id: "meta-coverage",
+          label: getLabel(
+            "sections.meta_ats.fields.coverage.label",
+            "Coverage"
+          ),
+        },
+        {
+          id: "meta-identifier",
+          label: getLabel(
+            "sections.meta_ats.fields.identifier.label",
+            "Identifier"
+          ),
+        },
+        {
+          id: "meta-publisher",
+          label: getLabel(
+            "sections.meta_ats.fields.publisher.label",
+            "Publisher"
+          ),
+        },
+        {
+          id: "meta-relation",
+          label: getLabel(
+            "sections.meta_ats.fields.relation.label",
+            "Relation"
+          ),
+        },
+        {
+          id: "meta-rights",
+          label: getLabel("sections.meta_ats.fields.rights.label", "Rights"),
+        },
+        {
+          id: "meta-source",
+          label: getLabel("sections.meta_ats.fields.source.label", "Source"),
+        },
+        {
+          id: "meta-type",
+          label: getLabel("sections.meta_ats.fields.type.label", "Type"),
+        },
+        {
+          id: "meta-notes",
+          label: getLabel("sections.meta_ats.fields.notes.label", "Notes"),
+        },
+        {
+          id: "meta-keywords",
+          label: `${getLabel(
+            "sections.meta_ats.keywordsOptimizerTitle",
+            "Keywords Optimizer (ATS)"
+          )} (${dynamicKeywords.length})`,
+          children: dynamicKeywords,
+        },
+      ];
+
+      const personalChildren = [
+        {
+          id: "personal-name",
+          label: getLabel("sections.header.fields.name.label", "Name"),
+        },
+        {
+          id: "personal-role",
+          label: getLabel("sections.header.fields.role.label", "Role"),
+        },
+        {
+          id: "personal-location",
+          label: getLabel(
+            "sections.header.fields.location.label",
+            "City/State"
+          ),
+        },
+        {
+          id: "personal-age",
+          label: getLabel("sections.header.fields.age.label", "Age"),
+        },
+      ];
+
+      const linksChildren = [
+        {
+          id: "links-linkedin",
+          label: getLabel("sections.links.fields.linkedin.label", "LinkedIn"),
+        },
+        {
+          id: "links-phone",
+          label: getLabel("sections.links.fields.phone.label", "Phone"),
+        },
+        {
+          id: "links-websiteName",
+          label: getLabel(
+            "sections.links.fields.websiteName.label",
+            "Website Name"
+          ),
+        },
+        {
+          id: "links-websiteUrl",
+          label: getLabel(
+            "sections.links.fields.websiteUrl.label",
+            "Website URL"
+          ),
+        },
+        {
+          id: "links-email",
+          label: getLabel("sections.links.fields.email.label", "E-Mail"),
+        },
+        {
+          id: "links-github",
+          label: getLabel("sections.links.fields.github.label", "GitHub"),
+        },
+      ];
+
       return [
         {
           id: "meta-ats",
-          label: "ATS Metadata",
-          children: [
-            {
-              id: "meta-lang",
-              label: getLabel(
-                "sections.meta_ats.metadataLanguageLabel",
-                "Metadata Language"
-              ),
-            },
-            {
-              id: "meta-role_target",
-              label: getLabel(
-                "sections.meta_ats.fields.role_target.label",
-                "Role"
-              ),
-            },
-            {
-              id: "meta-subject",
-              label: getLabel(
-                "sections.meta_ats.fields.subject.label",
-                "Subject"
-              ),
-            },
-            {
-              id: "meta-category",
-              label: getLabel(
-                "sections.meta_ats.fields.category.label",
-                "Category"
-              ),
-            },
-            {
-              id: "meta-contributor",
-              label: getLabel(
-                "sections.meta_ats.fields.contributor.label",
-                "Contributor"
-              ),
-            },
-            {
-              id: "meta-coverage",
-              label: getLabel(
-                "sections.meta_ats.fields.coverage.label",
-                "Coverage"
-              ),
-            },
-            {
-              id: "meta-identifier",
-              label: getLabel(
-                "sections.meta_ats.fields.identifier.label",
-                "Identifier"
-              ),
-            },
-            {
-              id: "meta-publisher",
-              label: getLabel(
-                "sections.meta_ats.fields.publisher.label",
-                "Publisher"
-              ),
-            },
-            {
-              id: "meta-relation",
-              label: getLabel(
-                "sections.meta_ats.fields.relation.label",
-                "Relation"
-              ),
-            },
-            {
-              id: "meta-rights",
-              label: getLabel(
-                "sections.meta_ats.fields.rights.label",
-                "Rights"
-              ),
-            },
-            {
-              id: "meta-source",
-              label: getLabel(
-                "sections.meta_ats.fields.source.label",
-                "Source"
-              ),
-            },
-            {
-              id: "meta-type",
-              label: getLabel("sections.meta_ats.fields.type.label", "Type"),
-            },
-            {
-              id: "meta-notes",
-              label: getLabel("sections.meta_ats.fields.notes.label", "Notes"),
-            },
-            {
-              id: "meta-keywords",
-              label: getLabel(
-                "sections.meta_ats.keywordsOptimizerTitle",
-                "Keywords Optimizer (ATS)"
-              ),
-              children: dynamicKeywords,
-            },
-          ],
+          label: `ATS Metadata (${metaAtsChildren.length})`,
+          children: metaAtsChildren,
         },
         {
           id: "personal-info",
-          label: getLabel("sections.personal.title", "Header / Personal"),
-          children: [
-            {
-              id: "personal-name",
-              label: getLabel("sections.header.fields.name.label", "Name"),
-            },
-            {
-              id: "personal-role",
-              label: getLabel("sections.header.fields.role.label", "Role"),
-            },
-            {
-              id: "personal-location",
-              label: getLabel(
-                "sections.header.fields.location.label",
-                "City/State"
-              ),
-            },
-            {
-              id: "personal-age",
-              label: getLabel("sections.header.fields.age.label", "Age"),
-            },
-          ],
+          label: `${getLabel("sections.personal.title", "Header / Personal")} (${personalChildren.length})`,
+          children: personalChildren,
         },
         {
           id: "links",
-          label: getLabel("sections.links.title", "Links"),
-          children: [
-            {
-              id: "links-linkedin",
-              label: getLabel(
-                "sections.links.fields.linkedin.label",
-                "LinkedIn"
-              ),
-            },
-            {
-              id: "links-phone",
-              label: getLabel("sections.links.fields.phone.label", "Phone"),
-            },
-            {
-              id: "links-websiteName",
-              label: getLabel(
-                "sections.links.fields.websiteName.label",
-                "Website Name"
-              ),
-            },
-            {
-              id: "links-websiteUrl",
-              label: getLabel(
-                "sections.links.fields.websiteUrl.label",
-                "Website URL"
-              ),
-            },
-            {
-              id: "links-email",
-              label: getLabel("sections.links.fields.email.label", "E-Mail"),
-            },
-            {
-              id: "links-github",
-              label: getLabel("sections.links.fields.github.label", "GitHub"),
-            },
-          ],
+          label: `${getLabel("sections.links.title", "Links")} (${linksChildren.length})`,
+          children: linksChildren,
         },
         { id: "summary", label: getLabel("sections.summary.title", "Summary") },
         { id: "ai", label: "IA Assistant" },
         {
           id: "skills",
-          label: getLabel("sections.skills.title", "Skills"),
+          label: `${getLabel("sections.skills.title", "Skills")} (${dynamicSkills.length})`,
           children: dynamicSkills,
         },
         {
           id: "experience",
-          label: getLabel("sections.experience.title", "Experience"),
+          label: `${getLabel("sections.experience.title", "Experience")} (${dynamicExperiences.length})`,
           children: dynamicExperiences,
         },
         {
           id: "education",
-          label: getLabel("sections.education.title", "Education"),
+          label: `${getLabel("sections.education.title", "Education")} (${dynamicEducation.length})`,
           children: dynamicEducation,
         },
         {
           id: "certifications",
-          label: getLabel("sections.certifications.title", "Certifications"),
+          label: `${getLabel("sections.certifications.title", "Certifications")} (${dynamicCertifications.length})`,
           children: dynamicCertifications,
         },
         {
           id: "languages",
-          label: getLabel("sections.languages.title", "Languages"),
+          label: `${getLabel("sections.languages.title", "Languages")} (${dynamicLanguages.length})`,
           children: dynamicLanguages,
         },
       ];
@@ -406,7 +412,6 @@ export function SectionNav({ t }: SectionNavProps) {
             const activeId = entry.target.id;
             setActiveSection(activeId);
 
-            // Auto-expande nós de árvore pai quando o usuário faz scroll e o elemento entra em foco
             setExpandedNodes((prev) => {
               const next = { ...prev };
               navItems.forEach((item) => {
