@@ -23,7 +23,7 @@ interface MonthYearPickerProps {
   t: (key: string) => string;
   showPresent?: boolean;
   side?: "top" | "bottom";
-  onlyEnd?: boolean; // Nova propriedade opcional para controlar exibição
+  onlyEnd?: boolean;
 }
 
 export function MonthYearPicker({
@@ -40,10 +40,10 @@ export function MonthYearPicker({
   t,
   showPresent = false,
   side = "bottom",
-  onlyEnd = false, // Valor padrão definido como false
+  onlyEnd = false,
 }: MonthYearPickerProps) {
   return (
-    <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-end sm:gap-2">
+    <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-end sm:gap-2 lg:flex-col lg:items-start xl:flex-row xl:items-end">
       {/* O Bloco de início só será renderizado se onlyEnd for falso */}
       {!onlyEnd && (
         <div className="flex w-full flex-col gap-1.5 sm:w-auto">
@@ -114,7 +114,9 @@ export function MonthYearPicker({
 
       {/* O separador só será renderizado se onlyEnd for falso */}
       {!onlyEnd && (
-        <span className="text-muted-foreground hidden pb-2.5 sm:block">-</span>
+        <span className="text-muted-foreground hidden pb-2.5 sm:block lg:hidden xl:block">
+          -
+        </span>
       )}
 
       {/* O bloco de término sempre será renderizado */}
