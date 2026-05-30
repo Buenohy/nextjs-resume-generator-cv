@@ -7,16 +7,10 @@ import { useResumeStore } from "@/store/useResumeStore";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { CardContent } from "@/components/ui/card";
 import { useAutoResize } from "@/app/hooks/useAutoResize";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MonthYearPicker } from "../sections/ui/mouth-year-picker";
 
 export function CertificationsSection() {
   const t = useTranslations("ResumeBuilderPage");
@@ -249,72 +243,25 @@ export function CertificationsSection() {
                   </FieldLabel>
 
                   {/* DATE SELECTS CONTAINER */}
-                  <div className="flex flex-col gap-1.5">
-                    {/* SUB-LABEL: "CONCLUSÃO" */}
-                    <span className="text-muted-foreground pl-1 text-[10px] font-semibold uppercase">
-                      {t("sections.certifications.completion")}
-                    </span>
-
-                    {/* SELECTS ROW */}
-                    <div className="flex w-full items-center gap-2 sm:w-auto">
-                      {/* MONTH SELECT */}
-                      <Select
-                        value={parsed.month}
-                        onValueChange={(val) =>
-                          handleCertChange(index, parsed.text, val, parsed.year)
-                        }
-                        modal={false}
-                      >
-                        <SelectTrigger className="w-full sm:w-28">
-                          <SelectValue
-                            placeholder={t("sections.education.month")}
-                          />
-                        </SelectTrigger>
-                        <SelectContent
-                          position="popper"
-                          className="max-h-48"
-                          onCloseAutoFocus={(e) => e.preventDefault()}
-                        >
-                          {MONTHS.map((m) => (
-                            <SelectItem key={m} value={m}>
-                              {m}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-
-                      {/* YEAR SELECT */}
-                      <Select
-                        value={parsed.year}
-                        onValueChange={(val) =>
-                          handleCertChange(
-                            index,
-                            parsed.text,
-                            parsed.month,
-                            val
-                          )
-                        }
-                        modal={false}
-                      >
-                        <SelectTrigger className="w-full sm:w-24">
-                          <SelectValue
-                            placeholder={t("sections.education.year")}
-                          />
-                        </SelectTrigger>
-                        <SelectContent
-                          position="popper"
-                          className="max-h-48"
-                          onCloseAutoFocus={(e) => e.preventDefault()}
-                        >
-                          {YEARS.map((y) => (
-                            <SelectItem key={y} value={y}>
-                              {y}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
+                  <MonthYearPicker
+                    startMonth=""
+                    startYear=""
+                    endMonth={parsed.month}
+                    endYear={parsed.year}
+                    months={MONTHS}
+                    years={YEARS}
+                    onStartMonthChange={() => {}}
+                    onStartYearChange={() => {}}
+                    onEndMonthChange={(val) =>
+                      handleCertChange(index, parsed.text, val, parsed.year)
+                    }
+                    onEndYearChange={(val) =>
+                      handleCertChange(index, parsed.text, parsed.month, val)
+                    }
+                    t={t}
+                    showPresent={false}
+                    onlyEnd={true}
+                  />
                 </div>
               </div>
             </Field>
