@@ -37,6 +37,7 @@ const PDFDownloadLink = dynamic(
 
 export default function PdfPreviewPage() {
   const t = useTranslations("PdfPreviewPage");
+  const tResume = useTranslations("ResumeComponent.sections");
   const locale = useLocale();
   const cvData = useResumeStore((state) => state.cvData);
   const [isMounted, setIsMounted] = useState(false);
@@ -127,6 +128,17 @@ export default function PdfPreviewPage() {
     stacks: Array.isArray(exp.stacks) ? exp.stacks.join(", ") : exp.stacks,
   }));
 
+  const resumeTranslations = {
+    professionalSummary: tResume("professionalSummary"),
+    ai: tResume("ai"),
+    skills: tResume("skills"),
+    experience: tResume("experience"),
+    stacks: tResume("stacks"),
+    education: tResume("education"),
+    certifications: tResume("certifications"),
+    languages: tResume("languages"),
+  };
+
   const resumeDocument = (
     <Resume
       locale={locale}
@@ -139,6 +151,7 @@ export default function PdfPreviewPage() {
       education={cvData.education}
       certifications={cvData.certifications}
       languages={cvData.languages}
+      translations={resumeTranslations}
     />
   );
 

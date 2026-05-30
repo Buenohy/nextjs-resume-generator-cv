@@ -230,7 +230,7 @@
         "placeholder": "Digite o seu resumo profissional"
       },
       "ai": {
-        "title": "Resumo IA",
+        "title": "Resumo Ia",
         "subTitle": "Escreva seu resumo de ia",
         "placeholder": "Digite o seu resumo de ia"
       },
@@ -364,5 +364,17 @@
     "validationDialogTitle": "Campos obrigatórios",
     "validationDialogDescription": "Por favor, preencha todos os campos obrigatórios (cargo, empresa, data e pelo menos um detalhe).",
     "validationDialogConfirm": "OK"
+  },
+  "ResumeComponent": {
+    "sections": {
+      "professionalSummary": "Resumo Profissional",
+      "ai": "Ia",
+      "skills": "Habilidades",
+      "experience": "Experiência",
+      "stacks": "Stacks de Tecnologias",
+      "education": "Formação",
+      "certifications": "Certificações",
+      "languages": "Idiomas"
+    }
   }
 }

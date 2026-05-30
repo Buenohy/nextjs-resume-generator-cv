@@ -352,5 +352,17 @@
     "validationDialogTitle": "Required fields",
     "validationDialogDescription": "Please fill in all required fields (role, company, date, and at least one detail).",
     "validationDialogConfirm": "OK"
+  },
+  "ResumeComponent": {
+    "sections": {
+      "professionalSummary": "Professional Summary",
+      "ai": "Ai",
+      "skills": "Skills",
+      "experience": "Experience",
+      "stacks": "Tech Stacks",
+      "education": "Education",
+      "certifications": "Certifications",
+      "languages": "Languages"
+    }
   }
 }

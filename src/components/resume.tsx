@@ -35,6 +35,17 @@ export interface Job {
   stacks?: string;
 }
 
+export interface ResumeTranslations {
+  professionalSummary: string;
+  ai: string;
+  skills: string;
+  experience: string;
+  stacks: string;
+  education: string;
+  certifications: string;
+  languages: string;
+}
+
 export interface ResumeProps {
   locale?: string;
   info: Info;
@@ -54,6 +65,7 @@ export interface ResumeProps {
   education: string[];
   certifications?: string[];
   languages: string[];
+  translations: ResumeTranslations;
 }
 
 const styles = StyleSheet.create({
@@ -210,6 +222,7 @@ export const Resume: React.FC<ResumeProps> = ({
   education,
   certifications,
   languages,
+  translations,
 }) => {
   {
     /* 
@@ -284,21 +297,23 @@ export const Resume: React.FC<ResumeProps> = ({
 
         {/*Professional Summary Section */}
         <View>
-          <Text style={styles.sectionTitle}>Professional Summary</Text>
+          <Text style={styles.sectionTitle}>
+            {translations.professionalSummary}
+          </Text>
           <Text style={styles.paragraph}>{summary}</Text>
         </View>
 
         {/*Ai Section */}
         {ai && (
           <View>
-            <Text style={styles.sectionTitle}>Ai</Text>
+            <Text style={styles.sectionTitle}>{translations.ai}</Text>
             <Text style={styles.paragraph}>{ai}</Text>
           </View>
         )}
 
         {/*Skills Section */}
         <View>
-          <Text style={styles.sectionTitle}>Skills</Text>
+          <Text style={styles.sectionTitle}>{translations.skills}</Text>
           <View style={styles.bulletList}>
             <View style={styles.bulletItem}>
               <Text style={styles.bullet}>•</Text>
@@ -309,7 +324,7 @@ export const Resume: React.FC<ResumeProps> = ({
 
         {/*Experience Section */}
         <View>
-          <Text style={styles.sectionTitle}>Experience</Text>
+          <Text style={styles.sectionTitle}>{translations.experience}</Text>
           {/*Experience Section Header */}
           {experience.map((job, index) => (
             <View key={index} style={styles.experienceItem}>
@@ -337,7 +352,9 @@ export const Resume: React.FC<ResumeProps> = ({
 
               {/*Experience Section Stacks */}
               {job.stacks && (
-                <Text style={styles.techStack}>Tech Stack: {job.stacks}</Text>
+                <Text style={styles.techStack}>
+                  {translations.stacks}: {job.stacks}
+                </Text>
               )}
             </View>
           ))}
@@ -345,7 +362,7 @@ export const Resume: React.FC<ResumeProps> = ({
 
         {/*Education Section */}
         <View>
-          <Text style={styles.sectionTitle}>Education</Text>
+          <Text style={styles.sectionTitle}>{translations.education}</Text>
           <View style={styles.bulletList}>
             {education.map((edu, index) => (
               <View key={index} style={styles.bulletItem}>
@@ -359,7 +376,9 @@ export const Resume: React.FC<ResumeProps> = ({
         {/*Certifications Section */}
         {certifications && certifications.length > 0 && (
           <View>
-            <Text style={styles.sectionTitle}>Certifications</Text>
+            <Text style={styles.sectionTitle}>
+              {translations.certifications}
+            </Text>
             <View style={styles.bulletList}>
               {certifications.map((cer, index) => (
                 <View key={index} style={styles.bulletItem}>
@@ -373,7 +392,7 @@ export const Resume: React.FC<ResumeProps> = ({
 
         {/*Languages Section */}
         <View>
-          <Text style={styles.sectionTitle}>Languages</Text>
+          <Text style={styles.sectionTitle}>{translations.languages}</Text>
           <View style={styles.bulletList}>
             <View style={styles.bulletItem}>
               <Text style={styles.bullet}>•</Text>
