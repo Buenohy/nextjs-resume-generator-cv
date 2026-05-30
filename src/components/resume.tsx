@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 17,
-    fontFamily: "Helvetica",
+    fontFamily: "Times-Roman",
     color: "#1f2937",
     marginBottom: 4,
   },
