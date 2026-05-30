@@ -8,7 +8,6 @@ interface SectionNavProps {
   t: any;
 }
 
-// Atualizamos a tipagem para suportar Nível 3 (Sub-filhos)
 type SubChildItem = { id: string; label: string };
 type ChildItem = { id: string; label: string; children?: SubChildItem[] };
 type NavItem = { id: string; label: string; children?: ChildItem[] };
@@ -36,7 +35,6 @@ export function SectionNav({ t }: SectionNavProps) {
 
   const navItems: NavItem[] = useMemo(
     () => {
-      // Cria a lista de keywords (Nível 3)
       const dynamicKeywords = keywordsList.map((_, index) => ({
         id: `meta-keyword-${index}`,
         label: `Keyword ${index + 1}`,
@@ -138,7 +136,6 @@ export function SectionNav({ t }: SectionNavProps) {
                 "sections.meta_ats.keywordsOptimizerTitle",
                 "Keywords Optimizer (ATS)"
               ),
-              // INSERIMOS AS KEYWORDS DENTRO DESTA SEÇÃO (Nível 3)
               children: dynamicKeywords,
             },
           ],
@@ -146,6 +143,40 @@ export function SectionNav({ t }: SectionNavProps) {
         {
           id: "personal-info",
           label: getLabel("sections.personal.title", "Header / Personal"),
+          // LISTA DE CAMPOS DO HEADER ADICIONADA AQUI
+          children: [
+            {
+              id: "personal-name",
+              label: getLabel("sections.header.fields.name.label", "Name"),
+            },
+            {
+              id: "personal-role",
+              label: getLabel("sections.header.fields.role.label", "Role"),
+            },
+            {
+              id: "personal-email",
+              label: getLabel("sections.header.fields.email.label", "Email"),
+            },
+            {
+              id: "personal-phone",
+              label: getLabel("sections.header.fields.phone.label", "Phone"),
+            },
+            {
+              id: "personal-city",
+              label: getLabel("sections.header.fields.city.label", "City"),
+            },
+            {
+              id: "personal-location",
+              label: getLabel(
+                "sections.header.fields.location.label",
+                "Location"
+              ),
+            },
+            {
+              id: "personal-age",
+              label: getLabel("sections.header.fields.age.label", "Age"),
+            },
+          ],
         },
         { id: "links", label: getLabel("sections.links.title", "Links") },
         { id: "summary", label: getLabel("sections.summary.title", "Summary") },
@@ -189,7 +220,6 @@ export function SectionNav({ t }: SectionNavProps) {
       }
     );
 
-    // Agora o flatMap coleta os IDs de Nível 1, Nível 2 e Nível 3
     const allSectionIds = navItems.flatMap((item) => [
       item.id,
       ...(item.children?.flatMap((child) => [
@@ -222,7 +252,6 @@ export function SectionNav({ t }: SectionNavProps) {
       </h4>
       <nav className="flex flex-col gap-1.5">
         {navItems.map((item) => {
-          // Pai fica ativo se ele, os filhos ou os netos estiverem ativos
           const isParentActive =
             activeSection === item.id ||
             item.children?.some(
@@ -233,7 +262,6 @@ export function SectionNav({ t }: SectionNavProps) {
 
           return (
             <div key={item.id} className="flex flex-col">
-              {/* NÍVEL 1: SEÇÃO PRINCIPAL */}
               <button
                 onClick={() => scrollToSection(item.id)}
                 className={`flex items-center rounded-md px-3 py-1.5 text-left text-sm font-medium transition-colors ${
@@ -250,11 +278,9 @@ export function SectionNav({ t }: SectionNavProps) {
                 {item.label}
               </button>
 
-              {/* NÍVEL 2: SUBTÍTULOS */}
               {item.children && item.children.length > 0 && (
                 <div className="border-muted/50 mt-1 ml-5 flex flex-col gap-1 border-l-2 pl-2">
                   {item.children.map((child) => {
-                    // Filho ativo se ele ou os netos dele estiverem ativos
                     const isChildActive =
                       activeSection === child.id ||
                       child.children?.some((sc) => sc.id === activeSection);
@@ -270,14 +296,12 @@ export function SectionNav({ t }: SectionNavProps) {
                               : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                           }`}
                         >
-                          {/* O risquinho lateral só aparece se for EXATAMENTE ele que está sendo visto */}
                           {isChildStrictlyActive && (
                             <span className="bg-primary absolute top-0 bottom-0 -left-[2px] w-[2px]" />
                           )}
                           {child.label}
                         </button>
 
-                        {/* NÍVEL 3: SUB-SUBTÍTULOS (Ex: Keywords) */}
                         {child.children && child.children.length > 0 && (
                           <div className="border-muted/30 mt-1 ml-3 flex flex-col gap-1 border-l-2 pl-2">
                             {child.children.map((subChild) => {

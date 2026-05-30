@@ -87,21 +87,11 @@ export function HeaderSection() {
           <h3 className="border-b pb-2 text-lg">{sectionDef.subTitle}</h3>
         </div>
         {sectionDef.fields.map(({ id, label, placeholder }) => {
-          const domId =
-            id === "name"
-              ? "personal-name"
-              : id === "role"
-                ? "personal-role"
-                : id === "city" || id === "location" || id === "age"
-                  ? "personal-contact"
-                  : undefined;
+          // Agora TODOS os campos ganham um id no formato "personal-nomedocampo"
+          const domId = `personal-${id}`;
 
           return (
-            <Field
-              key={id}
-              className={`mb-4 ${domId ? "scroll-mt-24" : ""}`}
-              id={domId}
-            >
+            <Field key={id} className="mb-4 scroll-mt-24" id={domId}>
               {/* 
                 STACKED CONTAINER FOR THE FIELD
                 - flex-col: Positions the label at the top and the input field directly below it.
