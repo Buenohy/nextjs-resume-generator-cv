@@ -17,9 +17,14 @@ export function SectionNav({ t }: SectionNavProps) {
   const [isMounted, setIsMounted] = useState(false);
 
   const cvData = useResumeStore((s) => s.cvData);
+
+  // Pegamos a lista de keywords
   const keywordsList = Array.isArray(cvData?.meta_ats?.keywords)
     ? cvData.meta_ats.keywords
     : [];
+
+  // CORREÇÃO: Pegamos a lista de skills dinâmicas
+  const skillsList = Array.isArray(cvData?.skills) ? cvData.skills : [];
 
   useEffect(() => {
     setIsMounted(true);
@@ -38,6 +43,14 @@ export function SectionNav({ t }: SectionNavProps) {
       const dynamicKeywords = keywordsList.map((_, index) => ({
         id: `meta-keyword-${index}`,
         label: `Keyword ${index + 1}`,
+      }));
+
+      // CORREÇÃO: Geramos a lista de sub-itens para Skills dinamicamente
+      const dynamicSkills = skillsList.map((_, index) => ({
+        id: `skills-item-${index}`,
+        label: t.has("sections.skills.itemLabel")
+          ? t("sections.skills.itemLabel", { num: index + 1 })
+          : `Skill ${index + 1}`,
       }));
 
       return [
@@ -143,7 +156,6 @@ export function SectionNav({ t }: SectionNavProps) {
         {
           id: "personal-info",
           label: getLabel("sections.personal.title", "Header / Personal"),
-          // ATUALIZADO PARA CONTER APENAS OS 4 CAMPOS DA IMAGEM
           children: [
             {
               id: "personal-name",
@@ -207,7 +219,12 @@ export function SectionNav({ t }: SectionNavProps) {
         },
         { id: "summary", label: getLabel("sections.summary.title", "Summary") },
         { id: "ai", label: "IA Assistant" },
-        { id: "skills", label: getLabel("sections.skills.title", "Skills") },
+        {
+          id: "skills",
+          label: getLabel("sections.skills.title", "Skills"),
+          // ATRIBUÍMOS AS SKILLS DINÂMICAS COMO FILHAS AQUI (Nível 3)
+          children: dynamicSkills,
+        },
         {
           id: "experience",
           label: getLabel("sections.experience.title", "Experience"),
@@ -227,7 +244,7 @@ export function SectionNav({ t }: SectionNavProps) {
       ];
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [keywordsList]
+    [keywordsList, skillsList] // Adicionado skillsList como gatilho de re-renderização
   );
 
   useEffect(() => {

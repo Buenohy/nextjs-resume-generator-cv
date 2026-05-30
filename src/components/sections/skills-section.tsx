@@ -107,14 +107,20 @@ export function SkillsSection() {
               {t("sections.skills.count", { count: cvData.skills.length })}
             </p>
           </div>
-          <Button variant="outline" size="sm" onClick={addItem}>
+          {/* CORREÇÃO: type="button" */}
+          <Button type="button" variant="outline" size="sm" onClick={addItem}>
             <Plus className="mr-2 h-4 w-4" /> {t("sections.skills.addBtn")}
           </Button>
         </div>
 
         {/* SKILLS LIST */}
         {cvData.skills.map((skill, index) => (
-          <Field key={index}>
+          // CORREÇÃO: Adicionado ID dinâmico e classe de scroll-margin
+          <Field
+            key={index}
+            id={`skills-item-${index}`}
+            className="scroll-mt-24"
+          >
             {/* 
               MAIN ITEM CONTAINER
               - flex-col: Stacks the Label+Trash row on top of the Textarea input.
@@ -134,7 +140,9 @@ export function SkillsSection() {
 
                 {/* Trash Button - aligned right next to the label */}
                 {cvData.skills.length > 1 && (
+                  // CORREÇÃO: type="button"
                   <Button
+                    type="button"
                     variant="ghost"
                     size="icon"
                     onClick={() => removeItem(index)}
@@ -170,7 +178,9 @@ export function SkillsSection() {
 
         {/* ADD ITEM BUTTON (Bottom) */}
         <div className="mt-2 flex justify-end">
+          {/* CORREÇÃO: type="button" */}
           <Button
+            type="button"
             variant="outline"
             size="xs"
             onClick={addItem}
