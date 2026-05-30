@@ -46,7 +46,7 @@ export default function ResumeBuilderPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isMounted]);
 
-  const floatOffset = Math.max(0, scrollY - 1020);
+  const floatOffset = Math.max(0, scrollY - 1105);
 
   return (
     <div>
