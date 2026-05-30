@@ -183,7 +183,7 @@ export function CertificationsSection() {
           return (
             <Field
               key={index}
-              className="border-muted/50 border-b last:border-0 last:pb-0"
+              className="border-muted/50 mb-4 border-b pb-6 last:border-0 last:pb-0"
             >
               <div className="flex w-full flex-col gap-4">
                 {/* === PART 1: CERTIFICATION NAME === */}

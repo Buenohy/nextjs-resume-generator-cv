@@ -325,7 +325,7 @@ export function EducationSection() {
                     }
                     t={t}
                     showPresent
-                    onlyEnd={true} // Força a exibição de apenas a data de término
+                    onlyEnd={true}
                   />
                 </div>
               </div>
