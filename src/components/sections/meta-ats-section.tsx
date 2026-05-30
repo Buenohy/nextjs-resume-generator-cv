@@ -191,7 +191,7 @@ export function MetaAtsSection() {
           - Displays the localized system language dynamically.
           - Helps users see which ISO standard language metadata will be embedded into the PDF.
         */}
-        <Field className="mb-4">
+        <Field className="mb-4 scroll-mt-24" id="meta-lang">
           <div className="flex w-full flex-col gap-2">
             <FieldLabel className="text-left font-medium capitalize">
               {t("sections.meta_ats.metadataLanguageLabel")}
@@ -205,34 +205,47 @@ export function MetaAtsSection() {
         </Field>
 
         {/* RENDER FLAT METADATA FIELDS */}
-        {sectionDef.fields.map(({ id, label, placeholder }) => (
-          <Field key={id} className="mb-4">
-            <div className="flex w-full flex-col gap-2">
-              <FieldLabel className="text-left font-medium capitalize">
-                {label}
-              </FieldLabel>
-              {textareaFields.includes(id) ? (
-                <Textarea
-                  className="min-h-[38px] w-full resize-none overflow-hidden py-2"
-                  rows={1}
-                  placeholder={placeholder}
-                  value={getFieldValue(id)}
-                  onChange={(e) => {
-                    handleAutoResize(e);
-                    handleChange(id, e.target.value);
-                  }}
-                />
-              ) : (
-                <Input
-                  className="w-full"
-                  placeholder={placeholder}
-                  value={getFieldValue(id)}
-                  onChange={(e) => handleChange(id, e.target.value)}
-                />
-              )}
-            </div>
-          </Field>
-        ))}
+        {sectionDef.fields.map(({ id, label, placeholder }) => {
+          const domId =
+            id === "role_target"
+              ? "meta-role"
+              : id === "subject"
+                ? "meta-subject"
+                : undefined;
+
+          return (
+            <Field
+              key={id}
+              className={`mb-4 ${domId ? "scroll-mt-24" : ""}`}
+              id={domId}
+            >
+              <div className="flex w-full flex-col gap-2">
+                <FieldLabel className="text-left font-medium capitalize">
+                  {label}
+                </FieldLabel>
+                {textareaFields.includes(id) ? (
+                  <Textarea
+                    className="min-h-[38px] w-full resize-none overflow-hidden py-2"
+                    rows={1}
+                    placeholder={placeholder}
+                    value={getFieldValue(id)}
+                    onChange={(e) => {
+                      handleAutoResize(e);
+                      handleChange(id, e.target.value);
+                    }}
+                  />
+                ) : (
+                  <Input
+                    className="w-full"
+                    placeholder={placeholder}
+                    value={getFieldValue(id)}
+                    onChange={(e) => handleChange(id, e.target.value)}
+                  />
+                )}
+              </div>
+            </Field>
+          );
+        })}
 
         {/* === KEYWORDS SECTION (DYNAMIC ARRAY) === */}
         <div className="mt-4 flex flex-col gap-4 border-t pt-6">
