@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { useResumeStore } from "@/store/useResumeStore";
+import { ChevronDown, ChevronRight } from "lucide-react";
 
 interface SectionNavProps {
   t: any;
@@ -16,6 +17,9 @@ type NavItem = { id: string; label: string; children?: ChildItem[] };
 export function SectionNav({ t }: SectionNavProps) {
   const [activeSection, setActiveSection] = useState("");
   const [isMounted, setIsMounted] = useState(false);
+  const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>(
+    {}
+  );
 
   const cvData = useResumeStore((s) => s.cvData);
 
@@ -43,6 +47,23 @@ export function SectionNav({ t }: SectionNavProps) {
 
   useEffect(() => {
     setIsMounted(true);
+    // Expandir seções principais por padrão ao montar
+    setExpandedNodes((prev) => {
+      const initial: Record<string, boolean> = {};
+      [
+        "meta-ats",
+        "personal-info",
+        "links",
+        "skills",
+        "experience",
+        "education",
+        "certifications",
+        "languages",
+      ].forEach((key) => {
+        initial[key] = true;
+      });
+      return initial;
+    });
   }, []);
 
   const getLabel = (key: string, fallback: string) => {
@@ -51,6 +72,14 @@ export function SectionNav({ t }: SectionNavProps) {
     } catch {
       return fallback;
     }
+  };
+
+  const toggleNode = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Evita rolar a tela ao clicar apenas no chevron para encolher
+    setExpandedNodes((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
   };
 
   const navItems: NavItem[] = useMemo(
@@ -156,7 +185,6 @@ export function SectionNav({ t }: SectionNavProps) {
         ],
       }));
 
-      // CORREÇÃO: Geramos a estrutura dinâmica para Languages -> Language X
       const dynamicLanguages = languagesList.map((_, index) => ({
         id: `languages-item-${index}`,
         label: t.has("sections.languages.itemLabel")
@@ -375,7 +403,37 @@ export function SectionNav({ t }: SectionNavProps) {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
+            const activeId = entry.target.id;
+            setActiveSection(activeId);
+
+            // Auto-expande nós de árvore pai quando o usuário faz scroll e o elemento entra em foco
+            setExpandedNodes((prev) => {
+              const next = { ...prev };
+              navItems.forEach((item) => {
+                if (item.id === activeId) next[item.id] = true;
+                item.children?.forEach((child) => {
+                  if (child.id === activeId) {
+                    next[item.id] = true;
+                    next[child.id] = true;
+                  }
+                  child.children?.forEach((sub) => {
+                    if (sub.id === activeId) {
+                      next[item.id] = true;
+                      next[child.id] = true;
+                      next[sub.id] = true;
+                    }
+                    sub.children?.forEach((leaf) => {
+                      if (leaf.id === activeId) {
+                        next[item.id] = true;
+                        next[child.id] = true;
+                        next[sub.id] = true;
+                      }
+                    });
+                  });
+                });
+              });
+              return next;
+            });
           }
         });
       },
@@ -433,118 +491,170 @@ export function SectionNav({ t }: SectionNavProps) {
 
           return (
             <div key={item.id} className="flex flex-col">
-              <button
-                onClick={() => scrollToSection(item.id)}
-                className={`flex items-center rounded-md px-3 py-1.5 text-left text-sm font-medium transition-colors ${
-                  isParentActive
-                    ? "bg-primary/10 text-primary font-semibold"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
-              >
-                <span
-                  className={`mr-2 h-1.5 w-1.5 rounded-full transition-all ${
-                    isParentActive ? "bg-primary scale-110" : "bg-transparent"
+              {/* LEVEL 1 ITEM */}
+              <div className="hover:bg-muted/50 flex items-center rounded-md px-1 py-1 transition-colors">
+                {item.children && item.children.length > 0 ? (
+                  <button
+                    onClick={(e) => toggleNode(item.id, e)}
+                    className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded p-1 transition-colors"
+                  >
+                    {expandedNodes[item.id] ? (
+                      <ChevronDown className="h-3.5 w-3.5" />
+                    ) : (
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    )}
+                  </button>
+                ) : (
+                  <span className="w-6 shrink-0" />
+                )}
+                <button
+                  onClick={() => scrollToSection(item.id)}
+                  className={`flex-1 text-left text-sm font-medium transition-colors ${
+                    isParentActive
+                      ? "text-primary font-semibold"
+                      : "text-muted-foreground hover:text-foreground"
                   }`}
-                />
-                {item.label}
-              </button>
+                >
+                  {item.label}
+                </button>
+              </div>
 
-              {item.children && item.children.length > 0 && (
-                <div className="border-muted/50 mt-1 ml-5 flex flex-col gap-1 border-l-2 pl-2">
-                  {item.children.map((child) => {
-                    const isChildActive =
-                      activeSection === child.id ||
-                      child.children?.some(
-                        (sc) =>
-                          sc.id === activeSection ||
-                          sc.children?.some((leaf) => leaf.id === activeSection)
-                      );
-                    const isChildStrictlyActive = activeSection === child.id;
+              {item.children &&
+                item.children.length > 0 &&
+                expandedNodes[item.id] && (
+                  <div className="border-muted/50 mt-1 ml-5 flex flex-col gap-1 border-l-2 pl-2">
+                    {item.children.map((child) => {
+                      const isChildActive =
+                        activeSection === child.id ||
+                        child.children?.some(
+                          (sc) =>
+                            sc.id === activeSection ||
+                            sc.children?.some(
+                              (leaf) => leaf.id === activeSection
+                            )
+                        );
+                      const isChildStrictlyActive = activeSection === child.id;
 
-                    return (
-                      <div key={child.id} className="flex flex-col">
-                        <button
-                          onClick={() => scrollToSection(child.id)}
-                          className={`relative rounded-r-md px-2 py-1 text-left text-xs transition-colors ${
-                            isChildActive
-                              ? "text-primary bg-primary/5 font-medium"
-                              : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                          }`}
-                        >
-                          {isChildStrictlyActive && (
-                            <span className="bg-primary absolute top-0 bottom-0 -left-[2px] w-[2px]" />
-                          )}
-                          {child.label}
-                        </button>
-
-                        {child.children && child.children.length > 0 && (
-                          <div className="border-muted/30 mt-1 ml-3 flex flex-col gap-1 border-l-2 pl-2">
-                            {child.children.map((subChild) => {
-                              const isSubActive =
-                                activeSection === subChild.id ||
-                                subChild.children?.some(
-                                  (leaf) => leaf.id === activeSection
-                                );
-                              const isSubStrictlyActive =
-                                activeSection === subChild.id;
-
-                              return (
-                                <div
-                                  key={subChild.id}
-                                  className="flex flex-col"
-                                >
-                                  <button
-                                    onClick={() => scrollToSection(subChild.id)}
-                                    className={`relative rounded-r-md px-2 py-1 text-left text-[11px] transition-colors ${
-                                      isSubActive
-                                        ? "text-primary bg-primary/5 font-medium"
-                                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                                    }`}
-                                  >
-                                    {isSubStrictlyActive && (
-                                      <span className="bg-primary absolute top-0 bottom-0 -left-[2px] w-[2px]" />
-                                    )}
-                                    {subChild.label}
-                                  </button>
-
-                                  {subChild.children &&
-                                    subChild.children.length > 0 && (
-                                      <div className="border-muted/20 mt-1 ml-3 flex flex-col gap-1 border-l-2 pl-2">
-                                        {subChild.children.map((leaf) => {
-                                          const isLeafActive =
-                                            activeSection === leaf.id;
-
-                                          return (
-                                            <button
-                                              key={leaf.id}
-                                              onClick={() =>
-                                                scrollToSection(leaf.id)
-                                              }
-                                              className={`relative rounded-r-md px-2 py-0.5 text-left text-[10px] transition-colors ${
-                                                isLeafActive
-                                                  ? "text-primary bg-primary/5 font-medium"
-                                                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                                              }`}
-                                            >
-                                              {isLeafActive && (
-                                                <span className="bg-primary absolute top-0 bottom-0 -left-[2px] w-[2px]" />
-                                              )}
-                                              {leaf.label}
-                                            </button>
-                                          );
-                                        })}
-                                      </div>
-                                    )}
-                                </div>
-                              );
-                            })}
+                      return (
+                        <div key={child.id} className="flex flex-col">
+                          {/* LEVEL 2 ITEM */}
+                          <div className="hover:bg-muted/30 flex items-center rounded-md px-1 py-0.5 transition-colors">
+                            {child.children && child.children.length > 0 ? (
+                              <button
+                                onClick={(e) => toggleNode(child.id, e)}
+                                className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded p-0.5 transition-colors"
+                              >
+                                {expandedNodes[child.id] ? (
+                                  <ChevronDown className="h-3.5 w-3.5" />
+                                ) : (
+                                  <ChevronRight className="h-3.5 w-3.5" />
+                                )}
+                              </button>
+                            ) : (
+                              <span className="w-5 shrink-0" />
+                            )}
+                            <button
+                              onClick={() => scrollToSection(child.id)}
+                              className={`flex-1 text-left text-xs transition-colors ${
+                                isChildActive
+                                  ? "text-primary font-medium"
+                                  : "text-muted-foreground hover:text-foreground"
+                              }`}
+                            >
+                              {child.label}
+                            </button>
                           </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
+
+                          {child.children &&
+                            child.children.length > 0 &&
+                            expandedNodes[child.id] && (
+                              <div className="border-muted/30 mt-1 ml-3 flex flex-col gap-1 border-l-2 pl-2">
+                                {child.children.map((subChild) => {
+                                  const isSubActive =
+                                    activeSection === subChild.id ||
+                                    subChild.children?.some(
+                                      (leaf) => leaf.id === activeSection
+                                    );
+                                  const isSubStrictlyActive =
+                                    activeSection === subChild.id;
+
+                                  return (
+                                    <div
+                                      key={subChild.id}
+                                      className="flex flex-col"
+                                    >
+                                      {/* LEVEL 3 ITEM */}
+                                      <div className="hover:bg-muted/20 flex items-center rounded-md px-1 py-0.5 transition-colors">
+                                        {subChild.children &&
+                                        subChild.children.length > 0 ? (
+                                          <button
+                                            onClick={(e) =>
+                                              toggleNode(subChild.id, e)
+                                            }
+                                            className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded p-0.5 transition-colors"
+                                          >
+                                            {expandedNodes[subChild.id] ? (
+                                              <ChevronDown className="h-3 w-3" />
+                                            ) : (
+                                              <ChevronRight className="h-3 w-3" />
+                                            )}
+                                          </button>
+                                        ) : (
+                                          <span className="w-4 shrink-0" />
+                                        )}
+                                        <button
+                                          onClick={() =>
+                                            scrollToSection(subChild.id)
+                                          }
+                                          className={`flex-1 text-left text-[11px] transition-colors ${
+                                            isSubActive
+                                              ? "text-primary font-medium"
+                                              : "text-muted-foreground hover:text-foreground"
+                                          }`}
+                                        >
+                                          {subChild.label}
+                                        </button>
+                                      </div>
+
+                                      {subChild.children &&
+                                        subChild.children.length > 0 &&
+                                        expandedNodes[subChild.id] && (
+                                          <div className="border-muted/20 mt-1 ml-3 flex flex-col gap-1 border-l-2 pl-2">
+                                            {subChild.children.map((leaf) => {
+                                              const isLeafActive =
+                                                activeSection === leaf.id;
+
+                                              return (
+                                                <button
+                                                  key={leaf.id}
+                                                  onClick={() =>
+                                                    scrollToSection(leaf.id)
+                                                  }
+                                                  className={`relative rounded-r-md px-2 py-0.5 pl-4 text-left text-[10px] transition-colors ${
+                                                    isLeafActive
+                                                      ? "text-primary bg-primary/5 font-medium"
+                                                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                                                  }`}
+                                                >
+                                                  {isLeafActive && (
+                                                    <span className="bg-primary absolute top-0 bottom-0 left-0 w-[2px]" />
+                                                  )}
+                                                  {leaf.label}
+                                                </button>
+                                              );
+                                            })}
+                                          </div>
+                                        )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
             </div>
           );
         })}
