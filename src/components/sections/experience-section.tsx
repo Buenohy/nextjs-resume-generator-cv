@@ -371,7 +371,7 @@ export function ExperienceSection() {
                       )
                     }
                     t={t}
-                    onlyEnd={false}
+                    showPresent={true}
                   />
                 </div>
               </Field>
