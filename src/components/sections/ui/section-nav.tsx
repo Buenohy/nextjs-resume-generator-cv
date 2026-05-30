@@ -8,7 +8,8 @@ interface SectionNavProps {
   t: any;
 }
 
-type SubChildItem = { id: string; label: string };
+type LeafItem = { id: string; label: string };
+type SubChildItem = { id: string; label: string; children?: LeafItem[] };
 type ChildItem = { id: string; label: string; children?: SubChildItem[] };
 type NavItem = { id: string; label: string; children?: ChildItem[] };
 
@@ -18,13 +19,15 @@ export function SectionNav({ t }: SectionNavProps) {
 
   const cvData = useResumeStore((s) => s.cvData);
 
-  // Pegamos a lista de keywords
   const keywordsList = Array.isArray(cvData?.meta_ats?.keywords)
     ? cvData.meta_ats.keywords
     : [];
 
-  // CORREÇÃO: Pegamos a lista de skills dinâmicas
   const skillsList = Array.isArray(cvData?.skills) ? cvData.skills : [];
+
+  const experiencesList = Array.isArray(cvData?.experiences)
+    ? cvData.experiences
+    : [];
 
   useEffect(() => {
     setIsMounted(true);
@@ -45,13 +48,76 @@ export function SectionNav({ t }: SectionNavProps) {
         label: `Keyword ${index + 1}`,
       }));
 
-      // CORREÇÃO: Geramos a lista de sub-itens para Skills dinamicamente
       const dynamicSkills = skillsList.map((_, index) => ({
         id: `skills-item-${index}`,
         label: t.has("sections.skills.itemLabel")
           ? t("sections.skills.itemLabel", { num: index + 1 })
           : `Skill ${index + 1}`,
       }));
+
+      // CORREÇÃO: Criação da estrutura de 4 níveis (Experience -> Experience 1 -> Project Details / Technologies -> Detalhes / Stacks individuais)
+      const dynamicExperiences = experiencesList.map((exp, expIndex) => {
+        const detailChildren = (exp.details || []).map((_, dIdx) => ({
+          id: `experience-${expIndex}-detail-${dIdx}`,
+          label: t.has("sections.experience.detailLabel")
+            ? t("sections.experience.detailLabel", { num: dIdx + 1 })
+            : `Detail ${dIdx + 1}`,
+        }));
+
+        const stackChildren = (exp.stacks || []).map((_, sIdx) => ({
+          id: `experience-${expIndex}-stack-${sIdx}`,
+          label: t.has("sections.experience.stackLabel")
+            ? t("sections.experience.stackLabel", { num: sIdx + 1 })
+            : `Stack ${sIdx + 1}`,
+        }));
+
+        return {
+          id: `experience-item-${expIndex}`,
+          label: t.has("sections.experience.itemLabel")
+            ? t("sections.experience.itemLabel", { num: expIndex + 1 })
+            : `Experience ${expIndex + 1}`,
+          children: [
+            {
+              id: `experience-${expIndex}-role`,
+              label: getLabel("sections.experience.fields.role.label", "Role"),
+            },
+            {
+              id: `experience-${expIndex}-company`,
+              label: getLabel(
+                "sections.experience.fields.company.label",
+                "Company"
+              ),
+            },
+            {
+              id: `experience-${expIndex}-url`,
+              label: getLabel(
+                "sections.experience.fields.url.label",
+                "Company URL"
+              ),
+            },
+            {
+              id: `experience-${expIndex}-date`,
+              label: getLabel("sections.experience.dateTitle", "Date"),
+            },
+            {
+              id: `experience-details-${expIndex}`,
+              label: getLabel(
+                "sections.experience.detailsTitle",
+                "Project Details"
+              ),
+              children: detailChildren,
+            },
+            {
+              id: `experience-stacks-${expIndex}`,
+              label: getLabel(
+                "sections.experience.stacksTitle",
+                "Technologies (Stacks)"
+              ),
+              children: stackChildren,
+            },
+          ],
+        };
+      });
 
       return [
         {
@@ -222,12 +288,12 @@ export function SectionNav({ t }: SectionNavProps) {
         {
           id: "skills",
           label: getLabel("sections.skills.title", "Skills"),
-          // ATRIBUÍMOS AS SKILLS DINÂMICAS COMO FILHAS AQUI (Nível 3)
           children: dynamicSkills,
         },
         {
           id: "experience",
           label: getLabel("sections.experience.title", "Experience"),
+          children: dynamicExperiences,
         },
         {
           id: "education",
@@ -244,7 +310,7 @@ export function SectionNav({ t }: SectionNavProps) {
       ];
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [keywordsList, skillsList] // Adicionado skillsList como gatilho de re-renderização
+    [keywordsList, skillsList, experiencesList]
   );
 
   useEffect(() => {
@@ -263,11 +329,15 @@ export function SectionNav({ t }: SectionNavProps) {
       }
     );
 
+    // FlatMap estendido para capturar seletores até o Level 4 (Leaf nodes)
     const allSectionIds = navItems.flatMap((item) => [
       item.id,
       ...(item.children?.flatMap((child) => [
         child.id,
-        ...(child.children?.map((sub) => sub.id) || []),
+        ...(child.children?.flatMap((sub) => [
+          sub.id,
+          ...(sub.children?.map((leaf) => leaf.id) || []),
+        ]) || []),
       ]) || []),
     ]);
 
@@ -300,7 +370,11 @@ export function SectionNav({ t }: SectionNavProps) {
             item.children?.some(
               (c) =>
                 c.id === activeSection ||
-                c.children?.some((sc) => sc.id === activeSection)
+                c.children?.some(
+                  (sc) =>
+                    sc.id === activeSection ||
+                    sc.children?.some((leaf) => leaf.id === activeSection)
+                )
             );
 
           return (
@@ -326,7 +400,11 @@ export function SectionNav({ t }: SectionNavProps) {
                   {item.children.map((child) => {
                     const isChildActive =
                       activeSection === child.id ||
-                      child.children?.some((sc) => sc.id === activeSection);
+                      child.children?.some(
+                        (sc) =>
+                          sc.id === activeSection ||
+                          sc.children?.some((leaf) => leaf.id === activeSection)
+                      );
                     const isChildStrictlyActive = activeSection === child.id;
 
                     return (
@@ -348,22 +426,63 @@ export function SectionNav({ t }: SectionNavProps) {
                         {child.children && child.children.length > 0 && (
                           <div className="border-muted/30 mt-1 ml-3 flex flex-col gap-1 border-l-2 pl-2">
                             {child.children.map((subChild) => {
-                              const isSubActive = activeSection === subChild.id;
+                              const isSubActive =
+                                activeSection === subChild.id ||
+                                subChild.children?.some(
+                                  (leaf) => leaf.id === activeSection
+                                );
+                              const isSubStrictlyActive =
+                                activeSection === subChild.id;
+
                               return (
-                                <button
+                                <div
                                   key={subChild.id}
-                                  onClick={() => scrollToSection(subChild.id)}
-                                  className={`relative rounded-r-md px-2 py-1 text-left text-[11px] transition-colors ${
-                                    isSubActive
-                                      ? "text-primary bg-primary/5 font-medium"
-                                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                                  }`}
+                                  className="flex flex-col"
                                 >
-                                  {isSubActive && (
-                                    <span className="bg-primary absolute top-0 bottom-0 -left-[2px] w-[2px]" />
-                                  )}
-                                  {subChild.label}
-                                </button>
+                                  <button
+                                    onClick={() => scrollToSection(subChild.id)}
+                                    className={`relative rounded-r-md px-2 py-1 text-left text-[11px] transition-colors ${
+                                      isSubActive
+                                        ? "text-primary bg-primary/5 font-medium"
+                                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                                    }`}
+                                  >
+                                    {isSubStrictlyActive && (
+                                      <span className="bg-primary absolute top-0 bottom-0 -left-[2px] w-[2px]" />
+                                    )}
+                                    {subChild.label}
+                                  </button>
+
+                                  {/* RENDERIZADOR LEVEL 4 (Sub-itens sob Project Details & Technologies) */}
+                                  {subChild.children &&
+                                    subChild.children.length > 0 && (
+                                      <div className="border-muted/20 mt-1 ml-3 flex flex-col gap-1 border-l-2 pl-2">
+                                        {subChild.children.map((leaf) => {
+                                          const isLeafActive =
+                                            activeSection === leaf.id;
+
+                                          return (
+                                            <button
+                                              key={leaf.id}
+                                              onClick={() =>
+                                                scrollToSection(leaf.id)
+                                              }
+                                              className={`relative rounded-r-md px-2 py-0.5 text-left text-[10px] transition-colors ${
+                                                isLeafActive
+                                                  ? "text-primary bg-primary/5 font-medium"
+                                                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                                              }`}
+                                            >
+                                              {isLeafActive && (
+                                                <span className="bg-primary absolute top-0 bottom-0 -left-[2px] w-[2px]" />
+                                              )}
+                                              {leaf.label}
+                                            </button>
+                                          );
+                                        })}
+                                      </div>
+                                    )}
+                                </div>
                               );
                             })}
                           </div>

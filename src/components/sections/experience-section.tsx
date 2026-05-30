@@ -20,12 +20,6 @@ export function ExperienceSection() {
   const handleAutoResize = useAutoResize();
   const [isMounted, setIsMounted] = useState(false);
 
-  {
-    /* 
-    DEFERRED MOUNT EFFECT
-    - Defers rendering the fully interactive state to prevent hydration issues.
-  */
-  }
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsMounted(true);
@@ -38,7 +32,6 @@ export function ExperienceSection() {
     String(new Date().getFullYear() + 10 - i)
   );
 
-  // Base fields WITHOUT "date" (since we use MonthYearPicker)
   const experienceFields = Object.entries(t.raw("sections.experience.fields"))
     .filter(([key]) => key !== "date")
     .map(([key, value]: [string, any]) => ({
@@ -78,7 +71,6 @@ export function ExperienceSection() {
     });
   };
 
-  // Handlers for adding/removing experiences, details, and stacks
   const addExperience = () => {
     updateCvData((draft) => {
       if (draft.experiences.length < 4) {
@@ -158,17 +150,10 @@ export function ExperienceSection() {
     });
   };
 
-  {
-    /* 
-    HIGH-FIDELITY SKELETON LOADER
-    - Matches the layout, nested layers, gaps, and heights of all experience sub-components exactly.
-  */
-  }
   if (!isMounted) {
     return (
       <CardContent>
         <div className="flex flex-col gap-6 border-b py-4">
-          {/* Main Section Header Skeleton */}
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
             <div className="flex flex-col gap-2">
               <Skeleton className="h-6 w-40" />
@@ -178,19 +163,16 @@ export function ExperienceSection() {
             <Skeleton className="h-9 w-28 rounded-md" />
           </div>
 
-          {/* Dynamic Experiences Skeletons mapping exactly the same amount of items */}
           {cvData.experiences.map((exp, expIndex) => (
             <div
               key={expIndex}
               className="flex flex-col gap-6 border-b pt-4 pb-8 last:border-0 last:pb-0"
             >
-              {/* Individual Experience Header Skeletons */}
               <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                 <Skeleton className="h-5.5 w-32" />
                 <Skeleton className="h-8 w-24 rounded-md" />
               </div>
 
-              {/* Standard inputs + date picker field Skeletons (4 fields in total) */}
               {[1, 2, 3, 4].map((fieldIndex) => (
                 <Field key={fieldIndex} className="mb-2">
                   <div className="flex w-full flex-col gap-2">
@@ -200,8 +182,7 @@ export function ExperienceSection() {
                 </Field>
               ))}
 
-              {/* Dynamic Details List Skeletons mapping exactly the same amount of items */}
-              <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
+              <div className="border-muted/60 my-4 ml-4 flex flex-col gap-4 border-l-2 pl-6 md:ml-8">
                 <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                   <div className="flex flex-col gap-2">
                     <Skeleton className="h-4.5 w-28" />
@@ -219,8 +200,7 @@ export function ExperienceSection() {
                 ))}
               </div>
 
-              {/* Dynamic Tech Stacks List Skeletons mapping exactly the same amount of items */}
-              <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
+              <div className="border-muted/60 my-4 ml-4 flex flex-col gap-4 border-l-2 pl-6 md:ml-8">
                 <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                   <div className="flex flex-col gap-2">
                     <Skeleton className="h-4.5 w-28" />
@@ -261,7 +241,12 @@ export function ExperienceSection() {
             </p>
           </div>
           {cvData.experiences.length < 4 && (
-            <Button variant="outline" size="sm" onClick={addExperience}>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={addExperience}
+            >
               <Plus className="mr-2 h-4 w-4" />{" "}
               {t("sections.experience.addBtn")}
             </Button>
@@ -275,7 +260,8 @@ export function ExperienceSection() {
           return (
             <div
               key={expIndex}
-              className="flex flex-col gap-6 border-b pt-4 pb-8 last:border-0 last:pb-0"
+              id={`experience-item-${expIndex}`}
+              className="flex scroll-mt-24 flex-col gap-6 border-b pt-4 pb-8 last:border-0 last:pb-0"
             >
               {/* EXPERIENCE ITEM HEADER & REMOVE BUTTON */}
               <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
@@ -284,6 +270,7 @@ export function ExperienceSection() {
                 </h4>
                 {cvData.experiences.length > 1 && (
                   <Button
+                    type="button"
                     variant="ghost"
                     size="sm"
                     onClick={() => removeExperience(expIndex)}
@@ -296,7 +283,11 @@ export function ExperienceSection() {
 
               {/* STANDARD FIELDS (Role, Company, URL) */}
               {experienceFields.map(({ id, label, placeholder }) => (
-                <Field key={id} className="mb-2">
+                <Field
+                  key={id}
+                  id={`experience-${expIndex}-${id}`}
+                  className="mb-2 scroll-mt-24"
+                >
                   <div className="flex w-full flex-col gap-2">
                     <FieldLabel className="text-left font-medium capitalize">
                       {label}
@@ -321,7 +312,10 @@ export function ExperienceSection() {
               ))}
 
               {/* DATE PICKER FIELD */}
-              <Field className="mb-2">
+              <Field
+                id={`experience-${expIndex}-date`}
+                className="mb-2 scroll-mt-24"
+              >
                 <div className="flex w-full flex-col gap-2">
                   <FieldLabel className="text-left font-medium capitalize">
                     {t("sections.experience.dateTitle")}
@@ -377,7 +371,10 @@ export function ExperienceSection() {
               </Field>
 
               {/* === DETAILS SECTION === */}
-              <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
+              <div
+                id={`experience-details-${expIndex}`}
+                className="border-muted/60 my-4 ml-4 flex scroll-mt-24 flex-col gap-4 border-l-2 pl-6 md:ml-8"
+              >
                 {/* DETAILS HEADER */}
                 <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                   <div>
@@ -392,6 +389,7 @@ export function ExperienceSection() {
                   </div>
                   {exp.details.length < 3 && (
                     <Button
+                      type="button"
                       variant="outline"
                       size="xs"
                       onClick={() => addDetail(expIndex)}
@@ -404,9 +402,12 @@ export function ExperienceSection() {
 
                 {/* DETAILS LIST */}
                 {exp.details.map((detail, dIdx) => (
-                  <Field key={dIdx} className="mb-2">
+                  <Field
+                    key={dIdx}
+                    id={`experience-${expIndex}-detail-${dIdx}`}
+                    className="mb-2 scroll-mt-24"
+                  >
                     <div className="flex w-full flex-col gap-2">
-                      {/* ROW 1: LABEL & TRASH BUTTON */}
                       <div className="flex w-full items-center justify-between">
                         <FieldLabel className="text-left text-xs font-medium capitalize">
                           {t("sections.experience.detailLabel", {
@@ -414,9 +415,9 @@ export function ExperienceSection() {
                           })}
                         </FieldLabel>
 
-                        {/* Trash Button - aligned right next to the label */}
                         {exp.details.length > 1 && (
                           <Button
+                            type="button"
                             variant="ghost"
                             size="icon"
                             onClick={() => removeDetail(expIndex, dIdx)}
@@ -427,7 +428,6 @@ export function ExperienceSection() {
                         )}
                       </div>
 
-                      {/* ROW 2: TEXTAREA */}
                       <Textarea
                         className="min-h-[38px] w-full resize-none overflow-hidden py-2"
                         rows={1}
@@ -453,10 +453,10 @@ export function ExperienceSection() {
                   </Field>
                 ))}
 
-                {/* ADD DETAIL BUTTON (Bottom) */}
                 {exp.details.length < 3 && (
                   <div className="mt-2 flex justify-end">
                     <Button
+                      type="button"
                       variant="outline"
                       size="xs"
                       onClick={() => addDetail(expIndex)}
@@ -470,7 +470,10 @@ export function ExperienceSection() {
               </div>
 
               {/* === STACKS SECTION === */}
-              <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
+              <div
+                id={`experience-stacks-${expIndex}`}
+                className="border-muted/60 my-4 ml-4 flex scroll-mt-24 flex-col gap-4 border-l-2 pl-6 md:ml-8"
+              >
                 {/* STACKS HEADER */}
                 <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                   <div>
@@ -484,6 +487,7 @@ export function ExperienceSection() {
                     </p>
                   </div>
                   <Button
+                    type="button"
                     variant="outline"
                     size="xs"
                     onClick={() => addStack(expIndex)}
@@ -495,9 +499,12 @@ export function ExperienceSection() {
 
                 {/* STACKS LIST */}
                 {exp.stacks.map((stack, sIdx) => (
-                  <Field key={sIdx} className="mb-2">
+                  <Field
+                    key={sIdx}
+                    id={`experience-${expIndex}-stack-${sIdx}`}
+                    className="mb-2 scroll-mt-24"
+                  >
                     <div className="flex w-full flex-col gap-2">
-                      {/* ROW 1: LABEL & TRASH BUTTON */}
                       <div className="flex w-full items-center justify-between">
                         <FieldLabel className="text-left text-xs font-medium capitalize">
                           {t("sections.experience.stackLabel", {
@@ -505,9 +512,9 @@ export function ExperienceSection() {
                           })}
                         </FieldLabel>
 
-                        {/* Trash Button - aligned right next to the label */}
                         {exp.stacks.length > 1 && (
                           <Button
+                            type="button"
                             variant="ghost"
                             size="icon"
                             onClick={() => removeStack(expIndex, sIdx)}
@@ -518,7 +525,6 @@ export function ExperienceSection() {
                         )}
                       </div>
 
-                      {/* ROW 2: TEXTAREA */}
                       <Textarea
                         className="min-h-[38px] w-full resize-none overflow-hidden py-2"
                         rows={1}
@@ -538,9 +544,9 @@ export function ExperienceSection() {
                   </Field>
                 ))}
 
-                {/* ADD STACK BUTTON (Bottom) */}
                 <div className="mt-2 flex justify-end">
                   <Button
+                    type="button"
                     variant="outline"
                     size="xs"
                     onClick={() => addStack(expIndex)}
