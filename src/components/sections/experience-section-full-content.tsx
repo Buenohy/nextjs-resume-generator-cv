@@ -318,6 +318,7 @@ export function ExperienceSectionFullContent() {
               endYear={dateParsed.endYear}
               months={MONTHS}
               years={YEARS}
+              side="bottom"
               onStartMonthChange={(val) =>
                 handleDateChange(
                   val,
