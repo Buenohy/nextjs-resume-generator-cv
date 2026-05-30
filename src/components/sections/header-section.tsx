@@ -86,28 +86,43 @@ export function HeaderSection() {
           <h2 className="text-xl font-semibold">{sectionDef.title}</h2>
           <h3 className="border-b pb-2 text-lg">{sectionDef.subTitle}</h3>
         </div>
-        {sectionDef.fields.map(({ id, label, placeholder }) => (
-          <Field key={id} className="mb-4">
-            {/* 
-              STACKED CONTAINER FOR THE FIELD
-              - flex-col: Positions the label at the top and the input field directly below it.
-              - gap-2: Small, consistent gap between the Label and the Input.
-            */}
-            <div className="flex w-full flex-col gap-2">
-              {/* Label on top */}
-              <FieldLabel className="text-left font-medium capitalize">
-                {label}
-              </FieldLabel>
-              {/* Input field on bottom taking full width */}
-              <Input
-                className="w-full"
-                placeholder={placeholder}
-                value={getFieldValue(id)}
-                onChange={(e) => handleChange(id, e.target.value)}
-              />
-            </div>
-          </Field>
-        ))}
+        {sectionDef.fields.map(({ id, label, placeholder }) => {
+          const domId =
+            id === "name"
+              ? "personal-name"
+              : id === "role"
+                ? "personal-role"
+                : id === "city" || id === "location" || id === "age"
+                  ? "personal-contact"
+                  : undefined;
+
+          return (
+            <Field
+              key={id}
+              className={`mb-4 ${domId ? "scroll-mt-24" : ""}`}
+              id={domId}
+            >
+              {/* 
+                STACKED CONTAINER FOR THE FIELD
+                - flex-col: Positions the label at the top and the input field directly below it.
+                - gap-2: Small, consistent gap between the Label and the Input.
+              */}
+              <div className="flex w-full flex-col gap-2">
+                {/* Label on top */}
+                <FieldLabel className="text-left font-medium capitalize">
+                  {label}
+                </FieldLabel>
+                {/* Input field on bottom taking full width */}
+                <Input
+                  className="w-full"
+                  placeholder={placeholder}
+                  value={getFieldValue(id)}
+                  onChange={(e) => handleChange(id, e.target.value)}
+                />
+              </div>
+            </Field>
+          );
+        })}
       </div>
     </CardContent>
   );
