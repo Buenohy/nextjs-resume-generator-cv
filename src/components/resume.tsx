@@ -241,6 +241,7 @@ export const Resume: React.FC<ResumeProps> = ({
     >
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
+          {/*Header Section */}
           <Text style={styles.name}>{info.name}</Text>
           {info.role && <Text style={styles.role}>{info.role}</Text>}
           {info.location && (
@@ -248,6 +249,7 @@ export const Resume: React.FC<ResumeProps> = ({
           )}
           {info.age && <Text style={styles.age}>{info.age}</Text>}
 
+          {/*Links Section */}
           <View style={styles.contactBar}>
             {info.linkedin && (
               <Link href={info.linkedin_url || ""} style={styles.contactLink}>
@@ -280,18 +282,21 @@ export const Resume: React.FC<ResumeProps> = ({
           </View>
         </View>
 
+        {/*Professional Summary Section */}
         <View>
           <Text style={styles.sectionTitle}>Professional Summary</Text>
           <Text style={styles.paragraph}>{summary}</Text>
         </View>
 
+        {/*Ai Section */}
         {ai && (
           <View>
-            <Text style={styles.sectionTitle}>AI Summary</Text>
+            <Text style={styles.sectionTitle}>Ai</Text>
             <Text style={styles.paragraph}>{ai}</Text>
           </View>
         )}
 
+        {/*Skills Section */}
         <View>
           <Text style={styles.sectionTitle}>Skills</Text>
           <View style={styles.bulletList}>
@@ -302,8 +307,10 @@ export const Resume: React.FC<ResumeProps> = ({
           </View>
         </View>
 
+        {/*Experience Section */}
         <View>
           <Text style={styles.sectionTitle}>Experience</Text>
+          {/*Experience Section Header */}
           {experience.map((job, index) => (
             <View key={index} style={styles.experienceItem}>
               <View style={styles.experienceHeader}>
@@ -318,6 +325,7 @@ export const Resume: React.FC<ResumeProps> = ({
                 <Text style={styles.experienceDate}>{job.date}</Text>
               </View>
 
+              {/*Experience Section Details */}
               <View style={styles.bulletList}>
                 {job.details.map((detail, idx) => (
                   <View key={idx} style={styles.bulletItem}>
@@ -327,6 +335,7 @@ export const Resume: React.FC<ResumeProps> = ({
                 ))}
               </View>
 
+              {/*Experience Section Stacks */}
               {job.stacks && (
                 <Text style={styles.techStack}>Tech Stack: {job.stacks}</Text>
               )}
@@ -334,6 +343,7 @@ export const Resume: React.FC<ResumeProps> = ({
           ))}
         </View>
 
+        {/*Education Section */}
         <View>
           <Text style={styles.sectionTitle}>Education</Text>
           <View style={styles.bulletList}>
@@ -346,6 +356,7 @@ export const Resume: React.FC<ResumeProps> = ({
           </View>
         </View>
 
+        {/*Certifications Section */}
         {certifications && certifications.length > 0 && (
           <View>
             <Text style={styles.sectionTitle}>Certifications</Text>
@@ -360,6 +371,7 @@ export const Resume: React.FC<ResumeProps> = ({
           </View>
         )}
 
+        {/*Languages Section */}
         <View>
           <Text style={styles.sectionTitle}>Languages</Text>
           <View style={styles.bulletList}>
