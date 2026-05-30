@@ -20,6 +20,7 @@ import { EducationSection } from "@/components/sections/education-section";
 import { CertificationsSection } from "@/components/sections/certification-section";
 import { LanguagesSection } from "@/components/sections/language-section";
 import { FeedbackCard } from "@/components/sections/ui/feed-back-card";
+import { AiSection } from "@/components/sections/ai-section";
 
 export default function ResumeBuilderPage() {
   const t = useTranslations("ResumeBuilderPage");
@@ -77,6 +78,7 @@ export default function ResumeBuilderPage() {
             <HeaderSection />
             <LinksSection />
             <SummarySection />
+            <AiSection />
             <SkillsSection />
             <ExperienceSection />
             <EducationSection />

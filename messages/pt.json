@@ -229,6 +229,11 @@
         "subTitle": "Escreva seu resumo profissional",
         "placeholder": "Digite o seu resumo profissional"
       },
+      "ai": {
+        "title": "Resumo IA",
+        "subTitle": "Escreva seu resumo de ia",
+        "placeholder": "Digite o seu resumo de ia"
+      },
       "skills": {
         "title": "Habilidades",
         "subTitle": "Coloque as suas habilidades técnicas",

@@ -217,6 +217,11 @@
         "subTitle": "Write your professional summary",
         "placeholder": "Enter your professional summary"
       },
+      "ai": {
+        "title": "Ai",
+        "subTitle": "Write your ai summary",
+        "placeholder": "Enter your ai"
+      },
       "skills": {
         "title": "Skills",
         "subTitle": "Add your core skills",

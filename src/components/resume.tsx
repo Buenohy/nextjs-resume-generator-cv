@@ -48,7 +48,7 @@ export interface ResumeProps {
     coverage?: string;
   };
   summary: string;
-  summary_ai?: string;
+  ai?: string;
   skills_list: string[];
   experience: Job[];
   education: string[];
@@ -204,7 +204,7 @@ export const Resume: React.FC<ResumeProps> = ({
   info,
   meta = {},
   summary,
-  summary_ai,
+  ai,
   skills_list,
   experience,
   education,
@@ -285,10 +285,10 @@ export const Resume: React.FC<ResumeProps> = ({
           <Text style={styles.paragraph}>{summary}</Text>
         </View>
 
-        {summary_ai && (
+        {ai && (
           <View>
             <Text style={styles.sectionTitle}>AI Summary</Text>
-            <Text style={styles.italicParagraph}>{summary_ai}</Text>
+            <Text style={styles.paragraph}>{ai}</Text>
           </View>
         )}
 

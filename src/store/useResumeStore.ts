@@ -41,6 +41,7 @@ export interface CvDataState {
     github: string;
   };
   summary: string;
+  ai: string;
   skills: string[];
   experiences: ExperienceState[];
   education: string[];
@@ -107,6 +108,7 @@ const initialCvData: CvDataState = {
     github: "",
   },
   summary: "",
+  ai: "",
   skills: [""],
   experiences: [
     { role: "", company: "", url: "", date: "", details: [""], stacks: [""] },

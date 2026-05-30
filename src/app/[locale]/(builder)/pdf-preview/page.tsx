@@ -133,6 +133,7 @@ export default function PdfPreviewPage() {
       info={infoProp}
       meta={cvData.meta_ats}
       summary={cvData.summary}
+      ai={cvData.ai}
       skills_list={cvData.skills}
       experience={experienceProp}
       education={cvData.education}
