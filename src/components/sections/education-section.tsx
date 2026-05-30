@@ -19,12 +19,6 @@ export function EducationSection() {
   const handleAutoResize = useAutoResize();
   const [isMounted, setIsMounted] = useState(false);
 
-  {
-    /* 
-    DEFERRED MOUNT EFFECT
-    - Defers rendering the fully interactive state to prevent hydration issues.
-  */
-  }
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsMounted(true);
@@ -108,17 +102,10 @@ export function EducationSection() {
     updateItem(index, finalVal);
   };
 
-  {
-    /* 
-    HIGH-FIDELITY SKELETON LOADER
-    - Matches the layout, dynamic loops, and structural sizes of the entire Education component.
-  */
-  }
   if (!isMounted) {
     return (
       <CardContent>
         <div className="flex flex-col gap-4 border-b py-4">
-          {/* Section Header Skeleton */}
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
             <div className="flex flex-col gap-2">
               <Skeleton className="h-6 w-40" />
@@ -128,14 +115,12 @@ export function EducationSection() {
             <Skeleton className="h-9 w-28 rounded-md" />
           </div>
 
-          {/* Dynamic Education Skeletons mapping exactly the same amount of items */}
           {cvData.education.map((_, index) => (
             <Field
               key={index}
               className="border-muted/50 mb-4 border-b pb-6 last:border-0 last:pb-0"
             >
               <div className="flex w-full flex-col gap-6">
-                {/* Part 1: Education Name Skeleton */}
                 <div className="flex w-full flex-col gap-2">
                   <div className="flex w-full items-center justify-between">
                     <Skeleton className="h-4 w-28" />
@@ -144,12 +129,9 @@ export function EducationSection() {
                   <Skeleton className="h-[38px] w-full rounded-md" />
                 </div>
 
-                {/* Part 2: Period / Date Selects Skeletons */}
                 <div className="flex w-full flex-col gap-2">
                   <Skeleton className="h-4 w-20" />
-
                   <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-end sm:gap-4">
-                    {/* Start Date Skeletons */}
                     <div className="flex w-full flex-col gap-1.5 sm:w-auto">
                       <Skeleton className="h-3 w-12" />
                       <div className="flex w-full items-center gap-2 sm:w-auto">
@@ -157,12 +139,9 @@ export function EducationSection() {
                         <Skeleton className="h-10 w-full rounded-md sm:w-24" />
                       </div>
                     </div>
-
                     <span className="text-muted-foreground hidden pb-2.5 sm:block">
                       -
                     </span>
-
-                    {/* End Date Skeletons */}
                     <div className="flex w-full flex-col gap-1.5 sm:w-auto">
                       <Skeleton className="h-3 w-12" />
                       <div className="flex w-full items-center gap-2 sm:w-auto">
@@ -176,7 +155,6 @@ export function EducationSection() {
             </Field>
           ))}
 
-          {/* Bottom Add Button Skeleton */}
           <div className="mt-2 flex justify-end">
             <Skeleton className="h-7 w-24 rounded-md" />
           </div>
@@ -203,7 +181,7 @@ export function EducationSection() {
               })}
             </p>
           </div>
-          <Button variant="outline" size="sm" onClick={addItem}>
+          <Button type="button" variant="outline" size="sm" onClick={addItem}>
             <Plus className="mr-2 h-4 w-4" /> {t("sections.education.addBtn")}
           </Button>
         </div>
@@ -215,7 +193,8 @@ export function EducationSection() {
           return (
             <Field
               key={index}
-              className="border-muted/50 mb-4 border-b pb-6 last:border-0 last:pb-0"
+              id={`education-item-${index}`}
+              className="border-muted/50 mb-4 scroll-mt-24 border-b pb-6 last:border-0 last:pb-0"
             >
               {/* MAIN CONTAINER: Separates the Name area from the Date area */}
               <div className="flex w-full flex-col gap-6">
@@ -227,9 +206,10 @@ export function EducationSection() {
                       {t("sections.education.itemLabel", { num: index + 1 })}
                     </FieldLabel>
 
-                    {/* Trash Button - aligned right next to the label */}
+                    {/* Trash Button */}
                     {cvData.education.length > 1 && (
                       <Button
+                        type="button"
                         variant="ghost"
                         size="icon"
                         onClick={() => removeItem(index)}
@@ -269,13 +249,15 @@ export function EducationSection() {
                 </div>
 
                 {/* === PART 2: PERIOD / DATE SECTION === */}
-                <div className="flex w-full flex-col gap-2">
+                <div
+                  id={`education-${index}-period`}
+                  className="flex w-full scroll-mt-24 flex-col gap-2"
+                >
                   {/* LABEL ON TOP */}
                   <FieldLabel className="text-left font-medium capitalize">
                     {t("sections.education.period")}
                   </FieldLabel>
 
-                  {/* Substituído o agrupamento manual de Selects pelo componente global */}
                   <MonthYearPicker
                     startMonth={parsed.startMonth}
                     startYear={parsed.startYear}
@@ -336,6 +318,7 @@ export function EducationSection() {
         {/* ADD ITEM BUTTON */}
         <div className="mt-2 flex justify-end">
           <Button
+            type="button"
             variant="outline"
             size="xs"
             onClick={addItem}

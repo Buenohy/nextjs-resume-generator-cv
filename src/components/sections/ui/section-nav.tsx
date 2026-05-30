@@ -29,6 +29,10 @@ export function SectionNav({ t }: SectionNavProps) {
     ? cvData.experiences
     : [];
 
+  const educationList = Array.isArray(cvData?.education)
+    ? cvData.education
+    : [];
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -55,7 +59,6 @@ export function SectionNav({ t }: SectionNavProps) {
           : `Skill ${index + 1}`,
       }));
 
-      // CORREÇÃO: Criação da estrutura de 4 níveis (Experience -> Experience 1 -> Project Details / Technologies -> Detalhes / Stacks individuais)
       const dynamicExperiences = experiencesList.map((exp, expIndex) => {
         const detailChildren = (exp.details || []).map((_, dIdx) => ({
           id: `experience-${expIndex}-detail-${dIdx}`,
@@ -118,6 +121,20 @@ export function SectionNav({ t }: SectionNavProps) {
           ],
         };
       });
+
+      // CORREÇÃO: Geramos a estrutura de Education -> Education 1 -> Period
+      const dynamicEducation = educationList.map((_, index) => ({
+        id: `education-item-${index}`,
+        label: t.has("sections.education.itemLabel")
+          ? t("sections.education.itemLabel", { num: index + 1 })
+          : `Education ${index + 1}`,
+        children: [
+          {
+            id: `education-${index}-period`,
+            label: getLabel("sections.education.period", "Period"),
+          },
+        ],
+      }));
 
       return [
         {
@@ -298,6 +315,7 @@ export function SectionNav({ t }: SectionNavProps) {
         {
           id: "education",
           label: getLabel("sections.education.title", "Education"),
+          children: dynamicEducation,
         },
         {
           id: "certifications",
@@ -310,7 +328,7 @@ export function SectionNav({ t }: SectionNavProps) {
       ];
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [keywordsList, skillsList, experiencesList]
+    [keywordsList, skillsList, experiencesList, educationList]
   );
 
   useEffect(() => {
@@ -329,7 +347,6 @@ export function SectionNav({ t }: SectionNavProps) {
       }
     );
 
-    // FlatMap estendido para capturar seletores até o Level 4 (Leaf nodes)
     const allSectionIds = navItems.flatMap((item) => [
       item.id,
       ...(item.children?.flatMap((child) => [
@@ -453,7 +470,6 @@ export function SectionNav({ t }: SectionNavProps) {
                                     {subChild.label}
                                   </button>
 
-                                  {/* RENDERIZADOR LEVEL 4 (Sub-itens sob Project Details & Technologies) */}
                                   {subChild.children &&
                                     subChild.children.length > 0 && (
                                       <div className="border-muted/20 mt-1 ml-3 flex flex-col gap-1 border-l-2 pl-2">
