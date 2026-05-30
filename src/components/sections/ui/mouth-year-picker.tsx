@@ -1,12 +1,13 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 
 interface MonthYearPickerProps {
   startMonth: string;
@@ -21,6 +22,7 @@ interface MonthYearPickerProps {
   onEndYearChange: (val: string) => void;
   t: (key: string) => string;
   showPresent?: boolean;
+  side?: "top" | "bottom";
 }
 
 export function MonthYearPicker({
@@ -36,6 +38,7 @@ export function MonthYearPicker({
   onEndYearChange,
   t,
   showPresent = false,
+  side = "bottom",
 }: MonthYearPickerProps) {
   return (
     <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-end sm:gap-2">
@@ -43,31 +46,64 @@ export function MonthYearPicker({
         <span className="text-muted-foreground pl-1 text-[10px] font-semibold uppercase">
           {t("sections.education.start")}
         </span>
-        <div className="flex w-full items-center gap-2 sm:w-auto">
-          <Select value={startMonth} onValueChange={onStartMonthChange}>
-            <SelectTrigger className="w-full sm:w-27.5">
-              <SelectValue placeholder={t("sections.education.month")} />
-            </SelectTrigger>
-            <SelectContent>
+        <div className="flex w-full flex-col items-center gap-2 sm:w-auto sm:flex-row">
+          {/* START MONTH PICKER */}
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="flex h-9 w-full items-center justify-between px-3 font-normal sm:w-27.5"
+              >
+                <span className="truncate">
+                  {startMonth || t("sections.education.month")}
+                </span>
+                <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              side={side}
+              className="max-h-60 overflow-y-auto"
+            >
               {months.map((m) => (
-                <SelectItem key={m} value={m}>
+                <DropdownMenuItem
+                  key={m}
+                  onClick={() => onStartMonthChange(m)}
+                  className={startMonth === m ? "bg-muted font-bold" : ""}
+                >
                   {m}
-                </SelectItem>
+                </DropdownMenuItem>
               ))}
-            </SelectContent>
-          </Select>
-          <Select value={startYear} onValueChange={onStartYearChange}>
-            <SelectTrigger className="w-full sm:w-22.5">
-              <SelectValue placeholder={t("sections.education.year")} />
-            </SelectTrigger>
-            <SelectContent>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* START YEAR PICKER */}
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="flex h-9 w-full items-center justify-between px-3 font-normal sm:w-22.5"
+              >
+                <span className="truncate">
+                  {startYear || t("sections.education.year")}
+                </span>
+                <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              side={side}
+              className="max-h-60 overflow-y-auto"
+            >
               {years.map((y) => (
-                <SelectItem key={y} value={y}>
+                <DropdownMenuItem
+                  key={y}
+                  onClick={() => onStartYearChange(y)}
+                  className={startYear === y ? "bg-muted font-bold" : ""}
+                >
                   {y}
-                </SelectItem>
+                </DropdownMenuItem>
               ))}
-            </SelectContent>
-          </Select>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
@@ -77,33 +113,73 @@ export function MonthYearPicker({
         <span className="text-muted-foreground pl-1 text-[10px] font-semibold uppercase">
           {t("sections.education.end")}
         </span>
-        <div className="flex w-full items-center gap-2 sm:w-auto">
-          <Select value={endMonth} onValueChange={onEndMonthChange}>
-            <SelectTrigger className="w-full sm:w-27.5">
-              <SelectValue placeholder={t("sections.education.month")} />
-            </SelectTrigger>
-            <SelectContent>
-              {showPresent && <SelectItem value="Present">Present</SelectItem>}
+        <div className="flex w-full flex-col items-center gap-2 sm:w-auto sm:flex-row">
+          {/* END MONTH PICKER */}
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="flex h-9 w-full items-center justify-between px-3 font-normal sm:w-27.5"
+              >
+                <span className="truncate">
+                  {endMonth || t("sections.education.month")}
+                </span>
+                <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              side={side}
+              className="max-h-60 overflow-y-auto"
+            >
+              {showPresent && (
+                <DropdownMenuItem
+                  onClick={() => onEndMonthChange("Present")}
+                  className={endMonth === "Present" ? "bg-muted font-bold" : ""}
+                >
+                  Present
+                </DropdownMenuItem>
+              )}
               {months.map((m) => (
-                <SelectItem key={m} value={m}>
+                <DropdownMenuItem
+                  key={m}
+                  onClick={() => onEndMonthChange(m)}
+                  className={endMonth === m ? "bg-muted font-bold" : ""}
+                >
                   {m}
-                </SelectItem>
+                </DropdownMenuItem>
               ))}
-            </SelectContent>
-          </Select>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* END YEAR PICKER */}
           {(!showPresent || endMonth !== "Present") && (
-            <Select value={endYear} onValueChange={onEndYearChange}>
-              <SelectTrigger className="w-full sm:w-22.5">
-                <SelectValue placeholder={t("sections.education.year")} />
-              </SelectTrigger>
-              <SelectContent>
+            <DropdownMenu modal={false}>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="flex h-9 w-full items-center justify-between px-3 font-normal sm:w-22.5"
+                >
+                  <span className="truncate">
+                    {endYear || t("sections.education.year")}
+                  </span>
+                  <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                side={side}
+                className="max-h-60 overflow-y-auto"
+              >
                 {years.map((y) => (
-                  <SelectItem key={y} value={y}>
+                  <DropdownMenuItem
+                    key={y}
+                    onClick={() => onEndYearChange(y)}
+                    className={endYear === y ? "bg-muted font-bold" : ""}
+                  >
                     {y}
-                  </SelectItem>
+                  </DropdownMenuItem>
                 ))}
-              </SelectContent>
-            </Select>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </div>
       </div>
