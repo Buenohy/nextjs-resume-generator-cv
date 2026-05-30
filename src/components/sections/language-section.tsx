@@ -25,12 +25,6 @@ export function LanguagesSection() {
   const handleAutoResize = useAutoResize();
   const [isMounted, setIsMounted] = useState(false);
 
-  {
-    /* 
-    DEFERRED MOUNT EFFECT
-    - Defers rendering the fully interactive state to prevent hydration issues.
-  */
-  }
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsMounted(true);
@@ -81,17 +75,10 @@ export function LanguagesSection() {
     updateItem(index, finalVal);
   };
 
-  {
-    /* 
-    HIGH-FIDELITY SKELETON LOADER
-    - Matches the layout, dynamic loops, and 50/50 inputs split of the Languages component.
-  */
-  }
   if (!isMounted) {
     return (
       <CardContent>
         <div className="flex flex-col gap-4 py-4">
-          {/* Section Header Skeleton */}
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
             <div className="flex flex-col gap-2">
               <Skeleton className="h-6 w-40" />
@@ -101,17 +88,13 @@ export function LanguagesSection() {
             <Skeleton className="h-9 w-28 rounded-md" />
           </div>
 
-          {/* Dynamic Languages Skeletons mapping exactly the same amount of items */}
           {cvData.languages.map((_, index) => (
             <Field key={index}>
               <div className="flex w-full flex-col gap-4">
-                {/* Row 1: Label & Trash Skeletons */}
                 <div className="flex w-full items-center justify-between">
                   <Skeleton className="h-4 w-28" />
                   <Skeleton className="h-8 w-8 rounded-md" />
                 </div>
-
-                {/* Row 2: Double inputs 50/50 split Skeletons */}
                 <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
                   <Skeleton className="h-10 w-full flex-1 rounded-md" />
                   <Skeleton className="h-10 w-full flex-1 rounded-md" />
@@ -120,7 +103,6 @@ export function LanguagesSection() {
             </Field>
           ))}
 
-          {/* Bottom Add Button Skeleton */}
           <div className="mt-2 flex justify-end">
             <Skeleton className="h-7 w-24 rounded-md" />
           </div>
@@ -147,7 +129,7 @@ export function LanguagesSection() {
               })}
             </p>
           </div>
-          <Button variant="outline" size="sm" onClick={addItem}>
+          <Button type="button" variant="outline" size="sm" onClick={addItem}>
             <Plus className="mr-2 h-4 w-4" /> {t("sections.languages.addBtn")}
           </Button>
         </div>
@@ -157,27 +139,21 @@ export function LanguagesSection() {
           const parsed = parseLangString(lang);
 
           return (
-            <Field key={index}>
-              {/* 
-                MAIN CONTAINER FOR EACH LANGUAGE ITEM
-                - flex-col: Stacks the Label+Trash row on top of the Inputs row.
-                - gap-4: Creates the required space between the two rows.
-              */}
+            <Field
+              key={index}
+              id={`languages-item-${index}`}
+              className="scroll-mt-24"
+            >
               <div className="flex w-full flex-col gap-4">
-                {/* 
-                  ROW 1: LABEL & TRASH BUTTON
-                  - flex w-full: Makes it a flex container taking full width.
-                  - items-center: Vertically aligns items in the center.
-                  - justify-between: Pushes FieldLabel to the start and Button to the end.
-                */}
                 <div className="flex w-full items-center justify-between">
                   <FieldLabel className="text-left font-medium capitalize">
                     {t("sections.languages.itemLabel", { num: index + 1 })}
                   </FieldLabel>
 
-                  {/* Trash Button - aligned right next to the label */}
+                  {/* Trash Button */}
                   {cvData.languages.length > 1 && (
                     <Button
+                      type="button"
                       variant="ghost"
                       size="icon"
                       onClick={() => removeItem(index)}
@@ -188,19 +164,7 @@ export function LanguagesSection() {
                   )}
                 </div>
 
-                {/* 
-                  ROW 2: INPUTS (Textarea & Select)
-                  - flex w-full: Takes full width for the input group.
-                  - flex-col (mobile): Stacks inputs vertically on small screens.
-                  - sm:flex-row (tablet+): Arranges inputs horizontally on larger screens.
-                  - sm:items-center: Aligns inputs vertically in the middle on larger screens.
-                */}
                 <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-                  {/* 
-                    FIELD 1: LANGUAGE NAME (Textarea)
-                    - flex-1: Takes exactly 50% of the available space on tablet+ screens.
-                    - min-w-0: Essential. Prevents the flex item from overflowing if content is too large.
-                  */}
                   <Textarea
                     className="min-h-9.5 w-full min-w-0 flex-1 resize-none overflow-hidden py-2"
                     rows={1}
@@ -220,11 +184,6 @@ export function LanguagesSection() {
                     }}
                   />
 
-                  {/* 
-                    FIELD 2: LANGUAGE LEVEL (Select)
-                    - flex-1: Takes the other 50% of the space, creating an equal split on tablet+ screens.
-                    - min-w-0: Crucial flexbox fix. It allows Shadcn's internal truncation (...) to work on tight spaces.
-                  */}
                   <div className="w-full min-w-0 flex-1">
                     <Select
                       value={parsed.level}
@@ -253,9 +212,10 @@ export function LanguagesSection() {
           );
         })}
 
-        {/* ADD ITEM BUTTON (Bottom) */}
+        {/* ADD ITEM BUTTON */}
         <div className="mt-2 flex justify-end">
           <Button
+            type="button"
             variant="outline"
             size="xs"
             onClick={addItem}

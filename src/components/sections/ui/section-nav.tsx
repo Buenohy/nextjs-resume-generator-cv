@@ -37,6 +37,10 @@ export function SectionNav({ t }: SectionNavProps) {
     ? cvData.certifications
     : [];
 
+  const languagesList = Array.isArray(cvData?.languages)
+    ? cvData.languages
+    : [];
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -139,7 +143,6 @@ export function SectionNav({ t }: SectionNavProps) {
         ],
       }));
 
-      // CORREÇÃO: Geramos a estrutura dinâmica para Certifications -> Certificate X -> Date
       const dynamicCertifications = certificationsList.map((_, index) => ({
         id: `certification-item-${index}`,
         label: t.has("sections.certifications.itemLabel")
@@ -151,6 +154,14 @@ export function SectionNav({ t }: SectionNavProps) {
             label: getLabel("sections.certifications.date", "Date"),
           },
         ],
+      }));
+
+      // CORREÇÃO: Geramos a estrutura dinâmica para Languages -> Language X
+      const dynamicLanguages = languagesList.map((_, index) => ({
+        id: `languages-item-${index}`,
+        label: t.has("sections.languages.itemLabel")
+          ? t("sections.languages.itemLabel", { num: index + 1 })
+          : `Language ${index + 1}`,
       }));
 
       return [
@@ -342,6 +353,7 @@ export function SectionNav({ t }: SectionNavProps) {
         {
           id: "languages",
           label: getLabel("sections.languages.title", "Languages"),
+          children: dynamicLanguages,
         },
       ];
     },
@@ -352,6 +364,7 @@ export function SectionNav({ t }: SectionNavProps) {
       experiencesList,
       educationList,
       certificationsList,
+      languagesList,
     ]
   );
 
