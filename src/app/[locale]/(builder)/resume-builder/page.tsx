@@ -21,18 +21,13 @@ import { CertificationsSection } from "@/components/sections/certification-secti
 import { LanguagesSection } from "@/components/sections/language-section";
 import { FeedbackCard } from "@/components/sections/ui/feed-back-card";
 import { AiSection } from "@/components/sections/ai-section";
+import { SectionNav } from "@/components/sections/ui/section-nav";
 
 export default function ResumeBuilderPage() {
   const t = useTranslations("ResumeBuilderPage");
   const [isMounted, setIsMounted] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
 
-  {
-    /* 
-    DEFERRED MOUNT EFFECT
-    - Ensures the client-side persisted store is completely hydrated 
-      before swapping out global heading skeletons with actual translation texts.
-  */
-  }
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsMounted(true);
@@ -40,12 +35,21 @@ export default function ResumeBuilderPage() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    if (!isMounted) return;
+
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isMounted]);
+
+  const floatOffset = Math.max(0, scrollY - 1020);
+
   return (
     <div>
-      {/* 
-        PAGE TITLE SECTION
-        - Renders a pulsing text bar matching the exact height of text-2xl on mount.
-      */}
       {!isMounted ? (
         <Skeleton className="mb-6 h-8 w-64" />
       ) : (
@@ -55,10 +59,6 @@ export default function ResumeBuilderPage() {
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
         <div className="space-y-6 lg:col-span-7">
           <Card className="border-muted shadow-primary/50 shadow-lg">
-            {/* 
-              CARD HEADER SECTION
-              - Displays structured pulsing shapes for both the title and description on load.
-            */}
             <CardHeader>
               {!isMounted ? (
                 <div className="flex flex-col gap-2">
@@ -73,21 +73,50 @@ export default function ResumeBuilderPage() {
               )}
             </CardHeader>
 
-            {/* Sub-sections are let through and will handle their own inner skeletons */}
-            <MetaAtsSection />
-            <HeaderSection />
-            <LinksSection />
-            <SummarySection />
-            <AiSection />
-            <SkillsSection />
-            <ExperienceSection />
-            <EducationSection />
-            <CertificationsSection />
-            <LanguagesSection />
+            <div id="meta-ats" className="scroll-mt-20">
+              <MetaAtsSection />
+            </div>
+            <div id="personal-info" className="scroll-mt-20">
+              <HeaderSection />
+            </div>
+            <div id="links" className="scroll-mt-20">
+              <LinksSection />
+            </div>
+            <div id="summary" className="scroll-mt-20">
+              <SummarySection />
+            </div>
+            <div id="ai" className="scroll-mt-20">
+              <AiSection />
+            </div>
+            <div id="skills" className="scroll-mt-20">
+              <SkillsSection />
+            </div>
+            <div id="experience" className="scroll-mt-20">
+              <ExperienceSection />
+            </div>
+            <div id="education" className="scroll-mt-20">
+              <EducationSection />
+            </div>
+            <div id="certifications" className="scroll-mt-20">
+              <CertificationsSection />
+            </div>
+            <div id="languages" className="scroll-mt-20">
+              <LanguagesSection />
+            </div>
           </Card>
         </div>
-        <div className="lg:sticky lg:top-5 lg:col-span-5">
-          <FeedbackCard />
+        <div className="space-y-6 lg:col-span-5">
+          <div className="lg:sticky lg:top-5">
+            <FeedbackCard />
+          </div>
+          <div
+            style={{
+              transform: `translateY(${floatOffset}px)`,
+              transition: "transform 0.8s cubic-bezier(0.22, 1, 0.36, 1)",
+            }}
+          >
+            <SectionNav t={t} />
+          </div>
         </div>
       </div>
     </div>
