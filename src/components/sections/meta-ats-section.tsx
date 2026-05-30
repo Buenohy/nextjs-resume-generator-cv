@@ -206,19 +206,10 @@ export function MetaAtsSection() {
 
         {/* RENDER FLAT METADATA FIELDS */}
         {sectionDef.fields.map(({ id, label, placeholder }) => {
-          const domId =
-            id === "role_target"
-              ? "meta-role"
-              : id === "subject"
-                ? "meta-subject"
-                : undefined;
+          const domId = `meta-${id}`; // Criação dinâmica dos IDs para cada campo
 
           return (
-            <Field
-              key={id}
-              className={`mb-4 ${domId ? "scroll-mt-24" : ""}`}
-              id={domId}
-            >
+            <Field key={id} className="mb-4 scroll-mt-24" id={domId}>
               <div className="flex w-full flex-col gap-2">
                 <FieldLabel className="text-left font-medium capitalize">
                   {label}
@@ -248,7 +239,10 @@ export function MetaAtsSection() {
         })}
 
         {/* === KEYWORDS SECTION (DYNAMIC ARRAY) === */}
-        <div className="mt-4 flex flex-col gap-4 border-t pt-6">
+        <div
+          id="meta-keywords"
+          className="mt-4 flex scroll-mt-24 flex-col gap-4 border-t pt-6"
+        >
           {/* KEYWORDS HEADER */}
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
             <div>
@@ -261,14 +255,23 @@ export function MetaAtsSection() {
                 })}
               </p>
             </div>
-            <Button variant="outline" size="sm" onClick={addKeyword}>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={addKeyword}
+            >
               <Plus className="mr-2 h-4 w-4" />{" "}
               {t("sections.meta_ats.addKeywordBtn")}
             </Button>
           </div>
 
           {keywordsList.map((keyword, index) => (
-            <Field key={index}>
+            <Field
+              key={index}
+              id={`meta-keyword-${index}`}
+              className="scroll-mt-24"
+            >
               <div className="flex w-full flex-col gap-2">
                 {/* Keyword Row Title & Trash Icon */}
                 <div className="flex w-full items-center justify-between">
@@ -278,6 +281,7 @@ export function MetaAtsSection() {
 
                   {keywordsList.length > 1 && (
                     <Button
+                      type="button"
                       variant="ghost"
                       size="icon"
                       onClick={() => removeKeyword(index)}
@@ -311,6 +315,7 @@ export function MetaAtsSection() {
           {/* Add Keyword Button (Bottom) */}
           <div className="mt-2 flex justify-end">
             <Button
+              type="button"
               variant="outline"
               size="xs"
               onClick={addKeyword}
