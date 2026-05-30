@@ -186,7 +186,7 @@ export function EducationSection() {
   }
 
   return (
-    <CardContent>
+    <CardContent id="education" className="scroll-mt-20">
       <div className="flex flex-col gap-4 border-b py-4">
         {/* HEADER SECTION */}
         <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
