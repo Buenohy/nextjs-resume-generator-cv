@@ -22,7 +22,6 @@ interface MonthYearPickerProps {
   onEndYearChange: (val: string) => void;
   t: (key: string) => string;
   showPresent?: boolean;
-  side?: "top" | "bottom";
 }
 
 export function MonthYearPicker({
@@ -38,7 +37,6 @@ export function MonthYearPicker({
   onEndYearChange,
   t,
   showPresent = false,
-  side = "bottom",
 }: MonthYearPickerProps) {
   return (
     <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-end sm:gap-2">
@@ -52,7 +50,7 @@ export function MonthYearPicker({
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="flex h-9 w-full items-center justify-between px-3 font-normal sm:w-27.5"
+                className="flex h-9 w-full items-center justify-between px-3 font-normal sm:w-32"
               >
                 <span className="truncate">
                   {startMonth || t("sections.education.month")}
@@ -60,10 +58,7 @@ export function MonthYearPicker({
                 <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent
-              side={side}
-              className="max-h-60 overflow-y-auto"
-            >
+            <DropdownMenuContent className="max-h-60 overflow-y-auto">
               {months.map((m) => (
                 <DropdownMenuItem
                   key={m}
@@ -89,10 +84,7 @@ export function MonthYearPicker({
                 <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent
-              side={side}
-              className="max-h-60 overflow-y-auto"
-            >
+            <DropdownMenuContent className="max-h-60 overflow-y-auto">
               {years.map((y) => (
                 <DropdownMenuItem
                   key={y}
@@ -119,24 +111,23 @@ export function MonthYearPicker({
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="flex h-9 w-full items-center justify-between px-3 font-normal sm:w-27.5"
+                className="flex h-9 w-full items-center justify-between px-3 font-normal sm:w-32"
               >
                 <span className="truncate">
-                  {endMonth || t("sections.education.month")}
+                  {endMonth === "Present"
+                    ? t("sections.education.present")
+                    : endMonth || t("sections.education.month")}
                 </span>
                 <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent
-              side={side}
-              className="max-h-60 overflow-y-auto"
-            >
+            <DropdownMenuContent className="max-h-60 overflow-y-auto">
               {showPresent && (
                 <DropdownMenuItem
                   onClick={() => onEndMonthChange("Present")}
                   className={endMonth === "Present" ? "bg-muted font-bold" : ""}
                 >
-                  Present
+                  {t("sections.education.present")}
                 </DropdownMenuItem>
               )}
               {months.map((m) => (
@@ -165,10 +156,7 @@ export function MonthYearPicker({
                   <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent
-                side={side}
-                className="max-h-60 overflow-y-auto"
-              >
+              <DropdownMenuContent className="max-h-60 overflow-y-auto">
                 {years.map((y) => (
                   <DropdownMenuItem
                     key={y}

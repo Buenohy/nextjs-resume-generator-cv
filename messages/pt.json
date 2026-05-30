@@ -290,7 +290,8 @@
         "start": "Início",
         "end": "Término",
         "month": "Mês",
-        "year": "Ano"
+        "year": "Ano",
+        "present": "Atualmente"
       },
       "certifications": {
         "title": "Certificações",

@@ -278,7 +278,8 @@
         "start": "Start",
         "end": "End",
         "month": "Month",
-        "year": "Year"
+        "year": "Year",
+        "present": "Present"
       },
       "certifications": {
         "title": "Certifications",
