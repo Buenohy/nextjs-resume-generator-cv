@@ -7,16 +7,10 @@ import { useResumeStore } from "@/store/useResumeStore";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { CardContent } from "@/components/ui/card";
 import { useAutoResize } from "@/app/hooks/useAutoResize";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MonthYearPicker } from "../sections/ui/mouth-year-picker";
 
 export function EducationSection() {
   const t = useTranslations("ResumeBuilderPage");
@@ -281,167 +275,58 @@ export function EducationSection() {
                     {t("sections.education.period")}
                   </FieldLabel>
 
-                  {/* 
-                    DATE SELECTS CONTAINER 
-                    - Mobile: Stacks Start and End dates vertically (flex-col).
-                    - Desktop: Puts them inline (sm:flex-row) aligned to bottom (sm:items-end).
-                  */}
-                  <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-end sm:gap-4">
-                    {/* --- START DATE BLOCK --- */}
-                    <div className="flex w-full flex-col gap-1.5 sm:w-auto">
-                      <span className="text-muted-foreground pl-1 text-[10px] font-semibold uppercase">
-                        {t("sections.education.start")}
-                      </span>
-
-                      <div className="flex w-full items-center gap-2 sm:w-auto">
-                        <Select
-                          value={parsed.startMonth}
-                          onValueChange={(val) =>
-                            handleEduChange(
-                              index,
-                              parsed.text,
-                              val,
-                              parsed.startYear,
-                              parsed.endMonth,
-                              parsed.endYear
-                            )
-                          }
-                          modal={false}
-                        >
-                          <SelectTrigger className="w-full sm:w-28">
-                            <SelectValue
-                              placeholder={t("sections.education.month")}
-                            />
-                          </SelectTrigger>
-                          <SelectContent
-                            position="popper"
-                            className="max-h-48"
-                            onCloseAutoFocus={(e) => e.preventDefault()}
-                          >
-                            {MONTHS.map((m) => (
-                              <SelectItem key={m} value={m}>
-                                {m}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-
-                        <Select
-                          value={parsed.startYear}
-                          onValueChange={(val) =>
-                            handleEduChange(
-                              index,
-                              parsed.text,
-                              parsed.startMonth,
-                              val,
-                              parsed.endMonth,
-                              parsed.endYear
-                            )
-                          }
-                          modal={false}
-                        >
-                          <SelectTrigger className="w-full sm:w-24">
-                            <SelectValue
-                              placeholder={t("sections.education.year")}
-                            />
-                          </SelectTrigger>
-                          <SelectContent
-                            position="popper"
-                            className="max-h-48"
-                            onCloseAutoFocus={(e) => e.preventDefault()}
-                          >
-                            {YEARS.map((y) => (
-                              <SelectItem key={y} value={y}>
-                                {y}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
-                    {/* SEPARATOR (Hidden on mobile, visible on desktop) */}
-                    <span className="text-muted-foreground hidden pb-2.5 sm:block">
-                      -
-                    </span>
-
-                    {/* --- END DATE BLOCK --- */}
-                    <div className="flex w-full flex-col gap-1.5 sm:w-auto">
-                      <span className="text-muted-foreground pl-1 text-[10px] font-semibold uppercase">
-                        {t("sections.education.end")}
-                      </span>
-
-                      <div className="flex w-full items-center gap-2 sm:w-auto">
-                        <Select
-                          value={parsed.endMonth}
-                          onValueChange={(val) =>
-                            handleEduChange(
-                              index,
-                              parsed.text,
-                              parsed.startMonth,
-                              parsed.startYear,
-                              val,
-                              parsed.endYear
-                            )
-                          }
-                          modal={false}
-                        >
-                          <SelectTrigger className="w-full sm:w-28">
-                            <SelectValue
-                              placeholder={t("sections.education.month")}
-                            />
-                          </SelectTrigger>
-                          <SelectContent
-                            position="popper"
-                            className="max-h-48"
-                            onCloseAutoFocus={(e) => e.preventDefault()}
-                          >
-                            <SelectItem value="Present">Present</SelectItem>
-                            {MONTHS.map((m) => (
-                              <SelectItem key={m} value={m}>
-                                {m}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-
-                        {/* Render End Year only if End Month is not 'Present' */}
-                        {parsed.endMonth !== "Present" && (
-                          <Select
-                            value={parsed.endYear}
-                            onValueChange={(val) =>
-                              handleEduChange(
-                                index,
-                                parsed.text,
-                                parsed.startMonth,
-                                parsed.startYear,
-                                parsed.endMonth,
-                                val
-                              )
-                            }
-                            modal={false}
-                          >
-                            <SelectTrigger className="w-full sm:w-24">
-                              <SelectValue
-                                placeholder={t("sections.education.year")}
-                              />
-                            </SelectTrigger>
-                            <SelectContent
-                              position="popper"
-                              className="max-h-48"
-                              onCloseAutoFocus={(e) => e.preventDefault()}
-                            >
-                              {YEARS.map((y) => (
-                                <SelectItem key={y} value={y}>
-                                  {y}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                  {/* Substituído o agrupamento manual de Selects pelo componente global */}
+                  <MonthYearPicker
+                    startMonth={parsed.startMonth}
+                    startYear={parsed.startYear}
+                    endMonth={parsed.endMonth}
+                    endYear={parsed.endYear}
+                    months={MONTHS}
+                    years={YEARS}
+                    onStartMonthChange={(val) =>
+                      handleEduChange(
+                        index,
+                        parsed.text,
+                        val,
+                        parsed.startYear,
+                        parsed.endMonth,
+                        parsed.endYear
+                      )
+                    }
+                    onStartYearChange={(val) =>
+                      handleEduChange(
+                        index,
+                        parsed.text,
+                        parsed.startMonth,
+                        val,
+                        parsed.endMonth,
+                        parsed.endYear
+                      )
+                    }
+                    onEndMonthChange={(val) =>
+                      handleEduChange(
+                        index,
+                        parsed.text,
+                        parsed.startMonth,
+                        parsed.startYear,
+                        val,
+                        parsed.endYear
+                      )
+                    }
+                    onEndYearChange={(val) =>
+                      handleEduChange(
+                        index,
+                        parsed.text,
+                        parsed.startMonth,
+                        parsed.startYear,
+                        parsed.endMonth,
+                        val
+                      )
+                    }
+                    t={t}
+                    showPresent
+                    onlyEnd={true} // Força a exibição de apenas a data de término
+                  />
                 </div>
               </div>
             </Field>
