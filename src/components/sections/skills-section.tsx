@@ -93,7 +93,7 @@ export function SkillsSection() {
   }
 
   return (
-    <CardContent>
+    <CardContent id="skills" className="scroll-mt-20">
       {/* Outer container spacing set to gap-4 for consistency */}
       <div className="flex flex-col gap-4 border-b py-4">
         {/* SECTION HEADER */}
