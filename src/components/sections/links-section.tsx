@@ -93,28 +93,43 @@ export function LinksSection() {
         </div>
 
         {/* DYNAMIC FIELDS MAP */}
-        {fields.map(({ id, label, placeholder }) => (
-          <Field key={id} className="mb-4">
-            {/* 
-              STACKED CONTAINER FOR THE FIELD
-              - flex-col: Positions the label at the top and the input field directly below it.
-              - gap-2: Small, consistent gap between the Label and the Input.
-            */}
-            <div className="flex w-full flex-col gap-2">
-              {/* Label on top */}
-              <FieldLabel className="text-left font-medium capitalize">
-                {label}
-              </FieldLabel>
-              {/* Input field on bottom taking full width */}
-              <Input
-                className="w-full"
-                placeholder={placeholder}
-                value={getFieldValue(id)}
-                onChange={(e) => handleChange(id, e.target.value)}
-              />
-            </div>
-          </Field>
-        ))}
+        {fields.map(({ id, label, placeholder }) => {
+          const domId =
+            id === "email"
+              ? "links-email"
+              : id === "linkedin"
+                ? "links-linkedin"
+                : id === "github"
+                  ? "links-github"
+                  : undefined;
+
+          return (
+            <Field
+              key={id}
+              className={`mb-4 ${domId ? "scroll-mt-24" : ""}`}
+              id={domId}
+            >
+              {/* 
+                STACKED CONTAINER FOR THE FIELD
+                - flex-col: Positions the label at the top and the input field directly below it.
+                - gap-2: Small, consistent gap between the Label and the Input.
+              */}
+              <div className="flex w-full flex-col gap-2">
+                {/* Label on top */}
+                <FieldLabel className="text-left font-medium capitalize">
+                  {label}
+                </FieldLabel>
+                {/* Input field on bottom taking full width */}
+                <Input
+                  className="w-full"
+                  placeholder={placeholder}
+                  value={getFieldValue(id)}
+                  onChange={(e) => handleChange(id, e.target.value)}
+                />
+              </div>
+            </Field>
+          );
+        })}
       </div>
     </CardContent>
   );
