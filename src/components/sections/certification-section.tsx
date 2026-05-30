@@ -19,12 +19,6 @@ export function CertificationsSection() {
   const handleAutoResize = useAutoResize();
   const [isMounted, setIsMounted] = useState(false);
 
-  {
-    /* 
-    DEFERRED MOUNT EFFECT
-    - Defers rendering the fully interactive state to prevent hydration issues.
-  */
-  }
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsMounted(true);
@@ -92,17 +86,10 @@ export function CertificationsSection() {
     updateItem(index, finalVal);
   };
 
-  {
-    /* 
-    HIGH-FIDELITY SKELETON LOADER
-    - Matches the layout, dynamic loops, and structural sizes of the entire Certifications component.
-  */
-  }
   if (!isMounted) {
     return (
       <CardContent>
         <div className="flex flex-col gap-4 border-b py-4">
-          {/* Section Header Skeleton */}
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
             <div className="flex flex-col gap-2">
               <Skeleton className="h-6 w-40" />
@@ -112,14 +99,12 @@ export function CertificationsSection() {
             <Skeleton className="h-9 w-28 rounded-md" />
           </div>
 
-          {/* Dynamic Certifications Skeletons mapping exactly the same amount of items */}
           {cvData.certifications.map((_, index) => (
             <Field
               key={index}
               className="border-muted/50 border-b last:border-0 last:pb-0"
             >
               <div className="flex w-full flex-col gap-4">
-                {/* Part 1: Certification Name Skeleton */}
                 <div className="flex w-full flex-col gap-2">
                   <div className="flex w-full items-center justify-between">
                     <Skeleton className="h-4 w-28" />
@@ -128,7 +113,6 @@ export function CertificationsSection() {
                   <Skeleton className="h-[38px] w-full rounded-md" />
                 </div>
 
-                {/* Part 2: Date Selector Skeletons */}
                 <div className="flex w-full flex-col gap-2">
                   <Skeleton className="h-4 w-20" />
                   <div className="flex flex-col gap-1.5">
@@ -143,7 +127,6 @@ export function CertificationsSection() {
             </Field>
           ))}
 
-          {/* Bottom Add Button Skeleton */}
           <div className="mt-2 flex justify-end">
             <Skeleton className="h-7 w-24 rounded-md" />
           </div>
@@ -170,7 +153,7 @@ export function CertificationsSection() {
               })}
             </p>
           </div>
-          <Button variant="outline" size="sm" onClick={addItem}>
+          <Button type="button" variant="outline" size="sm" onClick={addItem}>
             <Plus className="mr-2 h-4 w-4" />{" "}
             {t("sections.certifications.addBtn")}
           </Button>
@@ -183,7 +166,8 @@ export function CertificationsSection() {
           return (
             <Field
               key={index}
-              className="border-muted/50 mb-4 border-b pb-6 last:border-0 last:pb-0"
+              id={`certification-item-${index}`}
+              className="border-muted/50 mb-4 scroll-mt-24 border-b pb-6 last:border-0 last:pb-0"
             >
               <div className="flex w-full flex-col gap-4">
                 {/* === PART 1: CERTIFICATION NAME === */}
@@ -196,9 +180,10 @@ export function CertificationsSection() {
                       })}
                     </FieldLabel>
 
-                    {/* Trash Button - aligned right next to the label */}
+                    {/* Trash Button */}
                     {cvData.certifications.length > 1 && (
                       <Button
+                        type="button"
                         variant="ghost"
                         size="icon"
                         onClick={() => removeItem(index)}
@@ -236,7 +221,10 @@ export function CertificationsSection() {
                 </div>
 
                 {/* === PART 2: DATE SECTION === */}
-                <div className="flex w-full flex-col gap-2">
+                <div
+                  id={`certification-${index}-date`}
+                  className="flex w-full scroll-mt-24 flex-col gap-2"
+                >
                   {/* LABEL ON TOP */}
                   <FieldLabel className="text-left font-medium capitalize">
                     {t("sections.certifications.date")}
@@ -271,6 +259,7 @@ export function CertificationsSection() {
         {/* ADD ITEM BUTTON */}
         <div className="mt-2 flex justify-end">
           <Button
+            type="button"
             variant="outline"
             size="xs"
             onClick={addItem}

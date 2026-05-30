@@ -33,6 +33,10 @@ export function SectionNav({ t }: SectionNavProps) {
     ? cvData.education
     : [];
 
+  const certificationsList = Array.isArray(cvData?.certifications)
+    ? cvData.certifications
+    : [];
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -122,7 +126,6 @@ export function SectionNav({ t }: SectionNavProps) {
         };
       });
 
-      // CORREÇÃO: Geramos a estrutura de Education -> Education 1 -> Period
       const dynamicEducation = educationList.map((_, index) => ({
         id: `education-item-${index}`,
         label: t.has("sections.education.itemLabel")
@@ -132,6 +135,20 @@ export function SectionNav({ t }: SectionNavProps) {
           {
             id: `education-${index}-period`,
             label: getLabel("sections.education.period", "Period"),
+          },
+        ],
+      }));
+
+      // CORREÇÃO: Geramos a estrutura dinâmica para Certifications -> Certificate X -> Date
+      const dynamicCertifications = certificationsList.map((_, index) => ({
+        id: `certification-item-${index}`,
+        label: t.has("sections.certifications.itemLabel")
+          ? t("sections.certifications.itemLabel", { num: index + 1 })
+          : `Certificate ${index + 1}`,
+        children: [
+          {
+            id: `certification-${index}-date`,
+            label: getLabel("sections.certifications.date", "Date"),
           },
         ],
       }));
@@ -320,6 +337,7 @@ export function SectionNav({ t }: SectionNavProps) {
         {
           id: "certifications",
           label: getLabel("sections.certifications.title", "Certifications"),
+          children: dynamicCertifications,
         },
         {
           id: "languages",
@@ -328,7 +346,13 @@ export function SectionNav({ t }: SectionNavProps) {
       ];
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [keywordsList, skillsList, experiencesList, educationList]
+    [
+      keywordsList,
+      skillsList,
+      experiencesList,
+      educationList,
+      certificationsList,
+    ]
   );
 
   useEffect(() => {
