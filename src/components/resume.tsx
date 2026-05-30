@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontFamily: "Helvetica-Bold",
     color: "#2563eb",
-    marginTop: 4,
+    marginTop: 2,
     marginBottom: 4,
     borderBottomWidth: 1,
     borderBottomColor: "#e5e7eb",
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     textAlign: "justify",
   },
   experienceItem: {
-    marginBottom: 8,
+    marginBottom: 2,
   },
   experienceHeader: {
     display: "flex",
