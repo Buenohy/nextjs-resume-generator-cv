@@ -245,7 +245,7 @@ export function ExperienceSection() {
   }
 
   return (
-    <CardContent>
+    <CardContent id="experience" className="scroll-mt-20">
       <div className="flex flex-col gap-6 border-b py-4">
         {/* SECTION HEADER */}
         <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
