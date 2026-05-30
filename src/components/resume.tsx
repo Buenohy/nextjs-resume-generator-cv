@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
   },
   header: {
-    marginBottom: 10,
+    marginBottom: 4,
     textAlign: "center",
     display: "flex",
     flexDirection: "column",
@@ -89,9 +89,9 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 17,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
     color: "#1f2937",
-    marginBottom: 2,
+    marginBottom: 4,
   },
   role: {
     fontSize: 12,
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   location: {
     fontSize: 9.5,
     color: "#4b5563",
-    marginBottom: 1,
+    marginBottom: 2,
   },
   age: {
     fontSize: 9.5,
