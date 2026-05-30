@@ -70,7 +70,10 @@ export interface ResumeProps {
 
 const styles = StyleSheet.create({
   page: {
-    padding: 30,
+    paddingTop: 15,
+    paddingRight: 15,
+    paddingBottom: 15,
+    paddingLeft: 15,
     fontFamily: "Helvetica",
     fontSize: 9,
     lineHeight: 1.3,
@@ -111,8 +114,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
+    alignItems: "center",
     gap: 12,
-    marginTop: 4,
+    marginTop: 0,
     width: "100%",
   },
   contactLink: {
