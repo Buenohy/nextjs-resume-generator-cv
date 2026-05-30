@@ -94,21 +94,12 @@ export function LinksSection() {
 
         {/* DYNAMIC FIELDS MAP */}
         {fields.map(({ id, label, placeholder }) => {
-          const domId =
-            id === "email"
-              ? "links-email"
-              : id === "linkedin"
-                ? "links-linkedin"
-                : id === "github"
-                  ? "links-github"
-                  : undefined;
+          // Criação dinâmica de ID para TODOS os links
+          const domId = `links-${id}`;
 
           return (
-            <Field
-              key={id}
-              className={`mb-4 ${domId ? "scroll-mt-24" : ""}`}
-              id={domId}
-            >
+            // Adicionado 'scroll-mt-24' para todos
+            <Field key={id} className="mb-4 scroll-mt-24" id={domId}>
               {/* 
                 STACKED CONTAINER FOR THE FIELD
                 - flex-col: Positions the label at the top and the input field directly below it.

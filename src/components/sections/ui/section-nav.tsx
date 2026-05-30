@@ -143,7 +143,7 @@ export function SectionNav({ t }: SectionNavProps) {
         {
           id: "personal-info",
           label: getLabel("sections.personal.title", "Header / Personal"),
-          // LISTA DE CAMPOS DO HEADER ADICIONADA AQUI
+          // ATUALIZADO PARA CONTER APENAS OS 4 CAMPOS DA IMAGEM
           children: [
             {
               id: "personal-name",
@@ -154,22 +154,10 @@ export function SectionNav({ t }: SectionNavProps) {
               label: getLabel("sections.header.fields.role.label", "Role"),
             },
             {
-              id: "personal-email",
-              label: getLabel("sections.header.fields.email.label", "Email"),
-            },
-            {
-              id: "personal-phone",
-              label: getLabel("sections.header.fields.phone.label", "Phone"),
-            },
-            {
-              id: "personal-city",
-              label: getLabel("sections.header.fields.city.label", "City"),
-            },
-            {
               id: "personal-location",
               label: getLabel(
                 "sections.header.fields.location.label",
-                "Location"
+                "City/State"
               ),
             },
             {
@@ -178,7 +166,45 @@ export function SectionNav({ t }: SectionNavProps) {
             },
           ],
         },
-        { id: "links", label: getLabel("sections.links.title", "Links") },
+        {
+          id: "links",
+          label: getLabel("sections.links.title", "Links"),
+          children: [
+            {
+              id: "links-linkedin",
+              label: getLabel(
+                "sections.links.fields.linkedin.label",
+                "LinkedIn"
+              ),
+            },
+            {
+              id: "links-phone",
+              label: getLabel("sections.links.fields.phone.label", "Phone"),
+            },
+            {
+              id: "links-websiteName",
+              label: getLabel(
+                "sections.links.fields.websiteName.label",
+                "Website Name"
+              ),
+            },
+            {
+              id: "links-websiteUrl",
+              label: getLabel(
+                "sections.links.fields.websiteUrl.label",
+                "Website URL"
+              ),
+            },
+            {
+              id: "links-email",
+              label: getLabel("sections.links.fields.email.label", "E-Mail"),
+            },
+            {
+              id: "links-github",
+              label: getLabel("sections.links.fields.github.label", "GitHub"),
+            },
+          ],
+        },
         { id: "summary", label: getLabel("sections.summary.title", "Summary") },
         { id: "ai", label: "IA Assistant" },
         { id: "skills", label: getLabel("sections.skills.title", "Skills") },
