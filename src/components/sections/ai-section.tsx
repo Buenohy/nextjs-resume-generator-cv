@@ -57,7 +57,7 @@ export function AiSection() {
   }
 
   return (
-    <CardContent>
+    <CardContent id="ai" className="scroll-mt-20">
       <div className="flex flex-col gap-6 border-b py-4">
         <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
           <div>
