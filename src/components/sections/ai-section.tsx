@@ -26,7 +26,7 @@ export function AiSection() {
 
   const [isMounted, setIsMounted] = useState(false);
 
-  const [isOpen, setIsOpen] = useSyncCollapse("ai", true);
+  const [isOpen, setIsOpen] = useSyncCollapse("ai", false);
   {
     /* 
     DEFERRED MOUNT EFFECT
