@@ -24,7 +24,7 @@ export function HeaderSection() {
 
   const [isMounted, setIsMounted] = useState(false);
 
-  const [isOpen, setIsOpen] = useSyncCollapse("personal-info", true);
+  const [isOpen, setIsOpen] = useSyncCollapse("personal-info", false);
   {
     /* 
     DEFERRED MOUNT EFFECT
