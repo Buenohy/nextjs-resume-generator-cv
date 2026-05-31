@@ -26,7 +26,7 @@ export function SummarySection() {
 
   const [isMounted, setIsMounted] = useState(false);
 
-  const [isOpen, setIsOpen] = useSyncCollapse("summary", true);
+  const [isOpen, setIsOpen] = useSyncCollapse("summary", false);
   {
     /* 
     DEFERRED MOUNT EFFECT
