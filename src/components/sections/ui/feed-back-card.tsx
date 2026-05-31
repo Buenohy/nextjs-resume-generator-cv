@@ -88,13 +88,11 @@ export function FeedbackCard() {
   {
     /* 
     HIGH-FIDELITY SKELETON LOADER
-    - Matches the structural layout, responsive tabs, and cards of the Feedback system perfectly.
   */
   }
   if (!isMounted) {
     return (
       <Card className="border-muted shadow-primary/50 shadow-lg">
-        {/* Header Skeleton */}
         <CardHeader className="relative border-b pb-3">
           <div className="flex items-center justify-between">
             <Skeleton className="h-6 w-36" />
@@ -102,7 +100,6 @@ export function FeedbackCard() {
           </div>
           <Skeleton className="mt-2 h-4 w-72" />
 
-          {/* Action Tabs Skeletons */}
           <div className="mt-4 grid w-full grid-cols-3 gap-1.5 sm:flex sm:flex-row sm:gap-1.5">
             <Skeleton className="h-9 flex-1 rounded-md" />
             <Skeleton className="h-9 flex-1 rounded-md" />
@@ -110,7 +107,6 @@ export function FeedbackCard() {
           </div>
         </CardHeader>
 
-        {/* Content Skeletons (Mimics the inner panel details block) */}
         <CardContent className="flex min-h-[400px] flex-col gap-5 pt-6">
           <div className="bg-card space-y-4 rounded-lg border p-4">
             <Skeleton className="mb-3 h-5 w-40" />
@@ -279,9 +275,10 @@ function ParseTab() {
 
   if (!analysisResults) return null;
 
-  const roleText = analysisResults.warnings.infoRoleMismatch
-    ? t("feedbackAnalysis.roleMismatch", { role: cvData.info.role || "N/A" })
-    : t("feedbackAnalysis.roleMatch", { role: cvData.info.role || "N/A" });
+  // Encadeamento opcional seguro de dados
+  const roleText = analysisResults?.warnings?.infoRoleMismatch
+    ? t("feedbackAnalysis.roleMismatch", { role: cvData?.info?.role || "N/A" })
+    : t("feedbackAnalysis.roleMatch", { role: cvData?.info?.role || "N/A" });
 
   return (
     <div className="flex flex-col gap-5 text-sm">
@@ -294,11 +291,13 @@ function ParseTab() {
             <p className="text-muted-foreground font-semibold">
               {t("feedbackAnalysis.missingKeywords")}
             </p>
+            {/* CORRIGIDO: Validação estrita do Array antes de rodar o .join() */}
             <Textarea
               readOnly
               value={
-                analysisResults.warnings.keywords.join(", ") ||
-                t("feedbackAnalysis.missingKeywordsEmpty")
+                Array.isArray(analysisResults?.warnings?.keywords)
+                  ? analysisResults.warnings.keywords.join(", ")
+                  : t("feedbackAnalysis.missingKeywordsEmpty")
               }
               className="bg-muted/50 mt-1.5 min-h-[60px] text-xs"
             />
@@ -310,7 +309,7 @@ function ParseTab() {
             <Textarea
               readOnly
               value={
-                analysisResults.warnings.roleTarget ||
+                analysisResults?.warnings?.roleTarget ||
                 t("feedbackAnalysis.roleNotFoundEmpty")
               }
               className="bg-muted/50 mt-1.5 min-h-[40px] text-xs"
@@ -320,11 +319,13 @@ function ParseTab() {
             <p className="text-muted-foreground font-semibold">
               {t("feedbackAnalysis.missingSubject")}
             </p>
+            {/* CORRIGIDO: Validação estrita do Array antes de rodar o .join() */}
             <Textarea
               readOnly
               value={
-                analysisResults.warnings.subjectWords.join(", ") ||
-                t("feedbackAnalysis.missingSubjectEmpty")
+                Array.isArray(analysisResults?.warnings?.subjectWords)
+                  ? analysisResults.warnings.subjectWords.join(", ")
+                  : t("feedbackAnalysis.missingSubjectEmpty")
               }
               className="bg-muted/50 mt-1.5 min-h-[60px] text-xs"
             />
@@ -338,7 +339,7 @@ function ParseTab() {
               value={roleText}
               className={cn(
                 "bg-muted/50 mt-1.5 min-h-[60px] text-xs",
-                analysisResults.warnings.infoRoleMismatch
+                analysisResults?.warnings?.infoRoleMismatch
                   ? "text-rose-500"
                   : "text-emerald-500"
               )}
@@ -355,14 +356,21 @@ function OptimizeTab() {
   const analysisResults = useResumeStore((s) => s.analysisResults);
   if (!analysisResults) return null;
 
+  const verbIssues = Array.isArray(analysisResults?.verbIssues)
+    ? analysisResults.verbIssues
+    : [];
+  const suspectWords = Array.isArray(analysisResults?.suspectWords)
+    ? analysisResults.suspectWords
+    : [];
+
   return (
     <div className="space-y-4 text-xs">
-      {analysisResults.verbIssues.length === 0 ? (
+      {verbIssues.length === 0 ? (
         <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-4 text-center font-bold text-emerald-500">
           {t("feedbackOptimize.noWeakVerbs")}
         </div>
       ) : (
-        analysisResults.verbIssues.map((issue, idx) => (
+        verbIssues.map((issue, idx) => (
           <div key={idx} className="bg-card space-y-3 rounded-lg border p-4">
             <h3 className="flex items-center gap-1.5 font-semibold text-yellow-500">
               {t("feedbackOptimize.weakVerbsDetected")} ({issue.context})
@@ -371,7 +379,7 @@ function OptimizeTab() {
               <p className="text-muted-foreground font-semibold">
                 {t("feedbackOptimize.original")}
               </p>
-              <p className="bg-muted w-fit rounded px-2 py-1 font-mono text-rose-500">
+              <p className="bg-muted w-fit rounded-sm px-2 py-1 font-mono text-rose-500">
                 ...{issue.original}...
               </p>
             </div>
@@ -379,7 +387,7 @@ function OptimizeTab() {
               <p className="text-muted-foreground font-semibold">
                 {t("feedbackOptimize.context")}
               </p>
-              <p className="bg-muted/30 rounded border p-2.5 leading-relaxed italic">
+              <p className="bg-muted/30 rounded-sm border p-2.5 leading-relaxed italic">
                 {issue.context}
               </p>
             </div>
@@ -388,26 +396,27 @@ function OptimizeTab() {
                 {t("feedbackOptimize.suggestions")}
               </p>
               <div className="flex gap-1.5">
-                {issue.suggestions.map((sug, sIdx) => (
-                  <span
-                    key={sIdx}
-                    className="rounded bg-emerald-500/10 px-2 py-1 font-bold text-emerald-500"
-                  >
-                    {sug}
-                  </span>
-                ))}
+                {Array.isArray(issue.suggestions) &&
+                  issue.suggestions.map((sug, sIdx) => (
+                    <span
+                      key={sIdx}
+                      className="rounded-sm bg-emerald-500/10 px-2 py-1 font-bold text-emerald-500"
+                    >
+                      {sug}
+                    </span>
+                  ))}
               </div>
             </div>
           </div>
         ))
       )}
-      {analysisResults.suspectWords.length > 0 && (
+      {suspectWords.length > 0 && (
         <div className="bg-card space-y-2 rounded-lg border p-4">
           <h3 className="text-destructive font-semibold">
             {t("feedbackOptimize.suspectWords")}
           </h3>
-          <p className="text-destructive bg-destructive/10 w-fit rounded px-3 py-1.5 font-bold">
-            {analysisResults.suspectWords.join(", ")}
+          <p className="text-destructive bg-destructive/10 w-fit rounded-sm px-3 py-1.5 font-bold">
+            {suspectWords.join(", ")}
           </p>
         </div>
       )}
