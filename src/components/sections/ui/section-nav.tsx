@@ -501,7 +501,7 @@ export function SectionNav({ t }: SectionNavProps) {
                 {item.children && item.children.length > 0 ? (
                   <button
                     onClick={(e) => toggleNode(item.id, e)}
-                    className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded p-1 transition-colors"
+                    className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded rounded-md p-1 transition-colors"
                   >
                     {expandedNodes[item.id] ? (
                       <ChevronDown className="h-3.5 w-3.5" />
@@ -547,7 +547,7 @@ export function SectionNav({ t }: SectionNavProps) {
                             {child.children && child.children.length > 0 ? (
                               <button
                                 onClick={(e) => toggleNode(child.id, e)}
-                                className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded p-0.5 transition-colors"
+                                className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded-md p-0.5 transition-colors"
                               >
                                 {expandedNodes[child.id] ? (
                                   <ChevronDown className="h-3.5 w-3.5" />
@@ -596,7 +596,7 @@ export function SectionNav({ t }: SectionNavProps) {
                                             onClick={(e) =>
                                               toggleNode(subChild.id, e)
                                             }
-                                            className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded p-0.5 transition-colors"
+                                            className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded-md p-0.5 transition-colors"
                                           >
                                             {expandedNodes[subChild.id] ? (
                                               <ChevronDown className="h-3 w-3" />
@@ -635,7 +635,7 @@ export function SectionNav({ t }: SectionNavProps) {
                                                   onClick={() =>
                                                     scrollToSection(leaf.id)
                                                   }
-                                                  className={`relative rounded-r-md px-2 py-0.5 pl-4 text-left text-[10px] transition-colors ${
+                                                  className={`relative rounded-md px-2 py-0.5 pl-4 text-left text-[10px] transition-colors ${
                                                     isLeafActive
                                                       ? "text-primary bg-primary/5 font-medium"
                                                       : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
