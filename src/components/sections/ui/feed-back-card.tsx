@@ -275,7 +275,6 @@ function ParseTab() {
 
   if (!analysisResults) return null;
 
-  // Encadeamento opcional seguro de dados
   const roleText = analysisResults?.warnings?.infoRoleMismatch
     ? t("feedbackAnalysis.roleMismatch", { role: cvData?.info?.role || "N/A" })
     : t("feedbackAnalysis.roleMatch", { role: cvData?.info?.role || "N/A" });
@@ -291,11 +290,12 @@ function ParseTab() {
             <p className="text-muted-foreground font-semibold">
               {t("feedbackAnalysis.missingKeywords")}
             </p>
-            {/* CORRIGIDO: Validação estrita do Array antes de rodar o .join() */}
+            {/* CORRIGIDO: Validação de tamanho maior que zero para evitar caixa em branco */}
             <Textarea
               readOnly
               value={
-                Array.isArray(analysisResults?.warnings?.keywords)
+                Array.isArray(analysisResults?.warnings?.keywords) &&
+                analysisResults.warnings.keywords.length > 0
                   ? analysisResults.warnings.keywords.join(", ")
                   : t("feedbackAnalysis.missingKeywordsEmpty")
               }
@@ -319,11 +319,12 @@ function ParseTab() {
             <p className="text-muted-foreground font-semibold">
               {t("feedbackAnalysis.missingSubject")}
             </p>
-            {/* CORRIGIDO: Validação estrita do Array antes de rodar o .join() */}
+            {/* CORRIGIDO: Validação de tamanho maior que zero para evitar caixa em branco */}
             <Textarea
               readOnly
               value={
-                Array.isArray(analysisResults?.warnings?.subjectWords)
+                Array.isArray(analysisResults?.warnings?.subjectWords) &&
+                analysisResults.warnings.subjectWords.length > 0
                   ? analysisResults.warnings.subjectWords.join(", ")
                   : t("feedbackAnalysis.missingSubjectEmpty")
               }
