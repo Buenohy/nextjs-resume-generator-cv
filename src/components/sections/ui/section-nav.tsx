@@ -139,7 +139,7 @@ const STATIC_LINKS_FIELDS = [
   },
 ];
 
-// --- FUNÇÃO GERADORA DE ITENS DO MENU (EXTRAÍDA PARA LIMPAR O COMPONENTE) ---
+// --- FUNÇÃO GERADORA DE ITENS DO MENU ---
 function generateNavItems(
   t: any,
   getLabel: (key: string, fallback: string) => string,
@@ -398,7 +398,6 @@ export function SectionNav({ t }: SectionNavProps) {
     }));
   };
 
-  // Aqui usamos nossa função externa limpa!
   const navItems: NavItem[] = useMemo(
     () => generateNavItems(t, getLabel, lists),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -408,48 +407,39 @@ export function SectionNav({ t }: SectionNavProps) {
   useEffect(() => {
     if (!isMounted) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const activeId = entry.target.id;
-            setActiveSection(activeId);
-
-            setExpandedNodes((prev) => {
-              const next = { ...prev };
-              navItems.forEach((item) => {
-                if (item.id === activeId) next[item.id] = true;
-                item.children?.forEach((child) => {
-                  if (child.id === activeId) {
-                    next[item.id] = true;
-                    next[child.id] = true;
-                  }
-                  child.children?.forEach((sub) => {
-                    if (sub.id === activeId) {
-                      next[item.id] = true;
-                      next[child.id] = true;
-                      next[sub.id] = true;
-                    }
-                    sub.children?.forEach((leaf) => {
-                      if (leaf.id === activeId) {
-                        next[item.id] = true;
-                        next[child.id] = true;
-                        next[sub.id] = true;
-                      }
-                    });
-                  });
-                });
+    // Função que marca um item como ativo e abre todas as abas pai dele
+    const activateSection = (activeId: string) => {
+      setActiveSection(activeId);
+      setExpandedNodes((prev) => {
+        const next = { ...prev };
+        navItems.forEach((item) => {
+          if (item.id === activeId) next[item.id] = true;
+          item.children?.forEach((child) => {
+            if (child.id === activeId) {
+              next[item.id] = true;
+              next[child.id] = true;
+            }
+            child.children?.forEach((sub) => {
+              if (sub.id === activeId) {
+                next[item.id] = true;
+                next[child.id] = true;
+                next[sub.id] = true;
+              }
+              sub.children?.forEach((leaf) => {
+                if (leaf.id === activeId) {
+                  next[item.id] = true;
+                  next[child.id] = true;
+                  next[sub.id] = true;
+                }
               });
-              return next;
             });
-          }
+          });
         });
-      },
-      {
-        rootMargin: "-80px 0px -60% 0px",
-      }
-    );
+        return next;
+      });
+    };
 
+    // Mapeia todos os IDs do menu
     const allSectionIds = navItems.flatMap((item) => [
       item.id,
       ...(item.children?.flatMap((child) => [
@@ -461,12 +451,48 @@ export function SectionNav({ t }: SectionNavProps) {
       ]) || []),
     ]);
 
+    // 1. RASTREADOR DE SCROLL (Para quando o usuário descer a tela)
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            activateSection(entry.target.id);
+          }
+        });
+      },
+      {
+        rootMargin: "-80px 0px -60% 0px",
+      }
+    );
+
     allSectionIds.forEach((id) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
 
-    return () => observer.disconnect();
+    // 2. RASTREADOR DE FOCO (Para quando o usuário clicar no campo)
+    const handleFocusIn = (e: FocusEvent) => {
+      const target = e.target as HTMLElement;
+
+      // Ele vai subindo pelas tags no DOM (Ex: input -> Field) até achar
+      // um ID que pertença à nossa lista de Navegação.
+      let current: HTMLElement | null = target;
+      while (current && current !== document.body) {
+        const id = current.getAttribute("id");
+        if (id && allSectionIds.includes(id)) {
+          activateSection(id);
+          break;
+        }
+        current = current.parentElement;
+      }
+    };
+
+    document.addEventListener("focusin", handleFocusIn);
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener("focusin", handleFocusIn);
+    };
   }, [isMounted, navItems]);
 
   const scrollToSection = (id: string) => {
