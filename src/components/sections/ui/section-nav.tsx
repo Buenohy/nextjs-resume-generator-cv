@@ -437,7 +437,7 @@ export function SectionNav({ t }: SectionNavProps) {
       ]) || []),
     ]);
 
-    // --- NOVA INSCRIÇÃO: ESCUTA AS MUDANÇAS DOS FORMULÁRIOS EM TEMPO REAL ---
+    // --- ESCUTA AS MUDANÇAS DOS FORMULÁRIOS EM TEMPO REAL ---
     const unsubscribes = allSectionIds.map((id) => {
       return subscribeToSection(id, (nextOpen) => {
         setExpandedNodes((prev) => {
@@ -466,7 +466,7 @@ export function SectionNav({ t }: SectionNavProps) {
       if (el) observer.observe(el);
     });
 
-    // 2. RASTREADOR DE FOCO E CLIQUE NO CAMPO
+    // 2. RASTREADOR DE FOCO E CLIQUE NO CAMPO (FORMULÁRIO -> ÍNDICE)
     const handleFocusIn = (e: FocusEvent) => {
       const target = e.target as HTMLElement;
       let current: HTMLElement | null = target;
@@ -492,10 +492,29 @@ export function SectionNav({ t }: SectionNavProps) {
     };
   }, [isMounted, navItems]);
 
+  // --- ATUALIZADO: CLICAR NO ÍNDICE ABRE A SEÇÃO NO FORMULÁRIO ---
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      // Abre a seção clicada no formulário de forma instantânea
+      publishSectionToggle(id, true);
+
+      // Inteligência de Sincronização: Se o usuário clicou em um sub-item focado,
+      // garante que a seção principal correspondente também se abra no formulário
+      if (id.startsWith("meta-")) publishSectionToggle("meta-ats", true);
+      else if (id.startsWith("personal-"))
+        publishSectionToggle("personal-info", true);
+      else if (id.startsWith("links-")) publishSectionToggle("links", true);
+      else if (id.startsWith("experience-"))
+        publishSectionToggle("experience", true);
+      else if (id.startsWith("education-"))
+        publishSectionToggle("education", true);
+      else if (id.startsWith("certification-"))
+        publishSectionToggle("certifications", true);
+      else if (id.startsWith("languages-"))
+        publishSectionToggle("languages", true);
     }
   };
 
