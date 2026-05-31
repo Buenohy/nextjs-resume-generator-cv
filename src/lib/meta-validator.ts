@@ -27,7 +27,6 @@ export function validateMetaWithJob(
   const jobLower = jobText.toLowerCase();
   const meta = cvData.meta_ats || {};
 
-  // CORRIGIDO: Aceita dinamicamente tanto as keywords salvas como Array de Strings quanto como String única
   if (meta.keywords) {
     const kwList = Array.isArray(meta.keywords)
       ? meta.keywords.map((k: any) => String(k).trim().toLowerCase())
@@ -36,7 +35,8 @@ export function validateMetaWithJob(
           .map((k: string) => k.trim().toLowerCase());
 
     for (const kw of kwList) {
-      if (kw && !jobLower.includes(kw)) {
+      // CORRIGIDO: Só valida se a palavra-chave não for vazia, não for um número isolado e não estiver na vaga
+      if (kw && isNaN(Number(kw)) && !jobLower.includes(kw)) {
         result.warnings.keywords.push(kw);
       }
     }
