@@ -18,7 +18,7 @@ function extractCvText(cvData: any): string {
     text += ` ${cvData.summary}`;
   }
 
-  // Habilidades (Filtra apenas strings válidas)
+  // Habilidades
   if (Array.isArray(cvData.skills)) {
     const cleanSkills = cvData.skills.filter(
       (s: any) => s && typeof s === "string"
@@ -78,7 +78,7 @@ export async function POST(request: Request) {
     const language = cvData?.info?.language === "pt-BR" ? "pt" : "en";
     const cvTextLower = extractCvText(cvData);
 
-    // 1. VALIDAÇÃO DOS METADADOS (Envelopado em try/catch para evitar crash com formulário vazio)
+    // 1. VALIDAÇÃO DOS METADADOS
     let validation = { warnings: [] as string[] };
     try {
       if (jobText && cvData) {
@@ -98,12 +98,10 @@ export async function POST(request: Request) {
         );
         const regex = new RegExp(`(?<!\\w)${escapedKw}(?!\\w)`, "gi");
 
-        // Garante que o matcher de regex rode em cima de uma string válida
         const onResume = cvTextLower
           ? (cvTextLower.match(regex) || []).length
           : 0;
 
-        // Fallbacks seguros de número para evitar crashes de tipagem
         const goal2x = data?.meta ?? 1;
         const inVacancy = data?.vaga ?? 1;
         const isApproved = onResume >= goal2x;
@@ -137,7 +135,6 @@ export async function POST(request: Request) {
       for (const exp of cvData.experiences) {
         if (exp && Array.isArray(exp.details)) {
           for (const detail of exp.details) {
-            // Só manda analisar se o detalhe for uma string preenchida
             if (detail && typeof detail === "string") {
               const expIssues = analyzeVerbs(
                 detail,
@@ -154,10 +151,11 @@ export async function POST(request: Request) {
     }
 
     // 4. PALAVRAS SUSPEITAS (TODO, URL)
+    // CORRIGIDO: Usa expressões regulares com fronteira de palavra isolada (\b) para evitar falsos positivos
     const suspectWords: string[] = [];
     if (cvTextLower) {
-      if (cvTextLower.includes("todo")) suspectWords.push("todo");
-      if (cvTextLower.includes("url")) suspectWords.push("url");
+      if (/\btodo\b/i.test(cvTextLower)) suspectWords.push("todo");
+      if (/\burl\b/i.test(cvTextLower)) suspectWords.push("url");
     }
 
     return NextResponse.json({
