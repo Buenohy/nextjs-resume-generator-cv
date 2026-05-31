@@ -103,7 +103,8 @@ export function LinksSection() {
             <h2 className="text-xl font-semibold">
               {t("sections.links.title")}
             </h2>
-            <h3 className="text-muted-foreground border-b pb-2 text-lg">
+            {/* CORRIGIDO: Removido 'border-b pb-2' */}
+            <h3 className="text-muted-foreground text-lg">
               {t("sections.links.subTitle")}
             </h3>
           </div>
