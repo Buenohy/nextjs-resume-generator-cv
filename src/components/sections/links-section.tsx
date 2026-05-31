@@ -24,7 +24,7 @@ export function LinksSection() {
 
   const [isMounted, setIsMounted] = useState(false);
 
-  const [isOpen, setIsOpen] = useSyncCollapse("links", true);
+  const [isOpen, setIsOpen] = useSyncCollapse("links", false);
 
   {
     /* 
