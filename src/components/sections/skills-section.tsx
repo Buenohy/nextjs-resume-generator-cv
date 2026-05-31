@@ -40,7 +40,7 @@ function SkillItem({
   // HOOK DO SUB-ITEM CONECTADO AO ÍNDICE
   const [isSkillOpen, setIsSkillOpen] = useSyncCollapse(
     `skills-item-${index}`,
-    true
+    false
   );
 
   return (
@@ -115,7 +115,7 @@ export function SkillsSection() {
   const handleAutoResize = useAutoResize();
 
   const [isMounted, setIsMounted] = useState(false);
-  const [isOpen, setIsOpen] = useSyncCollapse("skills", true);
+  const [isOpen, setIsOpen] = useSyncCollapse("skills", false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
