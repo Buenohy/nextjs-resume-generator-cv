@@ -412,18 +412,9 @@ export function SectionNav({ t }: SectionNavProps) {
   useEffect(() => {
     if (!isMounted) return;
 
-    // Função auxiliar local para manter o scroll spy ativo na navegação
+    // --- CORRIGIDO: SCROLL APENAS DESTACA O ATIVO, NÃO FORÇA ABERTURA DE PASTAS ---
     const activateSection = (activeId: string) => {
       setActiveSection(activeId);
-      const path = getActivePath(navItems, activeId);
-
-      setExpandedNodes(() => {
-        const next: Record<string, boolean> = {};
-        path.forEach((id) => {
-          next[id] = true;
-        });
-        return next;
-      });
     };
 
     const allSectionIds = navItems.flatMap((item) => [
@@ -487,12 +478,11 @@ export function SectionNav({ t }: SectionNavProps) {
     return () => {
       observer.disconnect();
       document.removeEventListener("focusin", handleFocusIn);
-      // Limpa os escutadores para poupar memória do navegador
       unsubscribes.forEach((unsub) => unsub());
     };
   }, [isMounted, navItems]);
 
-  // --- ATUALIZADO: CLICAR NO ÍNDICE ABRE A SEÇÃO NO FORMULÁRIO ---
+  // --- CLICAR NO ÍNDICE ABRE A SEÇÃO NO FORMULÁRIO E ABRE A PASTA LOCAL ---
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
@@ -501,20 +491,35 @@ export function SectionNav({ t }: SectionNavProps) {
       // Abre a seção clicada no formulário de forma instantânea
       publishSectionToggle(id, true);
 
-      // Inteligência de Sincronização: Se o usuário clicou em um sub-item focado,
-      // garante que a seção principal correspondente também se abra no formulário
-      if (id.startsWith("meta-")) publishSectionToggle("meta-ats", true);
-      else if (id.startsWith("personal-"))
+      // Garante que ao navegar ativamente, as pastas do Índice também se abram
+      setExpandedNodes((prev) => ({
+        ...prev,
+        [id]: true,
+      }));
+
+      // Inteligência de Sincronização: se for sub-item focado, abre o pai principal no form e no Índice
+      if (id.startsWith("meta-")) {
+        publishSectionToggle("meta-ats", true);
+        setExpandedNodes((prev) => ({ ...prev, "meta-ats": true }));
+      } else if (id.startsWith("personal-")) {
         publishSectionToggle("personal-info", true);
-      else if (id.startsWith("links-")) publishSectionToggle("links", true);
-      else if (id.startsWith("experience-"))
+        setExpandedNodes((prev) => ({ ...prev, "personal-info": true }));
+      } else if (id.startsWith("links-")) {
+        publishSectionToggle("links", true);
+        setExpandedNodes((prev) => ({ ...prev, links: true }));
+      } else if (id.startsWith("experience-")) {
         publishSectionToggle("experience", true);
-      else if (id.startsWith("education-"))
+        setExpandedNodes((prev) => ({ ...prev, experience: true }));
+      } else if (id.startsWith("education-")) {
         publishSectionToggle("education", true);
-      else if (id.startsWith("certification-"))
+        setExpandedNodes((prev) => ({ ...prev, education: true }));
+      } else if (id.startsWith("certification-")) {
         publishSectionToggle("certifications", true);
-      else if (id.startsWith("languages-"))
+        setExpandedNodes((prev) => ({ ...prev, certifications: true }));
+      } else if (id.startsWith("languages-")) {
         publishSectionToggle("languages", true);
+        setExpandedNodes((prev) => ({ ...prev, languages: true }));
+      }
     }
   };
 
@@ -541,22 +546,18 @@ export function SectionNav({ t }: SectionNavProps) {
 
           return (
             <div key={item.id} className="flex flex-col">
-              {/* LEVEL 1 ITEM */}
+              {/* LEVEL 1 ITEM (CORRIGIDO: AGORA TODOS OS ITENS GANHAM SETINHA PARA ESPELHAR) */}
               <div className="hover:bg-muted/50 flex items-center rounded-md px-1 py-1 transition-colors">
-                {item.children && item.children.length > 0 ? (
-                  <button
-                    onClick={(e) => toggleNode(item.id, e)}
-                    className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded-md rounded-sm p-1 transition-colors"
-                  >
-                    {expandedNodes[item.id] ? (
-                      <ChevronDown className="h-3.5 w-3.5" />
-                    ) : (
-                      <ChevronRight className="h-3.5 w-3.5" />
-                    )}
-                  </button>
-                ) : (
-                  <span className="w-6 shrink-0" />
-                )}
+                <button
+                  onClick={(e) => toggleNode(item.id, e)}
+                  className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded-md rounded-sm p-1 transition-colors"
+                >
+                  {expandedNodes[item.id] ? (
+                    <ChevronDown className="h-3.5 w-3.5" />
+                  ) : (
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  )}
+                </button>
                 <button
                   onClick={() => scrollToSection(item.id)}
                   className={`flex-1 text-left text-sm font-medium transition-colors ${
