@@ -14,6 +14,327 @@ type SubChildItem = { id: string; label: string; children?: LeafItem[] };
 type ChildItem = { id: string; label: string; children?: SubChildItem[] };
 type NavItem = { id: string; label: string; children?: ChildItem[] };
 
+// --- CONFIGURAÇÕES ESTÁTICAS DOS CAMPOS ---
+const STATIC_META_FIELDS = [
+  {
+    id: "meta-lang",
+    key: "sections.meta_ats.metadataLanguageLabel",
+    fallback: "Metadata Language",
+  },
+  {
+    id: "meta-role_target",
+    key: "sections.meta_ats.fields.role_target.label",
+    fallback: "Role",
+  },
+  {
+    id: "meta-subject",
+    key: "sections.meta_ats.fields.subject.label",
+    fallback: "Subject",
+  },
+  {
+    id: "meta-category",
+    key: "sections.meta_ats.fields.category.label",
+    fallback: "Category",
+  },
+  {
+    id: "meta-contributor",
+    key: "sections.meta_ats.fields.contributor.label",
+    fallback: "Contributor",
+  },
+  {
+    id: "meta-coverage",
+    key: "sections.meta_ats.fields.coverage.label",
+    fallback: "Coverage",
+  },
+  {
+    id: "meta-identifier",
+    key: "sections.meta_ats.fields.identifier.label",
+    fallback: "Identifier",
+  },
+  {
+    id: "meta-publisher",
+    key: "sections.meta_ats.fields.publisher.label",
+    fallback: "Publisher",
+  },
+  {
+    id: "meta-relation",
+    key: "sections.meta_ats.fields.relation.label",
+    fallback: "Relation",
+  },
+  {
+    id: "meta-rights",
+    key: "sections.meta_ats.fields.rights.label",
+    fallback: "Rights",
+  },
+  {
+    id: "meta-source",
+    key: "sections.meta_ats.fields.source.label",
+    fallback: "Source",
+  },
+  {
+    id: "meta-type",
+    key: "sections.meta_ats.fields.type.label",
+    fallback: "Type",
+  },
+  {
+    id: "meta-notes",
+    key: "sections.meta_ats.fields.notes.label",
+    fallback: "Notes",
+  },
+];
+
+const STATIC_PERSONAL_FIELDS = [
+  {
+    id: "personal-name",
+    key: "sections.header.fields.name.label",
+    fallback: "Name",
+  },
+  {
+    id: "personal-role",
+    key: "sections.header.fields.role.label",
+    fallback: "Role",
+  },
+  {
+    id: "personal-location",
+    key: "sections.header.fields.location.label",
+    fallback: "City/State",
+  },
+  {
+    id: "personal-age",
+    key: "sections.header.fields.age.label",
+    fallback: "Age",
+  },
+];
+
+const STATIC_LINKS_FIELDS = [
+  {
+    id: "links-linkedin",
+    key: "sections.links.fields.linkedin.label",
+    fallback: "LinkedIn",
+  },
+  {
+    id: "links-phone",
+    key: "sections.links.fields.phone.label",
+    fallback: "Phone",
+  },
+  {
+    id: "links-websiteName",
+    key: "sections.links.fields.websiteName.label",
+    fallback: "Website Name",
+  },
+  {
+    id: "links-websiteUrl",
+    key: "sections.links.fields.websiteUrl.label",
+    fallback: "Website URL",
+  },
+  {
+    id: "links-email",
+    key: "sections.links.fields.email.label",
+    fallback: "E-Mail",
+  },
+  {
+    id: "links-github",
+    key: "sections.links.fields.github.label",
+    fallback: "GitHub",
+  },
+];
+
+// --- FUNÇÃO GERADORA DE ITENS DO MENU (EXTRAÍDA PARA LIMPAR O COMPONENTE) ---
+function generateNavItems(
+  t: any,
+  getLabel: (key: string, fallback: string) => string,
+  data: {
+    keywordsList: any[];
+    skillsList: any[];
+    experiencesList: any[];
+    educationList: any[];
+    certificationsList: any[];
+    languagesList: any[];
+  }
+): NavItem[] {
+  const {
+    keywordsList,
+    skillsList,
+    experiencesList,
+    educationList,
+    certificationsList,
+    languagesList,
+  } = data;
+
+  const dynamicKeywords = keywordsList.map((_, index) => ({
+    id: `meta-keyword-${index}`,
+    label: t.has("sections.meta_ats.keywordLabel")
+      ? t("sections.meta_ats.keywordLabel", { num: index + 1 })
+      : `Keyword ${index + 1}`,
+  }));
+
+  const dynamicSkills = skillsList.map((_, index) => ({
+    id: `skills-item-${index}`,
+    label: t.has("sections.skills.itemLabel")
+      ? t("sections.skills.itemLabel", { num: index + 1 })
+      : `Skill ${index + 1}`,
+  }));
+
+  const dynamicExperiences = experiencesList.map((exp, expIndex) => {
+    const detailChildren = (exp.details || []).map((_, dIdx) => ({
+      id: `experience-${expIndex}-detail-${dIdx}`,
+      label: t.has("sections.experience.detailLabel")
+        ? t("sections.experience.detailLabel", { num: dIdx + 1 })
+        : `Detail ${dIdx + 1}`,
+    }));
+
+    const stackChildren = (exp.stacks || []).map((_, sIdx) => ({
+      id: `experience-${expIndex}-stack-${sIdx}`,
+      label: t.has("sections.experience.stackLabel")
+        ? t("sections.experience.stackLabel", { num: sIdx + 1 })
+        : `Stack ${sIdx + 1}`,
+    }));
+
+    const expSubChildren = [
+      {
+        id: `experience-${expIndex}-role`,
+        label: getLabel("sections.experience.fields.role.label", "Role"),
+      },
+      {
+        id: `experience-${expIndex}-company`,
+        label: getLabel("sections.experience.fields.company.label", "Company"),
+      },
+      {
+        id: `experience-${expIndex}-url`,
+        label: getLabel("sections.experience.fields.url.label", "Company URL"),
+      },
+      {
+        id: `experience-${expIndex}-date`,
+        label: getLabel("sections.experience.dateTitle", "Date"),
+      },
+      {
+        id: `experience-details-${expIndex}`,
+        label: `${getLabel("sections.experience.detailsTitle", "Project Details")} (${detailChildren.length})`,
+        children: detailChildren,
+      },
+      {
+        id: `experience-stacks-${expIndex}`,
+        label: `${getLabel("sections.experience.stacksTitle", "Technologies (Stacks)")} (${stackChildren.length})`,
+        children: stackChildren,
+      },
+    ];
+
+    return {
+      id: `experience-item-${expIndex}`,
+      label: `${
+        t.has("sections.experience.itemLabel")
+          ? t("sections.experience.itemLabel", { num: expIndex + 1 })
+          : `Experience ${expIndex + 1}`
+      } (${expSubChildren.length})`,
+      children: expSubChildren,
+    };
+  });
+
+  const dynamicEducation = educationList.map((_, index) => ({
+    id: `education-item-${index}`,
+    label: `${
+      t.has("sections.education.itemLabel")
+        ? t("sections.education.itemLabel", { num: index + 1 })
+        : `Education ${index + 1}`
+    } (1)`,
+    children: [
+      {
+        id: `education-${index}-period`,
+        label: getLabel("sections.education.period", "Period"),
+      },
+    ],
+  }));
+
+  const dynamicCertifications = certificationsList.map((_, index) => ({
+    id: `certification-item-${index}`,
+    label: `${
+      t.has("sections.certifications.itemLabel")
+        ? t("sections.certifications.itemLabel", { num: index + 1 })
+        : `Certificate ${index + 1}`
+    } (1)`,
+    children: [
+      {
+        id: `certification-${index}-date`,
+        label: getLabel("sections.certifications.date", "Date"),
+      },
+    ],
+  }));
+
+  const dynamicLanguages = languagesList.map((_, index) => ({
+    id: `languages-item-${index}`,
+    label: t.has("sections.languages.itemLabel")
+      ? t("sections.languages.itemLabel", { num: index + 1 })
+      : `Language ${index + 1}`,
+  }));
+
+  const metaAtsChildren = [
+    ...STATIC_META_FIELDS.map((field) => ({
+      id: field.id,
+      label: getLabel(field.key, field.fallback),
+    })),
+    {
+      id: "meta-keywords",
+      label: `${getLabel("sections.meta_ats.keywordsOptimizerTitle", "Keywords Optimizer (ATS)")} (${dynamicKeywords.length})`,
+      children: dynamicKeywords,
+    },
+  ];
+
+  const personalChildren = STATIC_PERSONAL_FIELDS.map((field) => ({
+    id: field.id,
+    label: getLabel(field.key, field.fallback),
+  }));
+  const linksChildren = STATIC_LINKS_FIELDS.map((field) => ({
+    id: field.id,
+    label: getLabel(field.key, field.fallback),
+  }));
+
+  return [
+    {
+      id: "meta-ats",
+      label: `${getLabel("sections.meta_ats.title", "ATS Metadata")} (${metaAtsChildren.length})`,
+      children: metaAtsChildren,
+    },
+    {
+      id: "personal-info",
+      label: `${getLabel("sections.personal.title", "Header / Personal")} (${personalChildren.length})`,
+      children: personalChildren,
+    },
+    {
+      id: "links",
+      label: `${getLabel("sections.links.title", "Links")} (${linksChildren.length})`,
+      children: linksChildren,
+    },
+    { id: "summary", label: getLabel("sections.summary.title", "Summary") },
+    { id: "ai", label: getLabel("sections.ai.title", "AI Assistant") },
+    {
+      id: "skills",
+      label: `${getLabel("sections.skills.title", "Skills")} (${dynamicSkills.length})`,
+      children: dynamicSkills,
+    },
+    {
+      id: "experience",
+      label: `${getLabel("sections.experience.title", "Experience")} (${dynamicExperiences.length})`,
+      children: dynamicExperiences,
+    },
+    {
+      id: "education",
+      label: `${getLabel("sections.education.title", "Education")} (${dynamicEducation.length})`,
+      children: dynamicEducation,
+    },
+    {
+      id: "certifications",
+      label: `${getLabel("sections.certifications.title", "Certifications")} (${dynamicCertifications.length})`,
+      children: dynamicCertifications,
+    },
+    {
+      id: "languages",
+      label: `${getLabel("sections.languages.title", "Languages")} (${dynamicLanguages.length})`,
+      children: dynamicLanguages,
+    },
+  ];
+}
+
+// --- COMPONENTE PRINCIPAL ---
 export function SectionNav({ t }: SectionNavProps) {
   const [activeSection, setActiveSection] = useState("");
   const [isMounted, setIsMounted] = useState(false);
@@ -23,31 +344,27 @@ export function SectionNav({ t }: SectionNavProps) {
 
   const cvData = useResumeStore((s) => s.cvData);
 
-  const keywordsList = Array.isArray(cvData?.meta_ats?.keywords)
-    ? cvData.meta_ats.keywords
-    : [];
-
-  const skillsList = Array.isArray(cvData?.skills) ? cvData.skills : [];
-
-  const experiencesList = Array.isArray(cvData?.experiences)
-    ? cvData.experiences
-    : [];
-
-  const educationList = Array.isArray(cvData?.education)
-    ? cvData.education
-    : [];
-
-  const certificationsList = Array.isArray(cvData?.certifications)
-    ? cvData.certifications
-    : [];
-
-  const languagesList = Array.isArray(cvData?.languages)
-    ? cvData.languages
-    : [];
+  const lists = useMemo(
+    () => ({
+      keywordsList: Array.isArray(cvData?.meta_ats?.keywords)
+        ? cvData.meta_ats.keywords
+        : [],
+      skillsList: Array.isArray(cvData?.skills) ? cvData.skills : [],
+      experiencesList: Array.isArray(cvData?.experiences)
+        ? cvData.experiences
+        : [],
+      educationList: Array.isArray(cvData?.education) ? cvData.education : [],
+      certificationsList: Array.isArray(cvData?.certifications)
+        ? cvData.certifications
+        : [],
+      languagesList: Array.isArray(cvData?.languages) ? cvData.languages : [],
+    }),
+    [cvData]
+  );
 
   useEffect(() => {
     setIsMounted(true);
-    setExpandedNodes((prev) => {
+    setExpandedNodes(() => {
       const initial: Record<string, boolean> = {};
       [
         "meta-ats",
@@ -81,327 +398,11 @@ export function SectionNav({ t }: SectionNavProps) {
     }));
   };
 
+  // Aqui usamos nossa função externa limpa!
   const navItems: NavItem[] = useMemo(
-    () => {
-      const dynamicKeywords = keywordsList.map((_, index) => ({
-        id: `meta-keyword-${index}`,
-        label: t.has("sections.meta_ats.keywordLabel")
-          ? t("sections.meta_ats.keywordLabel", { num: index + 1 })
-          : `Keyword ${index + 1}`,
-      }));
-
-      const dynamicSkills = skillsList.map((_, index) => ({
-        id: `skills-item-${index}`,
-        label: t.has("sections.skills.itemLabel")
-          ? t("sections.skills.itemLabel", { num: index + 1 })
-          : `Skill ${index + 1}`,
-      }));
-
-      const dynamicExperiences = experiencesList.map((exp, expIndex) => {
-        const detailChildren = (exp.details || []).map((_, dIdx) => ({
-          id: `experience-${expIndex}-detail-${dIdx}`,
-          label: t.has("sections.experience.detailLabel")
-            ? t("sections.experience.detailLabel", { num: dIdx + 1 })
-            : `Detail ${dIdx + 1}`,
-        }));
-
-        const stackChildren = (exp.stacks || []).map((_, sIdx) => ({
-          id: `experience-${expIndex}-stack-${sIdx}`,
-          label: t.has("sections.experience.stackLabel")
-            ? t("sections.experience.stackLabel", { num: sIdx + 1 })
-            : `Stack ${sIdx + 1}`,
-        }));
-
-        const expSubChildren = [
-          {
-            id: `experience-${expIndex}-role`,
-            label: getLabel("sections.experience.fields.role.label", "Role"),
-          },
-          {
-            id: `experience-${expIndex}-company`,
-            label: getLabel(
-              "sections.experience.fields.company.label",
-              "Company"
-            ),
-          },
-          {
-            id: `experience-${expIndex}-url`,
-            label: getLabel(
-              "sections.experience.fields.url.label",
-              "Company URL"
-            ),
-          },
-          {
-            id: `experience-${expIndex}-date`,
-            label: getLabel("sections.experience.dateTitle", "Date"),
-          },
-          {
-            id: `experience-details-${expIndex}`,
-            label: `${getLabel(
-              "sections.experience.detailsTitle",
-              "Project Details"
-            )} (${detailChildren.length})`,
-            children: detailChildren,
-          },
-          {
-            id: `experience-stacks-${expIndex}`,
-            label: `${getLabel(
-              "sections.experience.stacksTitle",
-              "Technologies (Stacks)"
-            )} (${stackChildren.length})`,
-            children: stackChildren,
-          },
-        ];
-
-        return {
-          id: `experience-item-${expIndex}`,
-          label: `${
-            t.has("sections.experience.itemLabel")
-              ? t("sections.experience.itemLabel", { num: expIndex + 1 })
-              : `Experience ${expIndex + 1}`
-          } (${expSubChildren.length})`,
-          children: expSubChildren,
-        };
-      });
-
-      const dynamicEducation = educationList.map((_, index) => {
-        const eduSubChildren = [
-          {
-            id: `education-${index}-period`,
-            label: getLabel("sections.education.period", "Period"),
-          },
-        ];
-
-        return {
-          id: `education-item-${index}`,
-          label: `${
-            t.has("sections.education.itemLabel")
-              ? t("sections.education.itemLabel", { num: index + 1 })
-              : `Education ${index + 1}`
-          } (${eduSubChildren.length})`,
-          children: eduSubChildren,
-        };
-      });
-
-      const dynamicCertifications = certificationsList.map((_, index) => {
-        const certSubChildren = [
-          {
-            id: `certification-${index}-date`,
-            label: getLabel("sections.certifications.date", "Date"),
-          },
-        ];
-
-        return {
-          id: `certification-item-${index}`,
-          label: `${
-            t.has("sections.certifications.itemLabel")
-              ? t("sections.certifications.itemLabel", { num: index + 1 })
-              : `Certificate ${index + 1}`
-          } (${certSubChildren.length})`,
-          children: certSubChildren,
-        };
-      });
-
-      const dynamicLanguages = languagesList.map((_, index) => ({
-        id: `languages-item-${index}`,
-        label: t.has("sections.languages.itemLabel")
-          ? t("sections.languages.itemLabel", { num: index + 1 })
-          : `Language ${index + 1}`,
-      }));
-
-      const metaAtsChildren = [
-        {
-          id: "meta-lang",
-          label: getLabel(
-            "sections.meta_ats.metadataLanguageLabel",
-            "Metadata Language"
-          ),
-        },
-        {
-          id: "meta-role_target",
-          label: getLabel("sections.meta_ats.fields.role_target.label", "Role"),
-        },
-        {
-          id: "meta-subject",
-          label: getLabel("sections.meta_ats.fields.subject.label", "Subject"),
-        },
-        {
-          id: "meta-category",
-          label: getLabel(
-            "sections.meta_ats.fields.category.label",
-            "Category"
-          ),
-        },
-        {
-          id: "meta-contributor",
-          label: getLabel(
-            "sections.meta_ats.fields.contributor.label",
-            "Contributor"
-          ),
-        },
-        {
-          id: "meta-coverage",
-          label: getLabel(
-            "sections.meta_ats.fields.coverage.label",
-            "Coverage"
-          ),
-        },
-        {
-          id: "meta-identifier",
-          label: getLabel(
-            "sections.meta_ats.fields.identifier.label",
-            "Identifier"
-          ),
-        },
-        {
-          id: "meta-publisher",
-          label: getLabel(
-            "sections.meta_ats.fields.publisher.label",
-            "Publisher"
-          ),
-        },
-        {
-          id: "meta-relation",
-          label: getLabel(
-            "sections.meta_ats.fields.relation.label",
-            "Relation"
-          ),
-        },
-        {
-          id: "meta-rights",
-          label: getLabel("sections.meta_ats.fields.rights.label", "Rights"),
-        },
-        {
-          id: "meta-source",
-          label: getLabel("sections.meta_ats.fields.source.label", "Source"),
-        },
-        {
-          id: "meta-type",
-          label: getLabel("sections.meta_ats.fields.type.label", "Type"),
-        },
-        {
-          id: "meta-notes",
-          label: getLabel("sections.meta_ats.fields.notes.label", "Notes"),
-        },
-        {
-          id: "meta-keywords",
-          label: `${getLabel(
-            "sections.meta_ats.keywordsOptimizerTitle",
-            "Keywords Optimizer (ATS)"
-          )} (${dynamicKeywords.length})`,
-          children: dynamicKeywords,
-        },
-      ];
-
-      const personalChildren = [
-        {
-          id: "personal-name",
-          label: getLabel("sections.header.fields.name.label", "Name"),
-        },
-        {
-          id: "personal-role",
-          label: getLabel("sections.header.fields.role.label", "Role"),
-        },
-        {
-          id: "personal-location",
-          label: getLabel(
-            "sections.header.fields.location.label",
-            "City/State"
-          ),
-        },
-        {
-          id: "personal-age",
-          label: getLabel("sections.header.fields.age.label", "Age"),
-        },
-      ];
-
-      const linksChildren = [
-        {
-          id: "links-linkedin",
-          label: getLabel("sections.links.fields.linkedin.label", "LinkedIn"),
-        },
-        {
-          id: "links-phone",
-          label: getLabel("sections.links.fields.phone.label", "Phone"),
-        },
-        {
-          id: "links-websiteName",
-          label: getLabel(
-            "sections.links.fields.websiteName.label",
-            "Website Name"
-          ),
-        },
-        {
-          id: "links-websiteUrl",
-          label: getLabel(
-            "sections.links.fields.websiteUrl.label",
-            "Website URL"
-          ),
-        },
-        {
-          id: "links-email",
-          label: getLabel("sections.links.fields.email.label", "E-Mail"),
-        },
-        {
-          id: "links-github",
-          label: getLabel("sections.links.fields.github.label", "GitHub"),
-        },
-      ];
-
-      return [
-        {
-          id: "meta-ats",
-          label: `${getLabel("sections.meta_ats.title", "ATS Metadata")} (${metaAtsChildren.length})`,
-          children: metaAtsChildren,
-        },
-        {
-          id: "personal-info",
-          label: `${getLabel("sections.personal.title", "Header / Personal")} (${personalChildren.length})`,
-          children: personalChildren,
-        },
-        {
-          id: "links",
-          label: `${getLabel("sections.links.title", "Links")} (${linksChildren.length})`,
-          children: linksChildren,
-        },
-        { id: "summary", label: getLabel("sections.summary.title", "Summary") },
-        { id: "ai", label: getLabel("sections.ai.title", "AI Assistant") },
-        {
-          id: "skills",
-          label: `${getLabel("sections.skills.title", "Skills")} (${dynamicSkills.length})`,
-          children: dynamicSkills,
-        },
-        {
-          id: "experience",
-          label: `${getLabel("sections.experience.title", "Experience")} (${dynamicExperiences.length})`,
-          children: dynamicExperiences,
-        },
-        {
-          id: "education",
-          label: `${getLabel("sections.education.title", "Education")} (${dynamicEducation.length})`,
-          children: dynamicEducation,
-        },
-        {
-          id: "certifications",
-          label: `${getLabel("sections.certifications.title", "Certifications")} (${dynamicCertifications.length})`,
-          children: dynamicCertifications,
-        },
-        {
-          id: "languages",
-          label: `${getLabel("sections.languages.title", "Languages")} (${dynamicLanguages.length})`,
-          children: dynamicLanguages,
-        },
-      ];
-    },
+    () => generateNavItems(t, getLabel, lists),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      keywordsList,
-      skillsList,
-      experiencesList,
-      educationList,
-      certificationsList,
-      languagesList,
-    ]
+    [lists]
   );
 
   useEffect(() => {
@@ -540,7 +541,6 @@ export function SectionNav({ t }: SectionNavProps) {
                               (leaf) => leaf.id === activeSection
                             )
                         );
-                      const isChildStrictlyActive = activeSection === child.id;
 
                       return (
                         <div key={child.id} className="flex flex-col">
@@ -582,8 +582,6 @@ export function SectionNav({ t }: SectionNavProps) {
                                     subChild.children?.some(
                                       (leaf) => leaf.id === activeSection
                                     );
-                                  const isSubStrictlyActive =
-                                    activeSection === subChild.id;
 
                                   return (
                                     <div
