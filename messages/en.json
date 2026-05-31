@@ -311,8 +311,8 @@
       "missingSubject": "Subject words missing:",
       "missingSubjectEmpty": "No subject terms missing!",
       "roleValidation": "Role validation:",
-      "roleMismatch": "Attention: The role '{role}' provided in the form does not seem related to the job description.",
-      "roleMatch": "Success! The role '{role}' is perfectly aligned with the job description."
+      "roleMismatch": "Attention: The role {role} provided in the form does not seem related to the job description.",
+      "roleMatch": "Success! The role {role} is perfectly aligned with the job description."
     },
     "feedbackOptimize": {
       "weakVerbsDetected": "⚠️ Weak Verbs Detected",
