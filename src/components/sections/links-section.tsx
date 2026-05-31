@@ -2,17 +2,25 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { ChevronDown } from "lucide-react";
 import { useResumeStore } from "@/store/useResumeStore";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 export function LinksSection() {
   const t = useTranslations("ResumeBuilderPage");
   const cvData = useResumeStore((s) => s.cvData);
   const updateCvData = useResumeStore((s) => s.updateCvData);
+
   const [isMounted, setIsMounted] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   {
     /* 
@@ -83,45 +91,59 @@ export function LinksSection() {
 
   return (
     <CardContent>
-      <div className="flex flex-col gap-6 border-b py-4">
-        {/* SECTION HEADER */}
-        <div>
-          <h2 className="text-xl font-semibold">{t("sections.links.title")}</h2>
-          <h3 className="border-b pb-2 text-lg">
-            {t("sections.links.subTitle")}
-          </h3>
-        </div>
-
-        {/* DYNAMIC FIELDS MAP */}
-        {fields.map(({ id, label, placeholder }) => {
-          // Criação dinâmica de ID para TODOS os links
-          const domId = `links-${id}`;
-
-          return (
-            // Adicionado 'scroll-mt-24' para todos
-            <Field key={id} className="mb-4 scroll-mt-24" id={domId}>
-              {/* 
-                STACKED CONTAINER FOR THE FIELD
-                - flex-col: Positions the label at the top and the input field directly below it.
-                - gap-2: Small, consistent gap between the Label and the Input.
-              */}
-              <div className="flex w-full flex-col gap-2">
-                {/* Label on top */}
-                <FieldLabel className="text-left font-medium capitalize">
-                  {label}
-                </FieldLabel>
-                {/* Input field on bottom taking full width */}
-                <Input
-                  className="w-full"
-                  placeholder={placeholder}
-                  value={getFieldValue(id)}
-                  onChange={(e) => handleChange(id, e.target.value)}
+      <Collapsible
+        open={isOpen}
+        onOpenChange={setIsOpen}
+        className="flex flex-col gap-6 border-b py-4"
+      >
+        {/* CABEÇALHO CLICÁVEL (TRIGGER) */}
+        <CollapsibleTrigger asChild>
+          <div
+            role="button"
+            tabIndex={0}
+            className="group flex w-full cursor-pointer items-start justify-between text-left transition-opacity hover:opacity-80 focus:outline-none"
+          >
+            <div className="flex w-full flex-col">
+              <div className="flex w-full items-center justify-between pr-1">
+                <h2 className="text-xl font-semibold">
+                  {t("sections.links.title")}
+                </h2>
+                <ChevronDown
+                  className={`text-muted-foreground h-5 w-5 transition-transform duration-200 ${
+                    isOpen ? "rotate-180" : ""
+                  } `}
                 />
               </div>
-            </Field>
-          );
-        })}
-      </div>
+              <h3 className="mt-1 w-full border-b pb-2 text-lg">
+                {t("sections.links.subTitle")}
+              </h3>
+            </div>
+          </div>
+        </CollapsibleTrigger>
+
+        {/* CONTEÚDO QUE SOME E APARECE */}
+        <CollapsibleContent className="space-y-4">
+          {fields.map(({ id, label, placeholder }) => {
+            const domId = `links-${id}`;
+
+            return (
+              <Field key={id} className="mb-4 scroll-mt-24" id={domId}>
+                <div className="flex w-full flex-col gap-2">
+                  <FieldLabel className="text-left font-medium capitalize">
+                    {label}
+                  </FieldLabel>
+                  <Input
+                    className="w-full"
+                    placeholder={placeholder}
+                    value={getFieldValue(id)}
+                    onChange={(e) => handleChange(id, e.target.value)}
+                  />
+                </div>
+              </Field>
+            );
+          })}
+        </CollapsibleContent>
+      </Collapsible>
     </CardContent>
   );
 }
