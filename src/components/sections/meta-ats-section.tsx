@@ -17,6 +17,8 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
+import { useSyncCollapse } from "@/app/hooks/useSyncCollapse";
+
 export function MetaAtsSection() {
   const t = useTranslations("ResumeBuilderPage");
   const locale = useLocale();
@@ -25,8 +27,8 @@ export function MetaAtsSection() {
   const handleAutoResize = useAutoResize();
 
   const [isMounted, setIsMounted] = useState(false);
-  const [isOpen, setIsOpen] = useState(true);
 
+  const [isOpen, setIsOpen] = useSyncCollapse("meta-ats", true);
   {
     /* DEFERRED MOUNT EFFECT */
   }
