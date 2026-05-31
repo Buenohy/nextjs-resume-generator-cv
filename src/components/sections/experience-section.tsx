@@ -83,15 +83,15 @@ function ExperienceItem({
   // HOOKS EXCLUSIVOS PARA CADA SUB-ITEM CONECTADO AO ÍNDICE
   const [isExpOpen, setIsExpOpen] = useSyncCollapse(
     `experience-item-${expIndex}`,
-    true
+    false
   );
   const [isDetailsOpen, setIsDetailsOpen] = useSyncCollapse(
     `experience-details-${expIndex}`,
-    true
+    false
   );
   const [isStacksOpen, setIsStacksOpen] = useSyncCollapse(
     `experience-stacks-${expIndex}`,
-    true
+    false
   );
 
   const dateParsed = parseDateString(exp.date);
@@ -461,7 +461,7 @@ export function ExperienceSection() {
   const handleAutoResize = useAutoResize();
 
   const [isMounted, setIsMounted] = useState(false);
-  const [isOpen, setIsOpen] = useSyncCollapse("experience", true);
+  const [isOpen, setIsOpen] = useSyncCollapse("experience", false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
