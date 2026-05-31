@@ -150,12 +150,11 @@ export async function POST(request: Request) {
       }
     }
 
-    // 4. PALAVRAS SUSPEITAS (TODO, URL)
-    // CORRIGIDO: Usa expressões regulares com fronteira de palavra isolada (\b) para evitar falsos positivos
+    // 4. PALAVRAS SUSPEITAS (TODO)
+    // CORRIGIDO: Removido o termo técnico legítimo "url" para evitar falsos positivos
     const suspectWords: string[] = [];
     if (cvTextLower) {
       if (/\btodo\b/i.test(cvTextLower)) suspectWords.push("todo");
-      if (/\burl\b/i.test(cvTextLower)) suspectWords.push("url");
     }
 
     return NextResponse.json({
