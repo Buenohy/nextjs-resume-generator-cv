@@ -101,7 +101,8 @@
     ],
     "formCard": {
       "title": "Conteúdo do Currículo",
-      "description": "Monte o conteúdo do seu currículo abaixo"
+      "description": "Monte o conteúdo do seu currículo abaixo",
+      "navigation": "Índice"
     },
     "feedbackCard": {
       "title": "Feedbacks de Otimização ATS",

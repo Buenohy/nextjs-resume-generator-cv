@@ -85,7 +85,9 @@ export function SectionNav({ t }: SectionNavProps) {
     () => {
       const dynamicKeywords = keywordsList.map((_, index) => ({
         id: `meta-keyword-${index}`,
-        label: `Keyword ${index + 1}`,
+        label: t.has("sections.meta_ats.keywordLabel")
+          ? t("sections.meta_ats.keywordLabel", { num: index + 1 })
+          : `Keyword ${index + 1}`,
       }));
 
       const dynamicSkills = skillsList.map((_, index) => ({
@@ -349,7 +351,7 @@ export function SectionNav({ t }: SectionNavProps) {
       return [
         {
           id: "meta-ats",
-          label: `ATS Metadata (${metaAtsChildren.length})`,
+          label: `${getLabel("sections.meta_ats.title", "ATS Metadata")} (${metaAtsChildren.length})`,
           children: metaAtsChildren,
         },
         {
@@ -363,7 +365,7 @@ export function SectionNav({ t }: SectionNavProps) {
           children: linksChildren,
         },
         { id: "summary", label: getLabel("sections.summary.title", "Summary") },
-        { id: "ai", label: "IA Assistant" },
+        { id: "ai", label: getLabel("sections.ai.title", "AI Assistant") },
         {
           id: "skills",
           label: `${getLabel("sections.skills.title", "Skills")} (${dynamicSkills.length})`,
@@ -501,12 +503,12 @@ export function SectionNav({ t }: SectionNavProps) {
                 {item.children && item.children.length > 0 ? (
                   <button
                     onClick={(e) => toggleNode(item.id, e)}
-                    className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded rounded-md p-1 transition-colors"
+                    className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded-md rounded-sm p-1 transition-colors"
                   >
                     {expandedNodes[item.id] ? (
-                      <ChevronDown className="h-3.5 w-3.5" />
+                      <ChevronDown className="size-3.5" />
                     ) : (
-                      <ChevronRight className="h-3.5 w-3.5" />
+                      <ChevronRight className="size-3.5" />
                     )}
                   </button>
                 ) : (
@@ -517,8 +519,8 @@ export function SectionNav({ t }: SectionNavProps) {
                   className={`flex-1 text-left text-sm font-medium transition-colors ${
                     isParentActive
                       ? "text-primary font-semibold"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
+                      : `text-muted-foreground hover:text-foreground`
+                  } `}
                 >
                   {item.label}
                 </button>
@@ -550,9 +552,9 @@ export function SectionNav({ t }: SectionNavProps) {
                                 className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded-md p-0.5 transition-colors"
                               >
                                 {expandedNodes[child.id] ? (
-                                  <ChevronDown className="h-3.5 w-3.5" />
+                                  <ChevronDown className="size-3.5" />
                                 ) : (
-                                  <ChevronRight className="h-3.5 w-3.5" />
+                                  <ChevronRight className="size-3.5" />
                                 )}
                               </button>
                             ) : (
@@ -563,8 +565,8 @@ export function SectionNav({ t }: SectionNavProps) {
                               className={`flex-1 text-left text-xs transition-colors ${
                                 isChildActive
                                   ? "text-primary font-medium"
-                                  : "text-muted-foreground hover:text-foreground"
-                              }`}
+                                  : `text-muted-foreground hover:text-foreground`
+                              } `}
                             >
                               {child.label}
                             </button>
@@ -599,9 +601,9 @@ export function SectionNav({ t }: SectionNavProps) {
                                             className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded-md p-0.5 transition-colors"
                                           >
                                             {expandedNodes[subChild.id] ? (
-                                              <ChevronDown className="h-3 w-3" />
+                                              <ChevronDown className="size-3" />
                                             ) : (
-                                              <ChevronRight className="h-3 w-3" />
+                                              <ChevronRight className="size-3" />
                                             )}
                                           </button>
                                         ) : (
@@ -614,8 +616,8 @@ export function SectionNav({ t }: SectionNavProps) {
                                           className={`flex-1 text-left text-[11px] transition-colors ${
                                             isSubActive
                                               ? "text-primary font-medium"
-                                              : "text-muted-foreground hover:text-foreground"
-                                          }`}
+                                              : `text-muted-foreground hover:text-foreground`
+                                          } `}
                                         >
                                           {subChild.label}
                                         </button>
@@ -637,12 +639,12 @@ export function SectionNav({ t }: SectionNavProps) {
                                                   }
                                                   className={`relative rounded-md px-2 py-0.5 pl-4 text-left text-[10px] transition-colors ${
                                                     isLeafActive
-                                                      ? "text-primary bg-primary/5 font-medium"
-                                                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                                                  }`}
+                                                      ? `text-primary bg-primary/5 font-medium`
+                                                      : `text-muted-foreground hover:text-foreground hover:bg-muted/50`
+                                                  } `}
                                                 >
                                                   {isLeafActive && (
-                                                    <span className="bg-primary absolute top-0 bottom-0 left-0 w-[2px]" />
+                                                    <span className="bg-primary absolute inset-y-0 left-0 w-[2px]" />
                                                   )}
                                                   {leaf.label}
                                                 </button>

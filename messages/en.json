@@ -95,7 +95,8 @@
     ],
     "formCard": {
       "title": "Resume Content",
-      "description": "Assemble your resume content below"
+      "description": "Assemble your resume content below",
+      "navigation": "Navigation"
     },
     "feedbackCard": {
       "title": "ATS Optimization Feedbacks",
