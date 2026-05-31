@@ -358,19 +358,10 @@ export function SectionNav({ t }: SectionNavProps) {
   const [activeSection, setActiveSection] = useState("");
   const [isMounted, setIsMounted] = useState(false);
 
-  // CORRIGIDO: Inicia os nós do Índice abertos por padrão para espelhar as seções (Evita desincronização no F5)
-  const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>({
-    "meta-ats": true,
-    "personal-info": true,
-    links: true,
-    summary: true,
-    ai: true,
-    skills: true,
-    experience: true,
-    education: true,
-    certifications: true,
-    languages: true,
-  });
+  // CORRIGIDO: Inicia fechado (limpo) para corresponder ao novo modo Dashboard
+  const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>(
+    {}
+  );
 
   const cvData = useResumeStore((s) => s.cvData);
 
@@ -411,6 +402,7 @@ export function SectionNav({ t }: SectionNavProps) {
       ...prev,
       [id]: next,
     }));
+    // SINCRONIZA COM O FORMULÁRIO CORRESPONDENTE
     publishSectionToggle(id, next);
   };
 
@@ -423,6 +415,7 @@ export function SectionNav({ t }: SectionNavProps) {
   useEffect(() => {
     if (!isMounted) return;
 
+    // Scroll spy apenas destaca o elemento ativo (Não mexe no estado do colapso)
     const activateSection = (activeId: string) => {
       setActiveSection(activeId);
     };
@@ -438,6 +431,7 @@ export function SectionNav({ t }: SectionNavProps) {
       ]) || []),
     ]);
 
+    // --- ESCUTA AS MUDANÇAS DOS FORMULÁRIOS EM TEMPO REAL ---
     const unsubscribes = allSectionIds.map((id) => {
       return subscribeToSection(id, (nextOpen) => {
         setExpandedNodes((prev) => {
@@ -447,6 +441,7 @@ export function SectionNav({ t }: SectionNavProps) {
       });
     });
 
+    // 1. RASTREADOR DE SCROLL
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -465,6 +460,7 @@ export function SectionNav({ t }: SectionNavProps) {
       if (el) observer.observe(el);
     });
 
+    // 2. RASTREADOR DE FOCO E CLIQUE NO CAMPO (FORMULÁRIO -> ÍNDICE)
     const handleFocusIn = (e: FocusEvent) => {
       const target = e.target as HTMLElement;
       let current: HTMLElement | null = target;
@@ -472,6 +468,7 @@ export function SectionNav({ t }: SectionNavProps) {
         const id = current.getAttribute("id");
         if (id && allSectionIds.includes(id)) {
           activateSection(id);
+          // Força a abertura do formulário correspondente quando o usuário foca nele
           publishSectionToggle(id, true);
           break;
         }
@@ -484,21 +481,27 @@ export function SectionNav({ t }: SectionNavProps) {
     return () => {
       observer.disconnect();
       document.removeEventListener("focusin", handleFocusIn);
+      // Limpa os escutadores para poupar memória do navegador
       unsubscribes.forEach((unsub) => unsub());
     };
   }, [isMounted, navItems]);
 
+  // --- CLICAR NO ÍNDICE ABRE A SEÇÃO NO FORMULÁRIO E ABRE A PASTA LOCAL ---
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      // Abre a seção clicada no formulário de forma instantânea
       publishSectionToggle(id, true);
 
+      // Garante que ao navegar ativamente, as pastas do Índice também se abram
       setExpandedNodes((prev) => ({
         ...prev,
         [id]: true,
       }));
 
+      // Sincroniza abertura da aba pai de sub-itens focados
       if (id.startsWith("meta-")) {
         publishSectionToggle("meta-ats", true);
         setExpandedNodes((prev) => ({ ...prev, "meta-ats": true }));
