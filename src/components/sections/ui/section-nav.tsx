@@ -8,6 +8,7 @@ import {
   subscribeToSection,
   publishSectionToggle,
 } from "@/app/hooks/useSyncCollapse";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface SectionNavProps {
   t: any;
@@ -356,9 +357,20 @@ function generateNavItems(
 export function SectionNav({ t }: SectionNavProps) {
   const [activeSection, setActiveSection] = useState("");
   const [isMounted, setIsMounted] = useState(false);
-  const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>(
-    {}
-  );
+
+  // CORRIGIDO: Inicia os nós do Índice abertos por padrão para espelhar as seções (Evita desincronização no F5)
+  const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>({
+    "meta-ats": true,
+    "personal-info": true,
+    links: true,
+    summary: true,
+    ai: true,
+    skills: true,
+    experience: true,
+    education: true,
+    certifications: true,
+    languages: true,
+  });
 
   const cvData = useResumeStore((s) => s.cvData);
 
@@ -399,7 +411,6 @@ export function SectionNav({ t }: SectionNavProps) {
       ...prev,
       [id]: next,
     }));
-    // SINCRONIZA COM O FORMULÁRIO CORRESPONDENTE
     publishSectionToggle(id, next);
   };
 
@@ -412,7 +423,6 @@ export function SectionNav({ t }: SectionNavProps) {
   useEffect(() => {
     if (!isMounted) return;
 
-    // --- CORRIGIDO: SCROLL APENAS DESTACA O ATIVO, NÃO FORÇA ABERTURA DE PASTAS ---
     const activateSection = (activeId: string) => {
       setActiveSection(activeId);
     };
@@ -428,7 +438,6 @@ export function SectionNav({ t }: SectionNavProps) {
       ]) || []),
     ]);
 
-    // --- ESCUTA AS MUDANÇAS DOS FORMULÁRIOS EM TEMPO REAL ---
     const unsubscribes = allSectionIds.map((id) => {
       return subscribeToSection(id, (nextOpen) => {
         setExpandedNodes((prev) => {
@@ -438,7 +447,6 @@ export function SectionNav({ t }: SectionNavProps) {
       });
     });
 
-    // 1. RASTREADOR DE SCROLL
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -457,7 +465,6 @@ export function SectionNav({ t }: SectionNavProps) {
       if (el) observer.observe(el);
     });
 
-    // 2. RASTREADOR DE FOCO E CLIQUE NO CAMPO (FORMULÁRIO -> ÍNDICE)
     const handleFocusIn = (e: FocusEvent) => {
       const target = e.target as HTMLElement;
       let current: HTMLElement | null = target;
@@ -465,7 +472,6 @@ export function SectionNav({ t }: SectionNavProps) {
         const id = current.getAttribute("id");
         if (id && allSectionIds.includes(id)) {
           activateSection(id);
-          // Força a abertura do formulário correspondente quando o usuário foca nele
           publishSectionToggle(id, true);
           break;
         }
@@ -482,22 +488,17 @@ export function SectionNav({ t }: SectionNavProps) {
     };
   }, [isMounted, navItems]);
 
-  // --- CLICAR NO ÍNDICE ABRE A SEÇÃO NO FORMULÁRIO E ABRE A PASTA LOCAL ---
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "start" });
-
-      // Abre a seção clicada no formulário de forma instantânea
       publishSectionToggle(id, true);
 
-      // Garante que ao navegar ativamente, as pastas do Índice também se abram
       setExpandedNodes((prev) => ({
         ...prev,
         [id]: true,
       }));
 
-      // Inteligência de Sincronização: se for sub-item focado, abre o pai principal no form e no Índice
       if (id.startsWith("meta-")) {
         publishSectionToggle("meta-ats", true);
         setExpandedNodes((prev) => ({ ...prev, "meta-ats": true }));
@@ -523,7 +524,22 @@ export function SectionNav({ t }: SectionNavProps) {
     }
   };
 
-  if (!isMounted) return null;
+  // --- SKELETON LOADER ALINHADO SOB MEDIDA ---
+  if (!isMounted) {
+    return (
+      <Card className="border-muted flex max-h-[85vh] flex-col gap-4 p-4 shadow-lg">
+        <Skeleton className="mb-2 h-4 w-16 pl-1" />
+        <div className="flex flex-col gap-3.5">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <Skeleton className="h-4 w-4 shrink-0 rounded-md" />
+              <Skeleton className="h-4 w-3/4 rounded-md" />
+            </div>
+          ))}
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="border-muted max-h-[85vh] overflow-y-auto p-4 shadow-lg">
@@ -546,7 +562,7 @@ export function SectionNav({ t }: SectionNavProps) {
 
           return (
             <div key={item.id} className="flex flex-col">
-              {/* LEVEL 1 ITEM (CORRIGIDO: AGORA TODOS OS ITENS GANHAM SETINHA PARA ESPELHAR) */}
+              {/* LEVEL 1 ITEM */}
               <div className="hover:bg-muted/50 flex items-center rounded-md px-1 py-1 transition-colors">
                 <button
                   onClick={(e) => toggleNode(item.id, e)}
