@@ -2,19 +2,27 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { ChevronDown } from "lucide-react";
 import { useResumeStore } from "@/store/useResumeStore";
 import { Field } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 import { CardContent } from "@/components/ui/card";
 import { useAutoResize } from "@/app/hooks/useAutoResize";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 export function SummarySection() {
   const t = useTranslations("ResumeBuilderPage");
   const cvData = useResumeStore((s) => s.cvData);
   const updateCvData = useResumeStore((s) => s.updateCvData);
   const handleAutoResize = useAutoResize();
+
   const [isMounted, setIsMounted] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   {
     /* 
@@ -58,33 +66,55 @@ export function SummarySection() {
 
   return (
     <CardContent id="summary" className="scroll-mt-20">
-      <div className="flex flex-col gap-6 border-b py-4">
-        <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-          <div>
-            <h2 className="text-xl font-semibold">
-              {t("sections.summary.title")}
-            </h2>
-            <h3 className="border-b pb-2 text-lg">
-              {t("sections.summary.subTitle")}
-            </h3>
+      <Collapsible
+        open={isOpen}
+        onOpenChange={setIsOpen}
+        className="flex flex-col gap-6 border-b py-4"
+      >
+        {/* CABEÇALHO CLICÁVEL (TRIGGER) */}
+        <CollapsibleTrigger asChild>
+          <div
+            role="button"
+            tabIndex={0}
+            className="group flex w-full cursor-pointer items-start justify-between text-left transition-opacity hover:opacity-80 focus:outline-none"
+          >
+            <div className="flex w-full flex-col">
+              <div className="flex w-full items-center justify-between pr-1">
+                <h2 className="text-xl font-semibold">
+                  {t("sections.summary.title")}
+                </h2>
+                <ChevronDown
+                  className={`text-muted-foreground h-5 w-5 transition-transform duration-200 ${
+                    isOpen ? "rotate-180" : ""
+                  } `}
+                />
+              </div>
+              <h3 className="mt-1 w-full border-b pb-2 text-lg">
+                {t("sections.summary.subTitle")}
+              </h3>
+            </div>
           </div>
-        </div>
-        <Field className="mb-4">
-          <div className="flex w-full flex-col gap-4">
-            <Textarea
-              placeholder={t("sections.summary.placeholder")}
-              value={cvData.summary}
-              onChange={(e) => {
-                handleAutoResize(e);
-                updateCvData((draft) => {
-                  draft.summary = e.target.value;
-                });
-              }}
-              className="min-h-[120px] resize-none overflow-hidden"
-            />
-          </div>
-        </Field>
-      </div>
+        </CollapsibleTrigger>
+
+        {/* CONTEÚDO QUE SOME E APARECE */}
+        <CollapsibleContent className="space-y-4">
+          <Field className="mb-4">
+            <div className="flex w-full flex-col gap-4">
+              <Textarea
+                placeholder={t("sections.summary.placeholder")}
+                value={cvData.summary}
+                onChange={(e) => {
+                  handleAutoResize(e);
+                  updateCvData((draft) => {
+                    draft.summary = e.target.value;
+                  });
+                }}
+                className="min-h-[120px] resize-none overflow-hidden"
+              />
+            </div>
+          </Field>
+        </CollapsibleContent>
+      </Collapsible>
     </CardContent>
   );
 }
