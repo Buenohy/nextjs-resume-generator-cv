@@ -285,7 +285,7 @@ export function MetaAtsSection() {
                       variant="ghost"
                       size="icon"
                       onClick={() => removeKeyword(index)}
-                      className="h-8 w-8 shrink-0"
+                      className="size-8 shrink-0"
                     >
                       <Trash2 className="text-destructive h-4 w-4" />
                     </Button>
@@ -321,7 +321,7 @@ export function MetaAtsSection() {
               onClick={addKeyword}
               className="gap-1 text-xs"
             >
-              <Plus className="h-3.5 w-3.5" />{" "}
+              <Plus className="size-3.5" />{" "}
               {t("sections.meta_ats.addKeywordBtn")}
             </Button>
           </div>
