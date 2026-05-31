@@ -12,12 +12,448 @@ import { CardContent } from "@/components/ui/card";
 import { useAutoResize } from "@/app/hooks/useAutoResize";
 import { MonthYearPicker } from "@/components/sections/ui/mouth-year-picker";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSyncCollapse } from "@/app/hooks/useSyncCollapse";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
+// --- CONVERSÃO AUXILIAR DE DATA (ESCOPO GLOBAL DO ARQUIVO) ---
+const parseDateString = (dateStr?: string) => {
+  if (!dateStr)
+    return { startMonth: "", startYear: "", endMonth: "", endYear: "" };
+  const [start, end] = dateStr.split(" - ");
+  const s = (start || "").trim().split(" ");
+  const e = (end || "").trim().split(" ");
+  return {
+    startMonth: s[0] || "",
+    startYear: s[1] || "",
+    endMonth: e[0] || "",
+    endYear: e[1] || "",
+  };
+};
+
+// --- SUB-COMPONENTE AUXILIAR (EXPERIENCE ITEM) ---
+interface ExperienceItemProps {
+  exp: ExperienceState;
+  expIndex: number;
+  experienceFields: any[];
+  MONTHS: string[];
+  YEARS: string[];
+  cvDataLength: number;
+  t: any;
+  handleAutoResize: any;
+  handleDateChange: (
+    expIndex: number,
+    sm: string,
+    sy: string,
+    em: string,
+    ey: string
+  ) => void;
+  removeExperience: (index: number) => void;
+  updateField: (expIndex: number, fieldId: any, value: string) => void;
+  addDetail: (expIndex: number) => void;
+  removeDetail: (expIndex: number, dIdx: number) => void;
+  updateDetail: (expIndex: number, dIdx: number, value: string) => void;
+  addStack: (expIndex: number) => void;
+  removeStack: (expIndex: number, sIdx: number) => void;
+  updateStack: (expIndex: number, sIdx: number, value: string) => void;
+}
+
+function ExperienceItem({
+  exp,
+  expIndex,
+  experienceFields,
+  MONTHS,
+  YEARS,
+  cvDataLength,
+  t,
+  handleAutoResize,
+  handleDateChange,
+  removeExperience,
+  updateField,
+  addDetail,
+  removeDetail,
+  updateDetail,
+  addStack,
+  removeStack,
+  updateStack,
+}: ExperienceItemProps) {
+  // HOOKS EXCLUSIVOS PARA CADA SUB-ITEM CONECTADO AO ÍNDICE
+  const [isExpOpen, setIsExpOpen] = useSyncCollapse(
+    `experience-item-${expIndex}`,
+    true
+  );
+  const [isDetailsOpen, setIsDetailsOpen] = useSyncCollapse(
+    `experience-details-${expIndex}`,
+    true
+  );
+  const [isStacksOpen, setIsStacksOpen] = useSyncCollapse(
+    `experience-stacks-${expIndex}`,
+    true
+  );
+
+  const dateParsed = parseDateString(exp.date);
+  const textareaFields = ["subject", "rights"];
+
+  return (
+    <Collapsible
+      open={isExpOpen}
+      onOpenChange={setIsExpOpen}
+      id={`experience-item-${expIndex}`}
+      className="flex scroll-mt-24 flex-col gap-6 border-b pt-4 pb-8 last:border-0 last:pb-0"
+    >
+      {/* NÍVEL 2: HEADER DO ITEM */}
+      <div className="flex w-full flex-row items-center justify-between gap-4">
+        <h4 className="text-left text-lg font-semibold">
+          {t("sections.experience.itemLabel", { num: expIndex + 1 })}
+        </h4>
+
+        <div className="flex shrink-0 flex-row items-center gap-2">
+          <CollapsibleTrigger asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 focus-visible:ring-0"
+            >
+              <ChevronDown
+                className={`text-muted-foreground h-4 w-4 transition-transform duration-200 ${
+                  isExpOpen ? "rotate-180" : ""
+                } `}
+              />
+            </Button>
+          </CollapsibleTrigger>
+
+          {cvDataLength > 1 && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => removeExperience(expIndex)}
+              className="gap-1"
+            >
+              <Trash2 className="text-destructive h-4 w-4" />{" "}
+              {t("sections.experience.removeBtn")}
+            </Button>
+          )}
+        </div>
+      </div>
+
+      <CollapsibleContent className="space-y-6">
+        {/* STANDARD FIELDS */}
+        {experienceFields.map(({ id, label, placeholder }) => (
+          <Field
+            key={id}
+            id={`experience-${expIndex}-${id}`}
+            className="mb-2 scroll-mt-24"
+          >
+            <div className="flex w-full flex-col gap-2">
+              <FieldLabel className="text-left font-medium capitalize">
+                {label}
+              </FieldLabel>
+              <Input
+                className="w-full"
+                placeholder={placeholder}
+                value={exp[id as keyof typeof exp] || ""}
+                onChange={(e) =>
+                  updateField(
+                    expIndex,
+                    id as keyof Omit<ExperienceState, "details" | "stacks">,
+                    e.target.value
+                  )
+                }
+              />
+            </div>
+          </Field>
+        ))}
+
+        {/* DATE PICKER FIELD */}
+        <Field id={`experience-${expIndex}-date`} className="mb-2 scroll-mt-24">
+          <div className="flex w-full flex-col gap-2">
+            <FieldLabel className="text-left font-medium capitalize">
+              {t("sections.experience.dateTitle")}
+            </FieldLabel>
+            <MonthYearPicker
+              startMonth={dateParsed.startMonth}
+              startYear={dateParsed.startYear}
+              endMonth={dateParsed.endMonth}
+              endYear={dateParsed.endYear}
+              months={MONTHS}
+              years={YEARS}
+              side="bottom"
+              onStartMonthChange={(val) =>
+                handleDateChange(
+                  expIndex,
+                  val,
+                  dateParsed.startYear,
+                  dateParsed.endMonth,
+                  dateParsed.endYear
+                )
+              }
+              onStartYearChange={(val) =>
+                handleDateChange(
+                  expIndex,
+                  dateParsed.startMonth,
+                  val,
+                  dateParsed.endMonth,
+                  dateParsed.endYear
+                )
+              }
+              onEndMonthChange={(val) =>
+                handleDateChange(
+                  expIndex,
+                  dateParsed.startMonth,
+                  dateParsed.startYear,
+                  val,
+                  dateParsed.endYear
+                )
+              }
+              onEndYearChange={(val) =>
+                handleDateChange(
+                  expIndex,
+                  dateParsed.startMonth,
+                  dateParsed.startYear,
+                  dateParsed.endMonth,
+                  val
+                )
+              }
+              t={t}
+              showPresent={true}
+            />
+          </div>
+        </Field>
+
+        {/* NÍVEL 3: PROJECT DETAILS */}
+        <Collapsible
+          open={isDetailsOpen}
+          onOpenChange={setIsDetailsOpen}
+          id={`experience-details-${expIndex}`}
+          className="border-muted/60 my-4 ml-4 flex scroll-mt-24 flex-col gap-4 border-l-2 pl-6 md:ml-8"
+        >
+          <div className="flex w-full flex-row items-start justify-between gap-4">
+            <div className="flex flex-col text-left">
+              <h5 className="text-sm font-semibold">
+                {t("sections.experience.detailsTitle")}
+              </h5>
+              <p className="text-muted-foreground text-xs">
+                {t("sections.experience.detailsCount", {
+                  count: exp.details.length,
+                })}
+              </p>
+            </div>
+
+            <div className="flex shrink-0 flex-col items-end gap-2">
+              <CollapsibleTrigger asChild>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 focus-visible:ring-0"
+                >
+                  <ChevronDown
+                    className={`text-muted-foreground h-4 w-4 transition-transform duration-200 ${
+                      isDetailsOpen ? "rotate-180" : ""
+                    } `}
+                  />
+                </Button>
+              </CollapsibleTrigger>
+
+              {exp.details.length < 3 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="xs"
+                  onClick={() => addDetail(expIndex)}
+                >
+                  <Plus className="mr-1 h-3.5 w-3.5" />{" "}
+                  {t("sections.experience.addDetailBtn")}
+                </Button>
+              )}
+            </div>
+          </div>
+
+          <CollapsibleContent className="w-full space-y-4">
+            {exp.details.map((detail, dIdx) => (
+              <Field
+                key={dIdx}
+                id={`experience-${expIndex}-detail-${dIdx}`}
+                className="mb-2 scroll-mt-24"
+              >
+                <div className="flex w-full flex-col gap-2">
+                  <div className="flex w-full items-center justify-between">
+                    <FieldLabel className="text-left text-xs font-medium capitalize">
+                      {t("sections.experience.detailLabel", {
+                        num: dIdx + 1,
+                      })}
+                    </FieldLabel>
+
+                    {exp.details.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeDetail(expIndex, dIdx)}
+                        className="h-8 w-8 shrink-0"
+                      >
+                        <Trash2 className="text-destructive h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+
+                  <Textarea
+                    className="min-h-[38px] w-full resize-none overflow-hidden py-2"
+                    rows={1}
+                    placeholder={t("sections.experience.detailPlaceholder", {
+                      num: dIdx + 1,
+                    })}
+                    value={detail}
+                    onBlur={(e) => {
+                      if (!e.target.value.trim() && exp.details.length > 1) {
+                        removeDetail(expIndex, dIdx);
+                      }
+                    }}
+                    onChange={(e) => {
+                      handleAutoResize(e);
+                      updateDetail(expIndex, dIdx, e.target.value);
+                    }}
+                  />
+                </div>
+              </Field>
+            ))}
+
+            {exp.details.length < 3 && (
+              <div className="mt-2 flex justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="xs"
+                  onClick={() => addDetail(expIndex)}
+                  className="gap-1 text-xs"
+                >
+                  <Plus className="h-3.5 w-3.5" />{" "}
+                  {t("sections.experience.addDetailBtn")}
+                </Button>
+              </div>
+            )}
+          </CollapsibleContent>
+        </Collapsible>
+
+        {/* NÍVEL 3: TECHNOLOGIES/STACKS */}
+        <Collapsible
+          open={isStacksOpen}
+          onOpenChange={setIsStacksOpen}
+          id={`experience-stacks-${expIndex}`}
+          className="border-muted/60 my-4 ml-4 flex scroll-mt-24 flex-col gap-4 border-l-2 pl-6 md:ml-8"
+        >
+          <div className="flex w-full flex-row items-start justify-between gap-4">
+            <div className="flex flex-col text-left">
+              <h5 className="text-sm font-semibold">
+                {t("sections.experience.stacksTitle")}
+              </h5>
+              <p className="text-muted-foreground text-xs">
+                {t("sections.experience.stacksCount", {
+                  count: exp.stacks.length,
+                })}
+              </p>
+            </div>
+
+            <div className="flex shrink-0 flex-col items-end gap-2">
+              <CollapsibleTrigger asChild>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 focus-visible:ring-0"
+                >
+                  <ChevronDown
+                    className={`text-muted-foreground h-4 w-4 transition-transform duration-200 ${
+                      isStacksOpen ? "rotate-180" : ""
+                    } `}
+                  />
+                </Button>
+              </CollapsibleTrigger>
+
+              <Button
+                type="button"
+                variant="outline"
+                size="xs"
+                onClick={() => addStack(expIndex)}
+              >
+                <Plus className="mr-1 h-3.5 w-3.5" />{" "}
+                {t("sections.experience.addStackBtn")}
+              </Button>
+            </div>
+          </div>
+
+          <CollapsibleContent className="w-full space-y-4">
+            {exp.stacks.map((stack, sIdx) => (
+              <Field
+                key={sIdx}
+                id={`experience-${expIndex}-stack-${sIdx}`}
+                className="mb-2 scroll-mt-24"
+              >
+                <div className="flex w-full flex-col gap-2">
+                  <div className="flex w-full items-center justify-between">
+                    <FieldLabel className="text-left text-xs font-medium capitalize">
+                      {t("sections.experience.stackLabel", {
+                        num: sIdx + 1,
+                      })}
+                    </FieldLabel>
+
+                    {exp.stacks.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeStack(expIndex, sIdx)}
+                        className="h-8 w-8 shrink-0"
+                      >
+                        <Trash2 className="text-destructive h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+
+                  <Textarea
+                    className="min-h-[38px] w-full resize-none overflow-hidden py-2"
+                    rows={1}
+                    placeholder={t("sections.experience.stackPlaceholder")}
+                    value={stack}
+                    onBlur={(e) => {
+                      if (!e.target.value.trim() && exp.stacks.length > 1) {
+                        removeStack(expIndex, sIdx);
+                      }
+                    }}
+                    onChange={(e) => {
+                      handleAutoResize(e);
+                      updateStack(expIndex, sIdx, e.target.value);
+                    }}
+                  />
+                </div>
+              </Field>
+            ))}
+
+            <div className="mt-2 flex justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                size="xs"
+                onClick={() => addStack(expIndex)}
+                className="gap-1 text-xs"
+              >
+                <Plus className="h-3.5 w-3.5" />{" "}
+                {t("sections.experience.addStackBtn")}
+              </Button>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+      </CollapsibleContent>
+    </Collapsible>
+  );
+}
+
+// --- COMPONENTE PRINCIPAL ---
 export function ExperienceSection() {
   const t = useTranslations("ResumeBuilderPage");
   const cvData = useResumeStore((s) => s.cvData);
@@ -25,29 +461,7 @@ export function ExperienceSection() {
   const handleAutoResize = useAutoResize();
 
   const [isMounted, setIsMounted] = useState(false);
-
-  // ESTADOS DE CONTROLE DE COLAPSO INDEPENDENTES
-  const [isOpen, setIsOpen] = useState(true);
-  const [openExperiences, setOpenExperiences] = useState<
-    Record<number, boolean>
-  >({
-    0: true,
-    1: true,
-    2: true,
-    3: true,
-  });
-  const [openDetails, setOpenDetails] = useState<Record<number, boolean>>({
-    0: true,
-    1: true,
-    2: true,
-    3: true,
-  });
-  const [openStacks, setOpenStacks] = useState<Record<number, boolean>>({
-    0: true,
-    1: true,
-    2: true,
-    3: true,
-  });
+  const [isOpen, setIsOpen] = useSyncCollapse("experience", true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -68,20 +482,6 @@ export function ExperienceSection() {
       label: value.label,
       placeholder: value.placeholder,
     }));
-
-  const parseDateString = (dateStr?: string) => {
-    if (!dateStr)
-      return { startMonth: "", startYear: "", endMonth: "", endYear: "" };
-    const [start, end] = dateStr.split(" - ");
-    const s = (start || "").trim().split(" ");
-    const e = (end || "").trim().split(" ");
-    return {
-      startMonth: s[0] || "",
-      startYear: s[1] || "",
-      endMonth: e[0] || "",
-      endYear: e[1] || "",
-    };
-  };
 
   const handleDateChange = (
     expIndex: number,
@@ -210,42 +610,6 @@ export function ExperienceSection() {
                   </div>
                 </Field>
               ))}
-
-              <div className="border-muted/60 my-4 ml-4 flex flex-col gap-4 border-l-2 pl-6 md:ml-8">
-                <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-                  <div className="flex flex-col gap-2">
-                    <Skeleton className="h-4.5 w-28" />
-                    <Skeleton className="h-3 w-16" />
-                  </div>
-                  <Skeleton className="h-7 w-24 rounded-md" />
-                </div>
-                {exp.details.map((_, dIdx) => (
-                  <Field key={dIdx} className="mb-2">
-                    <div className="flex w-full flex-col gap-2">
-                      <Skeleton className="h-3.5 w-20" />
-                      <Skeleton className="h-10 w-full rounded-md" />
-                    </div>
-                  </Field>
-                ))}
-              </div>
-
-              <div className="border-muted/60 my-4 ml-4 flex flex-col gap-4 border-l-2 pl-6 md:ml-8">
-                <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-                  <div className="flex flex-col gap-2">
-                    <Skeleton className="h-4.5 w-28" />
-                    <Skeleton className="h-3 w-16" />
-                  </div>
-                  <Skeleton className="h-7 w-24 rounded-md" />
-                </div>
-                {exp.stacks.map((_, sIdx) => (
-                  <Field key={sIdx} className="mb-2">
-                    <div className="flex w-full flex-col gap-2">
-                      <Skeleton className="h-3.5 w-20" />
-                      <Skeleton className="h-10 w-full rounded-md" />
-                    </div>
-                  </Field>
-                ))}
-              </div>
             </div>
           ))}
         </div>
@@ -262,7 +626,6 @@ export function ExperienceSection() {
       >
         {/* NÍVEL 1: HEADER PRINCIPAL DA SEÇÃO */}
         <div className="flex w-full flex-row items-start justify-between gap-4">
-          {/* LADO ESQUERDO: TEXTOS DE INFORMAÇÃO */}
           <div className="flex flex-col text-left">
             <h2 className="text-xl font-semibold">
               {t("sections.experience.title")}
@@ -277,9 +640,7 @@ export function ExperienceSection() {
             </p>
           </div>
 
-          {/* LADO DIREITO: DIV ÚNICA QUE AGRUPA O ABRE/FECHA EM CIMA E O ADICIONAR EMBAIXO */}
           <div className="flex shrink-0 flex-col items-end gap-2">
-            {/* COLLAPSIBLE TRIGGER (SETA CHEVRON) */}
             <CollapsibleTrigger asChild>
               <Button
                 type="button"
@@ -311,418 +672,28 @@ export function ExperienceSection() {
 
         {/* NÍVEL 1 CONTEÚDO (LISTA DE EXPERIÊNCIAS) */}
         <CollapsibleContent className="space-y-4">
-          {cvData.experiences.map((exp, expIndex) => {
-            const dateParsed = parseDateString(exp.date);
-            const isExpOpen = openExperiences[expIndex] ?? true;
-
-            return (
-              <Collapsible
-                key={expIndex}
-                open={isExpOpen}
-                onOpenChange={(val) =>
-                  setOpenExperiences((prev) => ({ ...prev, [expIndex]: val }))
-                }
-                id={`experience-item-${expIndex}`}
-                className="flex scroll-mt-24 flex-col gap-6 border-b pt-4 pb-8 last:border-0 last:pb-0"
-              >
-                {/* NÍVEL 2: HEADER DE CADA EXPERIÊNCIA INDIVIDUAL (CORRIGIDO PARA O NOVO PADRÃO) */}
-                <div className="flex w-full flex-row items-center justify-between gap-4">
-                  {/* LADO ESQUERDO: APENAS O TÍTULO */}
-                  <h4 className="text-left text-lg font-semibold">
-                    {t("sections.experience.itemLabel", { num: expIndex + 1 })}
-                  </h4>
-
-                  {/* LADO DIREITO: SETINHA DE COLAPSO + BOTÃO DE REMOVER */}
-                  <div className="flex shrink-0 flex-row items-center gap-2">
-                    <CollapsibleTrigger asChild>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 focus-visible:ring-0"
-                      >
-                        <ChevronDown
-                          className={`text-muted-foreground h-4 w-4 transition-transform duration-200 ${
-                            isExpOpen ? "rotate-180" : ""
-                          } `}
-                        />
-                      </Button>
-                    </CollapsibleTrigger>
-
-                    {cvData.experiences.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeExperience(expIndex)}
-                        className="gap-1"
-                      >
-                        <Trash2 className="text-destructive h-4 w-4" />{" "}
-                        {t("sections.experience.removeBtn")}
-                      </Button>
-                    )}
-                  </div>
-                </div>
-
-                {/* NÍVEL 2 CONTEÚDO (CAMPOS DA EXPERIÊNCIA) */}
-                <CollapsibleContent className="space-y-6">
-                  {/* STANDARD FIELDS (Role, Company, URL) */}
-                  {experienceFields.map(({ id, label, placeholder }) => (
-                    <Field
-                      key={id}
-                      id={`experience-${expIndex}-${id}`}
-                      className="mb-2 scroll-mt-24"
-                    >
-                      <div className="flex w-full flex-col gap-2">
-                        <FieldLabel className="text-left font-medium capitalize">
-                          {label}
-                        </FieldLabel>
-                        <Input
-                          className="w-full"
-                          placeholder={placeholder}
-                          value={exp[id as keyof typeof exp] || ""}
-                          onChange={(e) =>
-                            updateField(
-                              expIndex,
-                              id as keyof Omit<
-                                ExperienceState,
-                                "details" | "stacks"
-                              >,
-                              e.target.value
-                            )
-                          }
-                        />
-                      </div>
-                    </Field>
-                  ))}
-
-                  {/* DATE PICKER FIELD */}
-                  <Field
-                    id={`experience-${expIndex}-date`}
-                    className="mb-2 scroll-mt-24"
-                  >
-                    <div className="flex w-full flex-col gap-2">
-                      <FieldLabel className="text-left font-medium capitalize">
-                        {t("sections.experience.dateTitle")}
-                      </FieldLabel>
-                      <MonthYearPicker
-                        startMonth={dateParsed.startMonth}
-                        startYear={dateParsed.startYear}
-                        endMonth={dateParsed.endMonth}
-                        endYear={dateParsed.endYear}
-                        months={MONTHS}
-                        years={YEARS}
-                        side="bottom"
-                        onStartMonthChange={(val) =>
-                          handleDateChange(
-                            expIndex,
-                            val,
-                            dateParsed.startYear,
-                            dateParsed.endMonth,
-                            dateParsed.endYear
-                          )
-                        }
-                        onStartYearChange={(val) =>
-                          handleDateChange(
-                            expIndex,
-                            dateParsed.startMonth,
-                            val,
-                            dateParsed.endMonth,
-                            dateParsed.endYear
-                          )
-                        }
-                        onEndMonthChange={(val) =>
-                          handleDateChange(
-                            expIndex,
-                            dateParsed.startMonth,
-                            dateParsed.startYear,
-                            val,
-                            dateParsed.endYear
-                          )
-                        }
-                        onEndYearChange={(val) =>
-                          handleDateChange(
-                            expIndex,
-                            dateParsed.startMonth,
-                            dateParsed.startYear,
-                            dateParsed.endMonth,
-                            val
-                          )
-                        }
-                        t={t}
-                        showPresent={true}
-                      />
-                    </div>
-                  </Field>
-
-                  {/* NÍVEL 3: PROJECT DETAILS (COLLAPSIBLE) */}
-                  {(() => {
-                    const isDetailsOpen = openDetails[expIndex] ?? true;
-                    return (
-                      <Collapsible
-                        open={isDetailsOpen}
-                        onOpenChange={(val) =>
-                          setOpenDetails((prev) => ({
-                            ...prev,
-                            [expIndex]: val,
-                          }))
-                        }
-                        id={`experience-details-${expIndex}`}
-                        className="border-muted/60 my-4 ml-4 flex scroll-mt-24 flex-col gap-4 border-l-2 pl-6 md:ml-8"
-                      >
-                        {/* HEADER DETALHES */}
-                        <div className="flex w-full flex-row items-start justify-between gap-4">
-                          <div className="flex flex-col text-left">
-                            <h5 className="text-sm font-semibold">
-                              {t("sections.experience.detailsTitle")}
-                            </h5>
-                            <p className="text-muted-foreground text-xs">
-                              {t("sections.experience.detailsCount", {
-                                count: exp.details.length,
-                              })}
-                            </p>
-                          </div>
-
-                          <div className="flex shrink-0 flex-col items-end gap-2">
-                            <CollapsibleTrigger asChild>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8 focus-visible:ring-0"
-                              >
-                                <ChevronDown
-                                  className={`text-muted-foreground h-4 w-4 transition-transform duration-200 ${
-                                    isDetailsOpen ? "rotate-180" : ""
-                                  } `}
-                                />
-                              </Button>
-                            </CollapsibleTrigger>
-
-                            {exp.details.length < 3 && (
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="xs"
-                                onClick={() => addDetail(expIndex)}
-                              >
-                                <Plus className="mr-1 h-3.5 w-3.5" />{" "}
-                                {t("sections.experience.addDetailBtn")}
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* LISTA DE DETALHES */}
-                        <CollapsibleContent className="w-full space-y-4">
-                          {exp.details.map((detail, dIdx) => (
-                            <Field
-                              key={dIdx}
-                              id={`experience-${expIndex}-detail-${dIdx}`}
-                              className="mb-2 scroll-mt-24"
-                            >
-                              <div className="flex w-full flex-col gap-2">
-                                <div className="flex w-full items-center justify-between">
-                                  <FieldLabel className="text-left text-xs font-medium capitalize">
-                                    {t("sections.experience.detailLabel", {
-                                      num: dIdx + 1,
-                                    })}
-                                  </FieldLabel>
-
-                                  {exp.details.length > 1 && (
-                                    <Button
-                                      type="button"
-                                      variant="ghost"
-                                      size="icon"
-                                      onClick={() =>
-                                        removeDetail(expIndex, dIdx)
-                                      }
-                                      className="h-8 w-8 shrink-0"
-                                    >
-                                      <Trash2 className="text-destructive h-4 w-4" />
-                                    </Button>
-                                  )}
-                                </div>
-
-                                <Textarea
-                                  className="min-h-[38px] w-full resize-none overflow-hidden py-2"
-                                  rows={1}
-                                  placeholder={t(
-                                    "sections.experience.detailPlaceholder",
-                                    { num: dIdx + 1 }
-                                  )}
-                                  value={detail}
-                                  onBlur={(e) => {
-                                    if (
-                                      !e.target.value.trim() &&
-                                      exp.details.length > 1
-                                    ) {
-                                      removeDetail(expIndex, dIdx);
-                                    }
-                                  }}
-                                  onChange={(e) => {
-                                    handleAutoResize(e);
-                                    updateDetail(
-                                      expIndex,
-                                      dIdx,
-                                      e.target.value
-                                    );
-                                  }}
-                                />
-                              </div>
-                            </Field>
-                          ))}
-
-                          {exp.details.length < 3 && (
-                            <div className="mt-2 flex justify-end">
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="xs"
-                                onClick={() => addDetail(expIndex)}
-                                className="gap-1 text-xs"
-                              >
-                                <Plus className="h-3.5 w-3.5" />{" "}
-                                {t("sections.experience.addDetailBtn")}
-                              </Button>
-                            </div>
-                          )}
-                        </CollapsibleContent>
-                      </Collapsible>
-                    );
-                  })()}
-
-                  {/* NÍVEL 3: TECHNOLOGIES/STACKS (COLLAPSIBLE) */}
-                  {(() => {
-                    const isStacksOpen = openStacks[expIndex] ?? true;
-                    return (
-                      <Collapsible
-                        open={isStacksOpen}
-                        onOpenChange={(val) =>
-                          setOpenStacks((prev) => ({
-                            ...prev,
-                            [expIndex]: val,
-                          }))
-                        }
-                        id={`experience-stacks-${expIndex}`}
-                        className="border-muted/60 my-4 ml-4 flex scroll-mt-24 flex-col gap-4 border-l-2 pl-6 md:ml-8"
-                      >
-                        {/* HEADER STACKS */}
-                        <div className="flex w-full flex-row items-start justify-between gap-4">
-                          <div className="flex flex-col text-left">
-                            <h5 className="text-sm font-semibold">
-                              {t("sections.experience.stacksTitle")}
-                            </h5>
-                            <p className="text-muted-foreground text-xs">
-                              {t("sections.experience.stacksCount", {
-                                count: exp.stacks.length,
-                              })}
-                            </p>
-                          </div>
-
-                          <div className="flex shrink-0 flex-col items-end gap-2">
-                            <CollapsibleTrigger asChild>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8 focus-visible:ring-0"
-                              >
-                                <ChevronDown
-                                  className={`text-muted-foreground h-4 w-4 transition-transform duration-200 ${
-                                    isStacksOpen ? "rotate-180" : ""
-                                  } `}
-                                />
-                              </Button>
-                            </CollapsibleTrigger>
-
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="xs"
-                              onClick={() => addStack(expIndex)}
-                            >
-                              <Plus className="mr-1 h-3.5 w-3.5" />{" "}
-                              {t("sections.experience.addStackBtn")}
-                            </Button>
-                          </div>
-                        </div>
-
-                        {/* LISTA DE STACKS */}
-                        <CollapsibleContent className="w-full space-y-4">
-                          {exp.stacks.map((stack, sIdx) => (
-                            <Field
-                              key={sIdx}
-                              id={`experience-${expIndex}-stack-${sIdx}`}
-                              className="mb-2 scroll-mt-24"
-                            >
-                              <div className="flex w-full flex-col gap-2">
-                                <div className="flex w-full items-center justify-between">
-                                  <FieldLabel className="text-left text-xs font-medium capitalize">
-                                    {t("sections.experience.stackLabel", {
-                                      num: sIdx + 1,
-                                    })}
-                                  </FieldLabel>
-
-                                  {exp.stacks.length > 1 && (
-                                    <Button
-                                      type="button"
-                                      variant="ghost"
-                                      size="icon"
-                                      onClick={() =>
-                                        removeStack(expIndex, sIdx)
-                                      }
-                                      className="h-8 w-8 shrink-0"
-                                    >
-                                      <Trash2 className="text-destructive h-4 w-4" />
-                                    </Button>
-                                  )}
-                                </div>
-
-                                <Textarea
-                                  className="min-h-[38px] w-full resize-none overflow-hidden py-2"
-                                  rows={1}
-                                  placeholder={t(
-                                    "sections.experience.stackPlaceholder"
-                                  )}
-                                  value={stack}
-                                  onBlur={(e) => {
-                                    if (
-                                      !e.target.value.trim() &&
-                                      exp.stacks.length > 1
-                                    ) {
-                                      removeStack(expIndex, sIdx);
-                                    }
-                                  }}
-                                  onChange={(e) => {
-                                    handleAutoResize(e);
-                                    updateStack(expIndex, sIdx, e.target.value);
-                                  }}
-                                />
-                              </div>
-                            </Field>
-                          ))}
-
-                          <div className="mt-2 flex justify-end">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="xs"
-                              onClick={() => addStack(expIndex)}
-                              className="gap-1 text-xs"
-                            >
-                              <Plus className="h-3.5 w-3.5" />{" "}
-                              {t("sections.experience.addStackBtn")}
-                            </Button>
-                          </div>
-                        </CollapsibleContent>
-                      </Collapsible>
-                    );
-                  })()}
-                </CollapsibleContent>
-              </Collapsible>
-            );
-          })}
+          {cvData.experiences.map((exp, expIndex) => (
+            <ExperienceItem
+              key={expIndex}
+              exp={exp}
+              expIndex={expIndex}
+              experienceFields={experienceFields}
+              MONTHS={MONTHS}
+              YEARS={YEARS}
+              cvDataLength={cvData.experiences.length}
+              t={t}
+              handleAutoResize={handleAutoResize}
+              handleDateChange={handleDateChange}
+              removeExperience={removeExperience}
+              updateField={updateField}
+              addDetail={addDetail}
+              removeDetail={removeDetail}
+              updateDetail={updateDetail}
+              addStack={addStack}
+              removeStack={removeStack}
+              updateStack={updateStack}
+            />
+          ))}
         </CollapsibleContent>
       </Collapsible>
     </CardContent>
