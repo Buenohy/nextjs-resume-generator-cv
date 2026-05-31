@@ -4,6 +4,10 @@ import { useState, useEffect, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { useResumeStore } from "@/store/useResumeStore";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import {
+  subscribeToSection,
+  publishSectionToggle,
+} from "@/app/hooks/useSyncCollapse";
 
 interface SectionNavProps {
   t: any;
@@ -390,10 +394,13 @@ export function SectionNav({ t }: SectionNavProps) {
 
   const toggleNode = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    const next = !expandedNodes[id];
     setExpandedNodes((prev) => ({
       ...prev,
-      [id]: !prev[id],
+      [id]: next,
     }));
+    // SINCRONIZA COM O FORMULÁRIO CORRESPONDENTE
+    publishSectionToggle(id, next);
   };
 
   const navItems: NavItem[] = useMemo(
@@ -405,15 +412,13 @@ export function SectionNav({ t }: SectionNavProps) {
   useEffect(() => {
     if (!isMounted) return;
 
-    // --- NOVA LÓGICA DE ATIVAÇÃO EXCLUSIVA (ACCORDION) ---
+    // Função auxiliar local para manter o scroll spy ativo na navegação
     const activateSection = (activeId: string) => {
       setActiveSection(activeId);
       const path = getActivePath(navItems, activeId);
 
       setExpandedNodes(() => {
         const next: Record<string, boolean> = {};
-        // Abre APENAS os itens que fazem parte do caminho ativo no momento.
-        // O restante das chaves ficará falso/indefinido (fechando o menu sozinho).
         path.forEach((id) => {
           next[id] = true;
         });
@@ -431,6 +436,16 @@ export function SectionNav({ t }: SectionNavProps) {
         ]) || []),
       ]) || []),
     ]);
+
+    // --- NOVA INSCRIÇÃO: ESCUTA AS MUDANÇAS DOS FORMULÁRIOS EM TEMPO REAL ---
+    const unsubscribes = allSectionIds.map((id) => {
+      return subscribeToSection(id, (nextOpen) => {
+        setExpandedNodes((prev) => {
+          if (prev[id] === nextOpen) return prev;
+          return { ...prev, [id]: nextOpen };
+        });
+      });
+    });
 
     // 1. RASTREADOR DE SCROLL
     const observer = new IntersectionObserver(
@@ -459,6 +474,8 @@ export function SectionNav({ t }: SectionNavProps) {
         const id = current.getAttribute("id");
         if (id && allSectionIds.includes(id)) {
           activateSection(id);
+          // Força a abertura do formulário correspondente quando o usuário foca nele
+          publishSectionToggle(id, true);
           break;
         }
         current = current.parentElement;
@@ -470,6 +487,8 @@ export function SectionNav({ t }: SectionNavProps) {
     return () => {
       observer.disconnect();
       document.removeEventListener("focusin", handleFocusIn);
+      // Limpa os escutadores para poupar memória do navegador
+      unsubscribes.forEach((unsub) => unsub());
     };
   }, [isMounted, navItems]);
 
@@ -511,9 +530,9 @@ export function SectionNav({ t }: SectionNavProps) {
                     className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded-md rounded-sm p-1 transition-colors"
                   >
                     {expandedNodes[item.id] ? (
-                      <ChevronDown className="size-3.5" />
+                      <ChevronDown className="h-3.5 w-3.5" />
                     ) : (
-                      <ChevronRight className="size-3.5" />
+                      <ChevronRight className="h-3.5 w-3.5" />
                     )}
                   </button>
                 ) : (
@@ -556,9 +575,9 @@ export function SectionNav({ t }: SectionNavProps) {
                                 className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded-md p-0.5 transition-colors"
                               >
                                 {expandedNodes[child.id] ? (
-                                  <ChevronDown className="size-3.5" />
+                                  <ChevronDown className="h-3.5 w-3.5" />
                                 ) : (
-                                  <ChevronRight className="size-3.5" />
+                                  <ChevronRight className="h-3.5 w-3.5" />
                                 )}
                               </button>
                             ) : (
@@ -603,9 +622,9 @@ export function SectionNav({ t }: SectionNavProps) {
                                             className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded-md p-0.5 transition-colors"
                                           >
                                             {expandedNodes[subChild.id] ? (
-                                              <ChevronDown className="size-3" />
+                                              <ChevronDown className="h-3 w-3" />
                                             ) : (
-                                              <ChevronRight className="size-3" />
+                                              <ChevronRight className="h-3 w-3" />
                                             )}
                                           </button>
                                         ) : (
