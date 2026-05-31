@@ -22,15 +22,19 @@ export function validateMetaWithJob(
     },
   };
 
-  if (!jobText) return result;
+  if (!jobText || !cvData) return result;
 
   const jobLower = jobText.toLowerCase();
   const meta = cvData.meta_ats || {};
 
+  // CORRIGIDO: Aceita dinamicamente tanto as keywords salvas como Array de Strings quanto como String única
   if (meta.keywords) {
-    const kwList = meta.keywords
-      .split(",")
-      .map((k: string) => k.trim().toLowerCase());
+    const kwList = Array.isArray(meta.keywords)
+      ? meta.keywords.map((k: any) => String(k).trim().toLowerCase())
+      : String(meta.keywords)
+          .split(",")
+          .map((k: string) => k.trim().toLowerCase());
+
     for (const kw of kwList) {
       if (kw && !jobLower.includes(kw)) {
         result.warnings.keywords.push(kw);
