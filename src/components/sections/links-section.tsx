@@ -15,13 +15,16 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
+import { useSyncCollapse } from "@/app/hooks/useSyncCollapse";
+
 export function LinksSection() {
   const t = useTranslations("ResumeBuilderPage");
   const cvData = useResumeStore((s) => s.cvData);
   const updateCvData = useResumeStore((s) => s.updateCvData);
 
   const [isMounted, setIsMounted] = useState(false);
-  const [isOpen, setIsOpen] = useState(true);
+
+  const [isOpen, setIsOpen] = useSyncCollapse("links", true);
 
   {
     /* 
