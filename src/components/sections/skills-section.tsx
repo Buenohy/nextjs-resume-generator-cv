@@ -10,12 +10,104 @@ import { Textarea } from "@/components/ui/textarea";
 import { CardContent } from "@/components/ui/card";
 import { useAutoResize } from "@/app/hooks/useAutoResize";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSyncCollapse } from "@/app/hooks/useSyncCollapse";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
+// --- SUB-COMPONENTE AUXILIAR (SKILL ITEM) ---
+interface SkillItemProps {
+  skill: string;
+  index: number;
+  cvDataLength: number;
+  t: any;
+  handleAutoResize: any;
+  removeItem: (index: number) => void;
+  updateItem: (index: number, value: string) => void;
+}
+
+function SkillItem({
+  skill,
+  index,
+  cvDataLength,
+  t,
+  handleAutoResize,
+  removeItem,
+  updateItem,
+}: SkillItemProps) {
+  // HOOK DO SUB-ITEM CONECTADO AO ÍNDICE
+  const [isSkillOpen, setIsSkillOpen] = useSyncCollapse(
+    `skills-item-${index}`,
+    true
+  );
+
+  return (
+    <Collapsible
+      open={isSkillOpen}
+      onOpenChange={setIsSkillOpen}
+      id={`skills-item-${index}`}
+      className="border-muted/50 mb-4 scroll-mt-24 border-b pb-6 last:border-0 last:pb-0"
+    >
+      <div className="flex w-full flex-col gap-2">
+        {/* ROW 1: LABEL & TRASH BUTTON */}
+        <div className="flex w-full items-center justify-between">
+          <CollapsibleTrigger asChild>
+            <div
+              role="button"
+              tabIndex={0}
+              className="group flex flex-1 cursor-pointer items-center justify-between text-left transition-opacity hover:opacity-80 focus:outline-none"
+            >
+              <FieldLabel className="cursor-pointer text-left font-medium capitalize">
+                {t("sections.skills.itemLabel", { num: index + 1 })}
+              </FieldLabel>
+              <ChevronDown
+                className={`text-muted-foreground mr-4 h-4 w-4 transition-transform duration-200 ${
+                  isSkillOpen ? "rotate-180" : ""
+                } `}
+              />
+            </div>
+          </CollapsibleTrigger>
+
+          {/* Trash Button */}
+          {cvDataLength > 1 && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => removeItem(index)}
+              className="h-8 w-8 shrink-0"
+            >
+              <Trash2 className="text-destructive h-4 w-4" />
+            </Button>
+          )}
+        </div>
+
+        {/* ROW 2: INPUT FIELD (Textarea) */}
+        <CollapsibleContent className="w-full space-y-4">
+          <Textarea
+            className="min-h-[38px] w-full resize-none overflow-hidden py-2"
+            rows={1}
+            placeholder={t("sections.skills.placeholder")}
+            value={skill}
+            onBlur={(e) => {
+              if (!e.target.value.trim() && cvDataLength > 1) {
+                removeItem(index);
+              }
+            }}
+            onChange={(e) => {
+              handleAutoResize(e);
+              updateItem(index, e.target.value);
+            }}
+          />
+        </CollapsibleContent>
+      </div>
+    </Collapsible>
+  );
+}
+
+// --- COMPONENTE PRINCIPAL ---
 export function SkillsSection() {
   const t = useTranslations("ResumeBuilderPage");
   const cvData = useResumeStore((s) => s.cvData);
@@ -23,14 +115,8 @@ export function SkillsSection() {
   const handleAutoResize = useAutoResize();
 
   const [isMounted, setIsMounted] = useState(false);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useSyncCollapse("skills", true);
 
-  {
-    /* 
-    DEFERRED MOUNT EFFECT
-    - Defers rendering the fully interactive state to prevent hydration issues.
-  */
-  }
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsMounted(true);
@@ -58,17 +144,10 @@ export function SkillsSection() {
     });
   };
 
-  {
-    /* 
-    HIGH-FIDELITY SKELETON LOADER
-    - Matches the layout, gaps, and heights of both flat and dynamic components exactly.
-  */
-  }
   if (!isMounted) {
     return (
       <CardContent>
         <div className="flex flex-col gap-4 border-b py-4">
-          {/* Header Skeletons */}
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
             <div className="flex flex-col gap-2">
               <Skeleton className="h-6 w-40" />
@@ -76,23 +155,6 @@ export function SkillsSection() {
               <Skeleton className="mt-1 h-3 w-16" />
             </div>
             <Skeleton className="h-9 w-28 rounded-md" />
-          </div>
-
-          {/* Dynamic Skills Skeletons mapping exactly the same amount of items */}
-          {(cvData.skills.length > 0 ? cvData.skills : [""]).map((_, index) => (
-            <Field key={index}>
-              <div className="flex w-full flex-col gap-2">
-                <div className="flex w-full items-center justify-between">
-                  <Skeleton className="h-3.5 w-20" />
-                </div>
-                <Skeleton className="h-10 w-full rounded-md" />
-              </div>
-            </Field>
-          ))}
-
-          {/* Bottom Add Button Skeleton */}
-          <div className="mt-2 flex justify-end">
-            <Skeleton className="h-7 w-24 rounded-md" />
           </div>
         </div>
       </CardContent>
@@ -150,47 +212,16 @@ export function SkillsSection() {
         <CollapsibleContent className="space-y-4">
           {/* SKILLS LIST */}
           {cvData.skills.map((skill, index) => (
-            <Field
+            <SkillItem
               key={index}
-              id={`skills-item-${index}`}
-              className="scroll-mt-24"
-            >
-              <div className="flex w-full flex-col gap-2">
-                <div className="flex w-full items-center justify-between">
-                  <FieldLabel className="text-left font-medium capitalize">
-                    {t("sections.skills.itemLabel", { num: index + 1 })}
-                  </FieldLabel>
-
-                  {cvData.skills.length > 1 && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeItem(index)}
-                      className="h-8 w-8 shrink-0"
-                    >
-                      <Trash2 className="text-destructive h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-
-                <Textarea
-                  className="min-h-[38px] w-full resize-none overflow-hidden py-2"
-                  rows={1}
-                  placeholder={t("sections.skills.placeholder")}
-                  value={skill}
-                  onBlur={(e) => {
-                    if (!e.target.value.trim() && cvData.skills.length > 1) {
-                      removeItem(index);
-                    }
-                  }}
-                  onChange={(e) => {
-                    handleAutoResize(e);
-                    updateItem(index, e.target.value);
-                  }}
-                />
-              </div>
-            </Field>
+              skill={skill}
+              index={index}
+              cvDataLength={cvData.skills.length}
+              t={t}
+              handleAutoResize={handleAutoResize}
+              removeItem={removeItem}
+              updateItem={updateItem}
+            />
           ))}
 
           {/* ADD ITEM BUTTON (Bottom) */}
