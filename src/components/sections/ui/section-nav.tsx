@@ -139,6 +139,20 @@ const STATIC_LINKS_FIELDS = [
   },
 ];
 
+// --- FUNÇÃO AUXILIAR: ACHA O CAMINHO EXATO DO ITEM NO MENU ---
+function getActivePath(items: NavItem[], targetId: string): string[] {
+  for (const item of items) {
+    if (item.id === targetId) return [item.id];
+    if (item.children) {
+      const childPath = getActivePath(item.children as NavItem[], targetId);
+      if (childPath.length > 0) {
+        return [item.id, ...childPath];
+      }
+    }
+  }
+  return [];
+}
+
 // --- FUNÇÃO GERADORA DE ITENS DO MENU ---
 function generateNavItems(
   t: any,
@@ -364,22 +378,6 @@ export function SectionNav({ t }: SectionNavProps) {
 
   useEffect(() => {
     setIsMounted(true);
-    setExpandedNodes(() => {
-      const initial: Record<string, boolean> = {};
-      [
-        "meta-ats",
-        "personal-info",
-        "links",
-        "skills",
-        "experience",
-        "education",
-        "certifications",
-        "languages",
-      ].forEach((key) => {
-        initial[key] = true;
-      });
-      return initial;
-    });
   }, []);
 
   const getLabel = (key: string, fallback: string) => {
@@ -407,39 +405,22 @@ export function SectionNav({ t }: SectionNavProps) {
   useEffect(() => {
     if (!isMounted) return;
 
-    // Função que marca um item como ativo e abre todas as abas pai dele
+    // --- NOVA LÓGICA DE ATIVAÇÃO EXCLUSIVA (ACCORDION) ---
     const activateSection = (activeId: string) => {
       setActiveSection(activeId);
-      setExpandedNodes((prev) => {
-        const next = { ...prev };
-        navItems.forEach((item) => {
-          if (item.id === activeId) next[item.id] = true;
-          item.children?.forEach((child) => {
-            if (child.id === activeId) {
-              next[item.id] = true;
-              next[child.id] = true;
-            }
-            child.children?.forEach((sub) => {
-              if (sub.id === activeId) {
-                next[item.id] = true;
-                next[child.id] = true;
-                next[sub.id] = true;
-              }
-              sub.children?.forEach((leaf) => {
-                if (leaf.id === activeId) {
-                  next[item.id] = true;
-                  next[child.id] = true;
-                  next[sub.id] = true;
-                }
-              });
-            });
-          });
+      const path = getActivePath(navItems, activeId);
+
+      setExpandedNodes(() => {
+        const next: Record<string, boolean> = {};
+        // Abre APENAS os itens que fazem parte do caminho ativo no momento.
+        // O restante das chaves ficará falso/indefinido (fechando o menu sozinho).
+        path.forEach((id) => {
+          next[id] = true;
         });
         return next;
       });
     };
 
-    // Mapeia todos os IDs do menu
     const allSectionIds = navItems.flatMap((item) => [
       item.id,
       ...(item.children?.flatMap((child) => [
@@ -451,7 +432,7 @@ export function SectionNav({ t }: SectionNavProps) {
       ]) || []),
     ]);
 
-    // 1. RASTREADOR DE SCROLL (Para quando o usuário descer a tela)
+    // 1. RASTREADOR DE SCROLL
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -470,12 +451,9 @@ export function SectionNav({ t }: SectionNavProps) {
       if (el) observer.observe(el);
     });
 
-    // 2. RASTREADOR DE FOCO (Para quando o usuário clicar no campo)
+    // 2. RASTREADOR DE FOCO E CLIQUE NO CAMPO
     const handleFocusIn = (e: FocusEvent) => {
       const target = e.target as HTMLElement;
-
-      // Ele vai subindo pelas tags no DOM (Ex: input -> Field) até achar
-      // um ID que pertença à nossa lista de Navegação.
       let current: HTMLElement | null = target;
       while (current && current !== document.body) {
         const id = current.getAttribute("id");
