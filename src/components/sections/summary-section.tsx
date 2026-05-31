@@ -78,7 +78,8 @@ export function SummarySection() {
             <h2 className="text-xl font-semibold">
               {t("sections.summary.title")}
             </h2>
-            <h3 className="text-muted-foreground border-b pb-2 text-lg">
+            {/* CORRIGIDO: Removido 'border-b pb-2' */}
+            <h3 className="text-muted-foreground text-lg">
               {t("sections.summary.subTitle")}
             </h3>
           </div>
