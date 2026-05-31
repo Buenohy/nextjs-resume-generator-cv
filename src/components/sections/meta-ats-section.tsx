@@ -11,13 +11,12 @@ import { CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAutoResize } from "@/app/hooks/useAutoResize";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSyncCollapse } from "@/app/hooks/useSyncCollapse";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-
-import { useSyncCollapse } from "@/app/hooks/useSyncCollapse";
 
 export function MetaAtsSection() {
   const t = useTranslations("ResumeBuilderPage");
@@ -35,9 +34,6 @@ export function MetaAtsSection() {
     true
   );
 
-  {
-    /* DEFERRED MOUNT EFFECT */
-  }
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsMounted(true);
@@ -121,9 +117,6 @@ export function MetaAtsSection() {
     });
   };
 
-  {
-    /* HIGH-FIDELITY SKELETON LOADER */
-  }
   if (!isMounted) {
     return (
       <CardContent>
@@ -134,14 +127,12 @@ export function MetaAtsSection() {
               <Skeleton className="h-4.5 w-56 sm:w-72" />
             </div>
           </div>
-
           <Field className="mb-4">
             <div className="flex w-full flex-col gap-2">
               <Skeleton className="h-4 w-32" />
               <Skeleton className="h-10 w-full rounded-md" />
             </div>
           </Field>
-
           {sectionDef.fields.map(({ id }) => (
             <Field key={id} className="mb-4">
               <div className="flex w-full flex-col gap-2">
@@ -150,7 +141,6 @@ export function MetaAtsSection() {
               </div>
             </Field>
           ))}
-
           <div className="mt-4 flex flex-col gap-4 border-t pt-6">
             <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
               <div className="flex flex-col gap-2">
@@ -159,7 +149,6 @@ export function MetaAtsSection() {
               </div>
               <Skeleton className="h-9 w-28 rounded-md" />
             </div>
-
             {(keywordsList.length > 0 ? keywordsList : [""]).map((_, index) => (
               <Field key={index}>
                 <div className="flex w-full flex-col gap-2">
@@ -170,7 +159,6 @@ export function MetaAtsSection() {
                 </div>
               </Field>
             ))}
-
             <div className="mt-2 flex justify-end">
               <Skeleton className="h-7 w-24 rounded-md" />
             </div>
@@ -271,7 +259,6 @@ export function MetaAtsSection() {
             id="meta-keywords"
             className="mt-4 flex w-full scroll-mt-24 flex-col gap-4 border-t pt-6"
           >
-            {/* KEYWORDS HEADER (ALINHADO COM SETA EM CIMA DO BOTÃO) */}
             <div className="flex w-full flex-row items-start justify-between gap-4">
               <div className="flex flex-col text-left">
                 <h4 className="text-sm font-semibold">
@@ -312,7 +299,6 @@ export function MetaAtsSection() {
               </div>
             </div>
 
-            {/* LISTA DE PALAVRAS CHAVE */}
             <CollapsibleContent className="w-full space-y-4">
               {keywordsList.map((keyword, index) => (
                 <Field
@@ -360,7 +346,6 @@ export function MetaAtsSection() {
                 </Field>
               ))}
 
-              {/* Botão de Rodapé */}
               <div className="mt-2 flex justify-end">
                 <Button
                   type="button"
