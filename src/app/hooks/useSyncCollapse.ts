@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 
 type Listener = (isOpen: boolean) => void;
 const listeners = new Map<string, Set<Listener>>();
@@ -22,30 +22,28 @@ export const publishSectionToggle = (id: string, isOpen: boolean) => {
   listeners.get(id)?.forEach((listener) => listener(isOpen));
 };
 
-// --- O CUSTOM HOOK ---
+// --- O CUSTOM HOOK CORRIGIDO ---
 export function useSyncCollapse(id: string, initialValue: boolean = true) {
   const [isOpen, setIsOpenState] = useState(initialValue);
+  const isExternalChange = useRef(false);
 
-  // Escuta se o Índice (SectionNav) mandou abrir/fechar este ID
+  // 1. Escuta mudanças vindas de fora (Nav -> Form)
   useEffect(() => {
     const unsubscribe = subscribeToSection(id, (nextOpen) => {
+      isExternalChange.current = true;
       setIsOpenState(nextOpen);
     });
     return unsubscribe;
   }, [id]);
 
-  // Atualiza o estado local e avisa o Índice (SectionNav) sobre a mudança
-  const setIsOpen = useCallback(
-    (nextOpen: boolean | ((prev: boolean) => boolean)) => {
-      setIsOpenState((prev) => {
-        const resolved =
-          typeof nextOpen === "function" ? nextOpen(prev) : nextOpen;
-        publishSectionToggle(id, resolved);
-        return resolved;
-      });
-    },
-    [id]
-  );
+  // 2. Publica mudanças locais de forma assíncrona pós-render (Form -> Nav)
+  useEffect(() => {
+    if (isExternalChange.current) {
+      isExternalChange.current = false;
+      return;
+    }
+    publishSectionToggle(id, isOpen);
+  }, [id, isOpen]);
 
-  return [isOpen, setIsOpen] as const;
+  return [isOpen, setIsOpenState] as const;
 }
