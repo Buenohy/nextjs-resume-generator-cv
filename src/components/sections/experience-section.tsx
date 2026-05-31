@@ -262,6 +262,7 @@ export function ExperienceSection() {
       >
         {/* NÍVEL 1: HEADER PRINCIPAL DA SEÇÃO */}
         <div className="flex w-full flex-row items-start justify-between gap-4">
+          {/* LADO ESQUERDO: TEXTOS DE INFORMAÇÃO */}
           <div className="flex flex-col text-left">
             <h2 className="text-xl font-semibold">
               {t("sections.experience.title")}
@@ -276,7 +277,9 @@ export function ExperienceSection() {
             </p>
           </div>
 
+          {/* LADO DIREITO: DIV ÚNICA QUE AGRUPA O ABRE/FECHA EM CIMA E O ADICIONAR EMBAIXO */}
           <div className="flex shrink-0 flex-col items-end gap-2">
+            {/* COLLAPSIBLE TRIGGER (SETA CHEVRON) */}
             <CollapsibleTrigger asChild>
               <Button
                 type="button"
@@ -322,38 +325,43 @@ export function ExperienceSection() {
                 id={`experience-item-${expIndex}`}
                 className="flex scroll-mt-24 flex-col gap-6 border-b pt-4 pb-8 last:border-0 last:pb-0"
               >
-                {/* NÍVEL 2: HEADER DE CADA EXPERIÊNCIA INDIVIDUAL */}
-                <div className="flex w-full flex-row items-start justify-between gap-4">
-                  <CollapsibleTrigger asChild>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      className="group flex flex-1 cursor-pointer items-center justify-between text-left transition-opacity hover:opacity-80 focus:outline-none"
-                    >
-                      <h4 className="text-lg font-semibold">
-                        {t("sections.experience.itemLabel", {
-                          num: expIndex + 1,
-                        })}
-                      </h4>
-                      <ChevronDown
-                        className={`text-muted-foreground mr-4 h-4 w-4 transition-transform duration-200 ${
-                          isExpOpen ? "rotate-180" : ""
-                        } `}
-                      />
-                    </div>
-                  </CollapsibleTrigger>
+                {/* NÍVEL 2: HEADER DE CADA EXPERIÊNCIA INDIVIDUAL (CORRIGIDO PARA O NOVO PADRÃO) */}
+                <div className="flex w-full flex-row items-center justify-between gap-4">
+                  {/* LADO ESQUERDO: APENAS O TÍTULO */}
+                  <h4 className="text-left text-lg font-semibold">
+                    {t("sections.experience.itemLabel", { num: expIndex + 1 })}
+                  </h4>
 
-                  {cvData.experiences.length > 1 && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeExperience(expIndex)}
-                    >
-                      <Trash2 className="text-destructive mr-1 h-4 w-4" />{" "}
-                      {t("sections.experience.removeBtn")}
-                    </Button>
-                  )}
+                  {/* LADO DIREITO: SETINHA DE COLAPSO + BOTÃO DE REMOVER */}
+                  <div className="flex shrink-0 flex-row items-center gap-2">
+                    <CollapsibleTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 focus-visible:ring-0"
+                      >
+                        <ChevronDown
+                          className={`text-muted-foreground h-4 w-4 transition-transform duration-200 ${
+                            isExpOpen ? "rotate-180" : ""
+                          } `}
+                        />
+                      </Button>
+                    </CollapsibleTrigger>
+
+                    {cvData.experiences.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeExperience(expIndex)}
+                        className="gap-1"
+                      >
+                        <Trash2 className="text-destructive h-4 w-4" />{" "}
+                        {t("sections.experience.removeBtn")}
+                      </Button>
+                    )}
+                  </div>
                 </div>
 
                 {/* NÍVEL 2 CONTEÚDO (CAMPOS DA EXPERIÊNCIA) */}
@@ -462,7 +470,7 @@ export function ExperienceSection() {
                         id={`experience-details-${expIndex}`}
                         className="border-muted/60 my-4 ml-4 flex scroll-mt-24 flex-col gap-4 border-l-2 pl-6 md:ml-8"
                       >
-                        {/* HEADER DETALHES (ALINHADO COM SETA EM CIMA DO BOTÃO) */}
+                        {/* HEADER DETALHES */}
                         <div className="flex w-full flex-row items-start justify-between gap-4">
                           <div className="flex flex-col text-left">
                             <h5 className="text-sm font-semibold">
@@ -599,7 +607,7 @@ export function ExperienceSection() {
                         id={`experience-stacks-${expIndex}`}
                         className="border-muted/60 my-4 ml-4 flex scroll-mt-24 flex-col gap-4 border-l-2 pl-6 md:ml-8"
                       >
-                        {/* HEADER STACKS (ALINHADO COM SETA EM CIMA DO BOTÃO) */}
+                        {/* HEADER STACKS */}
                         <div className="flex w-full flex-row items-start justify-between gap-4">
                           <div className="flex flex-col text-left">
                             <h5 className="text-sm font-semibold">
