@@ -1,11 +1,14 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
+import prettier from "eslint-config-prettier";
 import betterTailwindcss from "eslint-plugin-better-tailwindcss";
 
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+
+  prettier,
 
   {
     plugins: {
@@ -16,7 +19,7 @@ const eslintConfig = defineConfig([
     },
     settings: {
       tailwindcss: {
-        callees: ["cn", "clsx", "classNames"],
+        callees: ["cn", "clsx", "classNames", "twMerge"],
       },
     },
   },
