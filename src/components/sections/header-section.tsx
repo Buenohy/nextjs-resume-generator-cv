@@ -99,7 +99,8 @@ export function HeaderSection() {
         <div className="flex w-full flex-row items-start justify-between gap-4">
           <div className="flex flex-col text-left">
             <h2 className="text-xl font-semibold">{sectionDef.title}</h2>
-            <h3 className="text-muted-foreground border-b pb-2 text-lg">
+            {/* CORRIGIDO: Removido 'border-b pb-2' */}
+            <h3 className="text-muted-foreground text-lg">
               {sectionDef.subTitle}
             </h3>
           </div>
