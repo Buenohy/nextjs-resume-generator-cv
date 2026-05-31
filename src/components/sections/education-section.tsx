@@ -91,7 +91,7 @@ function EducationItem({
   // HOOK DO SUB-ITEM CONECTADO AO ÍNDICE
   const [isEduOpen, setIsEduOpen] = useSyncCollapse(
     `education-item-${index}`,
-    true
+    false
   );
   const parsed = parseEduString(edu, YEARS, MONTHS);
 
@@ -236,7 +236,7 @@ export function EducationSection() {
   const handleAutoResize = useAutoResize();
 
   const [isMounted, setIsMounted] = useState(false);
-  const [isOpen, setIsOpen] = useSyncCollapse("education", true);
+  const [isOpen, setIsOpen] = useSyncCollapse("education", false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
