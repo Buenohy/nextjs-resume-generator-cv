@@ -23,9 +23,8 @@ export function MetaAtsSection() {
   const cvData = useResumeStore((s) => s.cvData);
   const updateCvData = useResumeStore((s) => s.updateCvData);
   const handleAutoResize = useAutoResize();
-  const [isMounted, setIsMounted] = useState(false);
 
-  // ESTADO PARA CONTROLAR A ABERTURA/FECHAMENTO (Começa aberto por padrão)
+  const [isMounted, setIsMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
 
   {
@@ -121,18 +120,23 @@ export function MetaAtsSection() {
     return (
       <CardContent>
         <div className="flex flex-col gap-6 border-b py-4">
+          {/* Header Skeletons */}
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
             <div className="flex flex-col gap-2">
               <Skeleton className="h-6 w-44" />
               <Skeleton className="h-4.5 w-56 sm:w-72" />
             </div>
           </div>
+
+          {/* Metadata Language Input Skeleton */}
           <Field className="mb-4">
             <div className="flex w-full flex-col gap-2">
               <Skeleton className="h-4 w-32" />
               <Skeleton className="h-10 w-full rounded-md" />
             </div>
           </Field>
+
+          {/* Standard Inputs Skeletons */}
           {sectionDef.fields.map(({ id }) => (
             <Field key={id} className="mb-4">
               <div className="flex w-full flex-col gap-2">
@@ -141,6 +145,8 @@ export function MetaAtsSection() {
               </div>
             </Field>
           ))}
+
+          {/* Keywords Array Skeletons */}
           <div className="mt-4 flex flex-col gap-4 border-t pt-6">
             <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
               <div className="flex flex-col gap-2">
@@ -149,6 +155,7 @@ export function MetaAtsSection() {
               </div>
               <Skeleton className="h-9 w-28 rounded-md" />
             </div>
+
             {(keywordsList.length > 0 ? keywordsList : [""]).map((_, index) => (
               <Field key={index}>
                 <div className="flex w-full flex-col gap-2">
@@ -159,6 +166,7 @@ export function MetaAtsSection() {
                 </div>
               </Field>
             ))}
+
             <div className="mt-2 flex justify-end">
               <Skeleton className="h-7 w-24 rounded-md" />
             </div>
@@ -170,35 +178,37 @@ export function MetaAtsSection() {
 
   return (
     <CardContent>
-      {/* O ENVOLVEDOR COLLAPSIBLE */}
       <Collapsible
         open={isOpen}
         onOpenChange={setIsOpen}
         className="flex flex-col gap-6 border-b py-4"
       >
-        {/* CABEÇALHO CLICÁVEL (TRIGGER) */}
-        <CollapsibleTrigger asChild>
-          <div
-            role="button"
-            tabIndex={0}
-            className="group flex w-full cursor-pointer items-start justify-between text-left transition-opacity hover:opacity-80 focus:outline-none"
-          >
-            <div className="flex w-full flex-col">
-              <div className="flex w-full items-center justify-between pr-1">
-                <h2 className="text-xl font-semibold">{sectionDef.title}</h2>
-                {/* ÍCONE QUE GIRA CONFORME O ESTADO */}
+        {/* SECTION HEADER */}
+        <div className="flex w-full flex-row items-start justify-between gap-4">
+          <div className="flex flex-col text-left">
+            <h2 className="text-xl font-semibold">{sectionDef.title}</h2>
+            <h3 className="text-muted-foreground border-b pb-2 text-lg">
+              {sectionDef.subTitle}
+            </h3>
+          </div>
+
+          <div className="flex shrink-0 flex-col items-end gap-2">
+            <CollapsibleTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9 focus-visible:ring-0"
+              >
                 <ChevronDown
                   className={`text-muted-foreground h-5 w-5 transition-transform duration-200 ${
                     isOpen ? "rotate-180" : ""
                   } `}
                 />
-              </div>
-              <h3 className="mt-1 w-full border-b pb-2 text-lg">
-                {sectionDef.subTitle}
-              </h3>
-            </div>
+              </Button>
+            </CollapsibleTrigger>
           </div>
-        </CollapsibleTrigger>
+        </div>
 
         {/* CONTEÚDO QUE SOME E APARECE */}
         <CollapsibleContent className="space-y-4">
@@ -219,6 +229,7 @@ export function MetaAtsSection() {
 
           {sectionDef.fields.map(({ id, label, placeholder }) => {
             const domId = `meta-${id}`;
+
             return (
               <Field key={id} className="mb-4 scroll-mt-24" id={domId}>
                 <div className="flex w-full flex-col gap-2">
@@ -249,6 +260,7 @@ export function MetaAtsSection() {
             );
           })}
 
+          {/* === KEYWORDS SECTION (DYNAMIC ARRAY) === */}
           <div
             id="meta-keywords"
             className="mt-4 flex scroll-mt-24 flex-col gap-4 border-t pt-6"
