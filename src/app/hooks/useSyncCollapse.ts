@@ -22,8 +22,9 @@ export const publishSectionToggle = (id: string, isOpen: boolean) => {
   listeners.get(id)?.forEach((listener) => listener(isOpen));
 };
 
-// --- O CUSTOM HOOK CORRIGIDO ---
-export function useSyncCollapse(id: string, initialValue: boolean = true) {
+// --- O CUSTOM HOOK (FECHADO POR PADRÃO) ---
+export function useSyncCollapse(id: string, initialValue: boolean = false) {
+  // Padrão: false
   const [isOpen, setIsOpenState] = useState(initialValue);
   const isExternalChange = useRef(false);
 
@@ -31,10 +32,7 @@ export function useSyncCollapse(id: string, initialValue: boolean = true) {
   useEffect(() => {
     const unsubscribe = subscribeToSection(id, (nextOpen) => {
       setIsOpenState((prev) => {
-        // CORRIGIDO: Se o estado já for igual, retorna o mesmo valor e NÃO ativa o sinalizador
         if (prev === nextOpen) return prev;
-
-        // Só marca como mudança externa se houver uma transição real de estado
         isExternalChange.current = true;
         return nextOpen;
       });
