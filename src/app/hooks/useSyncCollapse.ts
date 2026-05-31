@@ -30,8 +30,14 @@ export function useSyncCollapse(id: string, initialValue: boolean = true) {
   // 1. Escuta mudanças vindas de fora (Nav -> Form)
   useEffect(() => {
     const unsubscribe = subscribeToSection(id, (nextOpen) => {
-      isExternalChange.current = true;
-      setIsOpenState(nextOpen);
+      setIsOpenState((prev) => {
+        // CORRIGIDO: Se o estado já for igual, retorna o mesmo valor e NÃO ativa o sinalizador
+        if (prev === nextOpen) return prev;
+
+        // Só marca como mudança externa se houver uma transição real de estado
+        isExternalChange.current = true;
+        return nextOpen;
+      });
     });
     return unsubscribe;
   }, [id]);
