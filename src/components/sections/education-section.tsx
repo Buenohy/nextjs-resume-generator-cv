@@ -220,6 +220,7 @@ export function EducationSection() {
               </Button>
             </CollapsibleTrigger>
 
+            {/* BOTÃO MAIOR: SEMPRE VISÍVEL */}
             <Button type="button" variant="outline" size="sm" onClick={addItem}>
               <Plus className="mr-2 h-4 w-4" /> {t("sections.education.addBtn")}
             </Button>
@@ -375,21 +376,21 @@ export function EducationSection() {
               </Collapsible>
             );
           })}
-        </CollapsibleContent>
 
-        {/* ADD ITEM BUTTON (No final do CollapsibleContent principal) */}
-        <div className="mt-2 flex justify-end">
-          <Button
-            type="button"
-            variant="outline"
-            size="xs"
-            onClick={addItem}
-            className="gap-1 text-xs"
-          >
-            <Plus className="mr-1 h-3.5 w-3.5" />{" "}
-            {t("sections.education.addBtn")}
-          </Button>
-        </div>
+          {/* BOTÃO MENOR (RODAPÉ): APARECE SÓ QUANDO ESTIVER ABERTO */}
+          <div className="mt-2 flex justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              size="xs"
+              onClick={addItem}
+              className="gap-1 text-xs"
+            >
+              <Plus className="mr-1 h-3.5 w-3.5" />{" "}
+              {t("sections.education.addBtn")}
+            </Button>
+          </div>
+        </CollapsibleContent>
       </Collapsible>
     </CardContent>
   );
