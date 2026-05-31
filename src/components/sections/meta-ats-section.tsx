@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, ChevronDown } from "lucide-react";
 import { useResumeStore } from "@/store/useResumeStore";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,11 @@ import { CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAutoResize } from "@/app/hooks/useAutoResize";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 export function MetaAtsSection() {
   const t = useTranslations("ResumeBuilderPage");
@@ -20,11 +25,11 @@ export function MetaAtsSection() {
   const handleAutoResize = useAutoResize();
   const [isMounted, setIsMounted] = useState(false);
 
+  // ESTADO PARA CONTROLAR A ABERTURA/FECHAMENTO (Começa aberto por padrão)
+  const [isOpen, setIsOpen] = useState(true);
+
   {
-    /* 
-    DEFERRED MOUNT EFFECT
-    - Defers rendering the fully interactive state to prevent hydration issues.
-  */
+    /* DEFERRED MOUNT EFFECT */
   }
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -110,32 +115,24 @@ export function MetaAtsSection() {
   };
 
   {
-    /* 
-    HIGH-FIDELITY SKELETON LOADER
-    - Matches the layout, gaps, and heights of both flat and dynamic components exactly.
-  */
+    /* HIGH-FIDELITY SKELETON LOADER */
   }
   if (!isMounted) {
     return (
       <CardContent>
         <div className="flex flex-col gap-6 border-b py-4">
-          {/* Header Skeletons */}
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
             <div className="flex flex-col gap-2">
               <Skeleton className="h-6 w-44" />
               <Skeleton className="h-4.5 w-56 sm:w-72" />
             </div>
           </div>
-
-          {/* Metadata Language Input Skeleton */}
           <Field className="mb-4">
             <div className="flex w-full flex-col gap-2">
               <Skeleton className="h-4 w-32" />
               <Skeleton className="h-10 w-full rounded-md" />
             </div>
           </Field>
-
-          {/* Standard Inputs Skeletons mapping exactly the same amount of fields */}
           {sectionDef.fields.map(({ id }) => (
             <Field key={id} className="mb-4">
               <div className="flex w-full flex-col gap-2">
@@ -144,8 +141,6 @@ export function MetaAtsSection() {
               </div>
             </Field>
           ))}
-
-          {/* Keywords Array Skeletons */}
           <div className="mt-4 flex flex-col gap-4 border-t pt-6">
             <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
               <div className="flex flex-col gap-2">
@@ -154,7 +149,6 @@ export function MetaAtsSection() {
               </div>
               <Skeleton className="h-9 w-28 rounded-md" />
             </div>
-
             {(keywordsList.length > 0 ? keywordsList : [""]).map((_, index) => (
               <Field key={index}>
                 <div className="flex w-full flex-col gap-2">
@@ -165,7 +159,6 @@ export function MetaAtsSection() {
                 </div>
               </Field>
             ))}
-
             <div className="mt-2 flex justify-end">
               <Skeleton className="h-7 w-24 rounded-md" />
             </div>
@@ -177,156 +170,170 @@ export function MetaAtsSection() {
 
   return (
     <CardContent>
-      <div className="flex flex-col gap-6 border-b py-4">
-        {/* SECTION HEADER */}
-        <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-          <div>
-            <h2 className="text-xl font-semibold">{sectionDef.title}</h2>
-            <h3 className="border-b pb-2 text-lg">{sectionDef.subTitle}</h3>
+      {/* O ENVOLVEDOR COLLAPSIBLE */}
+      <Collapsible
+        open={isOpen}
+        onOpenChange={setIsOpen}
+        className="flex flex-col gap-6 border-b py-4"
+      >
+        {/* CABEÇALHO CLICÁVEL (TRIGGER) */}
+        <CollapsibleTrigger asChild>
+          <div
+            role="button"
+            tabIndex={0}
+            className="group flex w-full cursor-pointer items-start justify-between text-left transition-opacity hover:opacity-80 focus:outline-none"
+          >
+            <div className="flex w-full flex-col">
+              <div className="flex w-full items-center justify-between pr-1">
+                <h2 className="text-xl font-semibold">{sectionDef.title}</h2>
+                {/* ÍCONE QUE GIRA CONFORME O ESTADO */}
+                <ChevronDown
+                  className={`text-muted-foreground h-5 w-5 transition-transform duration-200 ${
+                    isOpen ? "rotate-180" : ""
+                  } `}
+                />
+              </div>
+              <h3 className="mt-1 w-full border-b pb-2 text-lg">
+                {sectionDef.subTitle}
+              </h3>
+            </div>
           </div>
-        </div>
+        </CollapsibleTrigger>
 
-        {/* 
-          READ-ONLY INFORMATIONAL FIELD (Metadata Language)
-          - Displays the localized system language dynamically.
-          - Helps users see which ISO standard language metadata will be embedded into the PDF.
-        */}
-        <Field className="mb-4 scroll-mt-24" id="meta-lang">
-          <div className="flex w-full flex-col gap-2">
-            <FieldLabel className="text-left font-medium capitalize">
-              {t("sections.meta_ats.metadataLanguageLabel")}
-            </FieldLabel>
-            <Input
-              className="bg-muted w-full cursor-not-allowed opacity-80"
-              disabled
-              value={locale === "pt" ? "Português (pt-BR)" : "English (en-US)"}
-            />
-          </div>
-        </Field>
+        {/* CONTEÚDO QUE SOME E APARECE */}
+        <CollapsibleContent className="space-y-4">
+          <Field className="mb-4 scroll-mt-24" id="meta-lang">
+            <div className="flex w-full flex-col gap-2">
+              <FieldLabel className="text-left font-medium capitalize">
+                {t("sections.meta_ats.metadataLanguageLabel")}
+              </FieldLabel>
+              <Input
+                className="bg-muted w-full cursor-not-allowed opacity-80"
+                disabled
+                value={
+                  locale === "pt" ? "Português (pt-BR)" : "English (en-US)"
+                }
+              />
+            </div>
+          </Field>
 
-        {/* RENDER FLAT METADATA FIELDS */}
-        {sectionDef.fields.map(({ id, label, placeholder }) => {
-          const domId = `meta-${id}`; // Criação dinâmica dos IDs para cada campo
+          {sectionDef.fields.map(({ id, label, placeholder }) => {
+            const domId = `meta-${id}`;
+            return (
+              <Field key={id} className="mb-4 scroll-mt-24" id={domId}>
+                <div className="flex w-full flex-col gap-2">
+                  <FieldLabel className="text-left font-medium capitalize">
+                    {label}
+                  </FieldLabel>
+                  {textareaFields.includes(id) ? (
+                    <Textarea
+                      className="min-h-[38px] w-full resize-none overflow-hidden py-2"
+                      rows={1}
+                      placeholder={placeholder}
+                      value={getFieldValue(id)}
+                      onChange={(e) => {
+                        handleAutoResize(e);
+                        handleChange(id, e.target.value);
+                      }}
+                    />
+                  ) : (
+                    <Input
+                      className="w-full"
+                      placeholder={placeholder}
+                      value={getFieldValue(id)}
+                      onChange={(e) => handleChange(id, e.target.value)}
+                    />
+                  )}
+                </div>
+              </Field>
+            );
+          })}
 
-          return (
-            <Field key={id} className="mb-4 scroll-mt-24" id={domId}>
-              <div className="flex w-full flex-col gap-2">
-                <FieldLabel className="text-left font-medium capitalize">
-                  {label}
-                </FieldLabel>
-                {textareaFields.includes(id) ? (
+          <div
+            id="meta-keywords"
+            className="mt-4 flex scroll-mt-24 flex-col gap-4 border-t pt-6"
+          >
+            <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+              <div>
+                <h4 className="text-sm font-semibold">
+                  {t("sections.meta_ats.keywordsOptimizerTitle")}
+                </h4>
+                <p className="text-muted-foreground mt-1 text-xs">
+                  {t("sections.meta_ats.keywordsCount", {
+                    count: keywordsList.length,
+                  })}
+                </p>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addKeyword}
+              >
+                <Plus className="mr-2 h-4 w-4" />{" "}
+                {t("sections.meta_ats.addKeywordBtn")}
+              </Button>
+            </div>
+
+            {keywordsList.map((keyword, index) => (
+              <Field
+                key={index}
+                id={`meta-keyword-${index}`}
+                className="scroll-mt-24"
+              >
+                <div className="flex w-full flex-col gap-2">
+                  <div className="flex w-full items-center justify-between">
+                    <FieldLabel className="text-left text-xs font-medium capitalize">
+                      {t("sections.meta_ats.keywordLabel", { num: index + 1 })}
+                    </FieldLabel>
+
+                    {keywordsList.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeKeyword(index)}
+                        className="size-8 shrink-0"
+                      >
+                        <Trash2 className="text-destructive h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+
                   <Textarea
                     className="min-h-[38px] w-full resize-none overflow-hidden py-2"
                     rows={1}
-                    placeholder={placeholder}
-                    value={getFieldValue(id)}
+                    placeholder={t("sections.meta_ats.keywordPlaceholder")}
+                    value={keyword}
+                    onBlur={(e) => {
+                      if (!e.target.value.trim() && keywordsList.length > 1) {
+                        removeKeyword(index);
+                      }
+                    }}
                     onChange={(e) => {
                       handleAutoResize(e);
-                      handleChange(id, e.target.value);
+                      updateKeyword(index, e.target.value);
                     }}
                   />
-                ) : (
-                  <Input
-                    className="w-full"
-                    placeholder={placeholder}
-                    value={getFieldValue(id)}
-                    onChange={(e) => handleChange(id, e.target.value)}
-                  />
-                )}
-              </div>
-            </Field>
-          );
-        })}
-
-        {/* === KEYWORDS SECTION (DYNAMIC ARRAY) === */}
-        <div
-          id="meta-keywords"
-          className="mt-4 flex scroll-mt-24 flex-col gap-4 border-t pt-6"
-        >
-          {/* KEYWORDS HEADER */}
-          <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-            <div>
-              <h4 className="text-sm font-semibold">
-                {t("sections.meta_ats.keywordsOptimizerTitle")}
-              </h4>
-              <p className="text-muted-foreground mt-1 text-xs">
-                {t("sections.meta_ats.keywordsCount", {
-                  count: keywordsList.length,
-                })}
-              </p>
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={addKeyword}
-            >
-              <Plus className="mr-2 h-4 w-4" />{" "}
-              {t("sections.meta_ats.addKeywordBtn")}
-            </Button>
-          </div>
-
-          {keywordsList.map((keyword, index) => (
-            <Field
-              key={index}
-              id={`meta-keyword-${index}`}
-              className="scroll-mt-24"
-            >
-              <div className="flex w-full flex-col gap-2">
-                {/* Keyword Row Title & Trash Icon */}
-                <div className="flex w-full items-center justify-between">
-                  <FieldLabel className="text-left text-xs font-medium capitalize">
-                    {t("sections.meta_ats.keywordLabel", { num: index + 1 })}
-                  </FieldLabel>
-
-                  {keywordsList.length > 1 && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeKeyword(index)}
-                      className="size-8 shrink-0"
-                    >
-                      <Trash2 className="text-destructive h-4 w-4" />
-                    </Button>
-                  )}
                 </div>
+              </Field>
+            ))}
 
-                {/* Keyword Input Field */}
-                <Textarea
-                  className="min-h-[38px] w-full resize-none overflow-hidden py-2"
-                  rows={1}
-                  placeholder={t("sections.meta_ats.keywordPlaceholder")}
-                  value={keyword}
-                  onBlur={(e) => {
-                    if (!e.target.value.trim() && keywordsList.length > 1) {
-                      removeKeyword(index);
-                    }
-                  }}
-                  onChange={(e) => {
-                    handleAutoResize(e);
-                    updateKeyword(index, e.target.value);
-                  }}
-                />
-              </div>
-            </Field>
-          ))}
-
-          {/* Add Keyword Button (Bottom) */}
-          <div className="mt-2 flex justify-end">
-            <Button
-              type="button"
-              variant="outline"
-              size="xs"
-              onClick={addKeyword}
-              className="gap-1 text-xs"
-            >
-              <Plus className="size-3.5" />{" "}
-              {t("sections.meta_ats.addKeywordBtn")}
-            </Button>
+            <div className="mt-2 flex justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                size="xs"
+                onClick={addKeyword}
+                className="gap-1 text-xs"
+              >
+                <Plus className="size-3.5" />{" "}
+                {t("sections.meta_ats.addKeywordBtn")}
+              </Button>
+            </div>
           </div>
-        </div>
-      </div>
+        </CollapsibleContent>
+      </Collapsible>
     </CardContent>
   );
 }
