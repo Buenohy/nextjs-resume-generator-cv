@@ -72,7 +72,7 @@ function CertificationItem({
   // HOOK DO SUB-ITEM CONECTADO AO ÍNDICE
   const [isCertOpen, setIsCertOpen] = useSyncCollapse(
     `certification-item-${index}`,
-    true
+    false
   );
   const parsed = parseCertString(cert, YEARS, MONTHS);
 
@@ -182,7 +182,7 @@ export function CertificationsSection() {
   const handleAutoResize = useAutoResize();
 
   const [isMounted, setIsMounted] = useState(false);
-  const [isOpen, setIsOpen] = useSyncCollapse("certifications", true);
+  const [isOpen, setIsOpen] = useSyncCollapse("certifications", false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
