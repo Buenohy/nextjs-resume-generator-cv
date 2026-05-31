@@ -323,8 +323,8 @@
       "missingSubject": "Palavras do subject ausentes:",
       "missingSubjectEmpty": "Nenhum termo do subject ausente!",
       "roleValidation": "Validação do cargo declarado:",
-      "roleMismatch": "Atenção: O cargo '{role}' informado no formulário não parece estar relacionado à descrição da vaga.",
-      "roleMatch": "Sucesso! O cargo '{role}' está perfeitamente alinhado com a descrição da vaga analisada."
+      "roleMismatch": "Atenção: O cargo {role} informado no formulário não parece estar relacionado à descrição da vaga.",
+      "roleMatch": "Sucesso! O cargo {role} está perfeitamente alinhado com a descrição da vaga analisada."
     },
     "feedbackOptimize": {
       "weakVerbsDetected": "⚠️ Verbo Fraco Detectado",
