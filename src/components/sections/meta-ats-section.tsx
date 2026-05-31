@@ -28,10 +28,10 @@ export function MetaAtsSection() {
   const [isMounted, setIsMounted] = useState(false);
 
   // ESTADOS DE COLAPSO SINCRONIZADOS VIA CUSTOM HOOK
-  const [isOpen, setIsOpen] = useSyncCollapse("meta-ats", true);
+  const [isOpen, setIsOpen] = useSyncCollapse("meta-ats", false);
   const [isKeywordsOpen, setIsKeywordsOpen] = useSyncCollapse(
     "meta-keywords",
-    true
+    false
   );
 
   useEffect(() => {
