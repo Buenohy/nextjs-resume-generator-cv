@@ -76,7 +76,8 @@ export function AiSection() {
         <div className="flex w-full flex-row items-start justify-between gap-4">
           <div className="flex flex-col text-left">
             <h2 className="text-xl font-semibold">{t("sections.ai.title")}</h2>
-            <h3 className="text-muted-foreground border-b pb-2 text-lg">
+            {/* CORRIGIDO: Removido 'border-b pb-2' */}
+            <h3 className="text-muted-foreground text-lg">
               {t("sections.ai.subTitle")}
             </h3>
           </div>
