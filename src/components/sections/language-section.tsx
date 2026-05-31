@@ -168,6 +168,7 @@ export function LanguagesSection() {
               </Button>
             </CollapsibleTrigger>
 
+            {/* BOTÃO MAIOR: SEMPRE VISÍVEL */}
             <Button type="button" variant="outline" size="sm" onClick={addItem}>
               <Plus className="mr-2 h-4 w-4" /> {t("sections.languages.addBtn")}
             </Button>
@@ -274,20 +275,20 @@ export function LanguagesSection() {
               </Collapsible>
             );
           })}
-        </CollapsibleContent>
 
-        {/* ADD ITEM BUTTON */}
-        <div className="mt-2 flex justify-end">
-          <Button
-            type="button"
-            variant="outline"
-            size="xs"
-            onClick={addItem}
-            className="gap-1 text-xs"
-          >
-            <Plus className="h-3.5 w-3.5" /> {t("sections.languages.addBtn")}
-          </Button>
-        </div>
+          {/* BOTÃO MENOR (RODAPÉ): APARECE SÓ QUANDO ESTIVER ABERTO */}
+          <div className="mt-2 flex justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              size="xs"
+              onClick={addItem}
+              className="gap-1 text-xs"
+            >
+              <Plus className="h-3.5 w-3.5" /> {t("sections.languages.addBtn")}
+            </Button>
+          </div>
+        </CollapsibleContent>
       </Collapsible>
     </CardContent>
   );
