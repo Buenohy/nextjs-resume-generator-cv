@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CardContent } from "@/components/ui/card";
 import { useAutoResize } from "@/app/hooks/useAutoResize";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
@@ -71,30 +72,34 @@ export function SummarySection() {
         onOpenChange={setIsOpen}
         className="flex flex-col gap-6 border-b py-4"
       >
-        {/* CABEÇALHO CLICÁVEL (TRIGGER) */}
-        <CollapsibleTrigger asChild>
-          <div
-            role="button"
-            tabIndex={0}
-            className="group flex w-full cursor-pointer items-start justify-between text-left transition-opacity hover:opacity-80 focus:outline-none"
-          >
-            <div className="flex w-full flex-col">
-              <div className="flex w-full items-center justify-between pr-1">
-                <h2 className="text-xl font-semibold">
-                  {t("sections.summary.title")}
-                </h2>
+        {/* SECTION HEADER */}
+        <div className="flex w-full flex-row items-start justify-between gap-4">
+          <div className="flex flex-col text-left">
+            <h2 className="text-xl font-semibold">
+              {t("sections.summary.title")}
+            </h2>
+            <h3 className="text-muted-foreground border-b pb-2 text-lg">
+              {t("sections.summary.subTitle")}
+            </h3>
+          </div>
+
+          <div className="flex shrink-0 flex-col items-end gap-2">
+            <CollapsibleTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9 focus-visible:ring-0"
+              >
                 <ChevronDown
                   className={`text-muted-foreground h-5 w-5 transition-transform duration-200 ${
                     isOpen ? "rotate-180" : ""
                   } `}
                 />
-              </div>
-              <h3 className="mt-1 w-full border-b pb-2 text-lg">
-                {t("sections.summary.subTitle")}
-              </h3>
-            </div>
+              </Button>
+            </CollapsibleTrigger>
           </div>
-        </CollapsibleTrigger>
+        </div>
 
         {/* CONTEÚDO QUE SOME E APARECE */}
         <CollapsibleContent className="space-y-4">
