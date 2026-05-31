@@ -28,7 +28,13 @@ export function MetaAtsSection() {
 
   const [isMounted, setIsMounted] = useState(false);
 
+  // ESTADOS DE COLAPSO SINCRONIZADOS VIA CUSTOM HOOK
   const [isOpen, setIsOpen] = useSyncCollapse("meta-ats", true);
+  const [isKeywordsOpen, setIsKeywordsOpen] = useSyncCollapse(
+    "meta-keywords",
+    true
+  );
+
   {
     /* DEFERRED MOUNT EFFECT */
   }
@@ -122,7 +128,6 @@ export function MetaAtsSection() {
     return (
       <CardContent>
         <div className="flex flex-col gap-6 border-b py-4">
-          {/* Header Skeletons */}
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
             <div className="flex flex-col gap-2">
               <Skeleton className="h-6 w-44" />
@@ -130,7 +135,6 @@ export function MetaAtsSection() {
             </div>
           </div>
 
-          {/* Metadata Language Input Skeleton */}
           <Field className="mb-4">
             <div className="flex w-full flex-col gap-2">
               <Skeleton className="h-4 w-32" />
@@ -138,7 +142,6 @@ export function MetaAtsSection() {
             </div>
           </Field>
 
-          {/* Standard Inputs Skeletons */}
           {sectionDef.fields.map(({ id }) => (
             <Field key={id} className="mb-4">
               <div className="flex w-full flex-col gap-2">
@@ -148,7 +151,6 @@ export function MetaAtsSection() {
             </Field>
           ))}
 
-          {/* Keywords Array Skeletons */}
           <div className="mt-4 flex flex-col gap-4 border-t pt-6">
             <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
               <div className="flex flex-col gap-2">
@@ -185,11 +187,10 @@ export function MetaAtsSection() {
         onOpenChange={setIsOpen}
         className="flex flex-col gap-6 border-b py-4"
       >
-        {/* SECTION HEADER */}
+        {/* NÍVEL 1: HEADER PRINCIPAL DA SEÇÃO */}
         <div className="flex w-full flex-row items-start justify-between gap-4">
           <div className="flex flex-col text-left">
             <h2 className="text-xl font-semibold">{sectionDef.title}</h2>
-            {/* CORRIGIDO: Removido 'border-b pb-2' */}
             <h3 className="text-muted-foreground text-lg">
               {sectionDef.subTitle}
             </h3>
@@ -213,7 +214,7 @@ export function MetaAtsSection() {
           </div>
         </div>
 
-        {/* CONTEÚDO QUE SOME E APARECE */}
+        {/* NÍVEL 1 CONTEÚDO (CAMPOS DE CONFIGURAÇÃO DO ATS) */}
         <CollapsibleContent className="space-y-4">
           <Field className="mb-4 scroll-mt-24" id="meta-lang">
             <div className="flex w-full flex-col gap-2">
@@ -263,90 +264,117 @@ export function MetaAtsSection() {
             );
           })}
 
-          {/* === KEYWORDS SECTION (DYNAMIC ARRAY) === */}
-          <div
+          {/* === NÍVEL 2: KEYWORDS SECTION (DYNAMIC ARRAY & COLLAPSIBLE) === */}
+          <Collapsible
+            open={isKeywordsOpen}
+            onOpenChange={setIsKeywordsOpen}
             id="meta-keywords"
-            className="mt-4 flex scroll-mt-24 flex-col gap-4 border-t pt-6"
+            className="mt-4 flex w-full scroll-mt-24 flex-col gap-4 border-t pt-6"
           >
-            <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-              <div>
+            {/* KEYWORDS HEADER (ALINHADO COM SETA EM CIMA DO BOTÃO) */}
+            <div className="flex w-full flex-row items-start justify-between gap-4">
+              <div className="flex flex-col text-left">
                 <h4 className="text-sm font-semibold">
                   {t("sections.meta_ats.keywordsOptimizerTitle")}
                 </h4>
-                <p className="text-muted-foreground mt-1 text-xs">
+                <p className="text-muted-foreground text-xs">
                   {t("sections.meta_ats.keywordsCount", {
                     count: keywordsList.length,
                   })}
                 </p>
               </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={addKeyword}
-              >
-                <Plus className="mr-2 h-4 w-4" />{" "}
-                {t("sections.meta_ats.addKeywordBtn")}
-              </Button>
+
+              <div className="flex shrink-0 flex-col items-end gap-2">
+                <CollapsibleTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 focus-visible:ring-0"
+                  >
+                    <ChevronDown
+                      className={`text-muted-foreground h-4 w-4 transition-transform duration-200 ${
+                        isKeywordsOpen ? "rotate-180" : ""
+                      } `}
+                    />
+                  </Button>
+                </CollapsibleTrigger>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={addKeyword}
+                >
+                  <Plus className="mr-2 h-4 w-4" />{" "}
+                  {t("sections.meta_ats.addKeywordBtn")}
+                </Button>
+              </div>
             </div>
 
-            {keywordsList.map((keyword, index) => (
-              <Field
-                key={index}
-                id={`meta-keyword-${index}`}
-                className="scroll-mt-24"
-              >
-                <div className="flex w-full flex-col gap-2">
-                  <div className="flex w-full items-center justify-between">
-                    <FieldLabel className="text-left text-xs font-medium capitalize">
-                      {t("sections.meta_ats.keywordLabel", { num: index + 1 })}
-                    </FieldLabel>
+            {/* LISTA DE PALAVRAS CHAVE */}
+            <CollapsibleContent className="w-full space-y-4">
+              {keywordsList.map((keyword, index) => (
+                <Field
+                  key={index}
+                  id={`meta-keyword-${index}`}
+                  className="scroll-mt-24"
+                >
+                  <div className="flex w-full flex-col gap-2">
+                    <div className="flex w-full items-center justify-between">
+                      <FieldLabel className="text-left text-xs font-medium capitalize">
+                        {t("sections.meta_ats.keywordLabel", {
+                          num: index + 1,
+                        })}
+                      </FieldLabel>
 
-                    {keywordsList.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeKeyword(index)}
-                        className="size-8 shrink-0"
-                      >
-                        <Trash2 className="text-destructive h-4 w-4" />
-                      </Button>
-                    )}
+                      {keywordsList.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeKeyword(index)}
+                          className="size-8 shrink-0"
+                        >
+                          <Trash2 className="text-destructive h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+
+                    <Textarea
+                      className="min-h-[38px] w-full resize-none overflow-hidden py-2"
+                      rows={1}
+                      placeholder={t("sections.meta_ats.keywordPlaceholder")}
+                      value={keyword}
+                      onBlur={(e) => {
+                        if (!e.target.value.trim() && keywordsList.length > 1) {
+                          removeKeyword(index);
+                        }
+                      }}
+                      onChange={(e) => {
+                        handleAutoResize(e);
+                        updateKeyword(index, e.target.value);
+                      }}
+                    />
                   </div>
+                </Field>
+              ))}
 
-                  <Textarea
-                    className="min-h-[38px] w-full resize-none overflow-hidden py-2"
-                    rows={1}
-                    placeholder={t("sections.meta_ats.keywordPlaceholder")}
-                    value={keyword}
-                    onBlur={(e) => {
-                      if (!e.target.value.trim() && keywordsList.length > 1) {
-                        removeKeyword(index);
-                      }
-                    }}
-                    onChange={(e) => {
-                      handleAutoResize(e);
-                      updateKeyword(index, e.target.value);
-                    }}
-                  />
-                </div>
-              </Field>
-            ))}
-
-            <div className="mt-2 flex justify-end">
-              <Button
-                type="button"
-                variant="outline"
-                size="xs"
-                onClick={addKeyword}
-                className="gap-1 text-xs"
-              >
-                <Plus className="size-3.5" />{" "}
-                {t("sections.meta_ats.addKeywordBtn")}
-              </Button>
-            </div>
-          </div>
+              {/* Botão de Rodapé */}
+              <div className="mt-2 flex justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="xs"
+                  onClick={addKeyword}
+                  className="gap-1 text-xs"
+                >
+                  <Plus className="size-3.5" />{" "}
+                  {t("sections.meta_ats.addKeywordBtn")}
+                </Button>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
         </CollapsibleContent>
       </Collapsible>
     </CardContent>
