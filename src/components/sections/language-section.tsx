@@ -66,7 +66,7 @@ function LanguageItem({
   // HOOK DO SUB-ITEM CONECTADO AO ÍNDICE
   const [isLangOpen, setIsLangOpen] = useSyncCollapse(
     `languages-item-${index}`,
-    true
+    false
   );
   const parsed = parseLangString(lang, LANGUAGE_LEVELS);
 
@@ -161,7 +161,7 @@ export function LanguagesSection() {
   const handleAutoResize = useAutoResize();
 
   const [isMounted, setIsMounted] = useState(false);
-  const [isOpen, setIsOpen] = useSyncCollapse("languages", true);
+  const [isOpen, setIsOpen] = useSyncCollapse("languages", false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
