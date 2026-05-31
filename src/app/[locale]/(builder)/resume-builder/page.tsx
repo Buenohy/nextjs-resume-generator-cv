@@ -1,7 +1,7 @@
 "use client";
 "use no memo";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import {
   Card,
@@ -26,7 +26,11 @@ import { SectionNav } from "@/components/sections/ui/section-nav";
 export default function ResumeBuilderPage() {
   const t = useTranslations("ResumeBuilderPage");
   const [isMounted, setIsMounted] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
+
+  // REFERÊNCIAS E ESTADOS PARA O SCROLL DINÂMICO INTELIGENTE
+  const parentRef = useRef<HTMLDivElement>(null);
+  const rightColRef = useRef<HTMLDivElement>(null);
+  const [floatOffset, setFloatOffset] = useState(0);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -35,18 +39,71 @@ export default function ResumeBuilderPage() {
     return () => clearTimeout(timer);
   }, []);
 
+  // LÓGICA DO SENSOR DE ALTURA E SCROLL SPY
   useEffect(() => {
     if (!isMounted) return;
 
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
+    const handleScrollAndResize = () => {
+      const parent = parentRef.current;
+      const rightCol = rightColRef.current;
+      if (!parent || !rightCol) return;
+
+      // Altura total do Grid pai
+      const parentHeight = parent.offsetHeight;
+
+      // Resgata as divs dos cards de Feedback e Índice de forma segura
+      const feedbackCard = rightCol.querySelector(
+        '[data-sticky="feedback"]'
+      ) as HTMLElement;
+      const sectionNav = rightCol.querySelector(
+        '[data-sticky="navigation"]'
+      ) as HTMLElement;
+
+      const feedbackHeight = feedbackCard?.offsetHeight || 380;
+      const navHeight = sectionNav?.offsetHeight || 420;
+      const gap = 24; // correspondente à classe space-y-6 (1.5rem = 24px)
+
+      // Altura estática dos elementos da direita somados
+      const rightColStaticHeight = feedbackHeight + navHeight + gap;
+
+      // Limite máximo que o menu pode deslizar sem vazar a coluna
+      const maxOffset = Math.max(0, parentHeight - rightColStaticHeight - 16); // 16px de margem inferior
+
+      const currentScroll = window.scrollY;
+      const targetOffset = currentScroll - 1105; // Ponto inicial do scroll flutuante
+
+      // Aplica o "Clamp" limitador entre 0 e o MaxOffset calculado
+      const clampedOffset = Math.min(Math.max(0, targetOffset), maxOffset);
+
+      setFloatOffset(clampedOffset);
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isMounted]);
+    // 1. Listeners tradicionais de Scroll e Redimensionamento de Janela
+    window.addEventListener("scroll", handleScrollAndResize, { passive: true });
+    window.addEventListener("resize", handleScrollAndResize);
 
-  const floatOffset = Math.max(0, scrollY - 1105);
+    // 2. SENSOR DE CLIQUES (ResizeObserver na coluna esquerda dos formulários)
+    const leftCol = parentRef.current?.firstElementChild;
+    let resizeObserver: ResizeObserver | null = null;
+
+    if (leftCol) {
+      resizeObserver = new ResizeObserver(() => {
+        handleScrollAndResize();
+      });
+      resizeObserver.observe(leftCol);
+    }
+
+    // Executa a primeira vez para iniciar alinhado
+    handleScrollAndResize();
+
+    return () => {
+      window.removeEventListener("scroll", handleScrollAndResize);
+      window.removeEventListener("resize", handleScrollAndResize);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+    };
+  }, [isMounted]);
 
   return (
     <div>
@@ -56,7 +113,12 @@ export default function ResumeBuilderPage() {
         <h1 className="mb-6 text-2xl font-bold">{t("title")}</h1>
       )}
 
-      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
+      {/* PARENT GRID REF ADICIONADO */}
+      <div
+        ref={parentRef}
+        className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12"
+      >
+        {/* COLUNA DA ESQUERDA: FORMULÁRIOS */}
         <div className="space-y-6 lg:col-span-7">
           <Card className="border-muted shadow-primary/50 shadow-lg">
             <CardHeader>
@@ -105,11 +167,15 @@ export default function ResumeBuilderPage() {
             </div>
           </Card>
         </div>
-        <div className="space-y-6 lg:col-span-5">
-          <div className="lg:sticky lg:top-5">
+
+        {/* COLUNA DA DIREITA: CARDS FLUTUANTES (RIGHT COL REF ADICIONADO) */}
+        <div ref={rightColRef} className="space-y-6 lg:col-span-5">
+          <div data-sticky="feedback">
             <FeedbackCard />
           </div>
+
           <div
+            data-sticky="navigation"
             style={{
               transform: `translateY(${floatOffset}px)`,
               transition: "transform 0.8s cubic-bezier(0.22, 1, 0.36, 1)",
