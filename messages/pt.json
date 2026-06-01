@@ -108,10 +108,22 @@
       "title": "Feedbacks de Otimização ATS",
       "description": "Analise os diagnósticos e ajuste o formulário",
       "waiting": "Aguardando preenchimento para analisar...",
+      "empty": "Nenhum resultado.",
+      "totalPending": "Total Pendente ❌",
+      "pendingCount": "{count} Pendentes",
+      "totalApproved": "Total Aprovado ✅",
+      "approvedCount": "{count} Aprovados",
       "tabs": {
         "parse": "Análise",
         "match": "Palavras-chave",
         "optimize": "Verbos"
+      },
+      "tableHeaders": {
+        "keyword": "Palavra-Chave",
+        "inVacancy": "Na Vaga",
+        "goal": "Meta (2x)",
+        "onResume": "No Currículo",
+        "status": "Status"
       }
     },
     "sections": {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import {
   ShieldAlert,
@@ -36,7 +36,7 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { useResumeStore } from "@/store/useResumeStore";
-import { columns } from "./columns";
+import { getColumns } from "./columns"; // Importação atualizada
 import { Skeleton } from "@/components/ui/skeleton";
 
 const EMPTY_KEYWORDS: any[] = [];
@@ -68,6 +68,9 @@ export function FeedbackCard() {
   const cvData = useResumeStore((s) => s.cvData);
 
   const keywordsTableData = analysisResults?.keywordsTable || EMPTY_KEYWORDS;
+
+  // CORRIGIDO: Carrega as colunas dinamicamente com base nas traduções ativas
+  const columns = useMemo(() => getColumns(t), [t]);
 
   const table = useReactTable({
     data: keywordsTableData,
@@ -228,7 +231,7 @@ export function FeedbackCard() {
                           colSpan={columns.length}
                           className="h-24 text-center"
                         >
-                          Nenhum resultado.
+                          {t("feedbackCard.empty")}
                         </TableCell>
                       </TableRow>
                     )}
@@ -239,10 +242,12 @@ export function FeedbackCard() {
                         colSpan={4}
                         className="py-2 font-bold text-rose-500"
                       >
-                        Total Pendente ❌
+                        {t("feedbackCard.totalPending")}
                       </TableCell>
                       <TableCell className="py-2 font-bold text-rose-500">
-                        {totalPendente} Pendentes
+                        {t("feedbackCard.pendingCount", {
+                          count: totalPendente,
+                        })}
                       </TableCell>
                     </TableRow>
                     <TableRow className="hover:bg-transparent">
@@ -250,10 +255,12 @@ export function FeedbackCard() {
                         colSpan={4}
                         className="py-2 font-bold text-emerald-500"
                       >
-                        Total Aprovado ✅
+                        {t("feedbackCard.totalApproved")}
                       </TableCell>
                       <TableCell className="py-2 font-bold text-emerald-500">
-                        {totalAprovado} Aprovados
+                        {t("feedbackCard.approvedCount", {
+                          count: totalAprovado,
+                        })}
                       </TableCell>
                     </TableRow>
                   </TableFooter>
@@ -290,7 +297,6 @@ function ParseTab() {
             <p className="text-muted-foreground font-semibold">
               {t("feedbackAnalysis.missingKeywords")}
             </p>
-            {/* CORRIGIDO: Validação de tamanho maior que zero para evitar caixa em branco */}
             <Textarea
               readOnly
               value={
@@ -319,7 +325,6 @@ function ParseTab() {
             <p className="text-muted-foreground font-semibold">
               {t("feedbackAnalysis.missingSubject")}
             </p>
-            {/* CORRIGIDO: Validação de tamanho maior que zero para evitar caixa em branco */}
             <Textarea
               readOnly
               value={

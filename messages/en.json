@@ -102,10 +102,22 @@
       "title": "ATS Optimization Feedbacks",
       "description": "Analyze diagnostics and adjust the form",
       "waiting": "Waiting for data to analyze...",
+      "empty": "No results found.",
+      "totalPending": "Total Pending ❌",
+      "pendingCount": "{count} Pending",
+      "totalApproved": "Total Approved ✅",
+      "approvedCount": "{count} Approved",
       "tabs": {
         "parse": "Analysis",
         "match": "Keywords",
         "optimize": "Verbs"
+      },
+      "tableHeaders": {
+        "keyword": "Keyword",
+        "inVacancy": "In Vacancy",
+        "goal": "Goal (2x)",
+        "onResume": "On Resume",
+        "status": "Status"
       }
     },
     "sections": {

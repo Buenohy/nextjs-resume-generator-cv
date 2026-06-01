@@ -17,7 +17,7 @@ const SortableHeader = ({
     <Button
       variant="ghost"
       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      className={`hover:text-primary ${align === "left" ? "-ml-4" : ""}`}
+      className={`hover:text-primary ${align === "left" ? "-ml-4" : ""} `}
     >
       {title}
       <HugeiconsIcon icon={ArrowUpDownIcon} size={16} className="ml-2" />
@@ -25,11 +25,15 @@ const SortableHeader = ({
   );
 };
 
-export const columns: ColumnDef<KeywordData>[] = [
+// CORRIGIDO: Agora expõe a função getColumns para aceitar as traduções dinamicamente
+export const getColumns = (t: any): ColumnDef<KeywordData>[] => [
   {
     accessorKey: "keyword",
     header: ({ column }) => (
-      <SortableHeader column={column} title="Palavra-Chave" />
+      <SortableHeader
+        column={column}
+        title={t("feedbackCard.tableHeaders.keyword")}
+      />
     ),
     cell: ({ row }) => (
       <div className="font-medium text-cyan-400 capitalize">
@@ -40,7 +44,11 @@ export const columns: ColumnDef<KeywordData>[] = [
   {
     accessorKey: "inVacancy",
     header: ({ column }) => (
-      <SortableHeader column={column} title="Na Vaga" align="center" />
+      <SortableHeader
+        column={column}
+        title={t("feedbackCard.tableHeaders.inVacancy")}
+        align="center"
+      />
     ),
     cell: ({ row }) => (
       <div className="text-center">{row.getValue("inVacancy")}</div>
@@ -49,7 +57,11 @@ export const columns: ColumnDef<KeywordData>[] = [
   {
     accessorKey: "goal2x",
     header: ({ column }) => (
-      <SortableHeader column={column} title="Meta (2x)" align="center" />
+      <SortableHeader
+        column={column}
+        title={t("feedbackCard.tableHeaders.goal")}
+        align="center"
+      />
     ),
     cell: ({ row }) => (
       <div className="text-center">{row.getValue("goal2x")}</div>
@@ -58,7 +70,11 @@ export const columns: ColumnDef<KeywordData>[] = [
   {
     accessorKey: "onResume",
     header: ({ column }) => (
-      <SortableHeader column={column} title="No Currículo" align="center" />
+      <SortableHeader
+        column={column}
+        title={t("feedbackCard.tableHeaders.onResume")}
+        align="center"
+      />
     ),
     cell: ({ row }) => (
       <div className="text-center">{row.getValue("onResume")}</div>
@@ -66,7 +82,12 @@ export const columns: ColumnDef<KeywordData>[] = [
   },
   {
     accessorKey: "status",
-    header: ({ column }) => <SortableHeader column={column} title="Status" />,
+    header: ({ column }) => (
+      <SortableHeader
+        column={column}
+        title={t("feedbackCard.tableHeaders.status")}
+      />
+    ),
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
       const isApproved = status === "Aprovado";
@@ -74,7 +95,7 @@ export const columns: ColumnDef<KeywordData>[] = [
         <div
           className={`flex items-center gap-2 font-bold ${
             isApproved ? "text-emerald-500" : "text-rose-500"
-          }`}
+          } `}
         >
           {isApproved ? "✅" : "❌"}
         </div>
