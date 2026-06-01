@@ -1,0 +1,115 @@
+nextjs-resume-generator-cv
+├── .gitignore
+├── .prettierrc                         # 🎨 Prettier configuration (with prettier-plugin-tailwindcss for class sorting)
+├── components.json                     # ⚙️ Shadcn UI configuration
+├── eslint.config.mjs                   # 🚨 ESLint v9 configuration (Flat Config, Next 16, Prettier, and Better-Tailwind)
+├── messages/                           # 🌐 Translation Dictionaries (next-intl)
+│   ├── en.json                         # English localization messages and data
+│   └── pt.json                         # Portuguese localization messages and data
+├── next-env.d.ts
+├── next.config.ts                      # Next.js configurations
+├── package.json                        # Project dependencies (ESLint 9, Next 16.1.4, Prettier, etc.)
+├── postcss.config.mjs
+├── public/                             # 🖼️ Public static assets (SVGs, favicon)
+├── README.md
+├── tsconfig.json                       # TypeScript compilation configurations
+│
+└── src/
+    ├── app/
+    │   ├── api/
+    │   │   └── analyze/
+    │   │       └── route.ts            # ATS analysis and action verbs backend (Node.js)
+    │   │
+    │   ├── hooks/                      # 🪝 Global custom hooks
+    │   │   ├── useAutoResize.ts        # Dynamic auto-resize for Textarea elements
+    │   │   └── useSyncCollapse.ts      # 🆕 In-memory reactive bidirectional synchronization hook for collapsible sections and SideNav (F5 safe)
+    │   │
+    │   ├── globals.css                 # Global project styles (Tailwind CSS + Shadcn UI variables)
+    │   ├── layout-old.tsx              # Backup of the old layout
+    │   │
+    │   └── [locale]/                   # 🌍 Dynamic Language Route (next-intl)
+    │       ├── layout.tsx              # Main root layout with Theme Providers
+    │       ├── page.tsx                # Resume generator Landing Page
+    │       │
+    │       ├── (builder)/              # 🏗️ Resume Builder Route Group
+    │       │   ├── layout.tsx          # Builder layout (Injects <Stepper /> and <PaginationButtons />)
+    │       │   ├── loading.tsx         # Visual loading state for builder routes
+    │       │   │
+    │       │   ├── job-description/
+    │       │   │   └── page.tsx        # Step 1: Job Description input page
+    │       │   │
+    │       │   ├── resume-builder/
+    │       │   │   └── page.tsx        # Step 2: Resume assembly, editing, and ATS analysis (Unified dashboard)
+    │       │   │
+    │       │   └── pdf-preview/
+    │       │       └── page.tsx        # Step 3: Real-time PDF preview and final export page
+    │       │
+    │       ├── components/
+    │       │   └── page.tsx            # Isolated components test page
+    │       │
+    │       └── full-content/
+    │           └── page.tsx            # Complete experience repository page (Persistent database)
+    │
+    ├── components/                     # 🧩 Reusable components
+    │   ├── dark-mode.tsx               # Theme toggle switch (Light / Dark / System)
+    │   ├── lang-menu.tsx               # Navigation language selector (Portuguese / English)
+    │   ├── nav-menu.tsx                # Main header navigation menu
+    │   ├── pagination-buttons.tsx      # Pagination buttons between form steps
+    │   ├── resume.tsx                  # Strict PDF viewer and renderer component (@react-pdf/renderer)
+    │   ├── stepper.tsx                 # Step progress bar
+    │   ├── theme-provider.tsx          # Next-Themes provider for theme color management
+    │   │
+    │   ├── sections/                   # Resume builder form sections
+    │   │   ├── ai-section.tsx          # AI-assisted summary section
+    │   │   ├── certification-section.tsx # Professional certifications section (with independent collapsible sub-items)
+    │   │   ├── education-section.tsx   # Academic education section (with independent collapsible sub-items)
+    │   │   ├── experience-section-full-content.tsx # Integrated experience form and table for the Full Content page
+    │   │   ├── experience-section.tsx  # Professional experiences builder section (with collapsible sub-items and sub-groups)
+    │   │   ├── header-section.tsx      # Header and personal contact details section
+    │   │   ├── language-section.tsx    # Languages and proficiency section (with independent collapsible sub-items)
+    │   │   ├── links-section.tsx       # Portfolios and professional networks links section
+    │   │   ├── meta-ats-section.tsx    # Invisible metadata section for ATS indexing systems (with collapsible keywords)
+    │   │   ├── skills-section.tsx      # Core technical skills section (with independent collapsible sub-items)
+    │   │   └── summary-section.tsx     # Classic professional summary section
+    │   │
+    │   └── ui/                         # Atomic UI components and primitives
+    │       ├── alert-dialog.tsx        # Deletion confirmation modals or critical warnings
+    │       ├── badge.tsx               # Small visual highlight tags
+    │       ├── button.tsx              # Native button component (Shadcn UI)
+    │       ├── card.tsx                # Structural card wrappers
+    │       ├── collapsible.tsx         # Radix-based collapsible wrapper component for smooth section transitions
+    │       ├── dropdown-menu.tsx       # Dropdown selection menus
+    │       ├── field.tsx               # Accessible wrapper for labels and fields
+    │       ├── input.tsx               # Standard text input field
+    │       ├── label.tsx               # Semantic field label
+    │       ├── navigation-menu.tsx     # Structural top navigation menu
+    │       ├── select.tsx              # Dropdown select input options
+    │       ├── separator.tsx           # Aesthetic horizontal/vertical separator line
+    │       ├── skeleton.tsx            # Skeleton loaders to prevent visual Layout Shifts (CLS)
+    │       ├── table.tsx               # Semantic structure for rendering tables
+    │       ├── textarea.tsx            # Long text input area with automatic height adjustment
+    │       │
+    │       └── ui/ (Custom)
+    │           ├── columns.tsx         # Keyword matches table column definitions
+    │           ├── feed-back-card.tsx  # ATS analysis feedback panel (keywords, action verbs, and integrity metrics)
+    │           ├── mouth-year-picker.tsx # Custom month and year picker for date ranges
+    │           └── section-nav.tsx     # 🔄 Dynamic sidebar navigation index (Silent Scroll Spy, with focus and collapse syncing)
+    │
+    ├── i18n/                           # 🌍 Internationalization configurations (next-intl)
+    │   ├── navigation.ts               # Localization routing and language redirect utilities
+    │   ├── request.ts                  # Asynchronous localization messages JSON loading setup
+    │   └── routing.ts                  # Definition of supported locales and localized pathnames
+    │
+    ├── lib/                            # 🧠 Core business logic and text analyzers
+    │   ├── auto-optimizer.ts           # Resume action verb validation and suggestion engine
+    │   ├── job-parser.ts               # Job description processing and keywords extraction algorithm
+    │   ├── meta-validator.ts           # Metadata consistency check and cross-verification engine
+    │   └── utils.ts                    # General utility functions (Tailwind class merging via clsx and tailwind-merge)
+    │
+    ├── store/                          # 📦 Global state management (Zustand)
+    │   ├── useFullContentStore.ts      # Permanent experiences repository (Zustand with Immer, and LocalStorage persistence by language)
+    │   └── useResumeStore.ts           # Temporary volatile state for the active builder form
+    │
+    └── types/                          # 🏷️ Structural types for TypeScript
+        ├── Input.ts                    # Generic form input types
+        └── keywords.ts                 # Structural types for keyword data and optimization metrics
