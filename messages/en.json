@@ -315,7 +315,7 @@
       }
     },
     "feedbackAnalysis": {
-      "inconsistencies": "⚠️ Inconsistências Detectadas",
+      "inconsistencies": "⚠️ Inconsistencies Detected",
       "missingKeywords": "Keywords missing from job description:",
       "missingKeywordsEmpty": "No missing keywords!",
       "roleNotFound": "Role target not found:",

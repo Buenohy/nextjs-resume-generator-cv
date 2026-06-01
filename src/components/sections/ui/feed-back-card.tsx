@@ -36,7 +36,7 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { useResumeStore } from "@/store/useResumeStore";
-import { getColumns } from "./columns"; // Importação atualizada
+import { getColumns } from "./columns";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const EMPTY_KEYWORDS: any[] = [];
@@ -69,7 +69,7 @@ export function FeedbackCard() {
 
   const keywordsTableData = analysisResults?.keywordsTable || EMPTY_KEYWORDS;
 
-  // CORRIGIDO: Carrega as colunas dinamicamente com base nas traduções ativas
+  // Carrega as colunas dinamicamente com base nas traduções ativas
   const columns = useMemo(() => getColumns(t), [t]);
 
   const table = useReactTable({
@@ -286,6 +286,11 @@ function ParseTab() {
     ? t("feedbackAnalysis.roleMismatch", { role: cvData?.info?.role || "N/A" })
     : t("feedbackAnalysis.roleMatch", { role: cvData?.info?.role || "N/A" });
 
+  // CORRIGIDO: Remove a sigla "(ATS)" do nome do campo antes de anexar a seção pai para evitar redundância
+  const keywordsTitle = t("sections.meta_ats.keywordsOptimizerTitle")
+    .replace(/\(ATS\)/gi, "")
+    .trim();
+
   return (
     <div className="flex flex-col gap-5 text-sm">
       <div className="bg-card space-y-4 rounded-lg border p-4">
@@ -294,8 +299,9 @@ function ParseTab() {
         </h3>
         <div className="space-y-3">
           <div>
+            {/* Exibe: "Otimizador de Palavras-chave (Metadados ATS)" ou "Keywords Optimizer (ATS Metadata)" */}
             <p className="text-muted-foreground font-semibold">
-              {t("feedbackAnalysis.missingKeywords")}
+              {`${keywordsTitle} (${t("sections.meta_ats.title")})`}
             </p>
             <Textarea
               readOnly
@@ -310,7 +316,7 @@ function ParseTab() {
           </div>
           <div>
             <p className="text-muted-foreground font-semibold">
-              {t("feedbackAnalysis.roleNotFound")}
+              {`${t("sections.meta_ats.fields.role_target.label")} (${t("sections.meta_ats.title")})`}
             </p>
             <Textarea
               readOnly
@@ -323,7 +329,7 @@ function ParseTab() {
           </div>
           <div>
             <p className="text-muted-foreground font-semibold">
-              {t("feedbackAnalysis.missingSubject")}
+              {`${t("sections.meta_ats.fields.subject.label")} (${t("sections.meta_ats.title")})`}
             </p>
             <Textarea
               readOnly
@@ -338,7 +344,7 @@ function ParseTab() {
           </div>
           <div>
             <p className="text-muted-foreground font-semibold">
-              {t("feedbackAnalysis.roleValidation")}
+              {`${t("sections.header.fields.role.label")} (${t("sections.header.title")})`}
             </p>
             <Textarea
               readOnly
