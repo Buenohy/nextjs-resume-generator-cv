@@ -379,6 +379,11 @@
     "validationDialogDescription": "Por favor, preencha todos os campos obrigatórios (cargo, empresa, data e pelo menos um detalhe).",
     "validationDialogConfirm": "OK"
   },
+  "HistoryPage": {
+    "title": "Histórico",
+    "cardTitle": "Histórico",
+    "cardDescription": "Histórico dos currículos gerados."
+  },
   "ResumeComponent": {
     "sections": {
       "professionalSummary": "Resumo Profissional",

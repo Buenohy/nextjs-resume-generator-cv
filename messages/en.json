@@ -367,6 +367,11 @@
     "validationDialogDescription": "Please fill in all required fields (role, company, date, and at least one detail).",
     "validationDialogConfirm": "OK"
   },
+  "HistoryPage": {
+    "title": "History",
+    "cardTitle": "History",
+    "cardDescription": "History of generated resumes."
+  },
   "ResumeComponent": {
     "sections": {
       "professionalSummary": "Professional Summary",
