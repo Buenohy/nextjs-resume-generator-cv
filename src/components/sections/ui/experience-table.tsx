@@ -107,7 +107,7 @@ export function ExperienceTable({
                           stack.trim() && (
                             <Badge
                               key={sIdx}
-                              variant="secondary"
+                              variant="default"
                               className="text-xs font-medium"
                             >
                               {stack}
