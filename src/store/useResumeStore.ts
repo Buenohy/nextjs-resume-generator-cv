@@ -48,6 +48,7 @@ export interface CvDataState {
   education: string[];
   certifications: string[];
   languages: string[];
+  language?: string;
 }
 
 interface AnalysisResults {
@@ -81,7 +82,7 @@ interface ResumeStore {
   analysisResults: AnalysisResults | null;
   isLoadingAnalysis: boolean;
   triggerAnalysis: () => Promise<void>;
-  saveResumeToHistory: () => Promise<boolean>;
+  saveResumeToHistory: (locale: string) => Promise<boolean>;
 }
 
 const initialCvData: CvDataState = {
@@ -164,8 +165,8 @@ export const useResumeStore = create<ResumeStore>()(
         }
       },
 
-      // --- SALVAR HISTÓRICO NO BACKEND (Puxando os dados reais do cvData) ---
-      saveResumeToHistory: async () => {
+      // --- SALVAR HISTÓRICO NO BACKEND (Injetando o carimbo de idioma correto) ---
+      saveResumeToHistory: async (locale: string) => {
         const { cvData } = get();
 
         const targetRole =
@@ -174,6 +175,12 @@ export const useResumeStore = create<ResumeStore>()(
           "Cargo não especificado";
         const targetCompany = cvData.company || "Empresa não especificada";
 
+        // Injeta o idioma ativo da tela diretamente na árvore de dados salva no Postgres (JSONB)
+        const payloadWithLocale = {
+          ...cvData,
+          language: locale,
+        };
+
         try {
           const response = await fetch(HISTORY_API_URL, {
             method: "POST",
@@ -181,7 +188,7 @@ export const useResumeStore = create<ResumeStore>()(
             body: JSON.stringify({
               targetRole,
               targetCompany,
-              cvPayload: cvData,
+              cvPayload: payloadWithLocale,
             }),
           });
 
