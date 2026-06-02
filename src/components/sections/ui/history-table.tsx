@@ -53,6 +53,12 @@ export function HistoryTable({
             const isOpen = openItems[item.id] || false;
             const cv = item.cvPayload;
 
+            const metadataLang = cv.meta_ats?.rights?.includes(
+              "All rights reserved"
+            )
+              ? "English (en-US)"
+              : "Português (pt-BR)";
+
             return (
               <TableRow
                 key={item.id}
@@ -102,70 +108,167 @@ export function HistoryTable({
                       </CollapsibleTrigger>
                     </div>
 
-                    {/* CONTEÚDO EXPANSÍVEL */}
+                    {/* CONTEÚDO EXPANSÍVEL (TOTALMENTE UNIFICADO EM BLOCOS VERTICAIS) */}
                     <CollapsibleContent className="mt-5 w-full space-y-4 border-t pt-4">
                       <Card className="bg-muted/10 border-muted/40 max-w-full overflow-hidden border">
                         <CardContent className="max-w-full space-y-5 p-4 text-sm">
-                          {/* 1. Metadados ATS (CORRIGIDO: Colocado em flex-col) */}
+                          {/* 1. Metadados ATS (UNIFICADO: Empilhado verticalmente para todas as telas) */}
                           {cv.meta_ats && (
-                            <div className="flex flex-col space-y-1.5">
-                              <h5 className="text-primary mb-1 text-xs font-bold tracking-wider uppercase">
+                            <div className="flex max-w-full flex-col space-y-1.5 overflow-hidden">
+                              <h5 className="text-primary mb-1 block max-w-full text-xs font-bold tracking-wider break-all whitespace-pre-wrap uppercase sm:wrap-break-word">
                                 {t("sections.meta_ats.title")}
                               </h5>
-                              <div className="flex flex-col gap-1 text-xs">
-                                <p>
-                                  <strong>
+                              <div className="flex flex-col gap-2.5 text-xs">
+                                <p className="flex flex-col break-all whitespace-pre-wrap sm:wrap-break-word">
+                                  <strong className="shrink-0">
+                                    {t(
+                                      "sections.meta_ats.metadataLanguageLabel"
+                                    )}
+                                    :
+                                  </strong>
+                                  <span className="text-muted-foreground">
+                                    {metadataLang}
+                                  </span>
+                                </p>
+                                <p className="flex flex-col break-all whitespace-pre-wrap sm:wrap-break-word">
+                                  <strong className="shrink-0">
                                     {t(
                                       "sections.meta_ats.fields.role_target.label"
                                     )}
                                     :
-                                  </strong>{" "}
-                                  {cv.meta_ats.role_target || "—"}
+                                  </strong>
+                                  <span className="text-muted-foreground">
+                                    {cv.meta_ats.role_target || "—"}
+                                  </span>
                                 </p>
-                                <p>
-                                  <strong>
+                                <p className="flex flex-col break-all whitespace-pre-wrap sm:wrap-break-word">
+                                  <strong className="shrink-0">
                                     {t(
                                       "sections.meta_ats.fields.subject.label"
                                     )}
                                     :
-                                  </strong>{" "}
-                                  {cv.meta_ats.subject || "—"}
+                                  </strong>
+                                  <span className="text-muted-foreground">
+                                    {cv.meta_ats.subject || "—"}
+                                  </span>
                                 </p>
-                                <p>
-                                  <strong>
+                                <p className="flex flex-col break-all whitespace-pre-wrap sm:wrap-break-word">
+                                  <strong className="shrink-0">
                                     {t(
                                       "sections.meta_ats.fields.category.label"
                                     )}
                                     :
-                                  </strong>{" "}
-                                  {cv.meta_ats.category || "—"}
+                                  </strong>
+                                  <span className="text-muted-foreground">
+                                    {cv.meta_ats.category || "—"}
+                                  </span>
                                 </p>
-                                <p>
-                                  <strong>
+                                <p className="flex flex-col break-all whitespace-pre-wrap sm:wrap-break-word">
+                                  <strong className="shrink-0">
                                     {t(
                                       "sections.meta_ats.fields.contributor.label"
                                     )}
                                     :
-                                  </strong>{" "}
-                                  {cv.meta_ats.contributor || "—"}
+                                  </strong>
+                                  <span className="text-muted-foreground">
+                                    {cv.meta_ats.contributor || "—"}
+                                  </span>
+                                </p>
+                                <p className="flex flex-col break-all whitespace-pre-wrap sm:wrap-break-word">
+                                  <strong className="shrink-0">
+                                    {t(
+                                      "sections.meta_ats.fields.coverage.label"
+                                    )}
+                                    :
+                                  </strong>
+                                  <span className="text-muted-foreground">
+                                    {cv.meta_ats.coverage || "—"}
+                                  </span>
+                                </p>
+                                <p className="flex flex-col break-all whitespace-pre-wrap sm:wrap-break-word">
+                                  <strong className="shrink-0">
+                                    {t(
+                                      "sections.meta_ats.fields.identifier.label"
+                                    )}
+                                    :
+                                  </strong>
+                                  <span className="text-muted-foreground">
+                                    {cv.meta_ats.identifier || "—"}
+                                  </span>
+                                </p>
+                                <p className="flex flex-col break-all whitespace-pre-wrap sm:wrap-break-word">
+                                  <strong className="shrink-0">
+                                    {t(
+                                      "sections.meta_ats.fields.publisher.label"
+                                    )}
+                                    :
+                                  </strong>
+                                  <span className="text-muted-foreground">
+                                    {cv.meta_ats.publisher || "—"}
+                                  </span>
+                                </p>
+                                <p className="flex flex-col break-all whitespace-pre-wrap sm:wrap-break-word">
+                                  <strong className="shrink-0">
+                                    {t(
+                                      "sections.meta_ats.fields.relation.label"
+                                    )}
+                                    :
+                                  </strong>
+                                  <span className="text-muted-foreground">
+                                    {cv.meta_ats.relation || "—"}
+                                  </span>
+                                </p>
+                                <p className="flex flex-col break-all whitespace-pre-wrap sm:wrap-break-word">
+                                  <strong className="shrink-0">
+                                    {t("sections.meta_ats.fields.rights.label")}
+                                    :
+                                  </strong>
+                                  <span className="text-muted-foreground">
+                                    {cv.meta_ats.rights || "—"}
+                                  </span>
+                                </p>
+                                <p className="flex flex-col break-all whitespace-pre-wrap sm:wrap-break-word">
+                                  <strong className="shrink-0">
+                                    {t("sections.meta_ats.fields.source.label")}
+                                    :
+                                  </strong>
+                                  <span className="text-muted-foreground">
+                                    {cv.meta_ats.source || "—"}
+                                  </span>
+                                </p>
+                                <p className="flex flex-col break-all whitespace-pre-wrap sm:wrap-break-word">
+                                  <strong className="shrink-0">
+                                    {t("sections.meta_ats.fields.type.label")}:
+                                  </strong>
+                                  <span className="text-muted-foreground">
+                                    {cv.meta_ats.type || "—"}
+                                  </span>
+                                </p>
+                                <p className="flex flex-col break-all whitespace-pre-wrap sm:wrap-break-word">
+                                  <strong className="shrink-0">
+                                    {t("sections.meta_ats.fields.notes.label")}:
+                                  </strong>
+                                  <span className="text-muted-foreground">
+                                    {cv.meta_ats.notes || "—"}
+                                  </span>
                                 </p>
                               </div>
 
-                              {/* Keywords com Título Acoplado (CORRIGIDO) */}
+                              {/* Keywords */}
                               {cv.meta_ats.keywords?.length > 0 &&
                                 cv.meta_ats.keywords[0] !== "" && (
-                                  <div className="flex flex-col gap-1.5 pt-2">
-                                    <span className="text-muted-foreground text-xs font-semibold">
+                                  <div className="flex max-w-full flex-col gap-1.5 pt-2">
+                                    <span className="text-muted-foreground block max-w-full text-xs font-semibold break-all whitespace-pre-wrap sm:wrap-break-word">
                                       {t(
                                         "sections.meta_ats.keywordsOptimizerTitle"
                                       )}
                                     </span>
-                                    <div className="flex flex-wrap gap-1">
+                                    <div className="flex flex-wrap gap-1 break-all sm:wrap-break-word">
                                       {cv.meta_ats.keywords.map((kw, idx) => (
                                         <Badge
                                           key={idx}
                                           variant="secondary"
-                                          className="text-[10px]"
+                                          className="text-[10px] break-all"
                                         >
                                           {kw}
                                         </Badge>
@@ -176,62 +279,80 @@ export function HistoryTable({
                             </div>
                           )}
 
-                          {/* 2. Cabeçalho Pessoal (CORRIGIDO: Colocado em flex-col) */}
+                          {/* 2. Cabeçalho Pessoal (UNIFICADO: Empilhado verticalmente para todas as telas) */}
                           {cv.info && (
-                            <div className="flex flex-col space-y-1.5 border-t pt-3">
-                              <h5 className="text-primary mb-1 text-xs font-bold tracking-wider uppercase">
+                            <div className="flex max-w-full flex-col space-y-1.5 overflow-hidden border-t pt-3">
+                              <h5 className="text-primary mb-1 block max-w-full text-xs font-bold tracking-wider break-all whitespace-pre-wrap uppercase sm:wrap-break-word">
                                 {t("sections.header.title")}
                               </h5>
-                              <div className="flex flex-col gap-1 text-xs">
-                                <p>
-                                  <strong>
+                              <div className="flex flex-col gap-2.5 text-xs">
+                                <p className="flex flex-col break-all whitespace-pre-wrap sm:wrap-break-word">
+                                  <strong className="shrink-0">
                                     {t("sections.header.fields.name.label")}:
-                                  </strong>{" "}
-                                  {cv.info.name || "—"}
+                                  </strong>
+                                  <span className="text-muted-foreground">
+                                    {cv.info.name || "—"}
+                                  </span>
                                 </p>
-                                <p>
-                                  <strong>
+                                <p className="flex flex-col break-all whitespace-pre-wrap sm:wrap-break-word">
+                                  <strong className="shrink-0">
                                     {t("sections.header.fields.city.label")}:
-                                  </strong>{" "}
-                                  {cv.info.city || "—"}
+                                  </strong>
+                                  <span className="text-muted-foreground">
+                                    {cv.info.city || "—"}
+                                  </span>
                                 </p>
-                                <p>
-                                  <strong>
+                                <p className="flex flex-col break-all whitespace-pre-wrap sm:wrap-break-word">
+                                  <strong className="shrink-0">
                                     {t("sections.header.fields.age.label")}:
-                                  </strong>{" "}
-                                  {cv.info.age || "—"}
+                                  </strong>
+                                  <span className="text-muted-foreground">
+                                    {cv.info.age || "—"}
+                                  </span>
                                 </p>
                               </div>
                             </div>
                           )}
 
-                          {/* 3. Links Profissionais (CORRIGIDO: Colocado em flex-col) */}
+                          {/* 3. Links Profissionais (UNIFICADO: Empilhado verticalmente para todas as telas + w-fit nos links) */}
                           {cv.links && (
-                            <div className="flex flex-col space-y-1.5 border-t pt-3">
-                              <h5 className="text-primary mb-1 text-xs font-bold tracking-wider uppercase">
+                            <div className="flex max-w-full flex-col space-y-1.5 overflow-hidden border-t pt-3">
+                              <h5 className="text-primary mb-1 block max-w-full text-xs font-bold tracking-wider break-all whitespace-pre-wrap uppercase sm:wrap-break-word">
                                 {t("sections.links.title")}
                               </h5>
-                              <div className="flex flex-col gap-1 text-xs">
+                              <div className="flex flex-col gap-2.5 text-xs">
                                 {Object.entries(cv.links).map(
                                   ([key, val]) =>
                                     val && (
                                       <span
                                         key={key}
-                                        className="flex items-center gap-1"
+                                        className="flex flex-col break-all whitespace-pre-wrap sm:wrap-break-word"
                                       >
-                                        <strong>{key.toUpperCase()}:</strong>
-                                        {val.startsWith("http") ? (
+                                        <strong className="shrink-0">
+                                          {key.toUpperCase()}:
+                                        </strong>
+                                        {key === "email" ? (
+                                          <a
+                                            href={`mailto:${val}`}
+                                            className="text-primary inline-flex w-fit items-center gap-0.5 break-all hover:underline sm:wrap-break-word"
+                                          >
+                                            {val}{" "}
+                                            <ExternalLink className="h-3 w-3 shrink-0" />
+                                          </a>
+                                        ) : val.startsWith("http") ? (
                                           <a
                                             href={val}
                                             target="_blank"
                                             rel="noreferrer"
-                                            className="text-primary inline-flex items-center gap-0.5 break-all hover:underline"
+                                            className="text-primary inline-flex w-fit items-center gap-0.5 break-all hover:underline sm:wrap-break-word"
                                           >
                                             {val}{" "}
                                             <ExternalLink className="h-3 w-3 shrink-0" />
                                           </a>
                                         ) : (
-                                          val
+                                          <span className="text-muted-foreground">
+                                            {val}
+                                          </span>
                                         )}
                                       </span>
                                     )
@@ -240,12 +361,12 @@ export function HistoryTable({
                             </div>
                           )}
 
-                          {/* 4. Resumos (CORRIGIDO: Parágrafos blindados contra estouros de texto) */}
+                          {/* 4. Resumos */}
                           {(cv.summary || cv.ai) && (
-                            <div className="space-y-3 border-t pt-3">
+                            <div className="max-w-full space-y-3 overflow-hidden border-t pt-3">
                               {cv.summary && (
-                                <div className="space-y-1">
-                                  <h5 className="text-primary text-xs font-bold tracking-wider uppercase">
+                                <div className="max-w-full space-y-1">
+                                  <h5 className="text-primary block max-w-full text-xs font-bold tracking-wider break-all whitespace-pre-wrap uppercase sm:wrap-break-word">
                                     {t("sections.summary.title")}
                                   </h5>
                                   <p className="bg-muted/20 border-muted/20 max-w-full overflow-hidden rounded-sm border p-2.5 leading-relaxed wrap-break-word whitespace-pre-wrap italic">
@@ -254,8 +375,8 @@ export function HistoryTable({
                                 </div>
                               )}
                               {cv.ai && (
-                                <div className="space-y-1">
-                                  <h5 className="text-primary text-xs font-bold tracking-wider uppercase">
+                                <div className="max-w-full space-y-1">
+                                  <h5 className="text-primary block max-w-full text-xs font-bold tracking-wider break-all whitespace-pre-wrap uppercase sm:wrap-break-word">
                                     {t("sections.ai.title")}
                                   </h5>
                                   <p className="bg-muted/20 border-muted/20 max-w-full overflow-hidden rounded-sm border p-2.5 leading-relaxed wrap-break-word whitespace-pre-wrap italic">
@@ -268,16 +389,16 @@ export function HistoryTable({
 
                           {/* 5. Habilidades (Skills) */}
                           {cv.skills?.length > 0 && cv.skills[0] !== "" && (
-                            <div className="space-y-1.5 border-t pt-3">
-                              <h5 className="text-primary text-xs font-bold tracking-wider uppercase">
+                            <div className="max-w-full space-y-1.5 overflow-hidden border-t pt-3">
+                              <h5 className="text-primary block max-w-full text-xs font-bold tracking-wider break-all whitespace-pre-wrap uppercase sm:wrap-break-word">
                                 {t("sections.skills.title")}
                               </h5>
-                              <div className="flex flex-wrap gap-1">
+                              <div className="flex flex-wrap gap-1 break-all sm:wrap-break-word">
                                 {cv.skills.map((skill, idx) => (
                                   <Badge
                                     key={idx}
                                     variant="default"
-                                    className="text-xs"
+                                    className="text-xs break-all"
                                   >
                                     {skill}
                                   </Badge>
@@ -286,43 +407,55 @@ export function HistoryTable({
                             </div>
                           )}
 
-                          {/* 6. Experiências (CORRIGIDO: Parágrafos de detalhes blindados contra estouros) */}
+                          {/* 6. Experiências (UNIFICADO: Empilhado verticalmente para todas as telas) */}
                           {cv.experiences?.length > 0 &&
                             cv.experiences[0].role !== "" && (
-                              <div className="space-y-3 border-t pt-3">
-                                <h5 className="text-primary text-xs font-bold tracking-wider uppercase">
+                              <div className="max-w-full space-y-3 overflow-hidden border-t pt-3">
+                                <h5 className="text-primary block max-w-full text-xs font-bold tracking-wider break-all whitespace-pre-wrap uppercase sm:wrap-break-word">
                                   {t("sections.experience.title")}
                                 </h5>
-                                <div className="space-y-3">
+                                <div className="max-w-full space-y-3">
                                   {cv.experiences.map((exp, idx) => (
                                     <div
                                       key={idx}
-                                      className="bg-muted/5 max-w-full overflow-hidden rounded-sm border p-3"
+                                      className="bg-muted/5 max-w-full overflow-hidden rounded-sm border p-3 break-all whitespace-pre-wrap sm:wrap-break-word"
                                     >
-                                      <div className="flex justify-between text-xs font-bold">
-                                        <span>
-                                          {exp.role} - {exp.company}
+                                      {/* Exibição vertical limpa unificada para todas as telas */}
+                                      <div className="flex w-full flex-col gap-1 text-left sm:flex-row sm:items-center sm:justify-between">
+                                        <span className="text-sm font-bold break-all whitespace-pre-wrap sm:wrap-break-word">
+                                          {exp.role || "—"}
                                         </span>
-                                        <span className="italic">
-                                          {exp.date}
+                                        <span className="text-primary text-xs break-all whitespace-pre-wrap sm:wrap-break-word">
+                                          {exp.company || "—"}
+                                        </span>
+                                        <span className="text-muted-foreground text-xs break-all italic sm:wrap-break-word">
+                                          {exp.date || "—"}
                                         </span>
                                       </div>
+
                                       {exp.details?.length > 0 && (
-                                        <div className="text-muted-foreground mt-2 max-w-full space-y-1 text-xs wrap-break-word whitespace-pre-wrap">
+                                        <div className="text-muted-foreground mt-2 max-w-full space-y-1 text-xs break-all whitespace-pre-wrap sm:wrap-break-word">
                                           {exp.details.map(
                                             (det, dIdx) =>
-                                              det && <p key={dIdx}>• {det}</p>
+                                              det && (
+                                                <p
+                                                  key={dIdx}
+                                                  className="break-all whitespace-pre-wrap sm:wrap-break-word"
+                                                >
+                                                  • {det}
+                                                </p>
+                                              )
                                           )}
                                         </div>
                                       )}
                                       {exp.stacks?.length > 0 &&
                                         exp.stacks[0] !== "" && (
-                                          <div className="mt-2 flex flex-wrap gap-1">
+                                          <div className="mt-2 flex flex-wrap gap-1 break-all sm:wrap-break-word">
                                             {exp.stacks.map((st, sIdx) => (
                                               <Badge
                                                 key={sIdx}
                                                 variant="secondary"
-                                                className="text-[10px]"
+                                                className="text-[10px] break-all"
                                               >
                                                 {st}
                                               </Badge>
@@ -335,21 +468,26 @@ export function HistoryTable({
                               </div>
                             )}
 
-                          {/* 7. Educação, Certificações e Idiomas (CORRIGIDO: Alinhados em flex-col) */}
+                          {/* 7. Educação, Certificações e Idiomas (UNIFICADO: Alinhados verticalmente) */}
                           {(cv.education ||
                             cv.certifications ||
                             cv.languages) && (
-                            <div className="flex flex-col gap-4 border-t pt-3">
+                            <div className="flex max-w-full flex-col gap-4 overflow-hidden border-t pt-3">
                               {/* Educação */}
                               {cv.education?.length > 0 &&
                                 cv.education[0] !== "" && (
-                                  <div className="space-y-1">
-                                    <h5 className="text-primary text-xs font-bold tracking-wider uppercase">
+                                  <div className="max-w-full space-y-1">
+                                    <h5 className="text-primary block max-w-full text-xs font-bold tracking-wider break-all whitespace-pre-wrap uppercase sm:wrap-break-word">
                                       {t("sections.education.title")}
                                     </h5>
-                                    <div className="max-w-full space-y-1 text-xs wrap-break-word whitespace-pre-wrap">
+                                    <div className="max-w-full space-y-1 text-xs break-all whitespace-pre-wrap sm:wrap-break-word">
                                       {cv.education.map((edu, idx) => (
-                                        <p key={idx}>• {edu}</p>
+                                        <p
+                                          key={idx}
+                                          className="break-all whitespace-pre-wrap sm:wrap-break-word"
+                                        >
+                                          • {edu}
+                                        </p>
                                       ))}
                                     </div>
                                   </div>
@@ -357,13 +495,18 @@ export function HistoryTable({
                               {/* Certificados */}
                               {cv.certifications?.length > 0 &&
                                 cv.certifications[0] !== "" && (
-                                  <div className="space-y-1">
-                                    <h5 className="text-primary text-xs font-bold tracking-wider uppercase">
+                                  <div className="max-w-full space-y-1">
+                                    <h5 className="text-primary block max-w-full text-xs font-bold tracking-wider break-all whitespace-pre-wrap uppercase sm:wrap-break-word">
                                       {t("sections.certifications.title")}
                                     </h5>
-                                    <div className="max-w-full space-y-1 text-xs wrap-break-word whitespace-pre-wrap">
+                                    <div className="max-w-full space-y-1 text-xs break-all whitespace-pre-wrap sm:wrap-break-word">
                                       {cv.certifications.map((cert, idx) => (
-                                        <p key={idx}>• {cert}</p>
+                                        <p
+                                          key={idx}
+                                          className="break-all whitespace-pre-wrap sm:wrap-break-word"
+                                        >
+                                          • {cert}
+                                        </p>
                                       ))}
                                     </div>
                                   </div>
@@ -371,13 +514,18 @@ export function HistoryTable({
                               {/* Idiomas */}
                               {cv.languages?.length > 0 &&
                                 cv.languages[0] !== "" && (
-                                  <div className="space-y-1">
-                                    <h5 className="text-primary text-xs font-bold tracking-wider uppercase">
+                                  <div className="max-w-full space-y-1">
+                                    <h5 className="text-primary block max-w-full text-xs font-bold tracking-wider break-all whitespace-pre-wrap uppercase sm:wrap-break-word">
                                       {t("sections.languages.title")}
                                     </h5>
-                                    <div className="max-w-full space-y-1 text-xs wrap-break-word whitespace-pre-wrap">
+                                    <div className="max-w-full space-y-1 text-xs break-all whitespace-pre-wrap sm:wrap-break-word">
                                       {cv.languages.map((lang, idx) => (
-                                        <p key={idx}>• {lang}</p>
+                                        <p
+                                          key={idx}
+                                          className="break-all whitespace-pre-wrap sm:wrap-break-word"
+                                        >
+                                          • {lang}
+                                        </p>
                                       ))}
                                     </div>
                                   </div>
