@@ -49,6 +49,7 @@ export interface CvDataState {
   certifications: string[];
   languages: string[];
   language?: string;
+  jobText?: string;
 }
 
 interface AnalysisResults {
@@ -165,7 +166,7 @@ export const useResumeStore = create<ResumeStore>()(
         }
       },
 
-      // --- SALVAR HISTÓRICO NO BACKEND (Injetando o carimbo de idioma correto) ---
+      // --- SALVAR HISTÓRICO NO BANCO (Injetando o carimbo de idioma e texto da vaga) ---
       saveResumeToHistory: async (locale: string) => {
         const { cvData } = get();
 
@@ -175,10 +176,11 @@ export const useResumeStore = create<ResumeStore>()(
           "Cargo não especificado";
         const targetCompany = cvData.company || "Empresa não especificada";
 
-        // Injeta o idioma ativo da tela diretamente na árvore de dados salva no Postgres (JSONB)
+        // Injeta o idioma ativo e o texto da vaga diretamente no JSON do banco
         const payloadWithLocale = {
           ...cvData,
           language: locale,
+          jobText: get().jobText,
         };
 
         try {
