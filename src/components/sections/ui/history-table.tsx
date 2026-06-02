@@ -20,7 +20,7 @@ export interface HistoryItem {
   targetRole: string;
   targetCompany: string;
   cvPayload: CvDataState;
-  createdAt: string; // ISO String vinda do Postgres
+  createdAt: string;
 }
 
 interface HistoryTableProps {
@@ -63,15 +63,13 @@ export function HistoryTable({
                     open={isOpen}
                     onOpenChange={() => toggleItem(item.id)}
                   >
-                    {/* CABEÇALHO DO ITEM DO HISTÓRICO (PROTÓTIPO IGUAL À IMAGEM) */}
+                    {/* CABEÇALHO DO ITEM DO HISTÓRICO */}
                     <div className="flex w-full items-center justify-between gap-4">
                       <div className="flex min-w-0 flex-1 items-center gap-4">
-                        {/* Círculo com número da ordem de criação */}
                         <div className="border-primary bg-primary/5 text-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 text-sm font-bold">
                           {item.orderNumber}
                         </div>
 
-                        {/* Dados de texto principais */}
                         <div className="flex flex-col truncate sm:flex-row sm:items-center sm:gap-2">
                           <span className="truncate text-sm font-bold">
                             {item.targetRole}
@@ -91,7 +89,6 @@ export function HistoryTable({
                         </div>
                       </div>
 
-                      {/* Gatilho para expandir */}
                       <CollapsibleTrigger asChild>
                         <Button
                           variant="ghost"
@@ -105,17 +102,17 @@ export function HistoryTable({
                       </CollapsibleTrigger>
                     </div>
 
-                    {/* CONTEÚDO EXPANSÍVEL (TODOS OS CAMPOS DO CURRÍCULO DE FORMA LEITURA) */}
+                    {/* CONTEÚDO EXPANSÍVEL */}
                     <CollapsibleContent className="mt-5 w-full space-y-4 border-t pt-4">
-                      <Card className="bg-muted/10 border-muted/40 border">
-                        <CardContent className="space-y-5 p-4 text-sm">
-                          {/* 1. Metadados ATS */}
+                      <Card className="bg-muted/10 border-muted/40 max-w-full overflow-hidden border">
+                        <CardContent className="max-w-full space-y-5 p-4 text-sm">
+                          {/* 1. Metadados ATS (CORRIGIDO: Colocado em flex-col) */}
                           {cv.meta_ats && (
-                            <div className="space-y-1">
-                              <h5 className="text-primary text-xs font-bold tracking-wider uppercase">
+                            <div className="flex flex-col space-y-1.5">
+                              <h5 className="text-primary mb-1 text-xs font-bold tracking-wider uppercase">
                                 {t("sections.meta_ats.title")}
                               </h5>
-                              <div className="grid grid-cols-1 gap-x-4 gap-y-1 text-xs md:grid-cols-2">
+                              <div className="flex flex-col gap-1 text-xs">
                                 <p>
                                   <strong>
                                     {t(
@@ -153,30 +150,39 @@ export function HistoryTable({
                                   {cv.meta_ats.contributor || "—"}
                                 </p>
                               </div>
+
+                              {/* Keywords com Título Acoplado (CORRIGIDO) */}
                               {cv.meta_ats.keywords?.length > 0 &&
                                 cv.meta_ats.keywords[0] !== "" && (
-                                  <div className="flex flex-wrap gap-1 pt-2">
-                                    {cv.meta_ats.keywords.map((kw, idx) => (
-                                      <Badge
-                                        key={idx}
-                                        variant="secondary"
-                                        className="text-[10px]"
-                                      >
-                                        {kw}
-                                      </Badge>
-                                    ))}
+                                  <div className="flex flex-col gap-1.5 pt-2">
+                                    <span className="text-muted-foreground text-xs font-semibold">
+                                      {t(
+                                        "sections.meta_ats.keywordsOptimizerTitle"
+                                      )}
+                                    </span>
+                                    <div className="flex flex-wrap gap-1">
+                                      {cv.meta_ats.keywords.map((kw, idx) => (
+                                        <Badge
+                                          key={idx}
+                                          variant="secondary"
+                                          className="text-[10px]"
+                                        >
+                                          {kw}
+                                        </Badge>
+                                      ))}
+                                    </div>
                                   </div>
                                 )}
                             </div>
                           )}
 
-                          {/* 2. Cabeçalho Pessoal */}
+                          {/* 2. Cabeçalho Pessoal (CORRIGIDO: Colocado em flex-col) */}
                           {cv.info && (
-                            <div className="space-y-1 border-t pt-3">
-                              <h5 className="text-primary text-xs font-bold tracking-wider uppercase">
+                            <div className="flex flex-col space-y-1.5 border-t pt-3">
+                              <h5 className="text-primary mb-1 text-xs font-bold tracking-wider uppercase">
                                 {t("sections.header.title")}
                               </h5>
-                              <div className="grid grid-cols-1 gap-2 text-xs sm:grid-cols-3">
+                              <div className="flex flex-col gap-1 text-xs">
                                 <p>
                                   <strong>
                                     {t("sections.header.fields.name.label")}:
@@ -199,13 +205,13 @@ export function HistoryTable({
                             </div>
                           )}
 
-                          {/* 3. Links Profissionais */}
+                          {/* 3. Links Profissionais (CORRIGIDO: Colocado em flex-col) */}
                           {cv.links && (
-                            <div className="space-y-1 border-t pt-3">
-                              <h5 className="text-primary text-xs font-bold tracking-wider uppercase">
+                            <div className="flex flex-col space-y-1.5 border-t pt-3">
+                              <h5 className="text-primary mb-1 text-xs font-bold tracking-wider uppercase">
                                 {t("sections.links.title")}
                               </h5>
-                              <div className="grid grid-cols-1 gap-2 text-xs sm:grid-cols-2">
+                              <div className="flex flex-col gap-1 text-xs">
                                 {Object.entries(cv.links).map(
                                   ([key, val]) =>
                                     val && (
@@ -219,10 +225,10 @@ export function HistoryTable({
                                             href={val}
                                             target="_blank"
                                             rel="noreferrer"
-                                            className="text-primary inline-flex items-center gap-0.5 hover:underline"
+                                            className="text-primary inline-flex items-center gap-0.5 break-all hover:underline"
                                           >
                                             {val}{" "}
-                                            <ExternalLink className="size-3" />
+                                            <ExternalLink className="h-3 w-3 shrink-0" />
                                           </a>
                                         ) : (
                                           val
@@ -234,7 +240,7 @@ export function HistoryTable({
                             </div>
                           )}
 
-                          {/* 4. Resumos (Profissional e IA) */}
+                          {/* 4. Resumos (CORRIGIDO: Parágrafos blindados contra estouros de texto) */}
                           {(cv.summary || cv.ai) && (
                             <div className="space-y-3 border-t pt-3">
                               {cv.summary && (
@@ -242,7 +248,7 @@ export function HistoryTable({
                                   <h5 className="text-primary text-xs font-bold tracking-wider uppercase">
                                     {t("sections.summary.title")}
                                   </h5>
-                                  <p className="bg-muted/20 border-muted/20 rounded-sm border p-2.5 leading-relaxed italic">
+                                  <p className="bg-muted/20 border-muted/20 max-w-full overflow-hidden rounded-sm border p-2.5 leading-relaxed wrap-break-word whitespace-pre-wrap italic">
                                     {cv.summary}
                                   </p>
                                 </div>
@@ -252,7 +258,7 @@ export function HistoryTable({
                                   <h5 className="text-primary text-xs font-bold tracking-wider uppercase">
                                     {t("sections.ai.title")}
                                   </h5>
-                                  <p className="bg-muted/20 border-muted/20 rounded-sm border p-2.5 leading-relaxed italic">
+                                  <p className="bg-muted/20 border-muted/20 max-w-full overflow-hidden rounded-sm border p-2.5 leading-relaxed wrap-break-word whitespace-pre-wrap italic">
                                     {cv.ai}
                                   </p>
                                 </div>
@@ -280,7 +286,7 @@ export function HistoryTable({
                             </div>
                           )}
 
-                          {/* 6. Experiências */}
+                          {/* 6. Experiências (CORRIGIDO: Parágrafos de detalhes blindados contra estouros) */}
                           {cv.experiences?.length > 0 &&
                             cv.experiences[0].role !== "" && (
                               <div className="space-y-3 border-t pt-3">
@@ -291,7 +297,7 @@ export function HistoryTable({
                                   {cv.experiences.map((exp, idx) => (
                                     <div
                                       key={idx}
-                                      className="bg-muted/5 rounded-sm border p-3"
+                                      className="bg-muted/5 max-w-full overflow-hidden rounded-sm border p-3"
                                     >
                                       <div className="flex justify-between text-xs font-bold">
                                         <span>
@@ -302,7 +308,7 @@ export function HistoryTable({
                                         </span>
                                       </div>
                                       {exp.details?.length > 0 && (
-                                        <div className="text-muted-foreground mt-2 space-y-1 text-xs">
+                                        <div className="text-muted-foreground mt-2 max-w-full space-y-1 text-xs wrap-break-word whitespace-pre-wrap">
                                           {exp.details.map(
                                             (det, dIdx) =>
                                               det && <p key={dIdx}>• {det}</p>
@@ -329,11 +335,11 @@ export function HistoryTable({
                               </div>
                             )}
 
-                          {/* 7. Educação, Certificações e Idiomas */}
+                          {/* 7. Educação, Certificações e Idiomas (CORRIGIDO: Alinhados em flex-col) */}
                           {(cv.education ||
                             cv.certifications ||
                             cv.languages) && (
-                            <div className="grid grid-cols-1 gap-4 border-t pt-3 md:grid-cols-3">
+                            <div className="flex flex-col gap-4 border-t pt-3">
                               {/* Educação */}
                               {cv.education?.length > 0 &&
                                 cv.education[0] !== "" && (
@@ -341,7 +347,7 @@ export function HistoryTable({
                                     <h5 className="text-primary text-xs font-bold tracking-wider uppercase">
                                       {t("sections.education.title")}
                                     </h5>
-                                    <div className="space-y-1 text-xs">
+                                    <div className="max-w-full space-y-1 text-xs wrap-break-word whitespace-pre-wrap">
                                       {cv.education.map((edu, idx) => (
                                         <p key={idx}>• {edu}</p>
                                       ))}
@@ -355,7 +361,7 @@ export function HistoryTable({
                                     <h5 className="text-primary text-xs font-bold tracking-wider uppercase">
                                       {t("sections.certifications.title")}
                                     </h5>
-                                    <div className="space-y-1 text-xs">
+                                    <div className="max-w-full space-y-1 text-xs wrap-break-word whitespace-pre-wrap">
                                       {cv.certifications.map((cert, idx) => (
                                         <p key={idx}>• {cert}</p>
                                       ))}
@@ -369,7 +375,7 @@ export function HistoryTable({
                                     <h5 className="text-primary text-xs font-bold tracking-wider uppercase">
                                       {t("sections.languages.title")}
                                     </h5>
-                                    <div className="space-y-1 text-xs">
+                                    <div className="max-w-full space-y-1 text-xs wrap-break-word whitespace-pre-wrap">
                                       {cv.languages.map((lang, idx) => (
                                         <p key={idx}>• {lang}</p>
                                       ))}
