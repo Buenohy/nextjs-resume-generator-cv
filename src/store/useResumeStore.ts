@@ -40,6 +40,7 @@ export interface CvDataState {
     email: string;
     github: string;
   };
+  company: string;
   summary: string;
   ai: string;
   skills: string[];
@@ -80,7 +81,7 @@ interface ResumeStore {
   analysisResults: AnalysisResults | null;
   isLoadingAnalysis: boolean;
   triggerAnalysis: () => Promise<void>;
-  saveResumeToHistory: () => Promise<boolean>; // 🆕 Nova Action
+  saveResumeToHistory: () => Promise<boolean>;
 }
 
 const initialCvData: CvDataState = {
@@ -108,6 +109,7 @@ const initialCvData: CvDataState = {
     email: "",
     github: "",
   },
+  company: "",
   summary: "",
   ai: "",
   skills: [""],
@@ -162,6 +164,7 @@ export const useResumeStore = create<ResumeStore>()(
         }
       },
 
+      // --- SALVAR HISTÓRICO NO BACKEND (Puxando os dados reais do cvData) ---
       saveResumeToHistory: async () => {
         const { cvData } = get();
 
@@ -169,8 +172,7 @@ export const useResumeStore = create<ResumeStore>()(
           cvData.info.role ||
           cvData.meta_ats.role_target ||
           "Cargo não especificado";
-        const targetCompany =
-          cvData.experiences?.[0]?.company || "Empresa não especificada";
+        const targetCompany = cvData.company || "Empresa não especificada";
 
         try {
           const response = await fetch(HISTORY_API_URL, {
