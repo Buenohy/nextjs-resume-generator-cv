@@ -50,6 +50,7 @@ export interface CvDataState {
   languages: string[];
   language?: string;
   jobText?: string;
+  platformText?: string;
 }
 
 interface AnalysisResults {
@@ -78,6 +79,8 @@ interface AnalysisResults {
 interface ResumeStore {
   jobText: string;
   setJobText: (text: string) => void;
+  platformText: string; // 🆕 Nova action
+  setPlatformText: (text: string) => void;
   cvData: CvDataState;
   updateCvData: (updater: (draft: CvDataState) => void) => void;
   analysisResults: AnalysisResults | null;
@@ -131,6 +134,9 @@ export const useResumeStore = create<ResumeStore>()(
       jobText: "",
       setJobText: (text) => set({ jobText: text }),
 
+      platformText: "", // Inicialização do novo campo
+      setPlatformText: (text) => set({ platformText: text }),
+
       cvData: initialCvData,
       updateCvData: (updater) => {
         const current = get().cvData;
@@ -166,7 +172,7 @@ export const useResumeStore = create<ResumeStore>()(
         }
       },
 
-      // --- SALVAR HISTÓRICO NO BANCO (Injetando o carimbo de idioma e texto da vaga) ---
+      // --- SALVAR HISTÓRICO NO BANCO (Injetando carimbo de idioma, vaga e plataforma) ---
       saveResumeToHistory: async (locale: string) => {
         const { cvData } = get();
 
@@ -176,11 +182,11 @@ export const useResumeStore = create<ResumeStore>()(
           "Cargo não especificado";
         const targetCompany = cvData.company || "Empresa não especificada";
 
-        // Injeta o idioma ativo e o texto da vaga diretamente no JSON do banco
         const payloadWithLocale = {
           ...cvData,
           language: locale,
           jobText: get().jobText,
+          platformText: get().platformText,
         };
 
         try {

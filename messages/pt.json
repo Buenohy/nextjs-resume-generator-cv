@@ -74,6 +74,9 @@
     "cardTitle": "Descrição da Vaga",
     "cardDescription": "Coloque os detalhes da vaga abaixo",
     "placeholder": "Cole a descrição completa da vaga do LinkedIn, Wellfound, etc. aqui...",
+    "plataformTitle": "Plataforma",
+    "plataformDescription": "Coloque a plataforma da vaga",
+    "plataformPlaceholder": "Coloque a plataforma da vaga Ex: Linkedin, Wellfound, etc",
     "button": "Enviar descrição da vaga"
   },
   "ResumeBuilderPage": {

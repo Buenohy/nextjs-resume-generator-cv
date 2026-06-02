@@ -21,10 +21,17 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function JobDescriptionPage() {
   const router = useRouter();
   const t = useTranslations("JobDescriptionPage");
+
+  // Resgata os estados e ações do Zustand global
   const globalJobText = useResumeStore((state) => state.jobText);
   const setGlobalJobText = useResumeStore((state) => state.setJobText);
+  const globalPlatformText = useResumeStore((state) => state.platformText);
+  const setGlobalPlatformText = useResumeStore(
+    (state) => state.setPlatformText
+  );
 
   const [localText, setLocalText] = useState(globalJobText);
+  const [localPlatform, setLocalPlatform] = useState(globalPlatformText); // Estado local para plataforma
   const [isMounted, setIsMounted] = useState(false);
 
   {
@@ -43,37 +50,41 @@ export default function JobDescriptionPage() {
 
   const handleSubmit = () => {
     setGlobalJobText(localText);
+    setGlobalPlatformText(localPlatform); // Salva a plataforma na Store antes de avançar
     router.push("/resume-builder");
   };
 
   {
     /* 
     HIGH-FIDELITY SKELETON LOADER
-    - Rendered only on first mount.
-    - Copies the exact heights, spacing, and alignment of the actual card, textarea, and action button.
+    - Corrigido: Invertida a ordem para carregar Plataforma primeiro e Vaga em segundo.
   */
   }
   if (!isMounted) {
     return (
       <div>
-        {/* Title Skeleton */}
         <Skeleton className="mb-6 h-8 w-64" />
 
         <Card className="shadow-primary/50 shadow-lg">
           <CardHeader>
-            {/* Card Title & Description Skeletons */}
             <Skeleton className="mb-2 h-6 w-48" />
             <Skeleton className="h-4 w-56 sm:w-80" />
           </CardHeader>
-          <CardContent>
-            {/* 
-              Textarea Skeleton 
-              - Matches the identical responsive minimum heights of the actual Textarea.
-            */}
-            <Skeleton className="h-[120px] w-full rounded-md sm:h-[250px]" />
+          <CardContent className="flex flex-col gap-6">
+            {/* 1. Plataforma Skeleton (Agora primeiro) */}
+            <div className="flex flex-col gap-2">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-3.5 w-48" />
+              <Skeleton className="h-[60px] w-full rounded-md" />
+            </div>
+
+            {/* 2. Descrição da vaga Skeleton (Agora em segundo) */}
+            <div className="flex flex-col gap-2 border-t pt-4">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-[120px] w-full rounded-md sm:h-[250px]" />
+            </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-6">
-            {/* Centered Button Skeleton */}
             <div className="flex w-full justify-center">
               <Skeleton className="h-10 w-28 rounded-md" />
             </div>
@@ -91,17 +102,40 @@ export default function JobDescriptionPage() {
           <CardTitle>{t("cardTitle")}</CardTitle>
           <CardDescription>{t("cardDescription")}</CardDescription>
         </CardHeader>
-        <CardContent>
-          <Textarea
-            placeholder={t("placeholder")}
-            value={localText}
-            onChange={(e) => setLocalText(e.target.value)}
-            className="sm:min-h-62.5"
-          />
+
+        {/* CORRIGIDO: Invertida a ordem de exibição (Plataforma primeiro, Vaga em segundo) */}
+        <CardContent className="flex flex-col gap-6">
+          {/* CAMPO 1: PLATAFORMA DA VAGA */}
+          <div className="flex flex-col gap-2">
+            <span className="text-sm font-semibold">{t("plataformTitle")}</span>
+            <p className="text-muted-foreground text-xs">
+              {t("plataformDescription")}
+            </p>
+            <Textarea
+              placeholder={t("plataformPlaceholder")}
+              value={localPlatform}
+              onChange={(e) => setLocalPlatform(e.target.value)}
+              className="min-h-[60px] resize-none overflow-hidden py-2"
+              rows={1}
+            />
+          </div>
+
+          {/* CAMPO 2: DESCRIÇÃO DA VAGA */}
+          <div className="flex flex-col gap-2 border-t pt-4">
+            <span className="text-sm font-semibold">{t("cardTitle")}</span>
+            <Textarea
+              placeholder={t("placeholder")}
+              value={localText}
+              onChange={(e) => setLocalText(e.target.value)}
+              className="sm:min-h-62.5"
+            />
+          </div>
         </CardContent>
+
         <CardFooter className="flex flex-col gap-6">
           <div className="flex w-full justify-center">
             <CardAction>
+              {/* Desabilita se o campo de texto da vaga estiver em branco */}
               <Button onClick={handleSubmit} disabled={!localText.trim()}>
                 {t("button")}
               </Button>

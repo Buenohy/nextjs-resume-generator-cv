@@ -68,6 +68,9 @@
     "cardTitle": "Job Description",
     "cardDescription": "Enter the job details below",
     "placeholder": "Paste the full job description from LinkedIn, Wellfound, etc. here...",
+    "plataformTitle": "Plataform",
+    "plataformDescription": "Place the job posting on the platform",
+    "plataformPlaceholder": "Enter plataform name eg: LinkedIn, Wellfound, etc",
     "button": "Submit job description"
   },
   "ResumeBuilderPage": {
