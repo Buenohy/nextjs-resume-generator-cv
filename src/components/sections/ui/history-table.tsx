@@ -258,11 +258,20 @@ export function HistoryTable({
                               {cv.meta_ats.keywords?.length > 0 &&
                                 cv.meta_ats.keywords[0] !== "" && (
                                   <div className="flex max-w-full flex-col gap-1.5 pt-2">
-                                    <span className="text-muted-foreground block max-w-full text-xs font-semibold break-all whitespace-pre-wrap sm:wrap-break-word">
-                                      {t(
-                                        "sections.meta_ats.keywordsOptimizerTitle"
-                                      )}
-                                    </span>
+                                    {(() => {
+                                      const kwCount =
+                                        cv.meta_ats.keywords.filter(
+                                          (k: string) => k.trim() !== ""
+                                        ).length;
+                                      return (
+                                        <span className="text-muted-foreground block max-w-full text-xs font-semibold break-all whitespace-pre-wrap sm:wrap-break-word">
+                                          {t(
+                                            "sections.meta_ats.keywordsOptimizerTitle"
+                                          )}{" "}
+                                          ({kwCount})
+                                        </span>
+                                      );
+                                    })()}
                                     <div className="flex flex-wrap gap-1 break-all sm:wrap-break-word">
                                       {cv.meta_ats.keywords.map((kw, idx) => (
                                         <Badge
@@ -314,7 +323,7 @@ export function HistoryTable({
                             </div>
                           )}
 
-                          {/* 3. Links Profissionais (UNIFICADO: Empilhado verticalmente para todas as telas + w-fit nos links) */}
+                          {/* 3. Links Profissionais */}
                           {cv.links && (
                             <div className="flex max-w-full flex-col space-y-1.5 overflow-hidden border-t pt-3">
                               <h5 className="text-primary mb-1 block max-w-full text-xs font-bold tracking-wider break-all whitespace-pre-wrap uppercase sm:wrap-break-word">
@@ -390,9 +399,16 @@ export function HistoryTable({
                           {/* 5. Habilidades (Skills) */}
                           {cv.skills?.length > 0 && cv.skills[0] !== "" && (
                             <div className="max-w-full space-y-1.5 overflow-hidden border-t pt-3">
-                              <h5 className="text-primary block max-w-full text-xs font-bold tracking-wider break-all whitespace-pre-wrap uppercase sm:wrap-break-word">
-                                {t("sections.skills.title")}
-                              </h5>
+                              {(() => {
+                                const skillsCount = cv.skills.filter(
+                                  (s: string) => s.trim() !== ""
+                                ).length;
+                                return (
+                                  <h5 className="text-primary block max-w-full text-xs font-bold tracking-wider break-all whitespace-pre-wrap uppercase sm:wrap-break-word">
+                                    {t("sections.skills.title")} ({skillsCount})
+                                  </h5>
+                                );
+                              })()}
                               <div className="flex flex-wrap gap-1 break-all sm:wrap-break-word">
                                 {cv.skills.map((skill, idx) => (
                                   <Badge
@@ -407,7 +423,7 @@ export function HistoryTable({
                             </div>
                           )}
 
-                          {/* 6. Experiências (UNIFICADO: Empilhado verticalmente para todas as telas) */}
+                          {/* 6. Experiências */}
                           {cv.experiences?.length > 0 &&
                             cv.experiences[0].role !== "" && (
                               <div className="max-w-full space-y-3 overflow-hidden border-t pt-3">
@@ -420,7 +436,6 @@ export function HistoryTable({
                                       key={idx}
                                       className="bg-muted/5 max-w-full overflow-hidden rounded-sm border p-3 break-all whitespace-pre-wrap sm:wrap-break-word"
                                     >
-                                      {/* Exibição vertical limpa unificada para todas as telas */}
                                       <div className="flex w-full flex-col gap-1 text-left sm:flex-row sm:items-center sm:justify-between">
                                         <span className="text-sm font-bold break-all whitespace-pre-wrap sm:wrap-break-word">
                                           {exp.role || "—"}
@@ -448,18 +463,37 @@ export function HistoryTable({
                                           )}
                                         </div>
                                       )}
+
+                                      {/* CORRIGIDO: Exibe o título localizado das stacks com a contagem dinâmica ao lado, e badges abaixo */}
                                       {exp.stacks?.length > 0 &&
                                         exp.stacks[0] !== "" && (
-                                          <div className="mt-2 flex flex-wrap gap-1 break-all sm:wrap-break-word">
-                                            {exp.stacks.map((st, sIdx) => (
-                                              <Badge
-                                                key={sIdx}
-                                                variant="secondary"
-                                                className="text-[10px] break-all"
-                                              >
-                                                {st}
-                                              </Badge>
-                                            ))}
+                                          <div className="mt-3 flex w-full flex-col gap-1.5 text-left">
+                                            {(() => {
+                                              const stacksCount =
+                                                exp.stacks.filter(
+                                                  (st: string) =>
+                                                    st.trim() !== ""
+                                                ).length;
+                                              return (
+                                                <span className="text-muted-foreground block text-[11px] font-semibold break-all whitespace-pre-wrap sm:wrap-break-word">
+                                                  {t(
+                                                    "sections.experience.stacksTitle"
+                                                  )}{" "}
+                                                  ({stacksCount})
+                                                </span>
+                                              );
+                                            })()}
+                                            <div className="flex flex-wrap gap-1 break-all sm:wrap-break-word">
+                                              {exp.stacks.map((st, sIdx) => (
+                                                <Badge
+                                                  key={sIdx}
+                                                  variant="secondary"
+                                                  className="text-[10px] break-all"
+                                                >
+                                                  {st}
+                                                </Badge>
+                                              ))}
+                                            </div>
                                           </div>
                                         )}
                                     </div>
@@ -468,7 +502,7 @@ export function HistoryTable({
                               </div>
                             )}
 
-                          {/* 7. Educação, Certificações e Idiomas (UNIFICADO: Alinhados verticalmente) */}
+                          {/* 7. Educação, Certificações e Idiomas */}
                           {(cv.education ||
                             cv.certifications ||
                             cv.languages) && (
