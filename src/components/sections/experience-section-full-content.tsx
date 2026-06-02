@@ -26,6 +26,7 @@ import { useAutoResize } from "@/app/hooks/useAutoResize";
 import { MonthYearPicker } from "./ui/mouth-year-picker";
 import { ExperienceTable } from "./ui/experience-table";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 const emptyExperience: ExperienceItem = {
   role: "",
