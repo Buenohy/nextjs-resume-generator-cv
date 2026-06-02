@@ -166,7 +166,8 @@ export default function PdfPreviewPage() {
   // --- FUNÇÃO DE GATILHO DE SALVAMENTO AO EXPORTAR ---
   const handleExportToHistory = async () => {
     try {
-      await saveResumeToHistory(); // Dispara o POST silencioso pro banco PostgreSQL
+      // CORRIGIDO: Envia o locale ativo atual da página ("pt" ou "en")
+      await saveResumeToHistory(locale);
     } catch (e) {
       console.error("Erro ao salvar snapshot do currículo no histórico:", e);
     }
@@ -230,7 +231,7 @@ export default function PdfPreviewPage() {
                 fileName={formattedFileName}
               >
                 {({ loading }) => (
-                  // ADICIONADO: handleExportToHistory no evento de clique
+                  // handleExportToHistory no evento de clique enviando o locale
                   <Button disabled={loading} onClick={handleExportToHistory}>
                     {loading ? (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
