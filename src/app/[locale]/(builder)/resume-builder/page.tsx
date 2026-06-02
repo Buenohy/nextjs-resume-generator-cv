@@ -22,6 +22,7 @@ import { LanguagesSection } from "@/components/sections/language-section";
 import { FeedbackCard } from "@/components/sections/ui/feed-back-card";
 import { AiSection } from "@/components/sections/ai-section";
 import { SectionNav } from "@/components/sections/ui/section-nav";
+import { CompanySection } from "@/components/sections/company-section";
 
 export default function ResumeBuilderPage() {
   const t = useTranslations("ResumeBuilderPage");
@@ -135,6 +136,9 @@ export default function ResumeBuilderPage() {
               )}
             </CardHeader>
 
+            <div id="company-info" className="scroll-mt-20">
+              <CompanySection />
+            </div>
             <div id="meta-ats" className="scroll-mt-20">
               <MetaAtsSection />
             </div>
