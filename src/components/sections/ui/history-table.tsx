@@ -440,9 +440,24 @@ export function HistoryTable({
                                         <span className="text-sm font-bold break-all whitespace-pre-wrap sm:wrap-break-word">
                                           {exp.role || "—"}
                                         </span>
-                                        <span className="text-primary text-xs break-all whitespace-pre-wrap sm:wrap-break-word">
-                                          {exp.company || "—"}
-                                        </span>
+
+                                        {/* CORRIGIDO: Nome da empresa vira link se o campo exp.url existir */}
+                                        {exp.url ? (
+                                          <a
+                                            href={exp.url}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="text-primary inline-flex w-fit shrink-0 items-center gap-0.5 text-xs font-semibold break-all hover:underline sm:wrap-break-word"
+                                          >
+                                            {exp.company || "—"}{" "}
+                                            <ExternalLink className="h-3 w-3 shrink-0" />
+                                          </a>
+                                        ) : (
+                                          <span className="text-muted-foreground shrink-0 text-xs break-all whitespace-pre-wrap sm:wrap-break-word">
+                                            {exp.company || "—"}
+                                          </span>
+                                        )}
+
                                         <span className="text-muted-foreground text-xs break-all italic sm:wrap-break-word">
                                           {exp.date || "—"}
                                         </span>
@@ -464,7 +479,7 @@ export function HistoryTable({
                                         </div>
                                       )}
 
-                                      {/* CORRIGIDO: Exibe o título localizado das stacks com a contagem dinâmica ao lado, e badges abaixo */}
+                                      {/* Exibe o título localizado das stacks com a contagem dinâmica ao lado, e badges abaixo */}
                                       {exp.stacks?.length > 0 &&
                                         exp.stacks[0] !== "" && (
                                           <div className="mt-3 flex w-full flex-col gap-1.5 text-left">
