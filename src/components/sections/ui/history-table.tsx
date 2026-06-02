@@ -53,9 +53,8 @@ export function HistoryTable({
             const isOpen = openItems[item.id] || false;
             const cv = item.cvPayload;
 
-            const isEnglish = cv.meta_ats?.rights?.includes(
-              "All rights reserved"
-            );
+            // CORRIGIDO: Lê o carimbo de idioma real salvo diretamente do cvPayload
+            const isEnglish = cv.language === "en";
             const metadataLang = isEnglish
               ? "English (en-US)"
               : "Português (pt-BR)";
@@ -78,7 +77,6 @@ export function HistoryTable({
                           {item.orderNumber}
                         </div>
 
-                        {/* CORRIGIDO: Removida a classe truncate do pai e dos filhos para permitir quebra de linha no mobile */}
                         <div className="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-2">
                           <span className="text-sm/tight font-bold break-all whitespace-normal sm:wrap-break-word">
                             {item.targetRole}
@@ -93,7 +91,6 @@ export function HistoryTable({
                             •
                           </span>
 
-                          {/* Data e Idioma alinhados */}
                           <div className="flex flex-wrap items-center gap-1.5">
                             <span className="text-muted-foreground text-xs whitespace-nowrap italic">
                               {formatDateTime(item.createdAt)}
@@ -101,7 +98,6 @@ export function HistoryTable({
                             <span className="text-muted-foreground hidden sm:inline">
                               •
                             </span>
-                            {/* TAG DE IDIOMA estilizada baseada no seu padrão de cores */}
                             <span className="bg-primary/10 text-primary w-fit shrink-0 rounded-sm px-1.5 py-0.5 text-[10px] font-bold uppercase">
                               {langCode}
                             </span>
