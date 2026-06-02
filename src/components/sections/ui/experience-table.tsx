@@ -1,4 +1,4 @@
-import { ExternalLink, Trash2 } from "lucide-react";
+import { ExternalLink, Trash2, Edit2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -15,13 +15,15 @@ type ExperienceItem = FullContentState["savedExperiences"][number];
 
 interface ExperienceTableProps {
   experiences: ExperienceItem[];
-  onDelete: (index: number) => void;
+  onDelete: (id: string) => void;
+  onEdit: (exp: ExperienceItem) => void;
   tFull: (key: string) => string;
 }
 
 export function ExperienceTable({
   experiences,
   onDelete,
+  onEdit,
   tFull,
 }: ExperienceTableProps) {
   return (
@@ -36,23 +38,35 @@ export function ExperienceTable({
         </TableHeader>
 
         <TableBody>
-          {experiences.map((exp, index) => (
+          {experiences.map((exp) => (
             <TableRow
-              key={index}
+              key={exp.id}
               className="border-border mb-4 block border-b pb-4 sm:mb-0 sm:table-row sm:border-b-0 sm:pb-0"
             >
               <TableCell className="block w-full min-w-0 px-3 pt-4 align-top wrap-break-word sm:table-cell">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
                   <div className="flex items-center justify-between sm:contents">
                     <span className="text-sm font-bold">{exp.role || "—"}</span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => onDelete(index)}
-                      className="text-destructive h-8 w-8 sm:hidden"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+
+                    {/* Ações no Mobile */}
+                    <div className="flex gap-1 sm:hidden">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onEdit(exp)}
+                        className="text-primary h-8 w-8"
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onDelete(exp.id!)}
+                        className="text-destructive h-8 w-8"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
 
                   <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
@@ -62,14 +76,25 @@ export function ExperienceTable({
                     <span className="text-xs italic">{exp.date || "—"}</span>
                   </div>
 
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => onDelete(index)}
-                    className="text-destructive ml-auto hidden h-8 w-8 sm:inline-flex"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  {/* Ações no Desktop */}
+                  <div className="ml-auto hidden gap-1 sm:flex">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onEdit(exp)}
+                      className="text-primary hover:bg-primary/10 h-8 w-8"
+                    >
+                      <Edit2 className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onDelete(exp.id!)}
+                      className="text-destructive hover:bg-destructive/10 h-8 w-8"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
 
                 {/* Conteúdo extra (url, detalhes, stacks) */}
