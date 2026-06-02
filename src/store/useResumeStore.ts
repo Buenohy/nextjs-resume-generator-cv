@@ -80,6 +80,7 @@ interface ResumeStore {
   analysisResults: AnalysisResults | null;
   isLoadingAnalysis: boolean;
   triggerAnalysis: () => Promise<void>;
+  saveResumeToHistory: () => Promise<boolean>; // 🆕 Nova Action
 }
 
 const initialCvData: CvDataState = {
@@ -117,6 +118,8 @@ const initialCvData: CvDataState = {
   certifications: [""],
   languages: [""],
 };
+
+const HISTORY_API_URL = "http://localhost:3001/history";
 
 export const useResumeStore = create<ResumeStore>()(
   persist(
@@ -156,6 +159,37 @@ export const useResumeStore = create<ResumeStore>()(
           console.error("Erro ao analisar currículo", error);
         } finally {
           set({ isLoadingAnalysis: false });
+        }
+      },
+
+      saveResumeToHistory: async () => {
+        const { cvData } = get();
+
+        const targetRole =
+          cvData.info.role ||
+          cvData.meta_ats.role_target ||
+          "Cargo não especificado";
+        const targetCompany =
+          cvData.experiences?.[0]?.company || "Empresa não especificada";
+
+        try {
+          const response = await fetch(HISTORY_API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              targetRole,
+              targetCompany,
+              cvPayload: cvData,
+            }),
+          });
+
+          return response.ok;
+        } catch (error) {
+          console.error(
+            "Erro ao salvar histórico do currículo no banco:",
+            error
+          );
+          return false;
         }
       },
     }),
