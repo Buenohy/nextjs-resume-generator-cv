@@ -33,6 +33,7 @@ export function HistoryTable({
   emptyMessage,
 }: HistoryTableProps) {
   const t = useTranslations("ResumeBuilderPage");
+  const tJob = useTranslations("JobDescriptionPage"); // 🆕 Importa o dicionário de tradução da vaga
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
 
   const formatDateTime = (dateStr: string) => {
@@ -53,7 +54,6 @@ export function HistoryTable({
             const isOpen = openItems[item.id] || false;
             const cv = item.cvPayload;
 
-            // CORRIGIDO: Lê o carimbo de idioma real salvo diretamente do cvPayload
             const isEnglish = cv.language === "en";
             const metadataLang = isEnglish
               ? "English (en-US)"
@@ -122,9 +122,21 @@ export function HistoryTable({
                     <CollapsibleContent className="mt-5 w-full space-y-4 border-t pt-4">
                       <Card className="bg-muted/10 border-muted/40 max-w-full overflow-hidden border">
                         <CardContent className="max-w-full space-y-5 p-4 text-sm">
-                          {/* 1. Metadados ATS */}
-                          {cv.meta_ats && (
+                          {/* 0. 🆕 DESCRIÇÃO DA VAGA ORIGINAL (Exibe no topo de forma blindada contra estouro) */}
+                          {cv.jobText && (
                             <div className="flex max-w-full flex-col space-y-1.5 overflow-hidden">
+                              <h5 className="text-primary mb-1 block max-w-full text-xs font-bold tracking-wider break-all whitespace-pre-wrap uppercase sm:wrap-break-word">
+                                {tJob("title")}
+                              </h5>
+                              <p className="bg-muted/20 border-muted/20 text-muted-foreground max-w-full overflow-hidden rounded-sm border p-2.5 text-xs/relaxed wrap-break-word whitespace-pre-wrap italic">
+                                {cv.jobText}
+                              </p>
+                            </div>
+                          )}
+
+                          {/* 1. Metadados ATS (UNIFICADO: Empilhado verticalmente para todas as telas) */}
+                          {cv.meta_ats && (
+                            <div className="flex max-w-full flex-col space-y-1.5 overflow-hidden border-t pt-3">
                               <h5 className="text-primary mb-1 block max-w-full text-xs font-bold tracking-wider break-all whitespace-pre-wrap uppercase sm:wrap-break-word">
                                 {t("sections.meta_ats.title")}
                               </h5>
