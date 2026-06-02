@@ -40,6 +40,12 @@ export default function PdfPreviewPage() {
   const tResume = useTranslations("ResumeComponent.sections");
   const locale = useLocale();
   const cvData = useResumeStore((state) => state.cvData);
+
+  // Resgata o método do Zustand para salvar no banco de dados (NestJS)
+  const saveResumeToHistory = useResumeStore(
+    (state) => state.saveResumeToHistory
+  );
+
   const [isMounted, setIsMounted] = useState(false);
 
   {
@@ -157,34 +163,34 @@ export default function PdfPreviewPage() {
 
   const formattedFileName = `CV_${(cvData.info.name || "Resume").replace(/\s+/g, "_")}.pdf`;
 
+  // --- FUNÇÃO DE GATILHO DE SALVAMENTO AO EXPORTAR ---
+  const handleExportToHistory = async () => {
+    try {
+      await saveResumeToHistory(); // Dispara o POST silencioso pro banco PostgreSQL
+    } catch (e) {
+      console.error("Erro ao salvar snapshot do currículo no histórico:", e);
+    }
+  };
+
   {
     /* 
     HIGH-FIDELITY SKELETON LOADER
-    - Rendered only on first mount to hold layout positions.
-    - Prevents horizontal and vertical layout shifts.
   */
   }
   if (!isMounted) {
     return (
       <div className="container mx-auto min-h-screen">
-        {/* Title Page Skeleton */}
         <Skeleton className="mb-6 h-8 w-48" />
 
         <Card className="shadow-primary/50 mx-auto w-full shadow-lg">
           <CardHeader>
-            {/* Header Title & Subtitle Skeletons */}
             <Skeleton className="mb-2 h-6 w-40" />
             <Skeleton className="h-4 w-56 sm:w-72" />
           </CardHeader>
           <CardContent className="flex flex-col gap-5">
-            {/* 
-              PDF Viewer Box Skeleton 
-              - Matches the identical responsive height variables.
-            */}
             <Skeleton className="h-150 w-full rounded-lg sm:h-200" />
           </CardContent>
           <CardFooter className="flex flex-col gap-6">
-            {/* Centered Export Button Skeleton */}
             <div className="flex w-full justify-center">
               <Skeleton className="h-10 w-36 rounded-md" />
             </div>
@@ -224,7 +230,8 @@ export default function PdfPreviewPage() {
                 fileName={formattedFileName}
               >
                 {({ loading }) => (
-                  <Button disabled={loading}>
+                  // ADICIONADO: handleExportToHistory no evento de clique
+                  <Button disabled={loading} onClick={handleExportToHistory}>
                     {loading ? (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     ) : (
