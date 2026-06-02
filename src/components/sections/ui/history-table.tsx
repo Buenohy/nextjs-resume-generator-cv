@@ -53,11 +53,13 @@ export function HistoryTable({
             const isOpen = openItems[item.id] || false;
             const cv = item.cvPayload;
 
-            const metadataLang = cv.meta_ats?.rights?.includes(
+            const isEnglish = cv.meta_ats?.rights?.includes(
               "All rights reserved"
-            )
+            );
+            const metadataLang = isEnglish
               ? "English (en-US)"
               : "Português (pt-BR)";
+            const langCode = isEnglish ? "en" : "pt";
 
             return (
               <TableRow
@@ -76,22 +78,34 @@ export function HistoryTable({
                           {item.orderNumber}
                         </div>
 
-                        <div className="flex flex-col truncate sm:flex-row sm:items-center sm:gap-2">
-                          <span className="truncate text-sm font-bold">
+                        {/* CORRIGIDO: Removida a classe truncate do pai e dos filhos para permitir quebra de linha no mobile */}
+                        <div className="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-2">
+                          <span className="text-sm/tight font-bold break-all whitespace-normal sm:wrap-break-word">
                             {item.targetRole}
                           </span>
                           <span className="text-muted-foreground hidden sm:inline">
                             •
                           </span>
-                          <span className="text-muted-foreground truncate text-xs">
+                          <span className="text-muted-foreground text-xs/tight break-all whitespace-normal sm:wrap-break-word">
                             {item.targetCompany}
                           </span>
                           <span className="text-muted-foreground hidden sm:inline">
                             •
                           </span>
-                          <span className="text-muted-foreground text-xs italic">
-                            {formatDateTime(item.createdAt)}
-                          </span>
+
+                          {/* Data e Idioma alinhados */}
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            <span className="text-muted-foreground text-xs whitespace-nowrap italic">
+                              {formatDateTime(item.createdAt)}
+                            </span>
+                            <span className="text-muted-foreground hidden sm:inline">
+                              •
+                            </span>
+                            {/* TAG DE IDIOMA estilizada baseada no seu padrão de cores */}
+                            <span className="bg-primary/10 text-primary w-fit shrink-0 rounded-sm px-1.5 py-0.5 text-[10px] font-bold uppercase">
+                              {langCode}
+                            </span>
+                          </div>
                         </div>
                       </div>
 
@@ -108,11 +122,11 @@ export function HistoryTable({
                       </CollapsibleTrigger>
                     </div>
 
-                    {/* CONTEÚDO EXPANSÍVEL (TOTALMENTE UNIFICADO EM BLOCOS VERTICAIS) */}
+                    {/* CONTEÚDO EXPANSÍVEL */}
                     <CollapsibleContent className="mt-5 w-full space-y-4 border-t pt-4">
                       <Card className="bg-muted/10 border-muted/40 max-w-full overflow-hidden border">
                         <CardContent className="max-w-full space-y-5 p-4 text-sm">
-                          {/* 1. Metadados ATS (UNIFICADO: Empilhado verticalmente para todas as telas) */}
+                          {/* 1. Metadados ATS */}
                           {cv.meta_ats && (
                             <div className="flex max-w-full flex-col space-y-1.5 overflow-hidden">
                               <h5 className="text-primary mb-1 block max-w-full text-xs font-bold tracking-wider break-all whitespace-pre-wrap uppercase sm:wrap-break-word">
@@ -288,7 +302,7 @@ export function HistoryTable({
                             </div>
                           )}
 
-                          {/* 2. Cabeçalho Pessoal (UNIFICADO: Empilhado verticalmente para todas as telas) */}
+                          {/* 2. Cabeçalho Pessoal */}
                           {cv.info && (
                             <div className="flex max-w-full flex-col space-y-1.5 overflow-hidden border-t pt-3">
                               <h5 className="text-primary mb-1 block max-w-full text-xs font-bold tracking-wider break-all whitespace-pre-wrap uppercase sm:wrap-break-word">
@@ -441,7 +455,6 @@ export function HistoryTable({
                                           {exp.role || "—"}
                                         </span>
 
-                                        {/* CORRIGIDO: Nome da empresa vira link se o campo exp.url existir */}
                                         {exp.url ? (
                                           <a
                                             href={exp.url}
