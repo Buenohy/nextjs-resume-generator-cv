@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, X } from "lucide-react";
 import {
   useFullContentStore,
   ExperienceItem,
@@ -40,27 +40,29 @@ export function ExperienceSectionFullContent() {
   const t = useTranslations("ResumeBuilderPage");
   const tFull = useTranslations("FullContentPage");
   const useStore = useFullContentStore();
+
+  // Extrai as ações e o loading do Zustand conectados ao Backend
   const savedExperiences = useStore((s) => s.savedExperiences);
+  const isLoading = useStore((s) => s.isLoading);
+  const fetchExperiences = useStore((s) => s.fetchExperiences);
   const addSavedExperience = useStore((s) => s.addSavedExperience);
+  const updateSavedExperience = useStore((s) => s.updateSavedExperience);
   const removeSavedExperience = useStore((s) => s.removeSavedExperience);
   const handleAutoResize = useAutoResize();
 
   const [form, setForm] = useState<ExperienceItem>({ ...emptyExperience });
-  const [expToDelete, setExpToDelete] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null); // NOVO: Controla modo Edição vs Criação
+  const [expToDelete, setExpToDelete] = useState<string | null>(null);
   const [showValidationError, setShowValidationError] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
-  {
-    /* 
-    DEFERRED MOUNT EFFECT
-    - Defers rendering the fully interactive state to prevent hydration issues.
-  */
-  }
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsMounted(true);
+      fetchExperiences(); // Busca os dados reais do banco ao montar
     }, 0);
     return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const MONTHS = t.raw("months") as string[];
@@ -109,9 +111,7 @@ export function ExperienceSectionFullContent() {
   };
 
   const addDetail = () => {
-    if (form.details.length < 3) {
-      setForm({ ...form, details: [...form.details, ""] });
-    }
+    setForm({ ...form, details: [...form.details, ""] });
   };
 
   const removeDetail = (dIdx: number) => {
@@ -148,7 +148,8 @@ export function ExperienceSectionFullContent() {
     setForm({ ...form, stacks: newStacks });
   };
 
-  const handleSave = () => {
+  // --- NOVA LÓGICA DE SALVAR E ATUALIZAR ---
+  const handleSave = async () => {
     if (!form.role.trim() || !form.company.trim() || !form.date.trim()) {
       setShowValidationError(true);
       return;
@@ -164,7 +165,31 @@ export function ExperienceSectionFullContent() {
       details: form.details.filter((d) => d.trim() !== ""),
       stacks: form.stacks.filter((s) => s.trim() !== ""),
     };
-    addSavedExperience(cleaned);
+
+    if (editingId) {
+      await updateSavedExperience(editingId, cleaned);
+    } else {
+      await addSavedExperience(cleaned);
+    }
+
+    // Limpa o formulário após a operação
+    cancelEdit();
+  };
+
+  const handleEdit = (exp: ExperienceItem) => {
+    setEditingId(exp.id!);
+    // Garante que existam arrays vazios se não vierem da API
+    setForm({
+      ...exp,
+      details: exp.details?.length ? exp.details : [""],
+      stacks: exp.stacks?.length ? exp.stacks : [""],
+    });
+    // Faz o scroll suave para o topo do form
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
     setForm({ ...emptyExperience });
   };
 
@@ -175,24 +200,16 @@ export function ExperienceSectionFullContent() {
     }
   };
 
-  {
-    /* 
-    HIGH-FIDELITY SKELETON LOADER
-    - Matches the layout, nested list structures, and margins of the Experience Full Content editor.
-  */
-  }
   if (!isMounted) {
     return (
       <CardContent>
         <div className="flex flex-col gap-6 border-b py-4">
-          {/* Main Header Skeleton */}
           <div className="flex flex-col gap-2">
             <Skeleton className="h-6 w-40" />
             <Skeleton className="h-4 w-72" />
             <Skeleton className="mt-1 h-3.5 w-64" />
           </div>
 
-          {/* Standard Fields Skeletons (Role, Company, URL, Date) */}
           {experienceFields.map(({ id }) => (
             <Field key={id} className="mb-4">
               <div className="flex w-full flex-col gap-2">
@@ -208,49 +225,9 @@ export function ExperienceSectionFullContent() {
             </div>
           </Field>
 
-          {/* Details Section Skeletons */}
-          <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
-            <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-              <div className="flex flex-col gap-2">
-                <Skeleton className="h-4.5 w-28" />
-                <Skeleton className="h-3 w-16" />
-              </div>
-              <Skeleton className="h-7 w-24 rounded-md" />
-            </div>
-            {form.details.map((_, dIdx) => (
-              <Field key={dIdx} className="mb-2">
-                <div className="flex w-full flex-col gap-2">
-                  <Skeleton className="h-3.5 w-20" />
-                  <Skeleton className="h-10 w-full rounded-md" />
-                </div>
-              </Field>
-            ))}
-          </div>
-
-          {/* Stacks Section Skeletons */}
-          <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
-            <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-              <div className="flex flex-col gap-2">
-                <Skeleton className="h-4.5 w-28" />
-                <Skeleton className="h-3 w-16" />
-              </div>
-              <Skeleton className="h-7 w-24 rounded-md" />
-            </div>
-            {form.stacks.map((_, sIdx) => (
-              <Field key={sIdx} className="mb-2">
-                <div className="flex w-full flex-col gap-2">
-                  <Skeleton className="h-3.5 w-20" />
-                  <Skeleton className="h-10 w-full rounded-md" />
-                </div>
-              </Field>
-            ))}
-          </div>
-
-          {/* Save Button Skeleton */}
           <Skeleton className="mx-auto h-10 w-36 rounded-md" />
         </div>
 
-        {/* Saved Table Header & Grid Skeletons */}
         <div className="pt-8">
           <Skeleton className="mb-4 h-6 w-48" />
           <Skeleton className="h-32 w-full rounded-md" />
@@ -261,25 +238,45 @@ export function ExperienceSectionFullContent() {
 
   return (
     <CardContent>
-      <div className="flex flex-col gap-6 border-b py-4">
-        <div>
-          <h2 className="text-xl font-semibold">
-            {t("sections.experience.title")}
-          </h2>
-          <h3 className="text-lg">{t("sections.experience.subTitle")}</h3>
-          <p className="text-muted-foreground mt-1 text-xs">
-            {tFull("formSubtitle")}
-          </p>
+      {/* 
+        DESTACA VISUALMENTE QUE O USUÁRIO ESTÁ EM MODO DE EDIÇÃO 
+      */}
+      <div
+        className={cn(
+          "flex flex-col gap-6 border-b py-4 transition-colors",
+          editingId && "bg-primary/5 -mx-4 rounded-t-lg px-4"
+        )}
+      >
+        <div className="flex items-start justify-between">
+          <div>
+            <h2 className="text-xl font-semibold">
+              {editingId
+                ? "Editar Experiência"
+                : t("sections.experience.title")}
+            </h2>
+            <h3 className="text-lg">
+              {editingId
+                ? "Altere os dados da experiência salva"
+                : t("sections.experience.subTitle")}
+            </h3>
+            <p className="text-muted-foreground mt-1 text-xs">
+              {editingId ? "Modo de edição ativo" : tFull("formSubtitle")}
+            </p>
+          </div>
+          {editingId && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={cancelEdit}
+              title="Cancelar edição"
+            >
+              <X className="size-5" />
+            </Button>
+          )}
         </div>
 
-        {/* STANDARD FLAT FIELDS (Role, Company, URL) */}
         {experienceFields.map(({ id, label, placeholder }) => (
           <Field key={id} className="mb-4">
-            {/* 
-              STACKED FLAT FIELD CONTAINER
-              - flex-col: Positions the label at the top and the input field directly below it.
-              - gap-2: Small, consistent spacing between label and input.
-            */}
             <div className="flex w-full flex-col gap-2">
               <FieldLabel className="text-left font-medium capitalize">
                 {label}
@@ -299,17 +296,10 @@ export function ExperienceSectionFullContent() {
           </Field>
         ))}
 
-        {/* DATE PICKER FIELD */}
         <Field className="mb-4">
-          {/* 
-            STACKED DATE FIELD CONTAINER
-            - flex-col: Positions the dynamic Date label at the top and the custom date pickers directly below.
-            - gap-2: Small, consistent vertical spacing.
-          */}
           <div className="flex w-full flex-col gap-2">
             <FieldLabel className="text-left font-medium capitalize">
-              {t("sections.certifications.date")}{" "}
-              {/* Standardized global Date Label */}
+              {t("sections.certifications.date")}
             </FieldLabel>
             <MonthYearPicker
               startMonth={dateParsed.startMonth}
@@ -357,7 +347,6 @@ export function ExperienceSectionFullContent() {
           </div>
         </Field>
 
-        {/* === DETAILS SECTION === */}
         <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
             <div>
@@ -378,22 +367,14 @@ export function ExperienceSectionFullContent() {
             )}
           </div>
 
-          {/* DETAILS ARRAY MAP */}
           {form.details.map((detail, dIdx) => (
             <Field key={dIdx} className="mb-2">
-              {/* 
-                STACKED DETAIL FIELD CONTAINER
-                - flex-col: Label+Trash row on top, Textarea input on bottom.
-                - gap-2: Small, consistent vertical spacing.
-              */}
               <div className="flex w-full flex-col gap-2">
-                {/* ROW 1: LABEL & TRASH BUTTON */}
                 <div className="flex w-full items-center justify-between">
                   <FieldLabel className="text-left text-xs font-medium capitalize">
                     {t("sections.experience.detailLabel", { num: dIdx + 1 })}
                   </FieldLabel>
 
-                  {/* Trash button aligned right next to the label */}
                   {form.details.length > 1 && (
                     <Button
                       variant="ghost"
@@ -406,7 +387,6 @@ export function ExperienceSectionFullContent() {
                   )}
                 </div>
 
-                {/* ROW 2: TEXTAREA (Full Width) */}
                 <Textarea
                   className="min-h-[38px] w-full resize-none overflow-hidden py-2"
                   rows={1}
@@ -438,7 +418,6 @@ export function ExperienceSectionFullContent() {
           )}
         </div>
 
-        {/* === TECH STACKS SECTION === */}
         <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
             <div>
@@ -457,22 +436,14 @@ export function ExperienceSectionFullContent() {
             </Button>
           </div>
 
-          {/* STACKS ARRAY MAP */}
           {form.stacks.map((stack, sIdx) => (
             <Field key={sIdx} className="mb-2">
-              {/* 
-                STACKED STACK FIELD CONTAINER
-                - flex-col: Label+Trash row on top, Textarea input on bottom.
-                - gap-2: Small, consistent vertical spacing.
-              */}
               <div className="flex w-full flex-col gap-2">
-                {/* ROW 1: LABEL & TRASH BUTTON */}
                 <div className="flex w-full items-center justify-between">
                   <FieldLabel className="text-left text-xs font-medium capitalize">
                     {t("sections.experience.stackLabel", { num: sIdx + 1 })}
                   </FieldLabel>
 
-                  {/* Trash button aligned right next to the label */}
                   {form.stacks.length > 1 && (
                     <Button
                       variant="ghost"
@@ -485,7 +456,6 @@ export function ExperienceSectionFullContent() {
                   )}
                 </div>
 
-                {/* ROW 2: TEXTAREA (Full Width) */}
                 <Textarea
                   className="min-h-[38px] w-full resize-none overflow-hidden py-2"
                   rows={1}
@@ -504,7 +474,7 @@ export function ExperienceSectionFullContent() {
             <Button
               variant="outline"
               size="xs"
-              onClick={() => addStack(sIdx)} // <--- Corrected click logic to prevent compilation errors
+              onClick={() => addStack()}
               className="gap-1 text-xs"
             >
               <Plus className="h-3.5 w-3.5" />{" "}
@@ -513,25 +483,38 @@ export function ExperienceSectionFullContent() {
           </div>
         </div>
 
-        <Button onClick={handleSave} className="mx-auto w-fit">
-          {tFull("saveButton")}
-        </Button>
+        <div className="mx-auto flex gap-2">
+          {editingId && (
+            <Button variant="outline" onClick={cancelEdit}>
+              Cancelar
+            </Button>
+          )}
+          <Button onClick={handleSave}>
+            {editingId ? "Atualizar experiência" : tFull("saveButton")}
+          </Button>
+        </div>
       </div>
 
       <div className="pt-8">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-semibold">{tFull("savedTitle")}</h2>
         </div>
-        <div className="border-muted overflow-x-auto rounded-md border shadow-sm">
-          <ExperienceTable
-            experiences={savedExperiences}
-            onDelete={(index) => setExpToDelete(index)}
-            tFull={tFull}
-          />
-        </div>
+
+        {/* Mostra um skeleton falso na tabela enquanto o Fetch não carrega */}
+        {isLoading ? (
+          <Skeleton className="h-48 w-full rounded-md" />
+        ) : (
+          <div className="border-muted overflow-x-auto rounded-md border shadow-sm">
+            <ExperienceTable
+              experiences={savedExperiences}
+              onEdit={handleEdit}
+              onDelete={(id) => setExpToDelete(id)}
+              tFull={tFull}
+            />
+          </div>
+        )}
       </div>
 
-      {/* Diálogo de confirmação de exclusão */}
       <AlertDialog
         open={expToDelete !== null}
         onOpenChange={(open) => !open && setExpToDelete(null)}
@@ -552,7 +535,6 @@ export function ExperienceSectionFullContent() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Diálogo de validação */}
       <AlertDialog
         open={showValidationError}
         onOpenChange={setShowValidationError}
