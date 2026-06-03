@@ -79,7 +79,7 @@ interface AnalysisResults {
 interface ResumeStore {
   jobText: string;
   setJobText: (text: string) => void;
-  platformText: string; // 🆕 Nova action
+  platformText: string;
   setPlatformText: (text: string) => void;
   cvData: CvDataState;
   updateCvData: (updater: (draft: CvDataState) => void) => void;
