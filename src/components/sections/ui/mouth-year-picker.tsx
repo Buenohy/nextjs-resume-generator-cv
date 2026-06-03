@@ -133,7 +133,9 @@ export function MonthYearPicker({
                 className="flex h-9 w-full items-center justify-between px-3 font-normal sm:w-32"
               >
                 <span className="truncate">
-                  {endMonth === "Present"
+                  {/* CORRIGIDO: Sempre traduz a palavra visual "Present" se estiver selecionada */}
+                  {endMonth === "Present" ||
+                  endMonth === t("sections.education.present")
                     ? t("sections.education.present")
                     : endMonth || t("sections.education.month")}
                 </span>
@@ -146,8 +148,15 @@ export function MonthYearPicker({
             >
               {showPresent && (
                 <DropdownMenuItem
-                  onClick={() => onEndMonthChange("Present")}
-                  className={endMonth === "Present" ? "bg-muted font-bold" : ""}
+                  onClick={() =>
+                    onEndMonthChange(t("sections.education.present"))
+                  }
+                  className={
+                    endMonth === t("sections.education.present") ||
+                    endMonth === "Present"
+                      ? "bg-muted font-bold"
+                      : ""
+                  }
                 >
                   {t("sections.education.present")}
                 </DropdownMenuItem>
@@ -165,7 +174,9 @@ export function MonthYearPicker({
           </DropdownMenu>
 
           {/* END YEAR PICKER */}
-          {(!showPresent || endMonth !== "Present") && (
+          {(!showPresent ||
+            (endMonth !== "Present" &&
+              endMonth !== t("sections.education.present"))) && (
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
                 <Button
