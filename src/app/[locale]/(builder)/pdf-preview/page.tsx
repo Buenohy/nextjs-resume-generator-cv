@@ -41,20 +41,12 @@ export default function PdfPreviewPage() {
   const locale = useLocale();
   const cvData = useResumeStore((state) => state.cvData);
 
-  // Resgata o método do Zustand para salvar no banco de dados (NestJS)
   const saveResumeToHistory = useResumeStore(
     (state) => state.saveResumeToHistory
   );
 
   const [isMounted, setIsMounted] = useState(false);
 
-  {
-    /* 
-    DEFERRED MOUNT EFFECT
-    - Ensures client-side state is completely hydrated before initializing the PDF document.
-    - Prevents Next.js Server-Side Rendering (SSR) hydration mismatches.
-  */
-  }
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsMounted(true);
@@ -117,8 +109,8 @@ export default function PdfPreviewPage() {
     email: cvData.links.email,
     linkedin: cvData.links.linkedin ? t("contactLabels.linkedin") : "",
     linkedin_url: cvData.links.linkedin,
-    phone: cvData.links.phone ? t("contactLabels.phone") : "",
-    phone_url: cvData.links.phone,
+    phone: cvData.links.phone || "",
+    phone_url: cvData.links.phone_url || cvData.links.phone,
     website: cvData.links.website || "",
     website_url: cvData.links.website_url || "",
     github: cvData.links.github ? t("contactLabels.github") : "",
@@ -163,21 +155,14 @@ export default function PdfPreviewPage() {
 
   const formattedFileName = `CV_${(cvData.info.name || "Resume").replace(/\s+/g, "_")}.pdf`;
 
-  // --- FUNÇÃO DE GATILHO DE SALVAMENTO AO EXPORTAR ---
   const handleExportToHistory = async () => {
     try {
-      // CORRIGIDO: Envia o locale ativo atual da página ("pt" ou "en")
       await saveResumeToHistory(locale);
     } catch (e) {
       console.error("Erro ao salvar snapshot do currículo no histórico:", e);
     }
   };
 
-  {
-    /* 
-    HIGH-FIDELITY SKELETON LOADER
-  */
-  }
   if (!isMounted) {
     return (
       <div className="container mx-auto min-h-screen">
@@ -231,7 +216,6 @@ export default function PdfPreviewPage() {
                 fileName={formattedFileName}
               >
                 {({ loading }) => (
-                  // handleExportToHistory no evento de clique enviando o locale
                   <Button disabled={loading} onClick={handleExportToHistory}>
                     {loading ? (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
