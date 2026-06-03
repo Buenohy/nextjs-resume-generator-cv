@@ -19,7 +19,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-// --- CONVERSÃO AUXILIAR DE DATA (ESCOPO GLOBAL DO ARQUIVO) ---
+// --- CONVERSÃO AUXILIAR DE DATA ---
 const parseDateString = (dateStr?: string) => {
   if (!dateStr)
     return { startMonth: "", startYear: "", endMonth: "", endYear: "" };
@@ -80,7 +80,7 @@ function ExperienceItem({
   removeStack,
   updateStack,
 }: ExperienceItemProps) {
-  // HOOKS EXCLUSIVOS PARA CADA SUB-ITEM CONECTADO AO ÍNDICE
+  // HOOKS EXCLUSIVOS PARA CADA SUB-ITEM
   const [isExpOpen, setIsExpOpen] = useSyncCollapse(
     `experience-item-${expIndex}`,
     false
@@ -95,7 +95,6 @@ function ExperienceItem({
   );
 
   const dateParsed = parseDateString(exp.date);
-  const textareaFields = ["subject", "rights"];
 
   return (
     <Collapsible
@@ -104,7 +103,6 @@ function ExperienceItem({
       id={`experience-item-${expIndex}`}
       className="flex scroll-mt-24 flex-col gap-6 border-b pt-4 pb-8 last:border-0 last:pb-0"
     >
-      {/* NÍVEL 2: HEADER DO ITEM */}
       <div className="flex w-full flex-row items-center justify-between gap-4">
         <h4 className="text-left text-lg font-semibold">
           {t("sections.experience.itemLabel", { num: expIndex + 1 })}
@@ -142,7 +140,6 @@ function ExperienceItem({
       </div>
 
       <CollapsibleContent className="space-y-6">
-        {/* STANDARD FIELDS */}
         {experienceFields.map(({ id, label, placeholder }) => (
           <Field
             key={id}
@@ -169,7 +166,6 @@ function ExperienceItem({
           </Field>
         ))}
 
-        {/* DATE PICKER FIELD */}
         <Field id={`experience-${expIndex}-date`} className="mb-2 scroll-mt-24">
           <div className="flex w-full flex-col gap-2">
             <FieldLabel className="text-left font-medium capitalize">
@@ -225,7 +221,6 @@ function ExperienceItem({
           </div>
         </Field>
 
-        {/* NÍVEL 3: PROJECT DETAILS */}
         <Collapsible
           open={isDetailsOpen}
           onOpenChange={setIsDetailsOpen}
@@ -340,7 +335,6 @@ function ExperienceItem({
           </CollapsibleContent>
         </Collapsible>
 
-        {/* NÍVEL 3: TECHNOLOGIES/STACKS */}
         <Collapsible
           open={isStacksOpen}
           onOpenChange={setIsStacksOpen}
@@ -483,6 +477,7 @@ export function ExperienceSection() {
       placeholder: value.placeholder,
     }));
 
+  // --- CORREÇÃO DO DATE CHANGE (Traduz dinamicamente a palavra 'Present') ---
   const handleDateChange = (
     expIndex: number,
     sm: string,
@@ -490,13 +485,17 @@ export function ExperienceSection() {
     em: string,
     ey: string
   ) => {
+    const presentTranslation = t("sections.education.present");
     const start = [sm, sy].filter(Boolean).join(" ");
     const end =
-      em === "Present" ? "Present" : [em, ey].filter(Boolean).join(" ");
-    const date =
+      em === presentTranslation || em === "Present"
+        ? presentTranslation
+        : [em, ey].filter(Boolean).join(" ");
+
+    const datePart =
       start || end ? `${start}${start && end ? " - " : ""}${end}` : "";
     updateCvData((draft) => {
-      draft.experiences[expIndex].date = date;
+      draft.experiences[expIndex].date = datePart;
     });
   };
 
@@ -591,27 +590,6 @@ export function ExperienceSection() {
             </div>
             <Skeleton className="h-9 w-28 rounded-md" />
           </div>
-
-          {cvData.experiences.map((exp, expIndex) => (
-            <div
-              key={expIndex}
-              className="flex flex-col gap-6 border-b pt-4 pb-8 last:border-0 last:pb-0"
-            >
-              <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-                <Skeleton className="h-5.5 w-32" />
-                <Skeleton className="h-8 w-24 rounded-md" />
-              </div>
-
-              {[1, 2, 3, 4].map((fieldIndex) => (
-                <Field key={fieldIndex} className="mb-2">
-                  <div className="flex w-full flex-col gap-2">
-                    <Skeleton className="h-4 w-24" />
-                    <Skeleton className="h-10 w-full rounded-md" />
-                  </div>
-                </Field>
-              ))}
-            </div>
-          ))}
         </div>
       </CardContent>
     );
@@ -624,7 +602,6 @@ export function ExperienceSection() {
         onOpenChange={setIsOpen}
         className="flex flex-col gap-6 border-b py-4"
       >
-        {/* NÍVEL 1: HEADER PRINCIPAL DA SEÇÃO */}
         <div className="flex w-full flex-row items-start justify-between gap-4">
           <div className="flex flex-col text-left">
             <h2 className="text-xl font-semibold">
@@ -670,7 +647,6 @@ export function ExperienceSection() {
           </div>
         </div>
 
-        {/* NÍVEL 1 CONTEÚDO (LISTA DE EXPERIÊNCIAS) */}
         <CollapsibleContent className="space-y-4">
           {cvData.experiences.map((exp, expIndex) => (
             <ExperienceItem
