@@ -220,7 +220,11 @@
           },
           "phone": {
             "label": "Telefone",
-            "placeholder": "Coloque o link do seu Telefone"
+            "placeholder": "Digite o seu número de telefone"
+          },
+          "phone_url": {
+            "label": "Link do Telefone",
+            "placeholder": "Coloque a URL do telefone (ex: link do WhatsApp)"
           },
           "website": {
             "label": "Nome do site",

@@ -208,7 +208,11 @@
           },
           "phone": {
             "label": "Phone",
-            "placeholder": "Enter your Phone link/number"
+            "placeholder": "Enter your Phone number"
+          },
+          "phone_url": {
+            "label": "Phone URL",
+            "placeholder": "Enter the phone link (e.g., WhatsApp URL)"
           },
           "website": {
             "label": "Website Name",
