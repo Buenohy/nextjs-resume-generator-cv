@@ -219,7 +219,6 @@ function EducationItem({
               }
               t={t}
               showPresent
-              onlyEnd={true}
             />
           </div>
         </div>
@@ -373,7 +372,7 @@ export function EducationSection() {
               onClick={addItem}
               className="gap-1 text-xs"
             >
-              <Plus className="mr-1 h-3.5 w-3.5" />{" "}
+              <Plus className="mr-1 size-3.5" />{" "}
               {t("sections.education.addBtn")}
             </Button>
           </div>
