@@ -42,7 +42,6 @@ export function ExperienceSectionFullContent() {
   const tFull = useTranslations("FullContentPage");
   const useStore = useFullContentStore();
 
-  // Extrai as ações e o loading do Zustand conectados ao Backend
   const savedExperiences = useStore((s) => s.savedExperiences);
   const isLoading = useStore((s) => s.isLoading);
   const fetchExperiences = useStore((s) => s.fetchExperiences);
@@ -52,7 +51,7 @@ export function ExperienceSectionFullContent() {
   const handleAutoResize = useAutoResize();
 
   const [form, setForm] = useState<ExperienceItem>({ ...emptyExperience });
-  const [editingId, setEditingId] = useState<string | null>(null); // NOVO: Controla modo Edição vs Criação
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [expToDelete, setExpToDelete] = useState<string | null>(null);
   const [showValidationError, setShowValidationError] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -60,7 +59,7 @@ export function ExperienceSectionFullContent() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsMounted(true);
-      fetchExperiences(); // Busca os dados reais do banco ao montar
+      fetchExperiences();
     }, 0);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -95,10 +94,15 @@ export function ExperienceSectionFullContent() {
 
   const dateParsed = parseDateString(form.date);
 
+  // --- CORREÇÃO DO DATE CHANGE NO FORMULÁRIO DO FULL CONTENT ---
   const handleDateChange = (sm: string, sy: string, em: string, ey: string) => {
+    const presentTranslation = t("sections.education.present");
     const start = [sm, sy].filter(Boolean).join(" ");
     const end =
-      em === "Present" ? "Present" : [em, ey].filter(Boolean).join(" ");
+      em === presentTranslation || em === "Present"
+        ? presentTranslation
+        : [em, ey].filter(Boolean).join(" ");
+
     const date =
       start || end ? `${start}${start && end ? " - " : ""}${end}` : "";
     setForm({ ...form, date });
@@ -149,7 +153,6 @@ export function ExperienceSectionFullContent() {
     setForm({ ...form, stacks: newStacks });
   };
 
-  // --- NOVA LÓGICA DE SALVAR E ATUALIZAR ---
   const handleSave = async () => {
     if (!form.role.trim() || !form.company.trim() || !form.date.trim()) {
       setShowValidationError(true);
@@ -173,19 +176,16 @@ export function ExperienceSectionFullContent() {
       await addSavedExperience(cleaned);
     }
 
-    // Limpa o formulário após a operação
     cancelEdit();
   };
 
   const handleEdit = (exp: ExperienceItem) => {
     setEditingId(exp.id!);
-    // Garante que existam arrays vazios se não vierem da API
     setForm({
       ...exp,
       details: exp.details?.length ? exp.details : [""],
       stacks: exp.stacks?.length ? exp.stacks : [""],
     });
-    // Faz o scroll suave para o topo do form
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -210,28 +210,7 @@ export function ExperienceSectionFullContent() {
             <Skeleton className="h-4 w-72" />
             <Skeleton className="mt-1 h-3.5 w-64" />
           </div>
-
-          {experienceFields.map(({ id }) => (
-            <Field key={id} className="mb-4">
-              <div className="flex w-full flex-col gap-2">
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-10 w-full rounded-md" />
-              </div>
-            </Field>
-          ))}
-          <Field className="mb-4">
-            <div className="flex w-full flex-col gap-2">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-10 w-full rounded-md" />
-            </div>
-          </Field>
-
           <Skeleton className="mx-auto h-10 w-36 rounded-md" />
-        </div>
-
-        <div className="pt-8">
-          <Skeleton className="mb-4 h-6 w-48" />
-          <Skeleton className="h-32 w-full rounded-md" />
         </div>
       </CardContent>
     );
@@ -239,9 +218,6 @@ export function ExperienceSectionFullContent() {
 
   return (
     <CardContent>
-      {/* 
-        DESTACA VISUALMENTE QUE O USUÁRIO ESTÁ EM MODO DE EDIÇÃO 
-      */}
       <div
         className={cn(
           "flex flex-col gap-6 border-b py-4 transition-colors",
@@ -501,7 +477,6 @@ export function ExperienceSectionFullContent() {
           <h2 className="text-xl font-semibold">{tFull("savedTitle")}</h2>
         </div>
 
-        {/* Mostra um skeleton falso na tabela enquanto o Fetch não carrega */}
         {isLoading ? (
           <Skeleton className="h-48 w-full rounded-md" />
         ) : (
