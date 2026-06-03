@@ -35,6 +35,7 @@ export interface CvDataState {
   links: {
     linkedin: string;
     phone: string;
+    phone_url: string; // 🆕 Adicionado
     website: string;
     website_url: string;
     email: string;
@@ -109,6 +110,7 @@ const initialCvData: CvDataState = {
   links: {
     linkedin: "",
     phone: "",
+    phone_url: "",
     website: "",
     website_url: "",
     email: "",
@@ -134,7 +136,7 @@ export const useResumeStore = create<ResumeStore>()(
       jobText: "",
       setJobText: (text) => set({ jobText: text }),
 
-      platformText: "", // Inicialização do novo campo
+      platformText: "",
       setPlatformText: (text) => set({ platformText: text }),
 
       cvData: initialCvData,
@@ -172,7 +174,6 @@ export const useResumeStore = create<ResumeStore>()(
         }
       },
 
-      // --- SALVAR HISTÓRICO NO BANCO (Injetando carimbo de idioma, vaga e plataforma) ---
       saveResumeToHistory: async (locale: string) => {
         const { cvData } = get();
 
