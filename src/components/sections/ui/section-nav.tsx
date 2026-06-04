@@ -309,6 +309,10 @@ function generateNavItems(
 
   return [
     {
+      id: "company-info",
+      label: getLabel("sections.company.title", "Empresa Alvo"),
+    },
+    {
       id: "meta-ats",
       label: `${getLabel("sections.meta_ats.title", "ATS Metadata")} (${metaAtsChildren.length})`,
       children: metaAtsChildren,
@@ -502,7 +506,10 @@ export function SectionNav({ t }: SectionNavProps) {
       }));
 
       // Sincroniza abertura da aba pai de sub-itens focados
-      if (id.startsWith("meta-")) {
+      if (id.startsWith("company-")) {
+        publishSectionToggle("company-info", true);
+        setExpandedNodes((prev) => ({ ...prev, "company-info": true }));
+      } else if (id.startsWith("meta-")) {
         publishSectionToggle("meta-ats", true);
         setExpandedNodes((prev) => ({ ...prev, "meta-ats": true }));
       } else if (id.startsWith("personal-")) {
@@ -567,16 +574,20 @@ export function SectionNav({ t }: SectionNavProps) {
             <div key={item.id} className="flex flex-col">
               {/* LEVEL 1 ITEM */}
               <div className="hover:bg-muted/50 flex items-center rounded-md px-1 py-1 transition-colors">
-                <button
-                  onClick={(e) => toggleNode(item.id, e)}
-                  className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded-md rounded-sm p-1 transition-colors"
-                >
-                  {expandedNodes[item.id] ? (
-                    <ChevronDown className="h-3.5 w-3.5" />
-                  ) : (
-                    <ChevronRight className="h-3.5 w-3.5" />
-                  )}
-                </button>
+                {item.children && item.children.length > 0 ? (
+                  <button
+                    onClick={(e) => toggleNode(item.id, e)}
+                    className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded-md rounded-sm p-1 transition-colors"
+                  >
+                    {expandedNodes[item.id] ? (
+                      <ChevronDown className="size-3.5" />
+                    ) : (
+                      <ChevronRight className="size-3.5" />
+                    )}
+                  </button>
+                ) : (
+                  <span className="mr-1 w-[22px] shrink-0" />
+                )}
                 <button
                   onClick={() => scrollToSection(item.id)}
                   className={`flex-1 text-left text-sm font-medium transition-colors ${
@@ -614,9 +625,9 @@ export function SectionNav({ t }: SectionNavProps) {
                                 className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded-md p-0.5 transition-colors"
                               >
                                 {expandedNodes[child.id] ? (
-                                  <ChevronDown className="h-3.5 w-3.5" />
+                                  <ChevronDown className="size-3.5" />
                                 ) : (
-                                  <ChevronRight className="h-3.5 w-3.5" />
+                                  <ChevronRight className="size-3.5" />
                                 )}
                               </button>
                             ) : (
@@ -661,9 +672,9 @@ export function SectionNav({ t }: SectionNavProps) {
                                             className="text-muted-foreground hover:text-foreground hover:bg-muted mr-1 shrink-0 rounded-md p-0.5 transition-colors"
                                           >
                                             {expandedNodes[subChild.id] ? (
-                                              <ChevronDown className="h-3 w-3" />
+                                              <ChevronDown className="size-3" />
                                             ) : (
-                                              <ChevronRight className="h-3 w-3" />
+                                              <ChevronRight className="size-3" />
                                             )}
                                           </button>
                                         ) : (
