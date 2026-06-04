@@ -15,7 +15,7 @@ export const revalidate = 0;
 
 export default async function HistoryPage() {
   // CORRIGIDO: Usa getTranslations com await para ler as chaves de tradução de forma assíncrona no servidor
-  const t = await getTranslations("FullContentPage");
+  const t = await getTranslations("HistoryPage");
 
   let historyItems = [];
 
@@ -37,15 +37,12 @@ export default async function HistoryPage() {
 
   return (
     <div className="container mx-auto min-h-screen p-2.5 py-6 sm:p-6">
-      <h1 className="mb-6 text-2xl font-bold">Histórico de Otimizações</h1>
+      <h1 className="mb-6 text-2xl font-bold">{t("title")}</h1>
       <Card className="shadow-primary/50 mx-auto w-full shadow-lg">
         <CardHeader className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <div>
-            <CardTitle>Currículos Otimizados</CardTitle>
-            <CardDescription>
-              Visualize todos os currículos criados e salvos permanentemente no
-              seu banco de dados.
-            </CardDescription>
+            <CardTitle>{t("cardTitle")}</CardTitle>
+            <CardDescription>{t("cardDescription")}</CardDescription>
           </div>
         </CardHeader>
 
