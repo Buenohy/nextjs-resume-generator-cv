@@ -128,6 +128,11 @@
       }
     },
     "sections": {
+      "company": {
+        "title": "Target Company",
+        "subTitle": "Please provide the company name for this application.",
+        "placeholder": "Enter the company name."
+      },
       "meta_ats": {
         "title": "ATS Metadata",
         "subTitle": "Resume indexing metadata",

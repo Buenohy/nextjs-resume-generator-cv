@@ -137,6 +137,11 @@
       }
     },
     "sections": {
+      "company": {
+        "title": "Empresa Alvo",
+        "subTitle": "Informe o nome da empresa desta candidatura",
+        "placeholder": "Digite o nome da empresa"
+      },
       "meta_ats": {
         "title": "Metadados ATS",
         "subTitle": "Metadados para indexação nos sistemas",
