@@ -36,7 +36,7 @@ export default function NavigationMenuDemo() {
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon">
-              <Menu className="h-5 w-5" />
+              <Menu className="size-5" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -172,6 +172,22 @@ export default function NavigationMenuDemo() {
                     title={t("contents.description.title")}
                   >
                     {t("contents.description.desc")}
+                  </ListItem>
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>
+                {t("history.trigger")}
+              </NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="flex w-72 flex-col gap-3 p-4">
+                  <ListItem
+                    href="/history"
+                    title={t("history.description.title")}
+                  >
+                    {t("history.description.desc")}
                   </ListItem>
                 </ul>
               </NavigationMenuContent>

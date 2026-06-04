@@ -42,6 +42,13 @@
         "title": "Conteúdo Completo",
         "desc": "Página de conteúdo completo."
       }
+    },
+    "history": {
+      "trigger": "Histórico",
+      "description": {
+        "title": "Histórico Completo",
+        "desc": "Página do histórico."
+      }
     }
   },
   "LangMenu": {

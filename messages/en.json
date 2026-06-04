@@ -36,6 +36,10 @@
     "contents": {
       "trigger": "Contents",
       "description": { "title": "Full Content", "desc": "Full content page." }
+    },
+    "history": {
+      "trigger": "History",
+      "description": { "title": "History", "desc": "History page." }
     }
   },
   "LangMenu": {
