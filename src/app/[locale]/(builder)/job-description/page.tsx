@@ -22,25 +22,17 @@ export default function JobDescriptionPage() {
   const router = useRouter();
   const t = useTranslations("JobDescriptionPage");
 
-  // Resgata os estados e ações do Zustand global
+  // USAMOS APENAS O ESTADO GLOBAL AGORA
   const globalJobText = useResumeStore((state) => state.jobText);
   const setGlobalJobText = useResumeStore((state) => state.setJobText);
+
   const globalPlatformText = useResumeStore((state) => state.platformText);
   const setGlobalPlatformText = useResumeStore(
     (state) => state.setPlatformText
   );
 
-  const [localText, setLocalText] = useState(globalJobText);
-  const [localPlatform, setLocalPlatform] = useState(globalPlatformText); // Estado local para plataforma
   const [isMounted, setIsMounted] = useState(false);
 
-  {
-    /* 
-    DEFERRED MOUNT EFFECT
-    - Ensures the client-side state is fully loaded before rendering the active form.
-    - Prevents hydration issues and linter warnings.
-  */
-  }
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsMounted(true);
@@ -49,36 +41,26 @@ export default function JobDescriptionPage() {
   }, []);
 
   const handleSubmit = () => {
-    setGlobalJobText(localText);
-    setGlobalPlatformText(localPlatform); // Salva a plataforma na Store antes de avançar
+    // Como os dados já estão salvos globalmente a cada digitação,
+    // o submit agora apenas avança a página.
     router.push("/resume-builder");
   };
 
-  {
-    /* 
-    HIGH-FIDELITY SKELETON LOADER
-    - Corrigido: Invertida a ordem para carregar Plataforma primeiro e Vaga em segundo.
-  */
-  }
   if (!isMounted) {
     return (
       <div>
         <Skeleton className="mb-6 h-8 w-64" />
-
         <Card className="shadow-primary/50 shadow-lg">
           <CardHeader>
             <Skeleton className="mb-2 h-6 w-48" />
             <Skeleton className="h-4 w-56 sm:w-80" />
           </CardHeader>
           <CardContent className="flex flex-col gap-6">
-            {/* 1. Plataforma Skeleton (Agora primeiro) */}
             <div className="flex flex-col gap-2">
               <Skeleton className="h-4 w-24" />
               <Skeleton className="h-3.5 w-48" />
               <Skeleton className="h-[60px] w-full rounded-md" />
             </div>
-
-            {/* 2. Descrição da vaga Skeleton (Agora em segundo) */}
             <div className="flex flex-col gap-2 border-t pt-4">
               <Skeleton className="h-4 w-32" />
               <Skeleton className="h-[120px] w-full rounded-md sm:h-[250px]" />
@@ -103,7 +85,6 @@ export default function JobDescriptionPage() {
           <CardDescription>{t("cardDescription")}</CardDescription>
         </CardHeader>
 
-        {/* CORRIGIDO: Invertida a ordem de exibição (Plataforma primeiro, Vaga em segundo) */}
         <CardContent className="flex flex-col gap-6">
           {/* CAMPO 1: PLATAFORMA DA VAGA */}
           <div className="flex flex-col gap-2">
@@ -113,8 +94,9 @@ export default function JobDescriptionPage() {
             </p>
             <Textarea
               placeholder={t("plataformPlaceholder")}
-              value={localPlatform}
-              onChange={(e) => setLocalPlatform(e.target.value)}
+              value={globalPlatformText}
+              // Atualiza direto no Zustand
+              onChange={(e) => setGlobalPlatformText(e.target.value)}
               className="min-h-[60px] resize-none overflow-hidden py-2"
               rows={1}
             />
@@ -125,8 +107,9 @@ export default function JobDescriptionPage() {
             <span className="text-sm font-semibold">{t("cardTitle")}</span>
             <Textarea
               placeholder={t("placeholder")}
-              value={localText}
-              onChange={(e) => setLocalText(e.target.value)}
+              value={globalJobText}
+              // Atualiza direto no Zustand
+              onChange={(e) => setGlobalJobText(e.target.value)}
               className="sm:min-h-62.5"
             />
           </div>
@@ -135,8 +118,7 @@ export default function JobDescriptionPage() {
         <CardFooter className="flex flex-col gap-6">
           <div className="flex w-full justify-center">
             <CardAction>
-              {/* Desabilita se o campo de texto da vaga estiver em branco */}
-              <Button onClick={handleSubmit} disabled={!localText.trim()}>
+              <Button onClick={handleSubmit} disabled={!globalJobText.trim()}>
                 {t("button")}
               </Button>
             </CardAction>
