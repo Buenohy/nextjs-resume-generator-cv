@@ -155,10 +155,7 @@
             "label": "Keywords",
             "placeholder": "E.g: React, Angular, Next.js..."
           },
-          "category": {
-            "label": "Category",
-            "placeholder": "E.g: Resume"
-          },
+          "category": { "label": "Category", "placeholder": "E.g: Resume" },
           "contributor": {
             "label": "Contributor",
             "placeholder": "E.g: Gabriel Bueno Hygino"
@@ -278,22 +275,13 @@
         "stackLabel": "Stack {num}",
         "stackPlaceholder": "E.g: React, Node.js, TypeScript",
         "fields": {
-          "role": {
-            "label": "Role",
-            "placeholder": "E.g: Frontend Developer"
-          },
-          "company": {
-            "label": "Company",
-            "placeholder": "E.g: Google"
-          },
+          "role": { "label": "Role", "placeholder": "E.g: Frontend Developer" },
+          "company": { "label": "Company", "placeholder": "E.g: Google" },
           "url": {
             "label": "Company URL",
             "placeholder": "E.g: https://google.com"
           },
-          "date": {
-            "label": "Date",
-            "placeholder": "Start - End"
-          }
+          "date": { "label": "Date", "placeholder": "Start - End" }
         }
       },
       "education": {

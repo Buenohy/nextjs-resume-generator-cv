@@ -164,10 +164,7 @@
             "label": "Palavras-chave",
             "placeholder": "Ex: React, Angular, Next.js..."
           },
-          "category": {
-            "label": "Categoria",
-            "placeholder": "Ex: Currículo"
-          },
+          "category": { "label": "Categoria", "placeholder": "Ex: Currículo" },
           "contributor": {
             "label": "Contribuinte",
             "placeholder": "Ex: Gabriel Bueno Hygino"
@@ -297,18 +294,12 @@
             "label": "Cargo",
             "placeholder": "Ex: Desenvolvedor Frontend"
           },
-          "company": {
-            "label": "Empresa",
-            "placeholder": "Ex: Google"
-          },
+          "company": { "label": "Empresa", "placeholder": "Ex: Google" },
           "url": {
             "label": "URL da Empresa",
             "placeholder": "Ex: https://google.com"
           },
-          "date": {
-            "label": "Período",
-            "placeholder": "Início - Término"
-          }
+          "date": { "label": "Período", "placeholder": "Início - Término" }
         }
       },
       "education": {
