@@ -18,25 +18,24 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-// --- CONVERSÃO AUXILIAR (ESCOPO GLOBAL DO ARQUIVO) ---
-const parseCertString = (
-  str?: string,
-  YEARS: string[] = [],
-  MONTHS: string[] = []
-) => {
+// --- CONVERSÃO AUXILIAR ADAPTADA PARA TOKENS ---
+const parseCertString = (str?: string) => {
   if (!str) return { text: "", month: "", year: "" };
   const parts = str.split(" | ");
   let text = str;
   let dateStr = "";
+
   if (parts.length > 1) {
     const lastPart = parts[parts.length - 1];
-    const hasYear = YEARS.some((y) => lastPart.includes(y));
-    const hasMonth = MONTHS.some((m) => lastPart.includes(m));
-    if (hasYear || hasMonth) {
+    const hasMonthToken = lastPart.includes("__MONTH_");
+    const hasYear = /\b\d{4}\b/.test(lastPart);
+
+    if (hasMonthToken || hasYear) {
       dateStr = parts.pop() || "";
       text = parts.join(" | ");
     }
   }
+
   const dateParts = (dateStr || "").trim().split(" ");
   return {
     text: text.trim(),
@@ -69,12 +68,11 @@ function CertificationItem({
   removeItem,
   handleCertChange,
 }: CertificationItemProps) {
-  // HOOK DO SUB-ITEM CONECTADO AO ÍNDICE
   const [isCertOpen, setIsCertOpen] = useSyncCollapse(
     `certification-item-${index}`,
     false
   );
-  const parsed = parseCertString(cert, YEARS, MONTHS);
+  const parsed = parseCertString(cert);
 
   return (
     <Collapsible
@@ -83,7 +81,6 @@ function CertificationItem({
       id={`certification-item-${index}`}
       className="border-muted/50 mb-4 scroll-mt-24 border-b pb-6 last:border-0 last:pb-0"
     >
-      {/* NÍVEL 2: HEADER DO CERTIFICADO */}
       <div className="mb-4 flex w-full flex-row items-center justify-between gap-4">
         <CollapsibleTrigger asChild>
           <div
@@ -253,7 +250,6 @@ export function CertificationsSection() {
         onOpenChange={setIsOpen}
         className="flex flex-col gap-4 border-b py-4"
       >
-        {/* NÍVEL 1: HEADER DA SEÇÃO */}
         <div className="flex w-full flex-row items-start justify-between gap-4">
           <div className="flex flex-col text-left">
             <h2 className="text-xl font-semibold">
@@ -292,7 +288,6 @@ export function CertificationsSection() {
           </div>
         </div>
 
-        {/* NÍVEL 1 CONTEÚDO (LISTA) */}
         <CollapsibleContent className="space-y-4">
           {cvData.certifications.map((cert, index) => (
             <CertificationItem

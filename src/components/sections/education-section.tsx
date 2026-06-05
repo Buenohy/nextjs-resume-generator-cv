@@ -18,12 +18,8 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-// --- CONVERSÃO AUXILIAR (ESCOPO GLOBAL DO ARQUIVO) ---
-const parseEduString = (
-  str?: string,
-  YEARS: string[] = [],
-  MONTHS: string[] = []
-) => {
+// --- CONVERSÃO AUXILIAR ADAPTADA PARA TOKENS ---
+const parseEduString = (str?: string) => {
   if (!str)
     return {
       text: "",
@@ -35,16 +31,19 @@ const parseEduString = (
   const parts = str.split(" | ");
   let text = str;
   let dateStr = "";
+
   if (parts.length > 1) {
     const lastPart = parts[parts.length - 1];
-    const hasYear = YEARS.some((y) => lastPart.includes(y));
-    const hasMonth =
-      MONTHS.some((m) => lastPart.includes(m)) || lastPart.includes("Present");
-    if (hasYear || hasMonth) {
+    const hasYear = /\b\d{4}\b/.test(lastPart);
+    const hasMonthToken =
+      lastPart.includes("__MONTH_") || lastPart.includes("__PRESENT__");
+
+    if (hasYear || hasMonthToken) {
       dateStr = parts.pop() || "";
       text = parts.join(" | ");
     }
   }
+
   const [startStr, endStr] = dateStr.split(" - ");
   const s = (startStr || "").trim().split(" ");
   const e = (endStr || "").trim().split(" ");
@@ -57,7 +56,6 @@ const parseEduString = (
   };
 };
 
-// --- SUB-COMPONENTE AUXILIAR (EDUCATION ITEM) ---
 interface EducationItemProps {
   edu: string;
   index: number;
@@ -88,12 +86,11 @@ function EducationItem({
   removeItem,
   handleEduChange,
 }: EducationItemProps) {
-  // HOOK DO SUB-ITEM CONECTADO AO ÍNDICE
   const [isEduOpen, setIsEduOpen] = useSyncCollapse(
     `education-item-${index}`,
     false
   );
-  const parsed = parseEduString(edu, YEARS, MONTHS);
+  const parsed = parseEduString(edu);
 
   return (
     <Collapsible
@@ -102,7 +99,6 @@ function EducationItem({
       id={`education-item-${index}`}
       className="border-muted/50 mb-4 scroll-mt-24 border-b pb-6 last:border-0 last:pb-0"
     >
-      {/* NÍVEL 2: HEADER DE CADA FORMAÇÃO INDIVIDUAL */}
       <div className="mb-4 flex w-full flex-row items-center justify-between gap-4">
         <CollapsibleTrigger asChild>
           <div
@@ -134,7 +130,6 @@ function EducationItem({
         )}
       </div>
 
-      {/* NÍVEL 2 CONTEÚDO */}
       <CollapsibleContent className="space-y-6">
         <div className="flex w-full flex-col gap-6">
           <div className="flex w-full flex-col gap-2">
@@ -227,7 +222,6 @@ function EducationItem({
   );
 }
 
-// --- COMPONENTE PRINCIPAL ---
 export function EducationSection() {
   const t = useTranslations("ResumeBuilderPage");
   const cvData = useResumeStore((s) => s.cvData);
@@ -278,8 +272,9 @@ export function EducationSection() {
     ey: string
   ) => {
     const start = [sm, sy].filter(Boolean).join(" ");
+    // SALVA O TOKEN __PRESENT__ SE ESTIVER ATUALMENTE SELECIONADO
     const end =
-      em === "Present" ? "Present" : [em, ey].filter(Boolean).join(" ");
+      em === "__PRESENT__" ? "__PRESENT__" : [em, ey].filter(Boolean).join(" ");
     const datePart = [start, end].filter(Boolean).join(" - ");
     const finalVal = datePart ? `${text} | ${datePart}` : text;
     updateItem(index, finalVal);
@@ -309,7 +304,6 @@ export function EducationSection() {
         onOpenChange={setIsOpen}
         className="flex flex-col gap-4 border-b py-4"
       >
-        {/* NÍVEL 1: HEADER DA SEÇÃO */}
         <div className="flex w-full flex-row items-start justify-between gap-4">
           <div className="flex flex-col text-left">
             <h2 className="text-xl font-semibold">
@@ -347,7 +341,6 @@ export function EducationSection() {
           </div>
         </div>
 
-        {/* NÍVEL 1 CONTEÚDO (LISTA) */}
         <CollapsibleContent className="space-y-4">
           {cvData.education.map((edu, index) => (
             <EducationItem

@@ -34,7 +34,6 @@ const parseDateString = (dateStr?: string) => {
   };
 };
 
-// --- SUB-COMPONENTE AUXILIAR (EXPERIENCE ITEM) ---
 interface ExperienceItemProps {
   exp: ExperienceState;
   expIndex: number;
@@ -80,7 +79,6 @@ function ExperienceItem({
   removeStack,
   updateStack,
 }: ExperienceItemProps) {
-  // HOOKS EXCLUSIVOS PARA CADA SUB-ITEM
   const [isExpOpen, setIsExpOpen] = useSyncCollapse(
     `experience-item-${expIndex}`,
     false
@@ -477,7 +475,7 @@ export function ExperienceSection() {
       placeholder: value.placeholder,
     }));
 
-  // --- CORREÇÃO DO DATE CHANGE (Traduz dinamicamente a palavra 'Present') ---
+  // --- GRAVAÇÃO DA DATA COM SUPORTE A TOKEN DINÂMICO ---
   const handleDateChange = (
     expIndex: number,
     sm: string,
@@ -485,12 +483,9 @@ export function ExperienceSection() {
     em: string,
     ey: string
   ) => {
-    const presentTranslation = t("sections.education.present");
     const start = [sm, sy].filter(Boolean).join(" ");
     const end =
-      em === presentTranslation || em === "Present"
-        ? presentTranslation
-        : [em, ey].filter(Boolean).join(" ");
+      em === "__PRESENT__" ? "__PRESENT__" : [em, ey].filter(Boolean).join(" ");
 
     const datePart =
       start || end ? `${start}${start && end ? " - " : ""}${end}` : "";

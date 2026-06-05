@@ -94,14 +94,11 @@ export function ExperienceSectionFullContent() {
 
   const dateParsed = parseDateString(form.date);
 
-  // --- CORREÇÃO DO DATE CHANGE NO FORMULÁRIO DO FULL CONTENT ---
+  // --- GRAVAÇÃO DA DATA COM SUPORTE A TOKEN DINÂMICO ---
   const handleDateChange = (sm: string, sy: string, em: string, ey: string) => {
-    const presentTranslation = t("sections.education.present");
     const start = [sm, sy].filter(Boolean).join(" ");
     const end =
-      em === presentTranslation || em === "Present"
-        ? presentTranslation
-        : [em, ey].filter(Boolean).join(" ");
+      em === "__PRESENT__" ? "__PRESENT__" : [em, ey].filter(Boolean).join(" ");
 
     const date =
       start || end ? `${start}${start && end ? " - " : ""}${end}` : "";
