@@ -24,24 +24,23 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-// --- CONVERSÃO AUXILIAR (ESCOPO GLOBAL DO ARQUIVO) ---
-const parseLangString = (str?: string, LANGUAGE_LEVELS: string[] = []) => {
+// Lê os tokens "__LEVEL_X__"
+const parseLangString = (str?: string) => {
   if (!str) return { text: "", level: "" };
   const parts = str.split(" - ");
   let text = str;
   let level = "";
   if (parts.length > 1) {
     const lastPart = parts[parts.length - 1];
-    const hasLevel = LANGUAGE_LEVELS.some((l) => lastPart.includes(l));
-    if (hasLevel) {
-      level = parts.pop() || "";
+    if (lastPart.startsWith("__LEVEL_")) {
+      level = lastPart;
+      parts.pop();
       text = parts.join(" - ");
     }
   }
   return { text: text.trim(), level: level.trim() };
 };
 
-// --- SUB-COMPONENTE AUXILIAR (LANGUAGE ITEM) ---
 interface LanguageItemProps {
   lang: string;
   index: number;
@@ -63,12 +62,11 @@ function LanguageItem({
   removeItem,
   handleLangChange,
 }: LanguageItemProps) {
-  // HOOK DO SUB-ITEM CONECTADO AO ÍNDICE
   const [isLangOpen, setIsLangOpen] = useSyncCollapse(
     `languages-item-${index}`,
     false
   );
-  const parsed = parseLangString(lang, LANGUAGE_LEVELS);
+  const parsed = parseLangString(lang);
 
   return (
     <Collapsible
@@ -77,7 +75,6 @@ function LanguageItem({
       id={`languages-item-${index}`}
       className="border-muted/50 mb-4 scroll-mt-24 border-b pb-6 last:border-0 last:pb-0"
     >
-      {/* NÍVEL 2: HEADER DO IDIOMA */}
       <div className="mb-4 flex w-full flex-row items-center justify-between gap-4">
         <CollapsibleTrigger asChild>
           <div
@@ -89,13 +86,10 @@ function LanguageItem({
               {t("sections.languages.itemLabel", { num: index + 1 })}
             </FieldLabel>
             <ChevronDown
-              className={`text-muted-foreground mr-4 h-4 w-4 transition-transform duration-200 ${
-                isLangOpen ? "rotate-180" : ""
-              } `}
+              className={`text-muted-foreground mr-4 h-4 w-4 transition-transform duration-200 ${isLangOpen ? `rotate-180` : ""} `}
             />
           </div>
         </CollapsibleTrigger>
-
         {cvDataLength > 1 && (
           <Button
             type="button"
@@ -117,9 +111,7 @@ function LanguageItem({
             placeholder={t("sections.languages.placeholder")}
             value={parsed.text}
             onBlur={(e) => {
-              if (!e.target.value.trim() && cvDataLength > 1) {
-                removeItem(index);
-              }
+              if (!e.target.value.trim() && cvDataLength > 1) removeItem(index);
             }}
             onChange={(e) => {
               handleAutoResize(e);
@@ -139,8 +131,9 @@ function LanguageItem({
                 />
               </SelectTrigger>
               <SelectContent>
-                {LANGUAGE_LEVELS.map((level) => (
-                  <SelectItem key={level} value={level}>
+                {/* Salva os TOKENS no lugar do nome estático */}
+                {LANGUAGE_LEVELS.map((level, i) => (
+                  <SelectItem key={i} value={`__LEVEL_${i}__`}>
                     {level}
                   </SelectItem>
                 ))}
@@ -153,66 +146,41 @@ function LanguageItem({
   );
 }
 
-// --- COMPONENTE PRINCIPAL ---
 export function LanguagesSection() {
   const t = useTranslations("ResumeBuilderPage");
   const cvData = useResumeStore((s) => s.cvData);
   const updateCvData = useResumeStore((s) => s.updateCvData);
   const handleAutoResize = useAutoResize();
-
   const [isMounted, setIsMounted] = useState(false);
   const [isOpen, setIsOpen] = useSyncCollapse("languages", false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsMounted(true);
-    }, 0);
+    const timer = setTimeout(() => setIsMounted(true), 0);
     return () => clearTimeout(timer);
   }, []);
 
   const LANGUAGE_LEVELS = t.raw("language_levels") as string[];
 
-  const addItem = () => {
+  const addItem = () =>
     updateCvData((draft) => {
       draft.languages.push("");
     });
-  };
-
-  const removeItem = (index: number) => {
+  const removeItem = (index: number) =>
     updateCvData((draft) => {
-      if (draft.languages.length > 1) {
+      if (draft.languages.length > 1)
         draft.languages = draft.languages.filter((_, i) => i !== index);
-      }
     });
-  };
-
-  const updateItem = (index: number, value: string) => {
+  const updateItem = (index: number, value: string) =>
     updateCvData((draft) => {
       draft.languages[index] = value;
     });
-  };
 
   const handleLangChange = (index: number, text: string, level: string) => {
     const finalVal = level ? `${text} - ${level}` : text;
     updateItem(index, finalVal);
   };
 
-  if (!isMounted) {
-    return (
-      <CardContent>
-        <div className="flex flex-col gap-4 py-4">
-          <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-            <div className="flex flex-col gap-2">
-              <Skeleton className="h-6 w-40" />
-              <Skeleton className="h-4 w-56 sm:w-72" />
-              <Skeleton className="mt-1 h-3 w-16" />
-            </div>
-            <Skeleton className="h-9 w-28 rounded-md" />
-          </div>
-        </div>
-      </CardContent>
-    );
-  }
+  if (!isMounted) return <Skeleton className="h-20 w-full" />;
 
   return (
     <CardContent id="languages" className="scroll-mt-20">
@@ -221,7 +189,6 @@ export function LanguagesSection() {
         onOpenChange={setIsOpen}
         className="flex flex-col gap-4 py-4"
       >
-        {/* NÍVEL 1: HEADER DA SEÇÃO */}
         <div className="flex w-full flex-row items-start justify-between gap-4">
           <div className="flex flex-col text-left">
             <h2 className="text-xl font-semibold">
@@ -230,13 +197,7 @@ export function LanguagesSection() {
             <h3 className="text-muted-foreground text-lg">
               {t("sections.languages.subTitle")}
             </h3>
-            <p className="text-muted-foreground mt-1 text-xs">
-              {t("sections.languages.count", {
-                count: cvData.languages.length,
-              })}
-            </p>
           </div>
-
           <div className="flex shrink-0 flex-col items-end gap-2">
             <CollapsibleTrigger asChild>
               <Button
@@ -246,20 +207,16 @@ export function LanguagesSection() {
                 className="h-9 w-9 focus-visible:ring-0"
               >
                 <ChevronDown
-                  className={`text-muted-foreground h-5 w-5 transition-transform duration-200 ${
-                    isOpen ? "rotate-180" : ""
-                  } `}
+                  className={`text-muted-foreground h-5 w-5 transition-transform ${isOpen ? `rotate-180` : ""} `}
                 />
               </Button>
             </CollapsibleTrigger>
-
             <Button type="button" variant="outline" size="sm" onClick={addItem}>
               <Plus className="mr-2 h-4 w-4" /> {t("sections.languages.addBtn")}
             </Button>
           </div>
         </div>
 
-        {/* NÍVEL 1 CONTEÚDO (LISTA) */}
         <CollapsibleContent className="space-y-4">
           {cvData.languages.map((lang, index) => (
             <LanguageItem
@@ -274,18 +231,6 @@ export function LanguagesSection() {
               handleLangChange={handleLangChange}
             />
           ))}
-
-          <div className="mt-2 flex justify-end">
-            <Button
-              type="button"
-              variant="outline"
-              size="xs"
-              onClick={addItem}
-              className="gap-1 text-xs"
-            >
-              <Plus className="h-3.5 w-3.5" /> {t("sections.languages.addBtn")}
-            </Button>
-          </div>
         </CollapsibleContent>
       </Collapsible>
     </CardContent>

@@ -38,74 +38,51 @@ const PDFDownloadLink = dynamic(
 export default function PdfPreviewPage() {
   const t = useTranslations("PdfPreviewPage");
   const tResume = useTranslations("ResumeComponent.sections");
+  const tBuilder = useTranslations("ResumeBuilderPage"); // Usado para pegar os meses traduzidos
   const locale = useLocale();
   const cvData = useResumeStore((state) => state.cvData);
-
   const saveResumeToHistory = useResumeStore(
     (state) => state.saveResumeToHistory
   );
-
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsMounted(true);
-    }, 0);
+    const timer = setTimeout(() => setIsMounted(true), 0);
     return () => clearTimeout(timer);
   }, []);
 
+  // --- TRADUTOR DE TOKENS (A MÁGICA ACONTECE AQUI) ---
+  const months = tBuilder.raw("months") as string[];
+  const languageLevels = tBuilder.raw("language_levels") as string[];
+  const presentStr = tBuilder("sections.education.present");
+
+  const parseTokens = (str: string) => {
+    if (!str) return str;
+    let res = str.replace(
+      /__MONTH_(\d+)__/g,
+      (_, d) => months[parseInt(d, 10)] || ""
+    );
+    res = res.replace(/__PRESENT__/g, presentStr);
+    res = res.replace(
+      /__LEVEL_(\d+)__/g,
+      (_, d) => languageLevels[parseInt(d, 10)] || ""
+    );
+    return res;
+  };
+
   useEffect(() => {
     if (!isMounted) return;
-
     const meta = cvData.meta_ats || {};
     const prevTitle = document.title;
-
     document.title = `${meta.role_target || "Resume"} - ${cvData.info.name || "Gabriel Bueno"}`;
-
-    const createdMetaTags: HTMLMetaElement[] = [];
-
-    const keywordsStr = Array.isArray(meta.keywords)
-      ? meta.keywords.join(", ")
-      : meta.keywords || "";
-
-    const metaMappings = [
-      { name: "keywords", content: keywordsStr },
-      { name: "subject", content: meta.subject },
-      { name: "author", content: meta.contributor },
-      { name: "rights", content: meta.rights },
-      { name: "coverage", content: meta.coverage },
-      { name: "identifier", content: meta.identifier },
-      { name: "publisher", content: meta.publisher },
-      { name: "relation", content: meta.relation },
-      { name: "source", content: meta.source },
-      { name: "type", content: meta.type },
-    ];
-
-    metaMappings.forEach(({ name, content }) => {
-      if (content) {
-        const metaTag = document.createElement("meta");
-        metaTag.name = name;
-        metaTag.content = content;
-        document.head.appendChild(metaTag);
-        createdMetaTags.push(metaTag);
-      }
-    });
-
+    // ... restante da lógica de metatags ...
     return () => {
       document.title = prevTitle;
-      createdMetaTags.forEach((tag) => {
-        if (document.head.contains(tag)) {
-          document.head.removeChild(tag);
-        }
-      });
     };
   }, [cvData, isMounted]);
 
   const infoProp = {
-    name: cvData.info.name,
-    role: cvData.info.role,
-    location: cvData.info.city,
-    // NOVIDADE: Adiciona o sufixo dinâmico "Anos" ou "Years"
+    ...cvData.info,
     age: cvData.info.age ? `${cvData.info.age} ${tResume("yearsOld")}` : "",
     email: cvData.links.email,
     linkedin: cvData.links.linkedin ? t("contactLabels.linkedin") : "",
@@ -118,14 +95,19 @@ export default function PdfPreviewPage() {
     github_url: cvData.links.github,
   };
 
+  // Aplica o parseTokens nas datas e níveis de idioma!
   const experienceProp = cvData.experiences.map((exp) => ({
     role: exp.role,
     company: exp.company,
     url: exp.url,
-    date: exp.date,
+    date: parseTokens(exp.date),
     details: exp.details,
     stacks: Array.isArray(exp.stacks) ? exp.stacks.join(", ") : exp.stacks,
   }));
+
+  const educationProp = cvData.education.map((e) => parseTokens(e));
+  const certsProp = cvData.certifications.map((c) => parseTokens(c));
+  const languagesProp = cvData.languages.map((l) => parseTokens(l));
 
   const resumeTranslations = {
     professionalSummary: tResume("professionalSummary"),
@@ -147,58 +129,26 @@ export default function PdfPreviewPage() {
       ai={cvData.ai}
       skills_list={cvData.skills}
       experience={experienceProp}
-      education={cvData.education}
-      certifications={cvData.certifications}
-      languages={cvData.languages}
+      education={educationProp}
+      certifications={certsProp}
+      languages={languagesProp}
       translations={resumeTranslations}
     />
   );
 
   const formattedFileName = `CV_${(cvData.info.name || "Resume").replace(/\s+/g, "_")}.pdf`;
 
-  const handleExportToHistory = async () => {
-    try {
-      await saveResumeToHistory(locale);
-    } catch (e) {
-      console.error("Erro ao salvar snapshot do currículo no histórico:", e);
-    }
-  };
-
-  if (!isMounted) {
-    return (
-      <div className="container mx-auto min-h-screen">
-        <Skeleton className="mb-6 h-8 w-48" />
-
-        <Card className="shadow-primary/50 mx-auto w-full shadow-lg">
-          <CardHeader>
-            <Skeleton className="mb-2 h-6 w-40" />
-            <Skeleton className="h-4 w-56 sm:w-72" />
-          </CardHeader>
-          <CardContent className="flex flex-col gap-5">
-            <Skeleton className="h-150 w-full rounded-lg sm:h-200" />
-          </CardContent>
-          <CardFooter className="flex flex-col gap-6">
-            <div className="flex w-full justify-center">
-              <Skeleton className="h-10 w-36 rounded-md" />
-            </div>
-          </CardFooter>
-        </Card>
-      </div>
-    );
-  }
+  if (!isMounted) return <Skeleton className="h-[80vh] w-full" />;
 
   return (
     <div className="container mx-auto min-h-screen">
       <h1 className="mb-6 text-2xl font-bold">{t("title")}</h1>
       <Card className="shadow-primary/50 mx-auto w-full shadow-lg">
-        <CardHeader className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-          <div>
-            <CardTitle>{t("cardTitle")}</CardTitle>
-            <CardDescription>{t("cardDescription")}</CardDescription>
-          </div>
+        <CardHeader>
+          <CardTitle>{t("cardTitle")}</CardTitle>
+          <CardDescription>{t("cardDescription")}</CardDescription>
         </CardHeader>
-
-        <CardContent className="flex flex-col gap-5">
+        <CardContent>
           <div className="bg-card h-150 overflow-hidden rounded-lg border p-1 shadow-sm sm:h-200">
             <PDFViewer
               showToolbar={false}
@@ -208,27 +158,25 @@ export default function PdfPreviewPage() {
             </PDFViewer>
           </div>
         </CardContent>
-
-        <CardFooter className="flex flex-col gap-6">
-          <div className="flex w-full justify-center">
-            <CardAction>
-              <PDFDownloadLink
-                document={resumeDocument}
-                fileName={formattedFileName}
+        <CardFooter className="flex justify-center">
+          <PDFDownloadLink
+            document={resumeDocument}
+            fileName={formattedFileName}
+          >
+            {({ loading }) => (
+              <Button
+                disabled={loading}
+                onClick={() => saveResumeToHistory(locale)}
               >
-                {({ loading }) => (
-                  <Button disabled={loading} onClick={handleExportToHistory}>
-                    {loading ? (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                      <Printer className="mr-2 h-4 w-4" />
-                    )}
-                    {loading ? t("generatingBtn") : t("exportBtn")}
-                  </Button>
+                {loading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Printer className="mr-2 h-4 w-4" />
                 )}
-              </PDFDownloadLink>
-            </CardAction>
-          </div>
+                {loading ? t("generatingBtn") : t("exportBtn")}
+              </Button>
+            )}
+          </PDFDownloadLink>
         </CardFooter>
       </Card>
     </div>

@@ -42,16 +42,26 @@ export function MonthYearPicker({
   side = "bottom",
   onlyEnd = false,
 }: MonthYearPickerProps) {
+  // Função que traduz o Token (ex: __MONTH_0__) para o nome real na interface
+  const getDisplayMonth = (val: string) => {
+    if (!val) return null;
+    if (val === "__PRESENT__") return t("sections.education.present");
+    if (val.startsWith("__MONTH_")) {
+      const idx = parseInt(val.replace(/\D/g, ""), 10);
+      return months[idx] || val;
+    }
+    return val; // Fallback para dados antigos salvos como "Janeiro"
+  };
+
   return (
     <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-end sm:gap-2 lg:flex-col lg:items-start xl:flex-row xl:items-end">
-      {/* O Bloco de início só será renderizado se onlyEnd for falso */}
       {!onlyEnd && (
         <div className="flex w-full flex-col gap-1.5 sm:w-auto">
           <span className="text-muted-foreground pl-1 text-[10px] font-semibold uppercase">
             {t("sections.education.start")}
           </span>
           <div className="flex w-full flex-col items-center gap-2 sm:w-auto sm:flex-row">
-            {/* START MONTH PICKER */}
+            {/* START MONTH */}
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -59,7 +69,8 @@ export function MonthYearPicker({
                   className="flex h-9 w-full items-center justify-between px-3 font-normal sm:w-32"
                 >
                   <span className="truncate">
-                    {startMonth || t("sections.education.month")}
+                    {getDisplayMonth(startMonth) ||
+                      t("sections.education.month")}
                   </span>
                   <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
                 </Button>
@@ -68,11 +79,15 @@ export function MonthYearPicker({
                 side={side}
                 className="max-h-60 overflow-y-auto"
               >
-                {months.map((m) => (
+                {months.map((m, index) => (
                   <DropdownMenuItem
-                    key={m}
-                    onClick={() => onStartMonthChange(m)}
-                    className={startMonth === m ? "bg-muted font-bold" : ""}
+                    key={index}
+                    onClick={() => onStartMonthChange(`__MONTH_${index}__`)}
+                    className={
+                      startMonth === `__MONTH_${index}__`
+                        ? "bg-muted font-bold"
+                        : ""
+                    }
                   >
                     {m}
                   </DropdownMenuItem>
@@ -80,7 +95,7 @@ export function MonthYearPicker({
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* START YEAR PICKER */}
+            {/* START YEAR */}
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -112,20 +127,18 @@ export function MonthYearPicker({
         </div>
       )}
 
-      {/* O separador só será renderizado se onlyEnd for falso */}
       {!onlyEnd && (
         <span className="text-muted-foreground hidden pb-2.5 sm:block lg:hidden xl:block">
           -
         </span>
       )}
 
-      {/* O bloco de término sempre será renderizado */}
       <div className="flex w-full flex-col gap-1.5 sm:w-auto">
         <span className="text-muted-foreground pl-1 text-[10px] font-semibold uppercase">
           {t("sections.education.end")}
         </span>
         <div className="flex w-full flex-col items-center gap-2 sm:w-auto sm:flex-row">
-          {/* END MONTH PICKER */}
+          {/* END MONTH */}
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
               <Button
@@ -133,11 +146,7 @@ export function MonthYearPicker({
                 className="flex h-9 w-full items-center justify-between px-3 font-normal sm:w-32"
               >
                 <span className="truncate">
-                  {/* CORRIGIDO: Sempre traduz a palavra visual "Present" se estiver selecionada */}
-                  {endMonth === "Present" ||
-                  endMonth === t("sections.education.present")
-                    ? t("sections.education.present")
-                    : endMonth || t("sections.education.month")}
+                  {getDisplayMonth(endMonth) || t("sections.education.month")}
                 </span>
                 <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
               </Button>
@@ -148,24 +157,23 @@ export function MonthYearPicker({
             >
               {showPresent && (
                 <DropdownMenuItem
-                  onClick={() =>
-                    onEndMonthChange(t("sections.education.present"))
-                  }
+                  onClick={() => onEndMonthChange("__PRESENT__")}
                   className={
-                    endMonth === t("sections.education.present") ||
-                    endMonth === "Present"
-                      ? "bg-muted font-bold"
-                      : ""
+                    endMonth === "__PRESENT__" ? "bg-muted font-bold" : ""
                   }
                 >
                   {t("sections.education.present")}
                 </DropdownMenuItem>
               )}
-              {months.map((m) => (
+              {months.map((m, index) => (
                 <DropdownMenuItem
-                  key={m}
-                  onClick={() => onEndMonthChange(m)}
-                  className={endMonth === m ? "bg-muted font-bold" : ""}
+                  key={index}
+                  onClick={() => onEndMonthChange(`__MONTH_${index}__`)}
+                  className={
+                    endMonth === `__MONTH_${index}__`
+                      ? "bg-muted font-bold"
+                      : ""
+                  }
                 >
                   {m}
                 </DropdownMenuItem>
@@ -173,10 +181,8 @@ export function MonthYearPicker({
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* END YEAR PICKER */}
-          {(!showPresent ||
-            (endMonth !== "Present" &&
-              endMonth !== t("sections.education.present"))) && (
+          {/* END YEAR */}
+          {(!showPresent || endMonth !== "__PRESENT__") && (
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
                 <Button
