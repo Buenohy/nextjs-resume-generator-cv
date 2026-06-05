@@ -385,7 +385,8 @@
       "stacks": "Tech Stacks",
       "education": "Education",
       "certifications": "Certifications",
-      "languages": "Languages"
+      "languages": "Languages",
+      "yearsOld": "Years"
     }
   }
 }

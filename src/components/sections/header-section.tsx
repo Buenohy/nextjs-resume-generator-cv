@@ -56,7 +56,12 @@ export function HeaderSection() {
 
   const handleChange = (fieldId: string, value: string) => {
     updateCvData((draft) => {
-      draft.info[fieldId as keyof typeof draft.info] = value;
+      // Se o campo for idade, permite apenas números, removendo letras/símbolos
+      if (fieldId === "age") {
+        draft.info.age = value.replace(/\D/g, "");
+      } else {
+        draft.info[fieldId as keyof typeof draft.info] = value;
+      }
     });
   };
 
@@ -113,7 +118,7 @@ export function HeaderSection() {
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="h-9 w-9 focus-visible:ring-0"
+                className="size-9 focus-visible:ring-0"
               >
                 <ChevronDown
                   className={`text-muted-foreground h-5 w-5 transition-transform duration-200 ${
@@ -141,6 +146,9 @@ export function HeaderSection() {
                     placeholder={placeholder}
                     value={getFieldValue(id)}
                     onChange={(e) => handleChange(id, e.target.value)}
+                    // Se for age (idade), mostra um limite menor no teclado mobile
+                    inputMode={id === "age" ? "numeric" : "text"}
+                    maxLength={id === "age" ? 3 : undefined}
                   />
                 </div>
               </Field>

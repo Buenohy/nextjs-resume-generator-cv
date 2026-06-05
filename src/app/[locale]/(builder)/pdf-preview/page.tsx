@@ -105,7 +105,8 @@ export default function PdfPreviewPage() {
     name: cvData.info.name,
     role: cvData.info.role,
     location: cvData.info.city,
-    age: cvData.info.age,
+    // NOVIDADE: Adiciona o sufixo dinâmico "Anos" ou "Years"
+    age: cvData.info.age ? `${cvData.info.age} ${tResume("yearsOld")}` : "",
     email: cvData.links.email,
     linkedin: cvData.links.linkedin ? t("contactLabels.linkedin") : "",
     linkedin_url: cvData.links.linkedin,
