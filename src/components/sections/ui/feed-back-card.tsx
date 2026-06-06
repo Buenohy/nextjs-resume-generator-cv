@@ -190,13 +190,19 @@ export function FeedbackCard() {
           <>
             {activeTab === "parse" && <ParseTab />}
             {activeTab === "match" && (
-              <div className="border-muted overflow-hidden rounded-md border shadow-sm">
-                <Table>
+              // MODIFICADO: De overflow-hidden para overflow-x-auto para habilitar scroll lateral responsivo
+              <div className="border-muted overflow-x-auto rounded-md border shadow-sm">
+                {/* MODIFICADO: Adicionado min-w-[640px] para forçar a renderização completa das colunas em telas pequenas, habilitando a rolagem */}
+                <Table className="min-w-[640px] md:min-w-full">
                   <TableHeader>
                     {table.getHeaderGroups().map((hg) => (
                       <TableRow key={hg.id}>
                         {hg.headers.map((header) => (
-                          <TableHead key={header.id} className="pt-2 text-xs">
+                          <TableHead
+                            key={header.id}
+                            // MODIFICADO: Adicionado classes first: para tornar a coluna Palavra-Chave fixa
+                            className="first:bg-card first:border-muted/50 pt-2 text-xs first:sticky first:left-0 first:z-20 first:border-r"
+                          >
                             {header.isPlaceholder
                               ? null
                               : flexRender(
@@ -215,7 +221,8 @@ export function FeedbackCard() {
                           {row.getVisibleCells().map((cell) => (
                             <TableCell
                               key={cell.id}
-                              className="py-2 align-middle"
+                              // MODIFICADO: Adicionado classes first: para manter as células da primeira coluna fixadas à esquerda com fundo sólido
+                              className="first:bg-card first:border-muted/50 py-2 align-middle first:sticky first:left-0 first:z-10 first:border-r"
                             >
                               {flexRender(
                                 cell.column.columnDef.cell,
@@ -286,7 +293,6 @@ function ParseTab() {
     ? t("feedbackAnalysis.roleMismatch", { role: cvData?.info?.role || "N/A" })
     : t("feedbackAnalysis.roleMatch", { role: cvData?.info?.role || "N/A" });
 
-  // CORRIGIDO: Remove a sigla "(ATS)" do nome do campo antes de anexar a seção pai para evitar redundância
   const keywordsTitle = t("sections.meta_ats.keywordsOptimizerTitle")
     .replace(/\(ATS\)/gi, "")
     .trim();
@@ -299,7 +305,6 @@ function ParseTab() {
         </h3>
         <div className="space-y-3">
           <div>
-            {/* Exibe: "Otimizador de Palavras-chave (Metadados ATS)" ou "Keywords Optimizer (ATS Metadata)" */}
             <p className="text-muted-foreground font-semibold">
               {`${keywordsTitle} (${t("sections.meta_ats.title")})`}
             </p>
