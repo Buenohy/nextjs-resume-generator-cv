@@ -5,12 +5,6 @@ export interface KeywordMatch {
 
 export type KeywordResults = Record<string, KeywordMatch>;
 
-export interface ExperienceResults {
-  minYears: number;
-  maxYears: number | null;
-  mentions: string[];
-}
-
 const TECH_WHITELIST = [
   "python",
   "javascript",
@@ -145,13 +139,12 @@ export function extractKeywords(jobText: string): KeywordResults {
   return sortedResults;
 }
 
-export function extractExperience(jobText: string): ExperienceResults {
-  if (!jobText) return { minYears: 0, maxYears: null, mentions: [] };
+// CORRIGIDO: Agora retorna um Array com todos os anos diferentes exigidos na vaga (ex: [2, 3])
+export function extractExperience(jobText: string): number[] {
+  if (!jobText) return [];
 
   const cleanText = jobText.replace(/[\r\n]+/g, " ").toLowerCase();
-  let minYears = 0;
-  let maxYears: number | null = null;
-  const mentions: string[] = [];
+  const yearsFound = new Set<number>();
 
   const rangeRegex =
     /\b(\d+)\s*(?:a|-|to)\s*(\d+)\s*\+?\s*(?:anos?|years?|yrs?)\b/gi;
@@ -159,36 +152,26 @@ export function extractExperience(jobText: string): ExperienceResults {
   const contextRegex =
     /(?:experi[êe]ncia|experience)\W+(\d+)\s*\+?(?:\s*(?:anos?|years?|yrs?))?/gi;
 
-  const processMatch = (
-    min: number,
-    max: number | null,
-    originalText: string
-  ) => {
-    if (min >= 1 && min < 30) {
-      if (min > minYears) {
-        minYears = min;
-        if (max !== null) maxYears = max;
-      }
-      mentions.push(originalText.trim());
-    }
-  };
-
   let match;
+
+  // Pega o número mínimo de intervalos (ex: "3 to 5 years", pega o 3)
   while ((match = rangeRegex.exec(cleanText)) !== null) {
-    processMatch(parseInt(match[1], 10), parseInt(match[2], 10), match[0]);
+    const val = parseInt(match[1], 10);
+    if (val >= 1 && val < 30) yearsFound.add(val);
   }
 
+  // Pega absolutos (ex: "2+ years")
   while ((match = minRegex.exec(cleanText)) !== null) {
-    processMatch(parseInt(match[1], 10), null, match[0]);
+    const val = parseInt(match[1], 10);
+    if (val >= 1 && val < 30) yearsFound.add(val);
   }
 
+  // Pega quebras de contexto (ex: "Experience \n 3+ years")
   while ((match = contextRegex.exec(cleanText)) !== null) {
-    processMatch(parseInt(match[1], 10), null, match[0]);
+    const val = parseInt(match[1], 10);
+    if (val >= 1 && val < 30) yearsFound.add(val);
   }
 
-  return {
-    minYears,
-    maxYears,
-    mentions: Array.from(new Set(mentions)),
-  };
+  // Retorna ordenado do menor para o maior (ex: [2, 3]).
+  return Array.from(yearsFound).sort((a, b) => a - b);
 }

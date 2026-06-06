@@ -71,9 +71,7 @@ export async function POST(request: Request) {
     const body = await request.json().catch(() => ({}));
     const { jobText = "", cvData } = body;
 
-    // NOVO: Captura a URL de onde o usuário fez a requisição (ex: http://meusite.com/pt/...)
     const referer = request.headers.get("referer") || "";
-    // Se a URL contiver "/pt", usamos "pt", senão "en"
     const isPtUrl = referer.includes("/pt/") || referer.endsWith("/pt");
     const currentLocale = isPtUrl ? "pt" : "en";
 
@@ -118,20 +116,25 @@ export async function POST(request: Request) {
       }
     );
 
-    // 2.5 PARSE DA EXPERIÊNCIA (INJETADO NA TABELA)
-    const expResults = extractExperience(jobText);
-    if (expResults.minYears > 0) {
+    // 2.5 PARSE DA EXPERIÊNCIA MULTIPLA (INJETADO NA TABELA)
+    // Agora requiredYearsList retorna algo como [2, 3]
+    const requiredYearsList = extractExperience(jobText);
+
+    // Usamos um for...of para poder lidar com a tradução (await getTranslations) para cada número
+    for (const years of requiredYearsList) {
       const exactJobRegex = new RegExp(
-        `\\b${expResults.minYears}\\s*\\+?\\s*(?:anos?|years?|yrs?)\\b`,
+        `\\b${years}\\s*\\+?\\s*(?:anos?|years?|yrs?)\\b`,
         "gi"
       );
       const inVacancyCount = (jobText.match(exactJobRegex) || []).length;
-      const inVacancy = inVacancyCount > 0 ? inVacancyCount : 1;
 
+      // Se não achou com o regex exato (ex: "experience \n 3+"), garante que pelo menos foi 1 vez
+      const inVacancy = inVacancyCount > 0 ? inVacancyCount : 1;
       const goal2x = inVacancy * 2;
 
+      // Busca na vaga
       const expRegex = new RegExp(
-        `\\b${expResults.minYears}\\s*(?:anos?|years?|yrs?)\\b`,
+        `\\b${years}\\s*(?:anos?|years?|yrs?)\\b`,
         "gi"
       );
       const onResume = cvTextLower
@@ -139,26 +142,25 @@ export async function POST(request: Request) {
         : 0;
       const isApproved = onResume >= goal2x;
 
-      // CORRIGIDO: Passando o exato 'currentLocale' (pt ou en) extraído da URL para o next-intl
       let expKeywordName = "";
       try {
         const t = await getTranslations({
           locale: currentLocale,
           namespace: "ResumeBuilderPage",
         });
-        expKeywordName = t("feedbackCard.experienceWord", {
-          years: expResults.minYears,
-        });
+        expKeywordName = t("feedbackCard.experienceWord", { years: years });
       } catch (e) {
-        // Fallback blindado caso o next-intl falhe na rota serverless
         expKeywordName =
           currentLocale === "pt"
-            ? `Experiência (${expResults.minYears} Anos)`
-            : `Experience (${expResults.minYears} Years)`;
+            ? `Experiência (${years} Anos)`
+            : `Experience (${years} Years)`;
       }
 
+      // Ao usar unshift com Array [2, 3], o 2 entra primeiro.
+      // Depois o 3 entra EMPURRANDO o 2 para baixo.
+      // Fica perfeito: O maior requisito (3 anos) aparece no topo da lista.
       keywordsTable.unshift({
-        id: "exp-0",
+        id: `exp-${years}`,
         keyword: expKeywordName.toUpperCase(),
         inVacancy,
         goal2x,
@@ -174,7 +176,7 @@ export async function POST(request: Request) {
       const summaryIssues = analyzeVerbs(
         cvData.summary,
         "Resumo (Summary)",
-        currentLocale // Usando o locale detectado pela URL
+        currentLocale
       );
       if (Array.isArray(summaryIssues)) {
         verbIssues.push(...summaryIssues);
@@ -189,7 +191,7 @@ export async function POST(request: Request) {
               const expIssues = analyzeVerbs(
                 detail,
                 `Exp: ${exp.company || "Empresa"}`,
-                currentLocale // Usando o locale detectado pela URL
+                currentLocale
               );
               if (Array.isArray(expIssues)) {
                 verbIssues.push(...expIssues);
