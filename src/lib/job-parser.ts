@@ -5,9 +5,11 @@ export interface KeywordMatch {
 
 export type KeywordResults = Record<string, KeywordMatch>;
 
-// LISTA DE PALAVRAS SIMPLES (BILINGUE)
+// ==========================================
+// LISTA DE PALAVRAS SIMPLES (TECH WHITELIST)
+// ==========================================
 const TECH_WHITELIST = [
-  // IA / Machine Learning (Simples)
+  // --- IA / Machine Learning (Simples) ---
   "ai",
   "ia",
   "llm",
@@ -31,8 +33,21 @@ const TECH_WHITELIST = [
   "autogen",
   "pinecone",
   "pgvector",
+  "ollama",
+  "pydantic",
+  "uv",
+  "polars",
+  "langgraph",
+  "ultralytics",
+  "deepseek",
+  "grok",
+  "mistral",
+  "perplexity",
+  "qwen",
+  "cohere",
+  "reka",
 
-  // Cloud / DevOps (Simples)
+  // --- Cloud / DevOps / Infraestrutura (Simples) ---
   "aws",
   "gcp",
   "azure",
@@ -53,8 +68,63 @@ const TECH_WHITELIST = [
   "cosmosdb",
   "firebase",
   "bigquery",
+  "npm",
+  "pip",
+  "homebrew",
+  "vite",
+  "make",
+  "yarn",
+  "cloudflare",
+  "nuget",
+  "apt",
+  "webpack",
+  "maven",
+  "cargo",
+  "gradle",
+  "pnpm",
+  "prometheus",
+  "podman",
+  "chocolatey",
+  "composer",
+  "msbuild",
+  "poetry",
+  "datadog",
+  "pacman",
+  "netlify",
+  "bun",
+  "heroku",
+  "ninja",
+  "splunk",
+  "newrelic",
+  "railway",
+  "ibmcloud",
+  "yandexcloud",
 
-  // Tecnologias Gerais
+  // --- Bancos de Dados (Simples) ---
+  "postgresql",
+  "postgres",
+  "mysql",
+  "sqlite",
+  "redis",
+  "mongodb",
+  "mariadb",
+  "elasticsearch",
+  "oracle",
+  "dynamodb",
+  "supabase",
+  "h2",
+  "snowflake",
+  "influxdb",
+  "duckdb",
+  "cassandra",
+  "neo4j",
+  "valkey",
+  "clickhouse",
+  "cockroachdb",
+  "pocketbase",
+  "datomic",
+
+  // --- Linguagens de Programação e Scripting (Simples) ---
   "python",
   "javascript",
   "typescript",
@@ -74,13 +144,7 @@ const TECH_WHITELIST = [
   "sass",
   "tailwind",
   "sql",
-  "mysql",
-  "postgresql",
-  "postgres",
-  "mongodb",
   "nosql",
-  "redis",
-  "oracle",
   "docker",
   "kubernetes",
   "linux",
@@ -102,11 +166,122 @@ const TECH_WHITELIST = [
   "refatoração",
   "bullmq",
   "saas",
+  "powershell",
+  "c++",
+  "c",
+  "go",
+  "rust",
+  "kotlin",
+  "lua",
+  "assembly",
+  "ruby",
+  "dart",
+  "swift",
+  "r",
+  "groovy",
+  "vba",
+  "matlab",
+  "perl",
+  "gdscript",
+  "elixir",
+  "scala",
+  "delphi",
+  "lisp",
+  "micropython",
+  "zig",
+  "erlang",
+  "fortran",
+  "ada",
+  "f#",
+  "ocaml",
+  "gleam",
+  "prolog",
+  "cobol",
+  "mojo",
+
+  // --- Frameworks e Tecnologias Web (Simples) ---
+  "jquery",
+  "express",
+  "wordpress",
+  "laravel",
+  "angularjs",
+  "svelte",
+  "blazor",
+  "nestjs",
+  "astro",
+  "deno",
+  "symfony",
+  "fastify",
+  "axum",
+  "phoenix",
+  "drupal",
+  "hostinger",
+  "odoo",
+  "swiftdata",
+
+  // --- IDEs e Editores de Código (Simples) ---
+  "vscode",
+  "vim",
+  "neovim",
+  "pycharm",
+  "cursor",
+  "nano",
+  "xcode",
+  "webstorm",
+  "zed",
+  "rider",
+  "eclipse",
+  "vscodium",
+  "phpstorm",
+  "windsurf",
+  "rustrover",
+  "lovable",
+  "bolt",
+  "cline",
+  "roo",
+  "aider",
+  "trae",
+
+  // --- Documentação e Colaboração (Simples) ---
+  "github",
+  "jira",
+  "gitlab",
+  "markdown",
+  "confluence",
+  "notion",
+  "obsidian",
+  "miro",
+  "trello",
+  "lucidchart",
+  "asana",
+  "doxygen",
+  "clickup",
+  "linear",
+  "airtable",
+  "monday",
+  "redmine",
+  "youtrack",
+  "coda",
+
+  // --- Sistemas Operacionais (Simples) ---
+  "windows",
+  "macos",
+  "android",
+  "ubuntu",
+  "ios",
+  "debian",
+  "arch",
+  "fedora",
+  "nixos",
+  "visionos",
+  "ipados",
 ];
 
-// LISTA DE PADRÕES COMPOSTOS (Mapeados antes das palavras simples)
+// ==========================================
+// LISTA DE PADRÕES COMPOSTOS (REGEX DE COINCIDÊNCIA)
+// ==========================================
 const COMPOSITE_PATTERNS = [
-  // IA / Machine Learning (Compostas)
+  // --- IA / Machine Learning (Compostas) ---
   { name: "artificial intelligence", regex: /\bartificial\s+intelligence\b/gi },
   {
     name: "inteligência artificial",
@@ -121,8 +296,22 @@ const COMPOSITE_PATTERNS = [
   },
   { name: "claude code", regex: /\bclaude\s+code\b/gi },
   { name: "vercel ai sdk", regex: /\bvercel\s+ai\s+sdk\b/gi },
+  { name: "google gemini", regex: /\bgoogle\s+gemini\b/gi },
+  { name: "large language model", regex: /\blarge\s+language\s+models?\b/gi },
+  { name: "openai gpt", regex: /\bopenai\s+gpts?\b/gi },
+  { name: "claude sonnet", regex: /\bclaude\s+sonnets?\b/gi },
+  { name: "gemini flash", regex: /\bgemini\s+flash\b/gi },
+  { name: "openai reasoning", regex: /\bopenai\s+reasoning\b/gi },
+  { name: "deepseek reasoning", regex: /\bdeepseek\s+reasoning\b/gi },
+  { name: "deepseek general", regex: /\bdeepseek\s+general\b/gi },
+  { name: "meta llama", regex: /\bmeta\s+llama\b/gi },
+  { name: "perplexity sonar", regex: /\bperplexity\s+sonar\b/gi },
+  { name: "alibaba qwen", regex: /\balibaba\s+qwen\b/gi },
+  { name: "phi-4 models", regex: /\bphi-4\s+models?\b/gi },
+  { name: "amazon bedrock", regex: /\bamazon\s+bedrock\b/gi },
+  { name: "amazon titan", regex: /\bamazon\s+titan\s+models?\b/gi },
 
-  // Cloud / DevOps (Compostas)
+  // --- Cloud / DevOps (Compostas) ---
   { name: "amazon web services", regex: /\bamazon\s+web\s+services\b/gi },
   { name: "aws lambda", regex: /\baws\s+lambda\b/gi },
   { name: "microsoft azure", regex: /\bmicrosoft\s+azure\b/gi },
@@ -139,14 +328,61 @@ const COMPOSITE_PATTERNS = [
   },
   { name: "api gateway", regex: /\bapi\s+gateway\b/gi },
   { name: "blob storage", regex: /\bblob\s+storage\b/gi },
+  { name: "digital ocean", regex: /\bdigital\s*ocean\b/gi },
 
-  // Tecnologias Gerais (Compostas)
+  // --- Bancos de Dados (Compostas) ---
+  { name: "microsoft sql server", regex: /\bmicrosoft\s+sql\s+server\b/gi },
+  { name: "cloud firestore", regex: /\bcloud\s+firestore\b/gi },
+  {
+    name: "firebase realtime database",
+    regex: /\bfirebase\s+realtime\s+database\b/gi,
+  },
+  { name: "microsoft access", regex: /\bmicrosoft\s+access\b/gi },
+  { name: "cosmos db", regex: /\bcosmos\s+db\b/gi },
+  { name: "databricks sql", regex: /\bdatabricks\s+sql\b/gi },
+  { name: "ibm db2", regex: /\bibm\s+db2\b/gi },
+  { name: "amazon redshift", regex: /\bamazon\s+redshift\b/gi },
+
+  // --- Tecnologias e Frameworks Gerais (Compostas) ---
   { name: "node.js", regex: /\bnode\s*\.\s*js\b/gi },
   { name: "react.js", regex: /\breact\s*\.\s*js\b/gi },
   { name: "next.js", regex: /\bnext\s*\.\s*js\b/gi },
+  { name: "nuxt.js", regex: /\bnuxt\s*\.\s*js\b/gi },
   { name: "ci/cd", regex: /\bci\s*[\/-]\s*cd\b/gi },
   { name: "metodologias ágeis", regex: /\bmetodologia(s)?\s+ágil(eis)?\b/gi },
   { name: "agile methodology", regex: /\bagile\s+methodolog(y|ies)\b/gi },
+  { name: "tailwind css 4", regex: /\btailwind\s+css\s+4\b/gi },
+  { name: "tailwind css", regex: /\btailwind\s+css\b/gi },
+  { name: "asp.net core", regex: /\basp\.net\s+core\b/gi },
+  { name: "spring boot", regex: /\bspring\s+boot\b/gi },
+  { name: "ruby on rails", regex: /\bruby\s+on\s+rails\b/gi },
+  { name: "microsoft fabric", regex: /\bmicrosoft\s+fabric\b/gi },
+  { name: "delphi 12", regex: /\bdelphi\s+12\b/gi },
+
+  // --- Linguagens e Caracteres Complexos ---
+  { name: "html/css", regex: /\bhtml\s*[\/-]\s*css\b/gi },
+  { name: "bash/shell", regex: /\bbash\s*[\/-]\s*shell\b/gi },
+  { name: "visual basic", regex: /\bvisual\s+basic\b/gi },
+  { name: "micro python", regex: /\bmicro\s+python\b/gi },
+
+  // --- IDEs e Ferramentas Corporativas (Compostas) ---
+  { name: "visual studio code", regex: /\bvisual\s+studio\s+code\b/gi },
+  { name: "visual studio", regex: /\bvisual\s+studio\b/gi },
+  { name: "intellij idea", regex: /\bintellij\s+idea\b/gi },
+  { name: "android studio", regex: /\bandroid\s+studio\b/gi },
+  { name: "sublime text", regex: /\bsublime\s+text\b/gi },
+  { name: "google workspace", regex: /\bgoogle\s+workspace\b/gi },
+  { name: "google colab", regex: /\bgoogle\s+colab\b/gi },
+  { name: "microsoft planner", regex: /\bmicrosoft\s+planner\b/gi },
+  { name: "stack overflow", regex: /\bstack\s+overflow\b/gi },
+
+  // --- Sistemas Operacionais (Compostas) ---
+  {
+    name: "windows subsystem for linux",
+    regex: /\bwindows\s+subsystem\s+for\s+linux\b/gi,
+  },
+  { name: "red hat", regex: /\bred\s+hat\b/gi },
+  { name: "arch linux", regex: /\barch\s+linux\b/gi },
 ];
 
 const BLOCK_END_MARKERS = [
@@ -159,16 +395,11 @@ const BLOCK_END_MARKERS = [
   "etapas do processo",
 ];
 
-// ALGORITMO DESCOLADOR (UN-GLUER): Separa CamelCase e colagens do Wellfound/Gupy
+// ALGORITMO DESCOLADOR (UN-GLUER)
 function unglueText(text: string): string {
   if (!text) return "";
-
-  // 1. Separa minúsculas de maiúsculas (ex: "PythonJavascript" -> "Python Javascript")
   let cleaned = text.replace(/([a-z])([A-Z])/g, "$1 $2");
-
-  // 2. Separa siglas maiúsculas grudadas em palavras Capitalizadas (ex: "AWSLambda" ou "SQLTypeScript" -> "AWS Lambda")
   cleaned = cleaned.replace(/([A-Z])([A-Z][a-z])/g, "$1 $2");
-
   return cleaned;
 }
 
@@ -189,14 +420,12 @@ function cleanJobText(text: string): string {
 export function extractKeywords(jobText: string): KeywordResults {
   if (!jobText) return {};
 
-  // Roda o Descolador e limpa as sessões redundantes de rodapé
   const ungluedText = unglueText(jobText);
   const cleanText = cleanJobText(ungluedText);
   let workingText = cleanText.toLowerCase();
 
   const matches: Record<string, number> = {};
 
-  // Ordena padrões compostos por tamanho para garantir que os termos maiores mascarem o texto primeiro
   const sortedComposite = [...COMPOSITE_PATTERNS].sort(
     (a, b) => b.name.length - a.name.length
   );
@@ -209,21 +438,19 @@ export function extractKeywords(jobText: string): KeywordResults {
 
     if (count > 0) {
       matches[pattern.name] = count;
-      // Mascara as ocorrências com espaços em branco do mesmo tamanho do termo para não quebrar índices das outras palavras
       workingText = workingText.replace(regex, (match) =>
         " ".repeat(match.length)
       );
     }
   }
 
-  // Ordena a whitelist simples pelo tamanho das palavras (evita colisões com sub-strings)
   const sortedWhitelist = [...TECH_WHITELIST].sort(
     (a, b) => b.length - a.length
   );
 
   // 2. Processa e Mascara as palavras simples
   for (const tech of sortedWhitelist) {
-    if (matches[tech]) continue; // Se já contou como parte de palavra composta, ignora
+    if (matches[tech]) continue;
 
     const escapedTech = tech.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
     const regex = new RegExp(`(?<!\\w)${escapedTech}(?!\\w)`, "gi");
@@ -232,7 +459,6 @@ export function extractKeywords(jobText: string): KeywordResults {
 
     if (count > 0) {
       matches[tech] = count;
-      // Mascara o termo processado
       workingText = workingText.replace(regex, (match) =>
         " ".repeat(match.length)
       );
