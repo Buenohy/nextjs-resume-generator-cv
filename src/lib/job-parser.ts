@@ -5,6 +5,12 @@ export interface KeywordMatch {
 
 export type KeywordResults = Record<string, KeywordMatch>;
 
+export interface ExperienceResults {
+  minYears: number;
+  maxYears: number | null;
+  mentions: string[];
+}
+
 const TECH_WHITELIST = [
   "python",
   "javascript",
@@ -137,4 +143,52 @@ export function extractKeywords(jobText: string): KeywordResults {
   }
 
   return sortedResults;
+}
+
+export function extractExperience(jobText: string): ExperienceResults {
+  if (!jobText) return { minYears: 0, maxYears: null, mentions: [] };
+
+  const cleanText = jobText.replace(/[\r\n]+/g, " ").toLowerCase();
+  let minYears = 0;
+  let maxYears: number | null = null;
+  const mentions: string[] = [];
+
+  const rangeRegex =
+    /\b(\d+)\s*(?:a|-|to)\s*(\d+)\s*\+?\s*(?:anos?|years?|yrs?)\b/gi;
+  const minRegex = /\b(\d+)\s*\+?\s*(?:anos?|years?|yrs?)\b/gi;
+  const contextRegex =
+    /(?:experi[êe]ncia|experience)\W+(\d+)\s*\+?(?:\s*(?:anos?|years?|yrs?))?/gi;
+
+  const processMatch = (
+    min: number,
+    max: number | null,
+    originalText: string
+  ) => {
+    if (min >= 1 && min < 30) {
+      if (min > minYears) {
+        minYears = min;
+        if (max !== null) maxYears = max;
+      }
+      mentions.push(originalText.trim());
+    }
+  };
+
+  let match;
+  while ((match = rangeRegex.exec(cleanText)) !== null) {
+    processMatch(parseInt(match[1], 10), parseInt(match[2], 10), match[0]);
+  }
+
+  while ((match = minRegex.exec(cleanText)) !== null) {
+    processMatch(parseInt(match[1], 10), null, match[0]);
+  }
+
+  while ((match = contextRegex.exec(cleanText)) !== null) {
+    processMatch(parseInt(match[1], 10), null, match[0]);
+  }
+
+  return {
+    minYears,
+    maxYears,
+    mentions: Array.from(new Set(mentions)),
+  };
 }

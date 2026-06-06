@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { extractKeywords } from "@/lib/job-parser";
+import { extractKeywords, extractExperience } from "@/lib/job-parser";
 import { analyzeVerbs } from "@/lib/auto-optimizer";
 import { validateMetaWithJob } from "@/lib/meta-validator";
+import { getTranslations } from "next-intl/server";
 
 // FUNÇÃO EXTRATORA DE TEXTO COM FILTRAGEM DEFENSIVA DE SEÇÃO
 function extractCvText(cvData: any): string {
@@ -117,6 +118,52 @@ export async function POST(request: Request) {
       }
     );
 
+    // 2.5 PARSE DA EXPERIÊNCIA (INJETADO NA TABELA)
+    const expResults = extractExperience(jobText);
+    if (expResults.minYears > 0) {
+      // Regra de Negócio: Se aparece 2 vezes na vaga, a meta (goal2x) é 4.
+      const inVacancy = expResults.mentions.length || 1;
+      const goal2x = inVacancy * 2;
+
+      // Busca no currículo pela ocorrência exata da experiência pedida (ex: "4 anos" ou "4 years")
+      const expRegex = new RegExp(
+        `\\b${expResults.minYears}\\s*(?:anos?|years?|yrs?)\\b`,
+        "gi"
+      );
+      const onResume = cvTextLower
+        ? (cvTextLower.match(expRegex) || []).length
+        : 0;
+      const isApproved = onResume >= goal2x;
+
+      // Tradução Nativa na API usando next-intl/server
+      let expKeywordName = "";
+      try {
+        const localeCode = language === "pt" ? "pt-br" : "en-us";
+        const t = await getTranslations({
+          locale: localeCode,
+          namespace: "ResumeBuilderPage",
+        });
+        expKeywordName = t("feedbackCard.experienceWord", {
+          years: expResults.minYears,
+        });
+      } catch (e) {
+        // Fallback de segurança caso a API não tenha acesso ao dicionário no build
+        expKeywordName =
+          language === "pt"
+            ? `EXPERIÊNCIA (${expResults.minYears} ANOS)`
+            : `EXPERIENCE (${expResults.minYears} YEARS)`;
+      }
+
+      keywordsTable.unshift({
+        id: "exp-0",
+        keyword: expKeywordName.toUpperCase(),
+        inVacancy,
+        goal2x,
+        onResume,
+        status: isApproved ? ("Aprovado" as const) : ("Pendente" as const),
+      });
+    }
+
     // 3. ANÁLISE DOS VERBOS DE AÇÃO
     const verbIssues: any[] = [];
 
@@ -151,7 +198,6 @@ export async function POST(request: Request) {
     }
 
     // 4. PALAVRAS SUSPEITAS (TODO)
-    // CORRIGIDO: Removido o termo técnico legítimo "url" para evitar falsos positivos
     const suspectWords: string[] = [];
     if (cvTextLower) {
       if (/\btodo\b/i.test(cvTextLower)) suspectWords.push("todo");

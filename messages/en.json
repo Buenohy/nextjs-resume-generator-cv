@@ -114,6 +114,7 @@
       "pendingCount": "{count} Pending",
       "totalApproved": "Total Approved ✅",
       "approvedCount": "{count} Approved",
+      "experienceWord": "Experience ({years} Years)",
       "tabs": {
         "parse": "Analysis",
         "match": "Keywords",
