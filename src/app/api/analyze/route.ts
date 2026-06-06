@@ -9,17 +9,14 @@ function extractCvText(cvData: any): string {
   let text = "";
   if (!cvData) return text;
 
-  // Informações Pessoais
   if (cvData.info) {
     text += ` ${cvData.info.name || ""} ${cvData.info.role || ""} ${cvData.info.city || ""}`;
   }
 
-  // Resumo Profissional
   if (cvData.summary && typeof cvData.summary === "string") {
     text += ` ${cvData.summary}`;
   }
 
-  // Habilidades
   if (Array.isArray(cvData.skills)) {
     const cleanSkills = cvData.skills.filter(
       (s: any) => s && typeof s === "string"
@@ -27,7 +24,6 @@ function extractCvText(cvData: any): string {
     text += ` ${cleanSkills.join(" ")}`;
   }
 
-  // Experiências Profissionais
   if (Array.isArray(cvData.experiences)) {
     for (const exp of cvData.experiences) {
       if (!exp) continue;
@@ -48,7 +44,6 @@ function extractCvText(cvData: any): string {
     }
   }
 
-  // Educação, Certificações e Idiomas
   if (Array.isArray(cvData.education)) {
     const cleanEdu = cvData.education.filter(
       (e: any) => e && typeof e === "string"
@@ -76,7 +71,12 @@ export async function POST(request: Request) {
     const body = await request.json().catch(() => ({}));
     const { jobText = "", cvData } = body;
 
-    const language = cvData?.info?.language === "pt-BR" ? "pt" : "en";
+    // NOVO: Captura a URL de onde o usuário fez a requisição (ex: http://meusite.com/pt/...)
+    const referer = request.headers.get("referer") || "";
+    // Se a URL contiver "/pt", usamos "pt", senão "en"
+    const isPtUrl = referer.includes("/pt/") || referer.endsWith("/pt");
+    const currentLocale = isPtUrl ? "pt" : "en";
+
     const cvTextLower = extractCvText(cvData);
 
     // 1. VALIDAÇÃO DOS METADADOS
@@ -121,11 +121,15 @@ export async function POST(request: Request) {
     // 2.5 PARSE DA EXPERIÊNCIA (INJETADO NA TABELA)
     const expResults = extractExperience(jobText);
     if (expResults.minYears > 0) {
-      // Regra de Negócio: Se aparece 2 vezes na vaga, a meta (goal2x) é 4.
-      const inVacancy = expResults.mentions.length || 1;
+      const exactJobRegex = new RegExp(
+        `\\b${expResults.minYears}\\s*\\+?\\s*(?:anos?|years?|yrs?)\\b`,
+        "gi"
+      );
+      const inVacancyCount = (jobText.match(exactJobRegex) || []).length;
+      const inVacancy = inVacancyCount > 0 ? inVacancyCount : 1;
+
       const goal2x = inVacancy * 2;
 
-      // Busca no currículo pela ocorrência exata da experiência pedida (ex: "4 anos" ou "4 years")
       const expRegex = new RegExp(
         `\\b${expResults.minYears}\\s*(?:anos?|years?|yrs?)\\b`,
         "gi"
@@ -135,23 +139,22 @@ export async function POST(request: Request) {
         : 0;
       const isApproved = onResume >= goal2x;
 
-      // Tradução Nativa na API usando next-intl/server
+      // CORRIGIDO: Passando o exato 'currentLocale' (pt ou en) extraído da URL para o next-intl
       let expKeywordName = "";
       try {
-        const localeCode = language === "pt" ? "pt-br" : "en-us";
         const t = await getTranslations({
-          locale: localeCode,
+          locale: currentLocale,
           namespace: "ResumeBuilderPage",
         });
         expKeywordName = t("feedbackCard.experienceWord", {
           years: expResults.minYears,
         });
       } catch (e) {
-        // Fallback de segurança caso a API não tenha acesso ao dicionário no build
+        // Fallback blindado caso o next-intl falhe na rota serverless
         expKeywordName =
-          language === "pt"
-            ? `EXPERIÊNCIA (${expResults.minYears} ANOS)`
-            : `EXPERIENCE (${expResults.minYears} YEARS)`;
+          currentLocale === "pt"
+            ? `Experiência (${expResults.minYears} Anos)`
+            : `Experience (${expResults.minYears} Years)`;
       }
 
       keywordsTable.unshift({
@@ -171,7 +174,7 @@ export async function POST(request: Request) {
       const summaryIssues = analyzeVerbs(
         cvData.summary,
         "Resumo (Summary)",
-        language
+        currentLocale // Usando o locale detectado pela URL
       );
       if (Array.isArray(summaryIssues)) {
         verbIssues.push(...summaryIssues);
@@ -186,7 +189,7 @@ export async function POST(request: Request) {
               const expIssues = analyzeVerbs(
                 detail,
                 `Exp: ${exp.company || "Empresa"}`,
-                language
+                currentLocale // Usando o locale detectado pela URL
               );
               if (Array.isArray(expIssues)) {
                 verbIssues.push(...expIssues);
@@ -197,7 +200,7 @@ export async function POST(request: Request) {
       }
     }
 
-    // 4. PALAVRAS SUSPEITAS (TODO)
+    // 4. PALAVRAS SUSPEITAS
     const suspectWords: string[] = [];
     if (cvTextLower) {
       if (/\btodo\b/i.test(cvTextLower)) suspectWords.push("todo");
