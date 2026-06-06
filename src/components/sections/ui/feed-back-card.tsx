@@ -49,12 +49,6 @@ export function FeedbackCard() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [isMounted, setIsMounted] = useState(false);
 
-  {
-    /* 
-    DEFERRED MOUNT EFFECT
-    - Defers rendering the fully interactive state to prevent hydration issues.
-  */
-  }
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsMounted(true);
@@ -68,8 +62,6 @@ export function FeedbackCard() {
   const cvData = useResumeStore((s) => s.cvData);
 
   const keywordsTableData = analysisResults?.keywordsTable || EMPTY_KEYWORDS;
-
-  // Carrega as colunas dinamicamente com base nas traduções ativas
   const columns = useMemo(() => getColumns(t), [t]);
 
   const table = useReactTable({
@@ -88,11 +80,6 @@ export function FeedbackCard() {
     (item) => item.status === "Aprovado"
   ).length;
 
-  {
-    /* 
-    HIGH-FIDELITY SKELETON LOADER
-  */
-  }
   if (!isMounted) {
     return (
       <Card className="border-muted shadow-primary/50 shadow-lg">
@@ -190,9 +177,8 @@ export function FeedbackCard() {
           <>
             {activeTab === "parse" && <ParseTab />}
             {activeTab === "match" && (
-              // MODIFICADO: De overflow-hidden para overflow-x-auto para habilitar scroll lateral responsivo
+              // Rolagem horizontal nativa ativada via overflow-x-auto
               <div className="border-muted overflow-x-auto rounded-md border shadow-sm">
-                {/* MODIFICADO: Adicionado min-w-[640px] para forçar a renderização completa das colunas em telas pequenas, habilitando a rolagem */}
                 <Table className="min-w-[640px] md:min-w-full">
                   <TableHeader>
                     {table.getHeaderGroups().map((hg) => (
@@ -200,7 +186,7 @@ export function FeedbackCard() {
                         {hg.headers.map((header) => (
                           <TableHead
                             key={header.id}
-                            // MODIFICADO: Adicionado classes first: para tornar a coluna Palavra-Chave fixa
+                            // Primeira coluna do cabeçalho fixa via CSS
                             className="first:bg-card first:border-muted/50 pt-2 text-xs first:sticky first:left-0 first:z-20 first:border-r"
                           >
                             {header.isPlaceholder
@@ -221,7 +207,7 @@ export function FeedbackCard() {
                           {row.getVisibleCells().map((cell) => (
                             <TableCell
                               key={cell.id}
-                              // MODIFICADO: Adicionado classes first: para manter as células da primeira coluna fixadas à esquerda com fundo sólido
+                              // Primeira coluna do corpo fixa via CSS
                               className="first:bg-card first:border-muted/50 py-2 align-middle first:sticky first:left-0 first:z-10 first:border-r"
                             >
                               {flexRender(
@@ -281,6 +267,8 @@ export function FeedbackCard() {
     </Card>
   );
 }
+
+// Subcomponente ParseTab e OptimizeTab permanecem intactos abaixo
 
 function ParseTab() {
   const t = useTranslations("ResumeBuilderPage");
