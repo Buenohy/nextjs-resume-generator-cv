@@ -8,7 +8,6 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardAction,
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
@@ -24,7 +23,7 @@ const PDFViewer = dynamic(
     ssr: false,
     loading: () => (
       <div className="flex h-full min-h-[400px] w-full items-center justify-center">
-        <Loader2 className="text-primary h-8 w-8 animate-spin" />
+        <Loader2 className="text-primary size-8 animate-spin" />
       </div>
     ),
   }
@@ -83,6 +82,8 @@ export default function PdfPreviewPage() {
 
   const infoProp = {
     ...cvData.info,
+    // MAPEAMENTO: Associa o valor de "city" do formulário/Zustand à propriedade "location" esperada pelo PDF
+    location: cvData.info.city || "",
     age: cvData.info.age ? `${cvData.info.age} ${tResume("yearsOld")}` : "",
     email: cvData.links.email,
     linkedin: cvData.links.linkedin ? t("contactLabels.linkedin") : "",
@@ -169,9 +170,9 @@ export default function PdfPreviewPage() {
                 onClick={() => saveResumeToHistory(locale)}
               >
                 {loading ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="mr-2 size-4 animate-spin" />
                 ) : (
-                  <Printer className="mr-2 h-4 w-4" />
+                  <Printer className="mr-2 size-4" />
                 )}
                 {loading ? t("generatingBtn") : t("exportBtn")}
               </Button>
