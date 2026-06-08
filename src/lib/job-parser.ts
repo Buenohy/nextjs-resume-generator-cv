@@ -126,8 +126,6 @@ const TECH_WHITELIST = [
 
   // --- Linguagens de Programação e Scripting (Simples) ---
   "python",
-  "javascript",
-  "typescript",
   "nodejs",
   "react",
   "vue",
@@ -224,7 +222,7 @@ const TECH_WHITELIST = [
   "vim",
   "neovim",
   "pycharm",
-  "cursor",
+  "Cursor",
   "nano",
   "xcode",
   "webstorm",
@@ -344,6 +342,9 @@ const COMPOSITE_PATTERNS = [
   { name: "amazon redshift", regex: /\bamazon\s+redshift\b/gi },
 
   // --- Tecnologias e Frameworks Gerais (Compostas) ---
+  { name: "TypeScript", regex: /\btype\s*script\b/gi },
+  { name: "JavaScript", regex: /\bjava\s*script\b/gi },
+  { name: "React Native", regex: /\breact\s+native\b/gi },
   { name: "node.js", regex: /\bnode\s*\.\s*js\b/gi },
   { name: "react.js", regex: /\breact\s*\.\s*js\b/gi },
   { name: "next.js", regex: /\bnext\s*\.\s*js\b/gi },
