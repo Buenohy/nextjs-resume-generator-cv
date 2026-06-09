@@ -187,16 +187,22 @@ const styles = StyleSheet.create({
     fontFamily: "Helvetica-Bold",
     fontSize: 9,
     color: "#1f2937",
+    flex: 1,
+    textAlign: "left",
   },
   experienceCompany: {
     fontSize: 9,
     color: "#10b981",
     textDecoration: "underline",
+    flex: 1,
+    textAlign: "center",
   },
   experienceDate: {
     fontSize: 8.5,
     color: "#4b5563",
     fontStyle: "italic",
+    flex: 1,
+    textAlign: "right",
   },
   techStack: {
     fontSize: 8,
