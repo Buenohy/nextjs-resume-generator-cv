@@ -214,7 +214,15 @@ const styles = StyleSheet.create({
   experienceCompany: {
     fontSize: 9,
     color: "#10b981",
-    textDecoration: "underline",
+    flex: 1,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  experienceCompanyFallback: {
+    fontSize: 9,
+    color: "#10b981",
     flex: 1,
     textAlign: "center",
   },
@@ -369,10 +377,23 @@ export const Resume: React.FC<ResumeProps> = ({
                 <Text style={styles.experienceRole}>{job.role}</Text>
                 {job.url ? (
                   <Link href={job.url} style={styles.experienceCompany}>
-                    {job.company}
+                    <Text style={{ textDecoration: "underline" }}>
+                      {job.company}
+                    </Text>
+                    <Svg
+                      viewBox="0 0 24 24"
+                      style={{ width: 7, height: 7, marginLeft: 3 }}
+                    >
+                      <Path
+                        fill="#10b981"
+                        d="M14 3v2h3.59L7.76 14.83l1.41 1.41L19 6.41V10h2V3M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7z"
+                      />
+                    </Svg>
                   </Link>
                 ) : (
-                  <Text style={styles.experienceCompany}>{job.company}</Text>
+                  <Text style={styles.experienceCompanyFallback}>
+                    {job.company}
+                  </Text>
                 )}
                 <Text style={styles.experienceDate}>{job.date}</Text>
               </View>
