@@ -10,11 +10,6 @@
     "title": "Components Page"
   },
   "NavMenu": {
-    "pages": {
-      "trigger": "Pages",
-      "home": { "title": "Home", "desc": "Home page" },
-      "components": { "title": "Components", "desc": "Components page" }
-    },
     "jobs": {
       "trigger": "Jobs",
       "description": {

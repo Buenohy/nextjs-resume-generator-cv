@@ -43,19 +43,6 @@ export default function NavigationMenuDemo() {
             align="start"
             className="h-[70vh] w-56 overflow-y-auto"
           >
-            <DropdownMenuLabel>{t("pages.trigger")}</DropdownMenuLabel>
-            <DropdownMenuItem asChild>
-              <Link href="/" className="cursor-pointer">
-                {t("pages.home.title")}
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/components" className="cursor-pointer">
-                {t("pages.components.title")}
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-
             <DropdownMenuLabel>{t("jobs.trigger")}</DropdownMenuLabel>
             <DropdownMenuItem asChild>
               <Link href="/job-description" className="cursor-pointer">
@@ -101,25 +88,6 @@ export default function NavigationMenuDemo() {
       <div className="hidden sm:block">
         <NavigationMenu>
           <NavigationMenuList>
-            <NavigationMenuItem>
-              <NavigationMenuTrigger>
-                {t("pages.trigger")}
-              </NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="flex w-72 flex-col gap-3 p-4">
-                  <ListItem href="/" title={t("pages.home.title")}>
-                    {t("pages.home.desc")}
-                  </ListItem>
-                  <ListItem
-                    href="/components"
-                    title={t("pages.components.title")}
-                  >
-                    {t("pages.components.desc")}
-                  </ListItem>
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-
             <NavigationMenuItem>
               <NavigationMenuTrigger>{t("jobs.trigger")}</NavigationMenuTrigger>
               <NavigationMenuContent>
