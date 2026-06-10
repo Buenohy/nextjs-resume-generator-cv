@@ -73,7 +73,7 @@ export default function PdfPreviewPage() {
     if (!isMounted) return;
     const meta = cvData.meta_ats || {};
     const prevTitle = document.title;
-    document.title = `${meta.role_target || "Resume"} - ${cvData.info.name || "Gabriel Bueno"}`;
+    document.title = `${meta.role_target || "Resume"} - ${cvData.info.name || "Gabriel Bueno Hygino"}`;
     // ... restante da lógica de metatags ...
     return () => {
       document.title = prevTitle;
@@ -137,7 +137,15 @@ export default function PdfPreviewPage() {
     />
   );
 
-  const formattedFileName = `CV_${(cvData.info.name || "Resume").replace(/\s+/g, "_")}.pdf`;
+  // Nomeação dinâmica do arquivo baseado no nome e empresa alvo sanitizados
+  const namePart = (cvData.info.name || "Resume").trim().replace(/\s+/g, "_");
+  const companyPart = cvData.company
+    ? cvData.company.trim().replace(/\s+/g, "_")
+    : "";
+
+  const formattedFileName = companyPart
+    ? `CV_${namePart}_${companyPart}.pdf`
+    : `CV_${namePart}.pdf`;
 
   if (!isMounted) return <Skeleton className="h-[80vh] w-full" />;
 
