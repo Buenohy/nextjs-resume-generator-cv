@@ -51,6 +51,7 @@ export interface ResumeTranslations {
 export interface ResumeProps {
   locale?: string;
   info: Info;
+  company?: string;
   meta?: {
     role_target?: string;
     subject?: string;
@@ -243,7 +244,7 @@ const styles = StyleSheet.create({
   },
 });
 
-//Icons (size standardized in 9x9)
+// CONSTANTES DE ÍCONES (Tamanho padronizado em 9x9)
 
 const LinkedinIcon = () => (
   <Svg
@@ -269,12 +270,12 @@ const PhoneIcon = () => (
   </Svg>
 );
 
+// WebsiteIcon com o design clássico de grade de globo limpo
 const WebsiteIcon = () => (
   <Svg
     viewBox="0 0 24 24"
     style={{ width: 9, height: 9, marginRight: 3, alignSelf: "center" }}
   >
-    {/* Círculo Externo */}
     <Circle
       cx="12"
       cy="12"
@@ -283,18 +284,14 @@ const WebsiteIcon = () => (
       stroke="#10b981"
       strokeWidth="1.5"
     />
-    {/* Elipses Longitudinais Verticais */}
     <Path
       fill="none"
       stroke="#10b981"
       strokeWidth="1.2"
       d="M12 2a5 10 0 0 0 0 20 5 10 0 0 0 0-20z"
     />
-    {/* Linha Vertical Central */}
     <Path fill="none" stroke="#10b981" strokeWidth="1.2" d="M12 2v20" />
-    {/* Linha Horizontal do Equador */}
     <Path fill="none" stroke="#10b981" strokeWidth="1.2" d="M2 12h20" />
-    {/* Linhas Horizontais Latitudinais (Curvadas) */}
     <Path
       fill="none"
       stroke="#10b981"
@@ -348,6 +345,7 @@ const ExternalLinkIcon = ({ isTrailing = false }: { isTrailing?: boolean }) => (
 export const Resume: React.FC<ResumeProps> = ({
   locale = "en",
   info,
+  company,
   meta = {},
   summary,
   ai,
@@ -376,9 +374,12 @@ export const Resume: React.FC<ResumeProps> = ({
     ? meta.keywords.join(", ")
     : meta.keywords || "";
 
+  // Título do documento dinamicamente incluindo o nome da empresa
+  const documentTitle = `${meta.role_target || "Resume"} - ${info.name}${company ? ` - ${company}` : ""}`;
+
   return (
     <Document
-      title={`${meta.role_target || "Resume"} - ${info.name}`}
+      title={documentTitle}
       author={meta.contributor || info.name}
       subject={meta.subject || ""}
       keywords={keywordsStr}

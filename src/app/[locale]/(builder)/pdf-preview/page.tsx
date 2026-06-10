@@ -73,8 +73,14 @@ export default function PdfPreviewPage() {
     if (!isMounted) return;
     const meta = cvData.meta_ats || {};
     const prevTitle = document.title;
-    document.title = `${meta.role_target || "Resume"} - ${cvData.info.name || "Gabriel Bueno Hygino"}`;
-    // ... restante da lógica de metatags ...
+
+    // Título dinâmico da aba do navegador incluindo a empresa
+    const role = meta.role_target || "Resume";
+    const name = cvData.info.name || "Gabriel Bueno Hygino";
+    const company = cvData.company ? ` - ${cvData.company}` : "";
+
+    document.title = `${role} - ${name}${company}`;
+
     return () => {
       document.title = prevTitle;
     };
@@ -125,6 +131,7 @@ export default function PdfPreviewPage() {
     <Resume
       locale={locale}
       info={infoProp}
+      company={cvData.company}
       meta={cvData.meta_ats}
       summary={cvData.summary}
       ai={cvData.ai}
