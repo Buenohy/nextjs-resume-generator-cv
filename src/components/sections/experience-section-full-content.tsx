@@ -224,17 +224,15 @@ export function ExperienceSectionFullContent() {
         <div className="flex items-start justify-between">
           <div>
             <h2 className="text-xl font-semibold">
-              {editingId
-                ? "Editar Experiência"
-                : t("sections.experience.title")}
+              {editingId ? tFull("editTitle") : t("sections.experience.title")}
             </h2>
             <h3 className="text-lg">
               {editingId
-                ? "Altere os dados da experiência salva"
+                ? tFull("editSubtitle")
                 : t("sections.experience.subTitle")}
             </h3>
             <p className="text-muted-foreground mt-1 text-xs">
-              {editingId ? "Modo de edição ativo" : tFull("formSubtitle")}
+              {editingId ? tFull("editModeActive") : tFull("formSubtitle")}
             </p>
           </div>
           {editingId && (
@@ -242,7 +240,7 @@ export function ExperienceSectionFullContent() {
               variant="ghost"
               size="icon"
               onClick={cancelEdit}
-              title="Cancelar edição"
+              title={tFull("cancelEditTooltip")}
             >
               <X className="size-5" />
             </Button>
@@ -356,7 +354,7 @@ export function ExperienceSectionFullContent() {
                       onClick={() => removeDetail(dIdx)}
                       className="h-8 w-8 shrink-0"
                     >
-                      <Trash2 className="text-destructive h-4 w-4" />
+                      <Trash2 className="text-destructive size-4" />
                     </Button>
                   )}
                 </div>
@@ -425,7 +423,7 @@ export function ExperienceSectionFullContent() {
                       onClick={() => removeStack(sIdx)}
                       className="h-8 w-8 shrink-0"
                     >
-                      <Trash2 className="text-destructive h-4 w-4" />
+                      <Trash2 className="text-destructive size-4" />
                     </Button>
                   )}
                 </div>
@@ -460,11 +458,11 @@ export function ExperienceSectionFullContent() {
         <div className="mx-auto flex gap-2">
           {editingId && (
             <Button variant="outline" onClick={cancelEdit}>
-              Cancelar
+              {tFull("cancelButton")}
             </Button>
           )}
           <Button onClick={handleSave}>
-            {editingId ? "Atualizar experiência" : tFull("saveButton")}
+            {editingId ? tFull("updateButton") : tFull("saveButton")}
           </Button>
         </div>
       </div>
