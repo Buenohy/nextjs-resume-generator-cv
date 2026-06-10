@@ -1,4 +1,5 @@
 import { ExternalLink, Trash2, Edit2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
   Table,
   TableBody,
@@ -26,6 +27,22 @@ export function ExperienceTable({
   onEdit,
   tFull,
 }: ExperienceTableProps) {
+  const t = useTranslations("ResumeBuilderPage");
+
+  // Função para decodificar os tokens de data na exibição
+  const formatDisplayDate = (dateStr?: string) => {
+    if (!dateStr) return "—";
+    const months = t.raw("months") as string[];
+    const presentText = t("sections.education.present");
+
+    return dateStr
+      .replace(/__PRESENT__/g, presentText)
+      .replace(/__MONTH_(\d+)__/g, (_, idx) => {
+        const mIndex = parseInt(idx, 10);
+        return months[mIndex] || `__MONTH_${idx}__`;
+      });
+  };
+
   return (
     <div className="min-w-0 overflow-x-auto">
       <Table className="w-full table-fixed">
@@ -73,7 +90,9 @@ export function ExperienceTable({
                     <span className="text-muted-foreground text-xs">
                       {exp.company || "—"}
                     </span>
-                    <span className="text-xs italic">{exp.date || "—"}</span>
+                    <span className="text-xs italic">
+                      {formatDisplayDate(exp.date)}
+                    </span>
                   </div>
 
                   {/* Ações no Desktop */}

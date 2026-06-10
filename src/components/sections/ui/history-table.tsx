@@ -33,13 +33,27 @@ export function HistoryTable({
   emptyMessage,
 }: HistoryTableProps) {
   const t = useTranslations("ResumeBuilderPage");
-  const tJob = useTranslations("JobDescriptionPage"); // Importa o dicionário de tradução da vaga
+  const tJob = useTranslations("JobDescriptionPage");
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
 
   const formatDateTime = (dateStr: string) => {
     const date = new Date(dateStr);
     const pad = (num: number) => String(num).padStart(2, "0");
     return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()} - ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+  };
+
+  // Função para decodificar os tokens de data na exibição
+  const formatDisplayDate = (dateStr?: string) => {
+    if (!dateStr) return "—";
+    const months = t.raw("months") as string[];
+    const presentText = t("sections.education.present");
+
+    return dateStr
+      .replace(/__PRESENT__/g, presentText)
+      .replace(/__MONTH_(\d+)__/g, (_, idx) => {
+        const mIndex = parseInt(idx, 10);
+        return months[mIndex] || `__MONTH_${idx}__`;
+      });
   };
 
   const toggleItem = (id: string) => {
@@ -122,7 +136,7 @@ export function HistoryTable({
                     <CollapsibleContent className="mt-5 w-full space-y-4 border-t pt-4">
                       <Card className="bg-muted/10 border-muted/40 max-w-full overflow-hidden border">
                         <CardContent className="max-w-full space-y-5 p-4 text-sm">
-                          {/* 0. 🆕 DESCRIÇÃO DA VAGA ORIGINAL & PLATAFORMA (CORRIGIDO: Vaga embaixo de Plataforma) */}
+                          {/* 0. DESCRIÇÃO DA VAGA ORIGINAL & PLATAFORMA */}
                           {(cv.jobText || cv.platformText) && (
                             <div className="flex max-w-full flex-col space-y-2.5 overflow-hidden">
                               <h5 className="text-primary mb-1 block max-w-full text-xs font-bold tracking-wider break-all whitespace-pre-wrap uppercase sm:wrap-break-word">
@@ -496,7 +510,7 @@ export function HistoryTable({
                                         )}
 
                                         <span className="text-muted-foreground text-xs break-all italic sm:wrap-break-word">
-                                          {exp.date || "—"}
+                                          {formatDisplayDate(exp.date)}
                                         </span>
                                       </div>
 
