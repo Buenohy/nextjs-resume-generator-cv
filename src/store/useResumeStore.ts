@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import { immer } from "zustand/middleware/immer";
 
 export interface ExperienceState {
   role: string;
@@ -35,7 +36,7 @@ export interface CvDataState {
   links: {
     linkedin: string;
     phone: string;
-    phone_url: string; // 🆕 Adicionado
+    phone_url: string;
     website: string;
     website_url: string;
     email: string;
@@ -67,7 +68,7 @@ interface AnalysisResults {
     inVacancy: number;
     goal2x: number;
     onResume: number;
-    status: "Pendente" | "Aprovado";
+    status: "Pending" | "Approved";
   }>;
   verbIssues: Array<{
     original: string;
@@ -132,7 +133,7 @@ const HISTORY_API_URL = "http://localhost:3001/history";
 
 export const useResumeStore = create<ResumeStore>()(
   persist(
-    (set, get) => ({
+    immer((set, get) => ({
       jobText: "",
       setJobText: (text) => set({ jobText: text }),
 
@@ -140,11 +141,11 @@ export const useResumeStore = create<ResumeStore>()(
       setPlatformText: (text) => set({ platformText: text }),
 
       cvData: initialCvData,
+      // Immer-powered imutability updater
       updateCvData: (updater) => {
-        const current = get().cvData;
-        const clone = JSON.parse(JSON.stringify(current)) as CvDataState;
-        updater(clone);
-        set({ cvData: clone });
+        set((state) => {
+          updater(state.cvData);
+        });
       },
 
       analysisResults: null,
@@ -168,7 +169,7 @@ export const useResumeStore = create<ResumeStore>()(
             set({ analysisResults: data });
           }
         } catch (error) {
-          console.error("Erro ao analisar currículo", error);
+          console.error("Error analyzing resume:", error);
         } finally {
           set({ isLoadingAnalysis: false });
         }
@@ -180,8 +181,8 @@ export const useResumeStore = create<ResumeStore>()(
         const targetRole =
           cvData.info.role ||
           cvData.meta_ats.role_target ||
-          "Cargo não especificado";
-        const targetCompany = cvData.company || "Empresa não especificada";
+          "Role not specified";
+        const targetCompany = cvData.company || "Company not specified";
 
         const payloadWithLocale = {
           ...cvData,
@@ -203,14 +204,11 @@ export const useResumeStore = create<ResumeStore>()(
 
           return response.ok;
         } catch (error) {
-          console.error(
-            "Erro ao salvar histórico do currículo no banco:",
-            error
-          );
+          console.error("Error saving resume history to database:", error);
           return false;
         }
       },
-    }),
+    })),
     {
       name: "ats-resume-builder-cache",
       storage: createJSONStorage(() => localStorage),
