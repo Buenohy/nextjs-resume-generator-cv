@@ -11,7 +11,7 @@ interface OptimizerConfig {
 
 const CONFIGS: Record<"en" | "pt", OptimizerConfig> = {
   en: {
-    // Lista expandida com conjugações do passado, gerúndio e presente (EN)
+    // Expanded list containing past, gerund, and present conjugations (EN)
     weakVerbs: [
       "help",
       "helped",
@@ -63,7 +63,7 @@ const CONFIGS: Record<"en" | "pt", OptimizerConfig> = {
     ],
   },
   pt: {
-    // Lista expandida com conjugações do passado, gerúndio e presente (PT)
+    // Expanded list containing past, gerund, and present conjugations (PT)
     weakVerbs: [
       "ajudar",
       "ajudei",
