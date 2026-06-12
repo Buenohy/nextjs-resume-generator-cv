@@ -14,7 +14,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-
 import { useSyncCollapse } from "@/app/hooks/useSyncCollapse";
 
 export function LinksSection() {
@@ -23,15 +22,12 @@ export function LinksSection() {
   const updateCvData = useResumeStore((s) => s.updateCvData);
 
   const [isMounted, setIsMounted] = useState(false);
-
   const [isOpen, setIsOpen] = useSyncCollapse("links", false);
 
-  {
-    /* 
+  /* 
     DEFERRED MOUNT EFFECT
     - Defers rendering the fully interactive state to prevent hydration issues.
   */
-  }
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsMounted(true);
@@ -39,36 +35,35 @@ export function LinksSection() {
     return () => clearTimeout(timer);
   }, []);
 
-  {
-    /* 
+  /* 
     DYNAMIC FIELDS EXTRACTION
     - Fetches the raw translation object from JSON files (en.json / pt.json).
     - Map entries into an array of objects containing the id, localized label, and placeholder.
   */
-  }
-  const fields = Object.entries(t.raw("sections.links.fields")).map(
-    ([key, value]: [string, any]) => ({
-      id: key,
-      label: value.label,
-      placeholder: value.placeholder,
-    })
-  );
+  const fields = Object.entries(
+    t.raw("sections.links.fields") as Record<
+      string,
+      { label: string; placeholder: string }
+    >
+  ).map(([key, value]) => ({
+    id: key,
+    label: value.label,
+    placeholder: value.placeholder,
+  }));
 
   const getFieldValue = (fieldId: string) =>
-    (cvData.links as any)[fieldId] || "";
+    (cvData.links as Record<string, string>)[fieldId] || "";
 
   const handleChange = (fieldId: string, value: string) => {
     updateCvData((draft) => {
-      (draft.links as any)[fieldId] = value;
+      (draft.links as Record<string, string>)[fieldId] = value;
     });
   };
 
-  {
-    /* 
+  /* 
     HIGH-FIDELITY SKELETON LOADER
     - Matches the layout, gaps, and heights of both flat and dynamic components exactly.
   */
-  }
   if (!isMounted) {
     return (
       <CardContent>
@@ -106,7 +101,6 @@ export function LinksSection() {
             <h2 className="text-xl font-semibold">
               {t("sections.links.title")}
             </h2>
-            {/* CORRIGIDO: Removido 'border-b pb-2' */}
             <h3 className="text-muted-foreground text-lg">
               {t("sections.links.subTitle")}
             </h3>
@@ -130,7 +124,7 @@ export function LinksSection() {
           </div>
         </div>
 
-        {/* CONTEÚDO QUE SOME E APARECE */}
+        {/* COLLAPSIBLE CONTENT */}
         <CollapsibleContent className="space-y-4">
           {fields.map(({ id, label, placeholder }) => {
             const domId = `links-${id}`;
