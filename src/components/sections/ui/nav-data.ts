@@ -1,5 +1,3 @@
-// nav-data.ts
-
 export const META_FIELDS = [
   "role_target",
   "subject",
@@ -31,7 +29,7 @@ export const LINKS_FIELDS = [
   { id: "links-github", key: "github" },
 ];
 
-// Dicionário usado para sincronizar a abertura automática das pastas pais
+// Dictionary used to synchronize parent section collapse state on element scroll spy
 export const PARENT_SECTIONS: Record<string, string> = {
   company: "company-info",
   meta: "meta-ats",
