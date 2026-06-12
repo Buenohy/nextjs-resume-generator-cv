@@ -123,7 +123,6 @@ function LanguageItem({
             <Select
               value={parsed.level}
               onValueChange={(val) => handleLangChange(index, parsed.text, val)}
-              modal={false}
             >
               <SelectTrigger className="w-full">
                 <SelectValue
