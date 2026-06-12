@@ -29,7 +29,7 @@ export function ExperienceTable({
 }: ExperienceTableProps) {
   const t = useTranslations("ResumeBuilderPage");
 
-  // Função para decodificar os tokens de data na exibição
+  // Decodes and formats date tokens for display
   const formatDisplayDate = (dateStr?: string) => {
     if (!dateStr) return "—";
     const months = t.raw("months") as string[];
@@ -65,7 +65,7 @@ export function ExperienceTable({
                   <div className="flex items-center justify-between sm:contents">
                     <span className="text-sm font-bold">{exp.role || "—"}</span>
 
-                    {/* Ações no Mobile */}
+                    {/* Mobile actions */}
                     <div className="flex gap-1 sm:hidden">
                       <Button
                         variant="ghost"
@@ -95,7 +95,7 @@ export function ExperienceTable({
                     </span>
                   </div>
 
-                  {/* Ações no Desktop */}
+                  {/* Desktop actions */}
                   <div className="ml-auto hidden gap-1 sm:flex">
                     <Button
                       variant="ghost"
@@ -116,7 +116,7 @@ export function ExperienceTable({
                   </div>
                 </div>
 
-                {/* Conteúdo extra (url, detalhes, stacks) */}
+                {/* Extra content (URL, details, tech stack) */}
                 <div className="mt-3 flex flex-col gap-3 text-sm">
                   {exp.url && (
                     <a
