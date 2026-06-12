@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
   },
 });
 
-// CONSTANTES DE ÍCONES (Tamanho padronizado em 9x9)
+// ICON CONSTANTS (Standardized size 9x9)
 
 const LinkedinIcon = () => (
   <Svg
@@ -270,7 +270,6 @@ const PhoneIcon = () => (
   </Svg>
 );
 
-// WebsiteIcon com o design clássico de grade de globo limpo
 const WebsiteIcon = () => (
   <Svg
     viewBox="0 0 24 24"
@@ -356,25 +355,21 @@ export const Resume: React.FC<ResumeProps> = ({
   languages,
   translations,
 }) => {
-  {
-    /* 
+  /* 
     LOCALE CONVERSION
-    - Dynamically maps 'pt' or 'en' site locales to specific standard PDF ISO language tags.
+    Dynamically maps 'pt' or 'en' site locales to specific standard PDF ISO language tags.
   */
-  }
   const pdfLanguage = locale === "pt" ? "pt-BR" : "en-US";
 
-  {
-    /* 
+  /* 
     KEYWORDS FORMATTER
-    - Flattens keywords array into a standard comma-separated string for PDF metadata indexing.
+    Flattens keywords array into a standard comma-separated string for PDF metadata indexing.
   */
-  }
   const keywordsStr = Array.isArray(meta.keywords)
     ? meta.keywords.join(", ")
     : meta.keywords || "";
 
-  // Título do documento dinamicamente incluindo o nome da empresa
+  // Document title dynamically including the company name
   const documentTitle = `${meta.role_target || "Resume"} - ${info.name}${company ? ` - ${company}` : ""}`;
 
   return (
@@ -389,7 +384,7 @@ export const Resume: React.FC<ResumeProps> = ({
     >
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          {/*Header Section */}
+          {/* Header Section */}
           <Text style={styles.name}>{info.name}</Text>
           {info.role && <Text style={styles.role}>{info.role}</Text>}
           {info.location && (
@@ -397,7 +392,7 @@ export const Resume: React.FC<ResumeProps> = ({
           )}
           {info.age && <Text style={styles.age}>{info.age}</Text>}
 
-          {/*Links Section */}
+          {/* Links Section */}
           <View style={styles.contactBar}>
             <View style={styles.contactGroupLeft}>
               {info.linkedin && (
@@ -441,7 +436,7 @@ export const Resume: React.FC<ResumeProps> = ({
           </View>
         </View>
 
-        {/*Professional Summary Section */}
+        {/* Professional Summary Section */}
         <View>
           <Text style={styles.sectionTitle}>
             {translations.professionalSummary}
@@ -449,7 +444,7 @@ export const Resume: React.FC<ResumeProps> = ({
           <Text style={styles.paragraph}>{summary}</Text>
         </View>
 
-        {/*Ai Section */}
+        {/* Ai Section */}
         {ai && (
           <View>
             <Text style={styles.sectionTitle}>{translations.ai}</Text>
@@ -457,7 +452,7 @@ export const Resume: React.FC<ResumeProps> = ({
           </View>
         )}
 
-        {/*Skills Section */}
+        {/* Skills Section */}
         <View>
           <Text style={styles.sectionTitle}>{translations.skills}</Text>
           <View style={styles.bulletList}>
@@ -468,12 +463,12 @@ export const Resume: React.FC<ResumeProps> = ({
           </View>
         </View>
 
-        {/*Experience Section */}
+        {/* Experience Section */}
         <View>
           <Text style={styles.sectionTitle}>{translations.experience}</Text>
-          {/*Experience Section Header */}
           {experience.map((job, index) => (
             <View key={index} style={styles.experienceItem}>
+              {/* Experience Section Header */}
               <View style={styles.experienceHeader}>
                 <Text style={styles.experienceRole}>{job.role}</Text>
                 {job.url ? (
@@ -491,7 +486,7 @@ export const Resume: React.FC<ResumeProps> = ({
                 <Text style={styles.experienceDate}>{job.date}</Text>
               </View>
 
-              {/*Experience Section Details */}
+              {/* Experience Section Details */}
               <View style={styles.bulletList}>
                 {job.details.map((detail, idx) => (
                   <View key={idx} style={styles.bulletItem}>
@@ -501,7 +496,7 @@ export const Resume: React.FC<ResumeProps> = ({
                 ))}
               </View>
 
-              {/*Experience Section Stacks */}
+              {/* Experience Section Stacks */}
               {job.stacks && (
                 <Text style={styles.techStack}>
                   {translations.stacks}: {job.stacks}
@@ -511,7 +506,7 @@ export const Resume: React.FC<ResumeProps> = ({
           ))}
         </View>
 
-        {/*Education Section */}
+        {/* Education Section */}
         <View>
           <Text style={styles.sectionTitle}>{translations.education}</Text>
           <View style={styles.bulletList}>
@@ -524,7 +519,7 @@ export const Resume: React.FC<ResumeProps> = ({
           </View>
         </View>
 
-        {/*Certifications Section */}
+        {/* Certifications Section */}
         {certifications && certifications.length > 0 && (
           <View>
             <Text style={styles.sectionTitle}>
@@ -541,7 +536,7 @@ export const Resume: React.FC<ResumeProps> = ({
           </View>
         )}
 
-        {/*Languages Section */}
+        {/* Languages Section */}
         <View>
           <Text style={styles.sectionTitle}>{translations.languages}</Text>
           <View style={styles.bulletList}>
