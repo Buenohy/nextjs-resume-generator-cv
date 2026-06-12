@@ -4,6 +4,8 @@ import { ArrowUpDownIcon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { KeywordData } from "@/types/keywords";
 
+type TranslationFn = (key: string, values?: Record<string, unknown>) => string;
+
 const SortableHeader = ({
   column,
   title,
@@ -25,8 +27,8 @@ const SortableHeader = ({
   );
 };
 
-// CORRIGIDO: Agora expõe a função getColumns para aceitar as traduções dinamicamente
-export const getColumns = (t: any): ColumnDef<KeywordData>[] => [
+// Exposes the getColumns function to dynamically accept translation hooks.
+export const getColumns = (t: TranslationFn): ColumnDef<KeywordData>[] => [
   {
     accessorKey: "keyword",
     header: ({ column }) => (
@@ -90,7 +92,7 @@ export const getColumns = (t: any): ColumnDef<KeywordData>[] => [
     ),
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
-      const isApproved = status === "Aprovado";
+      const isApproved = status === "Approved";
       return (
         <div
           className={`flex items-center gap-2 font-bold ${
