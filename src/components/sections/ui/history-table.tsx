@@ -65,7 +65,7 @@ export function HistoryTable({
                     open={isOpen}
                     onOpenChange={() => toggleItem(item.id)}
                   >
-                    {/* CABEÇALHO DO ITEM DO HISTÓRICO */}
+                    {/* HISTORY ITEM HEADER */}
                     <div className="flex w-full items-center justify-between gap-4">
                       <div className="flex min-w-0 flex-1 items-center gap-4">
                         <div className="border-primary bg-primary/5 text-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 text-sm font-bold">
@@ -113,7 +113,7 @@ export function HistoryTable({
                       </CollapsibleTrigger>
                     </div>
 
-                    {/* CONTEÚDO EXPANSÍVEL DETALHADO */}
+                    {/* DETAILED COLLAPSIBLE CONTENT */}
                     <CollapsibleContent className="mt-5 w-full">
                       <HistoryItemDetail cv={cv} t={t} tJob={tJob} />
                     </CollapsibleContent>
@@ -135,7 +135,7 @@ export function HistoryTable({
   );
 }
 
-// SUB-COMPONENTE COM ATRIBUIÇÃO DIRETA DE COR NOS TÍTULOS (SPAN) E ÍCONES (SVG)
+// Subcomponent with direct color mapping on titles (span) and icons (SVG)
 interface HistoryItemDetailProps {
   cv: CvDataState;
   t: (key: string) => string;
@@ -143,7 +143,7 @@ interface HistoryItemDetailProps {
 }
 
 function HistoryItemDetail({ cv, t, tJob }: HistoryItemDetailProps) {
-  // Todos iniciam fechados (false) conforme especificado
+  // All start closed (false) as specified
   const [isJobOpen, setIsJobOpen] = useState(false);
   const [isMetaOpen, setIsMetaOpen] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
@@ -180,7 +180,7 @@ function HistoryItemDetail({ cv, t, tJob }: HistoryItemDetailProps) {
   return (
     <Card className="bg-muted/10 border-muted/40 max-w-full overflow-hidden border">
       <CardContent className="max-w-full space-y-3 p-4 text-sm">
-        {/* 1. DESCRIÇÃO DA VAGA */}
+        {/* 1. JOB DESCRIPTION */}
         {(cv.jobText || cv.platformText) && (
           <Collapsible
             open={isJobOpen}
@@ -228,7 +228,7 @@ function HistoryItemDetail({ cv, t, tJob }: HistoryItemDetailProps) {
           </Collapsible>
         )}
 
-        {/* 2. METADADOS ATS */}
+        {/* 2. ATS METADATA */}
         {cv.meta_ats && (
           <Collapsible
             open={isMetaOpen}
@@ -392,7 +392,7 @@ function HistoryItemDetail({ cv, t, tJob }: HistoryItemDetailProps) {
           </Collapsible>
         )}
 
-        {/* 3. DADOS PESSOAIS */}
+        {/* 3. PERSONAL DATA */}
         {cv.info && (
           <Collapsible
             open={isInfoOpen}
@@ -449,7 +449,7 @@ function HistoryItemDetail({ cv, t, tJob }: HistoryItemDetailProps) {
           </Collapsible>
         )}
 
-        {/* 4. LINKS PROFISSIONAIS */}
+        {/* 4. PROFESSIONAL LINKS */}
         {cv.links && (
           <Collapsible
             open={isLinksOpen}
@@ -512,7 +512,7 @@ function HistoryItemDetail({ cv, t, tJob }: HistoryItemDetailProps) {
           </Collapsible>
         )}
 
-        {/* 5. RESUMO PROFISSIONAL */}
+        {/* 5. PROFESSIONAL SUMMARY */}
         {cv.summary && (
           <Collapsible
             open={isSummaryOpen}
@@ -548,7 +548,7 @@ function HistoryItemDetail({ cv, t, tJob }: HistoryItemDetailProps) {
           </Collapsible>
         )}
 
-        {/* 6. RESUMO IA */}
+        {/* 6. AI SUMMARY */}
         {cv.ai && (
           <Collapsible
             open={isAiOpen}
@@ -584,7 +584,7 @@ function HistoryItemDetail({ cv, t, tJob }: HistoryItemDetailProps) {
           </Collapsible>
         )}
 
-        {/* 7. HABILIDADES */}
+        {/* 7. SKILLS */}
         {cv.skills?.length > 0 && cv.skills[0] !== "" && (
           <Collapsible
             open={isSkillsOpen}
@@ -629,7 +629,7 @@ function HistoryItemDetail({ cv, t, tJob }: HistoryItemDetailProps) {
           </Collapsible>
         )}
 
-        {/* 8. EXPERIÊNCIAS PROFISSIONAIS */}
+        {/* 8. WORK EXPERIENCE */}
         {cv.experiences?.length > 0 && cv.experiences[0].role !== "" && (
           <Collapsible
             open={isExperiencesOpen}
@@ -728,7 +728,7 @@ function HistoryItemDetail({ cv, t, tJob }: HistoryItemDetailProps) {
           </Collapsible>
         )}
 
-        {/* 9. EDUCAÇÃO */}
+        {/* 9. EDUCATION */}
         {cv.education?.length > 0 && cv.education[0] !== "" && (
           <Collapsible
             open={isEduOpen}
@@ -769,7 +769,7 @@ function HistoryItemDetail({ cv, t, tJob }: HistoryItemDetailProps) {
           </Collapsible>
         )}
 
-        {/* 10. CERTIFICAÇÕES */}
+        {/* 10. CERTIFICATIONS */}
         {cv.certifications?.length > 0 && cv.certifications[0] !== "" && (
           <Collapsible
             open={isCertOpen}
@@ -810,7 +810,7 @@ function HistoryItemDetail({ cv, t, tJob }: HistoryItemDetailProps) {
           </Collapsible>
         )}
 
-        {/* 11. IDIOMAS */}
+        {/* 11. LANGUAGES */}
         {cv.languages?.length > 0 && cv.languages[0] !== "" && (
           <Collapsible
             open={isLangOpen}
