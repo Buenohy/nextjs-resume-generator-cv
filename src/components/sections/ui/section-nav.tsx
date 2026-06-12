@@ -10,7 +10,7 @@ import {
   publishSectionToggle,
 } from "@/app/hooks/useSyncCollapse";
 
-// Importando os dados estruturais do arquivo separado
+// Import structural navigation data from external source
 import {
   META_FIELDS,
   PERSONAL_FIELDS,
@@ -18,13 +18,31 @@ import {
   PARENT_SECTIONS,
 } from "./nav-data";
 
+type TranslationFn = (key: string, values?: Record<string, unknown>) => string;
+
 interface SectionNavProps {
-  t: any;
+  t: TranslationFn;
+}
+
+interface ListsData {
+  keywordsList: string[];
+  skillsList: string[];
+  experiencesList: Array<{
+    role: string;
+    company: string;
+    url?: string;
+    date: string;
+    details: string[];
+    stacks: string[];
+  }>;
+  educationList: string[];
+  certificationsList: string[];
+  languagesList: string[];
 }
 
 type NavItem = { id: string; label: string; children?: NavItem[] };
 
-// --- FUNÇÕES AUXILIARES DE NAVEGAÇÃO ---
+// --- NAVIGATION HELPER FUNCTIONS ---
 const isNodeActive = (node: NavItem, activeId: string): boolean => {
   if (node.id === activeId) return true;
   if (node.children)
@@ -40,7 +58,7 @@ const getAllIds = (items: NavItem[]): string[] => {
   }, []);
 };
 
-// --- COMPONENTE RECURSIVO DO MENU (UI & ESTILOS TAILWIND) ---
+// --- RECURSIVE MENU COMPONENT (UI & TAILWIND STYLES) ---
 const NavNode = ({
   item,
   level = 0,
@@ -56,7 +74,7 @@ const NavNode = ({
   toggleNode: (id: string, e: React.MouseEvent) => void;
   scrollToSection: (id: string) => void;
 }) => {
-  // Caso base: Nível Máximo (Sub-itens finais/folhas)
+  // Base case: Maximum level (Leaf nodes / sub-items)
   if (level === 3) {
     const isLeafActive = activeSection === item.id;
     return (
@@ -80,7 +98,7 @@ const NavNode = ({
   const isOpen = expandedNodes[item.id];
   const isActive = isNodeActive(item, activeSection);
 
-  // Variáveis de Estilo Tailwind baseadas no Nível (0, 1 ou 2)
+  // Tailwind style configurations based on node level (0, 1, or 2)
   const isLvl0 = level === 0;
   const isLvl1 = level === 1;
 
@@ -154,11 +172,15 @@ const NavNode = ({
   );
 };
 
-// --- GERAÇÃO DINÂMICA DO MENU ---
+// --- DYNAMIC NAVIGATION MENU GENERATION ---
 function generateNavItems(
-  t: any,
-  getLabel: (key: string, fallback: string, values?: any) => string,
-  data: any
+  t: TranslationFn,
+  getLabel: (
+    key: string,
+    fallback: string,
+    values?: Record<string, unknown>
+  ) => string,
+  data: ListsData
 ): NavItem[] {
   const {
     keywordsList,
@@ -169,7 +191,7 @@ function generateNavItems(
     languagesList,
   } = data;
 
-  const dynamicKeywords = keywordsList.map((_: any, index: number) => ({
+  const dynamicKeywords = keywordsList.map((_, index) => ({
     id: `meta-keyword-${index}`,
     label: getLabel("sections.meta_ats.keywordLabel", `Keyword ${index + 1}`, {
       num: index + 1,
@@ -205,115 +227,97 @@ function generateNavItems(
     label: getLabel(`sections.links.fields.${f.key}.label`, f.key),
   }));
 
-  const dynamicExperiences: NavItem[] = experiencesList.map(
-    (exp: any, expIndex: number) => {
-      const detailChildren = (exp.details || []).map(
-        (_: any, dIdx: number) => ({
-          id: `experience-${expIndex}-detail-${dIdx}`,
-          label: getLabel(
-            "sections.experience.detailLabel",
-            `Detail ${dIdx + 1}`,
-            { num: dIdx + 1 }
-          ),
-        })
-      );
+  const dynamicExperiences: NavItem[] = experiencesList.map((exp, expIndex) => {
+    const detailChildren = (exp.details || []).map((_, dIdx) => ({
+      id: `experience-${expIndex}-detail-${dIdx}`,
+      label: getLabel("sections.experience.detailLabel", `Detail ${dIdx + 1}`, {
+        num: dIdx + 1,
+      }),
+    }));
 
-      const stackChildren = (exp.stacks || []).map((_: any, sIdx: number) => ({
-        id: `experience-${expIndex}-stack-${sIdx}`,
-        label: getLabel("sections.experience.stackLabel", `Stack ${sIdx + 1}`, {
-          num: sIdx + 1,
-        }),
-      }));
+    const stackChildren = (exp.stacks || []).map((_, sIdx) => ({
+      id: `experience-${expIndex}-stack-${sIdx}`,
+      label: getLabel("sections.experience.stackLabel", `Stack ${sIdx + 1}`, {
+        num: sIdx + 1,
+      }),
+    }));
 
-      const expSubChildren = [
-        {
-          id: `experience-${expIndex}-role`,
-          label: getLabel("sections.experience.fields.role.label", "Role"),
-        },
-        {
-          id: `experience-${expIndex}-company`,
-          label: getLabel(
-            "sections.experience.fields.company.label",
-            "Company"
-          ),
-        },
-        {
-          id: `experience-${expIndex}-url`,
-          label: getLabel(
-            "sections.experience.fields.url.label",
-            "Company URL"
-          ),
-        },
-        {
-          id: `experience-${expIndex}-date`,
-          label: getLabel("sections.experience.fields.date.label", "Date"),
-        },
-        {
-          id: `experience-details-${expIndex}`,
-          label: `${getLabel("sections.experience.detailsTitle", "Project Details")} (${detailChildren.length})`,
-          children: detailChildren,
-        },
-        {
-          id: `experience-stacks-${expIndex}`,
-          label: `${getLabel("sections.experience.stacksTitle", "Technologies")} (${stackChildren.length})`,
-          children: stackChildren,
-        },
-      ];
+    const expSubChildren = [
+      {
+        id: `experience-${expIndex}-role`,
+        label: getLabel("sections.experience.fields.role.label", "Role"),
+      },
+      {
+        id: `experience-${expIndex}-company`,
+        label: getLabel("sections.experience.fields.company.label", "Company"),
+      },
+      {
+        id: `experience-${expIndex}-url`,
+        label: getLabel("sections.experience.fields.url.label", "Company URL"),
+      },
+      {
+        id: `experience-${expIndex}-date`,
+        label: getLabel("sections.experience.fields.date.label", "Date"),
+      },
+      {
+        id: `experience-details-${expIndex}`,
+        label: `${getLabel("sections.experience.detailsTitle", "Project Details")} (${detailChildren.length})`,
+        children: detailChildren,
+      },
+      {
+        id: `experience-stacks-${expIndex}`,
+        label: `${getLabel("sections.experience.stacksTitle", "Technologies")} (${stackChildren.length})`,
+        children: stackChildren,
+      },
+    ];
 
-      return {
-        id: `experience-item-${expIndex}`,
-        label: `${getLabel("sections.experience.itemLabel", `Experience ${expIndex + 1}`, { num: expIndex + 1 })} (${expSubChildren.length})`,
-        children: expSubChildren,
-      };
-    }
-  );
+    return {
+      id: `experience-item-${expIndex}`,
+      label: `${getLabel("sections.experience.itemLabel", `Experience ${expIndex + 1}`, { num: expIndex + 1 })} (${expSubChildren.length})`,
+      children: expSubChildren,
+    };
+  });
 
-  const dynamicSkills: NavItem[] = skillsList.map((_: any, i: number) => ({
+  const dynamicSkills: NavItem[] = skillsList.map((_, i) => ({
     id: `skills-item-${i}`,
     label: getLabel("sections.skills.itemLabel", `Skill ${i + 1}`, {
       num: i + 1,
     }),
   }));
 
-  const dynamicEducation: NavItem[] = educationList.map(
-    (_: any, i: number) => ({
-      id: `education-item-${i}`,
-      label: `${getLabel("sections.education.itemLabel", `Education ${i + 1}`, { num: i + 1 })} (1)`,
-      children: [
-        {
-          id: `education-${i}-period`,
-          label: getLabel("sections.education.period", "Period"),
-        },
-      ],
-    })
-  );
+  const dynamicEducation: NavItem[] = educationList.map((_, i) => ({
+    id: `education-item-${i}`,
+    label: `${getLabel("sections.education.itemLabel", `Education ${i + 1}`, { num: i + 1 })} (1)`,
+    children: [
+      {
+        id: `education-${i}-period`,
+        label: getLabel("sections.education.period", "Period"),
+      },
+    ],
+  }));
 
-  const dynamicCertifications: NavItem[] = certificationsList.map(
-    (_: any, i: number) => ({
-      id: `certification-item-${i}`,
-      label: `${getLabel("sections.certifications.itemLabel", `Certificate ${i + 1}`, { num: i + 1 })} (1)`,
-      children: [
-        {
-          id: `certification-${i}-date`,
-          label: getLabel("sections.certifications.date", "Date"),
-        },
-      ],
-    })
-  );
+  const dynamicCertifications: NavItem[] = certificationsList.map((_, i) => ({
+    id: `certification-item-${i}`,
+    label: `${getLabel("sections.certifications.itemLabel", `Certificate ${i + 1}`, { num: i + 1 })} (1)`,
+    children: [
+      {
+        id: `certification-${i}-date`,
+        label: getLabel("sections.certifications.date", "Date"),
+      },
+    ],
+  }));
 
-  const dynamicLanguages: NavItem[] = languagesList.map(
-    (_: any, i: number) => ({
-      id: `languages-item-${i}`,
-      label: getLabel("sections.languages.itemLabel", `Language ${i + 1}`, {
-        num: i + 1,
-      }),
-    })
-  );
+  const dynamicLanguages: NavItem[] = languagesList.map((_, i) => ({
+    id: `languages-item-${i}`,
+    label: getLabel("sections.languages.itemLabel", `Language ${i + 1}`, {
+      num: i + 1,
+    }),
+  }));
 
   return [
     {
       id: "company-info",
-      label: getLabel("sections.company.title", "Empresa Alvo"),
+      label: getLabel("sections.company.title", "Target Company"),
     },
     {
       id: "meta-ats",
@@ -360,7 +364,7 @@ function generateNavItems(
   ];
 }
 
-// --- COMPONENTE PRINCIPAL (LÓGICA DE ESTADO E SCROLL) ---
+// --- MAIN NAVIGATIONAL COMPONENT (STATE & SCROLL LOGIC) ---
 export function SectionNav({ t }: SectionNavProps) {
   const [activeSection, setActiveSection] = useState("");
   const [isMounted, setIsMounted] = useState(false);
@@ -369,27 +373,37 @@ export function SectionNav({ t }: SectionNavProps) {
   );
   const cvData = useResumeStore((s) => s.cvData);
 
-  const lists = useMemo(
+  const lists: ListsData = useMemo(
     () => ({
       keywordsList: Array.isArray(cvData?.meta_ats?.keywords)
-        ? cvData.meta_ats.keywords
+        ? (cvData.meta_ats.keywords as string[])
         : [],
-      skillsList: Array.isArray(cvData?.skills) ? cvData.skills : [],
+      skillsList: Array.isArray(cvData?.skills)
+        ? (cvData.skills as string[])
+        : [],
       experiencesList: Array.isArray(cvData?.experiences)
-        ? cvData.experiences
+        ? (cvData.experiences as ListsData["experiencesList"])
         : [],
-      educationList: Array.isArray(cvData?.education) ? cvData.education : [],
+      educationList: Array.isArray(cvData?.education)
+        ? (cvData.education as string[])
+        : [],
       certificationsList: Array.isArray(cvData?.certifications)
-        ? cvData.certifications
+        ? (cvData.certifications as string[])
         : [],
-      languagesList: Array.isArray(cvData?.languages) ? cvData.languages : [],
+      languagesList: Array.isArray(cvData?.languages)
+        ? (cvData.languages as string[])
+        : [],
     }),
     [cvData]
   );
 
   useEffect(() => setIsMounted(true), []);
 
-  const getLabel = (key: string, fallback: string, values?: any) => {
+  const getLabel = (
+    key: string,
+    fallback: string,
+    values?: Record<string, unknown>
+  ) => {
     try {
       return t.has(key) ? t(key, values) : fallback;
     } catch {
@@ -464,7 +478,7 @@ export function SectionNav({ t }: SectionNavProps) {
       publishSectionToggle(id, true);
       setExpandedNodes((prev) => ({ ...prev, [id]: true }));
 
-      // Sincroniza abertura da aba pai de forma simplificada através do mapa
+      // Synchronize parent section collapse state via section map
       const prefix = id.split("-")[0];
       const parentId = PARENT_SECTIONS[prefix];
       if (parentId) {
@@ -493,7 +507,7 @@ export function SectionNav({ t }: SectionNavProps) {
   return (
     <Card className="border-muted max-h-[85vh] overflow-y-auto p-4 shadow-lg">
       <h4 className="text-muted-foreground mb-4 pl-1 text-sm font-semibold tracking-wider uppercase">
-        {getLabel("formCard.navigation", "Índice")}
+        {getLabel("formCard.navigation", "Navigation Index")}
       </h4>
       <nav className="flex flex-col gap-1.5">
         {navItems.map((item) => (

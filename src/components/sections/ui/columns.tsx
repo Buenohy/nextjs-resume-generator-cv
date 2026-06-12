@@ -3,8 +3,9 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowUpDownIcon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { KeywordData } from "@/types/keywords";
+import { useTranslations } from "next-intl";
 
-type TranslationFn = (key: string, values?: Record<string, unknown>) => string;
+export type TranslationFn = ReturnType<typeof useTranslations>;
 
 const SortableHeader = ({
   column,
