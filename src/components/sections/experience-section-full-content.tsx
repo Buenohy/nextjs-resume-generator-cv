@@ -70,9 +70,14 @@ export function ExperienceSectionFullContent() {
     String(new Date().getFullYear() + 10 - i)
   );
 
-  const experienceFields = Object.entries(t.raw("sections.experience.fields"))
+  const experienceFields = Object.entries(
+    t.raw("sections.experience.fields") as Record<
+      string,
+      { label: string; placeholder: string }
+    >
+  )
     .filter(([key]) => key !== "date")
-    .map(([key, value]: [string, any]) => ({
+    .map(([key, value]) => ({
       id: key,
       label: value.label,
       placeholder: value.placeholder,
@@ -94,7 +99,7 @@ export function ExperienceSectionFullContent() {
 
   const dateParsed = parseDateString(form.date);
 
-  // --- GRAVAÇÃO DA DATA COM SUPORTE A TOKEN DINÂMICO ---
+  // --- RECORD DATE WITH DYNAMIC TOKEN SUPPORT ---
   const handleDateChange = (sm: string, sy: string, em: string, ey: string) => {
     const start = [sm, sy].filter(Boolean).join(" ");
     const end =
