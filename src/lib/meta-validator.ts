@@ -8,9 +8,20 @@ export interface ValidationResult {
   };
 }
 
-// Lista bilíngue de termos genéricos que devem ser ignorados para focar no nicho do cargo
+export interface ValidationCvInput {
+  meta_ats?: {
+    keywords?: string | string[];
+    role_target?: string;
+    subject?: string;
+  };
+  info?: {
+    role?: string;
+  };
+}
+
+// Bilingual list of generic filler terms to filter out when parsing specific role niches
 const FILLER_WORDS = new Set([
-  // Português (PT)
+  // Portuguese (PT)
   "desenvolvedor",
   "desenvolvedora",
   "engenheiro",
@@ -28,7 +39,7 @@ const FILLER_WORDS = new Set([
   "lider",
   "coordenador",
   "gerente",
-  // Inglês (EN)
+  // English (EN)
   "developer",
   "engineer",
   "programmer",
@@ -49,7 +60,7 @@ const FILLER_WORDS = new Set([
 
 export function validateMetaWithJob(
   jobText: string,
-  cvData: any
+  cvData: ValidationCvInput | undefined
 ): ValidationResult {
   const result: ValidationResult = {
     isValid: true,
@@ -66,10 +77,10 @@ export function validateMetaWithJob(
   const jobLower = jobText.toLowerCase();
   const meta = cvData.meta_ats || {};
 
-  // Validação de Keywords
+  // Keywords validation logic
   if (meta.keywords) {
     const kwList = Array.isArray(meta.keywords)
-      ? meta.keywords.map((k: any) => String(k).trim().toLowerCase())
+      ? meta.keywords.map((k) => String(k).trim().toLowerCase())
       : String(meta.keywords)
           .split(",")
           .map((k: string) => k.trim().toLowerCase());
@@ -81,17 +92,17 @@ export function validateMetaWithJob(
     }
   }
 
-  // Validação de Cargo Alvo (Metadata) com Filtro de Fillers
+  // Target role metadata validation (with filler word exclusion)
   if (meta.role_target) {
     const target = meta.role_target.toLowerCase();
     const targetParts = target.split(/\s+/).filter((w: string) => w.length > 2);
 
-    // Filtra as palavras vazias (Ex: ignora "developer", mantém "ios")
+    // Filter out common filler words (e.g., skip "developer", match against "ios")
     const specificParts = targetParts.filter(
       (part: string) => !FILLER_WORDS.has(part)
     );
 
-    // Se sobrou apenas palavra vazia (ex: "Desenvolvedor"), valida por ela. Senão, valida pelo nicho específico.
+    // Default back to full parts if only filler words are present
     const partsToValidate =
       specificParts.length > 0 ? specificParts : targetParts;
 
@@ -103,7 +114,7 @@ export function validateMetaWithJob(
     }
   }
 
-  // Validação de Subject
+  // Subject metadata validation
   if (meta.subject) {
     const subjectClean = meta.subject.toLowerCase();
     const subjectWords = subjectClean.match(/[a-zA-ZÀ-ÿ]{4,}/g) || [];
@@ -115,12 +126,11 @@ export function validateMetaWithJob(
     }
   }
 
-  // Validação de Cargo do Cabeçalho Pessoal com Filtro de Fillers
+  // Header job title validation (with filler word exclusion)
   const infoRole = (cvData.info?.role || "").toLowerCase();
   if (infoRole) {
     const roleParts = infoRole.split(/\s+/).filter((w: string) => w.length > 3);
 
-    // Filtra as palavras vazias
     const specificRoleParts = roleParts.filter(
       (part: string) => !FILLER_WORDS.has(part)
     );
