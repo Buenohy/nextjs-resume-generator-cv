@@ -4,5 +4,5 @@ export interface KeywordData {
   inVacancy: number;
   goal2x: number;
   onResume: number;
-  status: "Pendente" | "Aprovado";
+  status: "Pending" | "Approved";
 }
