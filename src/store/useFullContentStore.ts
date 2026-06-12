@@ -53,7 +53,6 @@ const initialState: FullContentState = {
   isLoading: false,
 };
 
-// --- URL BASE DA API NO NESTJS ---
 const API_URL = "http://localhost:3001/experiences";
 
 const storesCache = new Map<
@@ -73,27 +72,25 @@ function createFullContentStore(
           updater(state);
         }),
 
-      // --- 1. LER DO BANCO DE DADOS (FILTRANDO POR IDIOMA) ---
+      // Fetch experiences from the API filtered by active locale
       fetchExperiences: async () => {
         set({ isLoading: true });
         try {
-          // Ex: GET http://localhost:3001/experiences?language=pt
           const res = await fetch(`${API_URL}?language=${locale}`);
           if (res.ok) {
             const data = await res.json();
             set({ savedExperiences: data });
           }
         } catch (error) {
-          console.error("Erro ao buscar experiências da API:", error);
+          console.error("Error fetching experiences from API:", error);
         } finally {
           set({ isLoading: false });
         }
       },
 
-      // --- 2. SALVAR NO BANCO DE DADOS ---
+      // Save a new experience entry to the API
       addSavedExperience: async (experience) => {
         try {
-          // Injeta o idioma atual no objeto antes de enviar pro backend
           const payload = { ...experience, language: locale };
 
           const res = await fetch(API_URL, {
@@ -105,15 +102,15 @@ function createFullContentStore(
           if (res.ok) {
             const newExp = await res.json();
             set((state) => {
-              state.savedExperiences.unshift(newExp); // Adiciona no topo da lista na tela
+              state.savedExperiences.unshift(newExp); // Prepend new item to UI list
             });
           }
         } catch (error) {
-          console.error("Erro ao salvar experiência na API:", error);
+          console.error("Error saving experience to API:", error);
         }
       },
 
-      // --- 3. ATUALIZAR (EDITAR) NO BANCO DE DADOS ---
+      // Update an existing experience entry on the API
       updateSavedExperience: async (id, experience) => {
         try {
           const payload = { ...experience, language: locale };
@@ -136,11 +133,11 @@ function createFullContentStore(
             });
           }
         } catch (error) {
-          console.error("Erro ao atualizar experiência na API:", error);
+          console.error("Error updating experience on API:", error);
         }
       },
 
-      // --- 4. EXCLUIR DO BANCO DE DADOS ---
+      // Delete an experience entry from the API
       removeSavedExperience: async (id: string) => {
         try {
           const res = await fetch(`${API_URL}/${id}`, {
@@ -155,7 +152,7 @@ function createFullContentStore(
             });
           }
         } catch (error) {
-          console.error("Erro ao deletar experiência da API:", error);
+          console.error("Error deleting experience from API:", error);
         }
       },
     }))
