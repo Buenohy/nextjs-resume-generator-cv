@@ -19,7 +19,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-// --- CONVERSÃO AUXILIAR DE DATA ---
+// --- HELPER DATE PARSING ---
 const parseDateString = (dateStr?: string) => {
   if (!dateStr)
     return { startMonth: "", startYear: "", endMonth: "", endYear: "" };
@@ -37,12 +37,12 @@ const parseDateString = (dateStr?: string) => {
 interface ExperienceItemProps {
   exp: ExperienceState;
   expIndex: number;
-  experienceFields: any[];
+  experienceFields: { id: string; label: string; placeholder: string }[];
   MONTHS: string[];
   YEARS: string[];
   cvDataLength: number;
-  t: any;
-  handleAutoResize: any;
+  t: ReturnType<typeof useTranslations>;
+  handleAutoResize: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   handleDateChange: (
     expIndex: number,
     sm: string,
@@ -51,7 +51,11 @@ interface ExperienceItemProps {
     ey: string
   ) => void;
   removeExperience: (index: number) => void;
-  updateField: (expIndex: number, fieldId: any, value: string) => void;
+  updateField: (
+    expIndex: number,
+    fieldId: keyof Omit<ExperienceState, "details" | "stacks">,
+    value: string
+  ) => void;
   addDetail: (expIndex: number) => void;
   removeDetail: (expIndex: number, dIdx: number) => void;
   updateDetail: (expIndex: number, dIdx: number, value: string) => void;
@@ -445,7 +449,7 @@ function ExperienceItem({
   );
 }
 
-// --- COMPONENTE PRINCIPAL ---
+// --- MAIN COMPONENT ---
 export function ExperienceSection() {
   const t = useTranslations("ResumeBuilderPage");
   const cvData = useResumeStore((s) => s.cvData);
@@ -467,15 +471,20 @@ export function ExperienceSection() {
     String(new Date().getFullYear() + 10 - i)
   );
 
-  const experienceFields = Object.entries(t.raw("sections.experience.fields"))
+  const experienceFields = Object.entries(
+    t.raw("sections.experience.fields") as Record<
+      string,
+      { label: string; placeholder: string }
+    >
+  )
     .filter(([key]) => key !== "date")
-    .map(([key, value]: [string, any]) => ({
+    .map(([key, value]) => ({
       id: key,
       label: value.label,
       placeholder: value.placeholder,
     }));
 
-  // --- GRAVAÇÃO DA DATA COM SUPORTE A TOKEN DINÂMICO ---
+  // --- RECORD DATE WITH DYNAMIC TOKEN SUPPORT ---
   const handleDateChange = (
     expIndex: number,
     sm: string,
