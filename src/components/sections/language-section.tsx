@@ -24,7 +24,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-// Lê os tokens "__LEVEL_X__"
+// --- PARSE "__LEVEL_X__" TOKENS ---
 const parseLangString = (str?: string) => {
   if (!str) return { text: "", level: "" };
   const parts = str.split(" - ");
@@ -46,8 +46,8 @@ interface LanguageItemProps {
   index: number;
   LANGUAGE_LEVELS: string[];
   cvDataLength: number;
-  t: any;
-  handleAutoResize: any;
+  t: ReturnType<typeof useTranslations>;
+  handleAutoResize: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   removeItem: (index: number) => void;
   handleLangChange: (index: number, text: string, level: string) => void;
 }
@@ -106,7 +106,7 @@ function LanguageItem({
       <CollapsibleContent className="space-y-6">
         <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
           <Textarea
-            className="min-h-9.5 w-full min-w-0 flex-1 resize-none overflow-hidden py-2"
+            className="min-h-[38px] w-full min-w-0 flex-1 resize-none overflow-hidden py-2"
             rows={1}
             placeholder={t("sections.languages.placeholder")}
             value={parsed.text}
@@ -131,7 +131,7 @@ function LanguageItem({
                 />
               </SelectTrigger>
               <SelectContent>
-                {/* Salva os TOKENS no lugar do nome estático */}
+                {/* Store translation tokens instead of localized strings to preserve consistency */}
                 {LANGUAGE_LEVELS.map((level, i) => (
                   <SelectItem key={i} value={`__LEVEL_${i}__`}>
                     {level}
