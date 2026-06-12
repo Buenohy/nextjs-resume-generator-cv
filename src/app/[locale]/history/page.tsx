@@ -6,21 +6,23 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-// IMPORTAÇÃO CORRETA PARA COMPONENTES DE SERVIDOR (SERVER COMPONENTS)
 import { getTranslations } from "next-intl/server";
-import { HistoryTable } from "@/components/sections/ui/history-table";
+import {
+  HistoryTable,
+  type HistoryItem,
+} from "@/components/sections/ui/history-table";
 
-// Força o Next.js a sempre buscar dados frescos do Postgres a cada carregamento, sem cache estático
+// Disable static caching, forcing Next.js to fetch fresh PostgreSQL database records on every request
 export const revalidate = 0;
 
 export default async function HistoryPage() {
-  // CORRIGIDO: Usa getTranslations com await para ler as chaves de tradução de forma assíncrona no servidor
+  // Fetch localization translation dictionary asynchronously on the server
   const t = await getTranslations("HistoryPage");
 
-  let historyItems = [];
+  let historyItems: HistoryItem[] = [];
 
   try {
-    // Busca os dados diretamente do nosso NestJS/PostgreSQL antes da página carregar
+    // Retrieve historical records directly from the NestJS PostgreSQL backend server-side
     const res = await fetch("http://localhost:3001/history", {
       cache: "no-store",
     });
@@ -30,7 +32,7 @@ export default async function HistoryPage() {
     }
   } catch (error) {
     console.error(
-      "Erro ao carregar histórico do banco de dados no Server Component:",
+      "Error loading database history records inside Server Component:",
       error
     );
   }
@@ -47,13 +49,10 @@ export default async function HistoryPage() {
         </CardHeader>
 
         <CardContent className="flex flex-col gap-5">
-          {/* 
-            Renders the new dynamic history table, passing the database records 
-          */}
           <div className="border-muted overflow-hidden rounded-md border shadow-sm">
             <HistoryTable
               historyItems={historyItems}
-              emptyMessage="Nenhum currículo otimizado no histórico."
+              emptyMessage="No optimized resumes found in history."
             />
           </div>
         </CardContent>
