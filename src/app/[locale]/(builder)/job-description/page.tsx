@@ -22,7 +22,7 @@ export default function JobDescriptionPage() {
   const router = useRouter();
   const t = useTranslations("JobDescriptionPage");
 
-  // USAMOS APENAS O ESTADO GLOBAL AGORA
+  // Relying solely on the global state store now
   const globalJobText = useResumeStore((state) => state.jobText);
   const setGlobalJobText = useResumeStore((state) => state.setJobText);
 
@@ -41,8 +41,7 @@ export default function JobDescriptionPage() {
   }, []);
 
   const handleSubmit = () => {
-    // Como os dados já estão salvos globalmente a cada digitação,
-    // o submit agora apenas avança a página.
+    // Since data is updated globally on every keystroke, submission simply routes the user forward
     router.push("/resume-builder");
   };
 
@@ -86,7 +85,7 @@ export default function JobDescriptionPage() {
         </CardHeader>
 
         <CardContent className="flex flex-col gap-6">
-          {/* CAMPO 1: PLATAFORMA DA VAGA */}
+          {/* FIELD 1: JOB PLATFORM INFORMATION */}
           <div className="flex flex-col gap-2">
             <span className="text-sm font-semibold">{t("plataformTitle")}</span>
             <p className="text-muted-foreground text-xs">
@@ -95,20 +94,20 @@ export default function JobDescriptionPage() {
             <Textarea
               placeholder={t("plataformPlaceholder")}
               value={globalPlatformText}
-              // Atualiza direto no Zustand
+              // Updates Zustand store directly
               onChange={(e) => setGlobalPlatformText(e.target.value)}
               className="min-h-[60px] resize-none overflow-hidden py-2"
               rows={1}
             />
           </div>
 
-          {/* CAMPO 2: DESCRIÇÃO DA VAGA */}
+          {/* FIELD 2: JOB DESCRIPTION REQUIREMENTS */}
           <div className="flex flex-col gap-2 border-t pt-4">
             <span className="text-sm font-semibold">{t("cardTitle")}</span>
             <Textarea
               placeholder={t("placeholder")}
               value={globalJobText}
-              // Atualiza direto no Zustand
+              // Updates Zustand store directly
               onChange={(e) => setGlobalJobText(e.target.value)}
               className="sm:min-h-62.5"
             />
