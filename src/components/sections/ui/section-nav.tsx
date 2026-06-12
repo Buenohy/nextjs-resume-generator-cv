@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { useResumeStore } from "@/store/useResumeStore";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTranslations } from "next-intl";
 import {
   subscribeToSection,
   publishSectionToggle,
@@ -18,10 +19,8 @@ import {
   PARENT_SECTIONS,
 } from "./nav-data";
 
-type TranslationFn = (key: string, values?: Record<string, unknown>) => string;
-
 interface SectionNavProps {
-  t: TranslationFn;
+  t: ReturnType<typeof useTranslations>;
 }
 
 interface ListsData {
@@ -174,11 +173,11 @@ const NavNode = ({
 
 // --- DYNAMIC NAVIGATION MENU GENERATION ---
 function generateNavItems(
-  t: TranslationFn,
+  t: ReturnType<typeof useTranslations>,
   getLabel: (
     key: string,
     fallback: string,
-    values?: Record<string, unknown>
+    values?: Record<string, string | number | Date>
   ) => string,
   data: ListsData
 ): NavItem[] {
@@ -397,23 +396,31 @@ export function SectionNav({ t }: SectionNavProps) {
     [cvData]
   );
 
-  useEffect(() => setIsMounted(true), []);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
-  const getLabel = (
-    key: string,
-    fallback: string,
-    values?: Record<string, unknown>
-  ) => {
-    try {
-      return t.has(key) ? t(key, values) : fallback;
-    } catch {
-      return fallback;
-    }
-  };
+  const getLabel = useCallback(
+    (
+      key: string,
+      fallback: string,
+      values?: Record<string, string | number | Date>
+    ) => {
+      try {
+        return t.has(key) ? t(key, values) : fallback;
+      } catch {
+        return fallback;
+      }
+    },
+    [t]
+  );
 
   const navItems = useMemo(
     () => generateNavItems(t, getLabel, lists),
-    [lists, t]
+    [lists, t, getLabel]
   );
 
   const toggleNode = (id: string, e: React.MouseEvent) => {
