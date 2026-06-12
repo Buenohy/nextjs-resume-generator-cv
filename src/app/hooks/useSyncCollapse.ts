@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 type Listener = (isOpen: boolean) => void;
 const listeners = new Map<string, Set<Listener>>();
 
-// Função auxiliar para assinar atualizações de uma seção
+// Helper function to subscribe to updates of a specific section
 export const subscribeToSection = (id: string, listener: Listener) => {
   if (!listeners.has(id)) {
     listeners.set(id, new Set());
@@ -17,18 +17,17 @@ export const subscribeToSection = (id: string, listener: Listener) => {
   };
 };
 
-// Função auxiliar para publicar que uma seção mudou de estado
+// Helper function to publish/broadcast section state changes
 export const publishSectionToggle = (id: string, isOpen: boolean) => {
   listeners.get(id)?.forEach((listener) => listener(isOpen));
 };
 
-// --- O CUSTOM HOOK (FECHADO POR PADRÃO) ---
+// Custom synchronization hook (closed by default)
 export function useSyncCollapse(id: string, initialValue: boolean = false) {
-  // Padrão: false
   const [isOpen, setIsOpenState] = useState(initialValue);
   const isExternalChange = useRef(false);
 
-  // 1. Escuta mudanças vindas de fora (Nav -> Form)
+  // 1. Listen for external state changes (Nav -> Form)
   useEffect(() => {
     const unsubscribe = subscribeToSection(id, (nextOpen) => {
       setIsOpenState((prev) => {
@@ -40,7 +39,7 @@ export function useSyncCollapse(id: string, initialValue: boolean = false) {
     return unsubscribe;
   }, [id]);
 
-  // 2. Publica mudanças locais de forma assíncrona pós-render (Form -> Nav)
+  // 2. Publish local updates asynchronously post-render (Form -> Nav)
   useEffect(() => {
     if (isExternalChange.current) {
       isExternalChange.current = false;
