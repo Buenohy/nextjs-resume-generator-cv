@@ -4,8 +4,48 @@ import { analyzeVerbs } from "@/lib/auto-optimizer";
 import { validateMetaWithJob } from "@/lib/meta-validator";
 import { getTranslations } from "next-intl/server";
 
-// FUNÇÃO EXTRATORA DE TEXTO COM FILTRAGEM DEFENSIVA DE SEÇÃO
-function extractCvText(cvData: any): string {
+interface ExperienceInput {
+  role?: string;
+  company?: string;
+  stacks?: string | string[];
+  details?: string[];
+}
+
+interface CvDataInput {
+  info?: {
+    name?: string;
+    role?: string;
+    city?: string;
+  };
+  summary?: string;
+  skills?: string[];
+  experiences?: ExperienceInput[];
+  education?: string[];
+  certifications?: string[];
+  languages?: string[];
+  company?: string;
+}
+
+interface KeywordData {
+  meta?: number;
+  vaga?: number;
+}
+
+interface VerbIssue {
+  original: string;
+  suggestions: string[];
+  context: string;
+}
+
+interface ValidationWarnings {
+  keywords: string[];
+  roleTarget: string | null;
+  subjectWords: string[];
+  infoRoleMismatch: boolean;
+}
+
+// Extract and aggregate text from nested CV sections defensively
+function extractCvText(cvData: CvDataInput | undefined): string {
   let text = "";
   if (!cvData) return text;
 
@@ -19,7 +59,7 @@ function extractCvText(cvData: any): string {
 
   if (Array.isArray(cvData.skills)) {
     const cleanSkills = cvData.skills.filter(
-      (s: any) => s && typeof s === "string"
+      (s): s is string => typeof s === "string" && s.trim() !== ""
     );
     text += ` ${cleanSkills.join(" ")}`;
   }
@@ -37,7 +77,7 @@ function extractCvText(cvData: any): string {
 
       if (Array.isArray(exp.details)) {
         const cleanDetails = exp.details.filter(
-          (d: any) => d && typeof d === "string"
+          (d): d is string => typeof d === "string" && d.trim() !== ""
         );
         text += ` ${cleanDetails.join(" ")}`;
       }
@@ -46,19 +86,19 @@ function extractCvText(cvData: any): string {
 
   if (Array.isArray(cvData.education)) {
     const cleanEdu = cvData.education.filter(
-      (e: any) => e && typeof e === "string"
+      (e): e is string => typeof e === "string" && e.trim() !== ""
     );
     text += ` ${cleanEdu.join(" ")}`;
   }
   if (Array.isArray(cvData.certifications)) {
     const cleanCert = cvData.certifications.filter(
-      (c: any) => c && typeof c === "string"
+      (c): c is string => typeof c === "string" && c.trim() !== ""
     );
     text += ` ${cleanCert.join(" ")}`;
   }
   if (Array.isArray(cvData.languages)) {
     const cleanLang = cvData.languages.filter(
-      (l: any) => l && typeof l === "string"
+      (l): l is string => typeof l === "string" && l.trim() !== ""
     );
     text += ` ${cleanLang.join(" ")}`;
   }
@@ -69,7 +109,10 @@ function extractCvText(cvData: any): string {
 export async function POST(request: Request) {
   try {
     const body = await request.json().catch(() => ({}));
-    const { jobText = "", cvData } = body;
+    const { jobText = "", cvData } = body as {
+      jobText?: string;
+      cvData?: CvDataInput;
+    };
 
     const referer = request.headers.get("referer") || "";
     const isPtUrl = referer.includes("/pt/") || referer.endsWith("/pt");
@@ -77,20 +120,35 @@ export async function POST(request: Request) {
 
     const cvTextLower = extractCvText(cvData);
 
-    // 1. VALIDAÇÃO DOS METADADOS
-    let validation = { warnings: [] as string[] };
+    // 1. Metadata Validation Setup with correct Typing
+    const defaultWarnings: ValidationWarnings = {
+      keywords: [],
+      roleTarget: null,
+      subjectWords: [],
+      infoRoleMismatch: false,
+    };
+
+    let validation = { warnings: defaultWarnings };
+
     try {
       if (jobText && cvData) {
-        validation = validateMetaWithJob(jobText, cvData) || { warnings: [] };
+        validation = (validateMetaWithJob(jobText, cvData) as {
+          warnings: ValidationWarnings;
+        }) || {
+          warnings: defaultWarnings,
+        };
       }
     } catch (e) {
-      console.error("Erro seguro interceptado na validação de metadados:", e);
+      console.error("Safely caught metadata validation error:", e);
     }
 
-    // 2. PARSE DAS PALAVRAS-CHAVE DA VAGA
-    const parsedKeywords = extractKeywords(jobText) || {};
+    // 2. Job Description Keywords Parsing
+    const parsedKeywords = (extractKeywords(jobText) || {}) as Record<
+      string,
+      KeywordData
+    >;
     const keywordsTable = Object.entries(parsedKeywords).map(
-      ([keyword, data]: [string, any], index) => {
+      ([keyword, data], index) => {
         const escapedKw = (keyword || "").replace(
           /[-\/\\^$*+?.()|[\]{}]/g,
           "\\$&"
@@ -111,16 +169,14 @@ export async function POST(request: Request) {
           inVacancy,
           goal2x,
           onResume,
-          status: isApproved ? ("Aprovado" as const) : ("Pendente" as const),
+          status: isApproved ? ("Approved" as const) : ("Pending" as const),
         };
       }
     );
 
-    // 2.5 PARSE DA EXPERIÊNCIA MULTIPLA (INJETADO NA TABELA)
-    // Agora requiredYearsList retorna algo como [2, 3]
-    const requiredYearsList = extractExperience(jobText);
+    // 2.5 Dynamic Multi-year Experience Requirements Parsing
+    const requiredYearsList = extractExperience(jobText) as number[];
 
-    // Usamos um for...of para poder lidar com a tradução (await getTranslations) para cada número
     for (const years of requiredYearsList) {
       const exactJobRegex = new RegExp(
         `\\b${years}\\s*\\+?\\s*(?:anos?|years?|yrs?)\\b`,
@@ -128,11 +184,10 @@ export async function POST(request: Request) {
       );
       const inVacancyCount = (jobText.match(exactJobRegex) || []).length;
 
-      // Se não achou com o regex exato (ex: "experience \n 3+"), garante que pelo menos foi 1 vez
+      // Fallback to 1 if exact matching pattern is not located but requirement exists
       const inVacancy = inVacancyCount > 0 ? inVacancyCount : 1;
       const goal2x = inVacancy * 2;
 
-      // Busca na vaga
       const expRegex = new RegExp(
         `\\b${years}\\s*(?:anos?|years?|yrs?)\\b`,
         "gi"
@@ -156,28 +211,26 @@ export async function POST(request: Request) {
             : `Experience (${years} Years)`;
       }
 
-      // Ao usar unshift com Array [2, 3], o 2 entra primeiro.
-      // Depois o 3 entra EMPURRANDO o 2 para baixo.
-      // Fica perfeito: O maior requisito (3 anos) aparece no topo da lista.
+      // Prepend elements so larger requirements appear first in the UI
       keywordsTable.unshift({
         id: `exp-${years}`,
         keyword: expKeywordName.toUpperCase(),
         inVacancy,
         goal2x,
         onResume,
-        status: isApproved ? ("Aprovado" as const) : ("Pendente" as const),
+        status: isApproved ? ("Approved" as const) : ("Pending" as const),
       });
     }
 
-    // 3. ANÁLISE DOS VERBOS DE AÇÃO
-    const verbIssues: any[] = [];
+    // 3. Action Verbs Analysis
+    const verbIssues: VerbIssue[] = [];
 
     if (cvData?.summary && typeof cvData.summary === "string") {
       const summaryIssues = analyzeVerbs(
         cvData.summary,
         "Resumo (Summary)",
         currentLocale
-      );
+      ) as VerbIssue[];
       if (Array.isArray(summaryIssues)) {
         verbIssues.push(...summaryIssues);
       }
@@ -190,9 +243,9 @@ export async function POST(request: Request) {
             if (detail && typeof detail === "string") {
               const expIssues = analyzeVerbs(
                 detail,
-                `Exp: ${exp.company || "Empresa"}`,
+                `Exp: ${exp.company || "Company"}`,
                 currentLocale
-              );
+              ) as VerbIssue[];
               if (Array.isArray(expIssues)) {
                 verbIssues.push(...expIssues);
               }
@@ -202,7 +255,7 @@ export async function POST(request: Request) {
       }
     }
 
-    // 4. PALAVRAS SUSPEITAS
+    // 4. Highlight Flagged/Suspect Words
     const suspectWords: string[] = [];
     if (cvTextLower) {
       if (/\btodo\b/i.test(cvTextLower)) suspectWords.push("todo");
@@ -216,11 +269,11 @@ export async function POST(request: Request) {
       suspectWords,
     });
   } catch (error) {
-    console.error("Erro crítico na API /api/analyze interceptado:", error);
+    console.error("Critical API error caught in /api/analyze:", error);
     return NextResponse.json(
       {
         success: false,
-        error: "Erro interno no servidor tratado com segurança.",
+        error: "Internal server error handled safely.",
       },
       { status: 500 }
     );
