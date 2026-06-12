@@ -27,7 +27,7 @@ export function MetaAtsSection() {
 
   const [isMounted, setIsMounted] = useState(false);
 
-  // ESTADOS DE COLAPSO SINCRONIZADOS VIA CUSTOM HOOK
+  // COLLAPSE STATES SYNCHRONIZED VIA CUSTOM HOOK
   const [isOpen, setIsOpen] = useSyncCollapse("meta-ats", false);
   const [isKeywordsOpen, setIsKeywordsOpen] = useSyncCollapse(
     "meta-keywords",
@@ -45,9 +45,14 @@ export function MetaAtsSection() {
     id: "meta_ats",
     title: t("sections.meta_ats.title"),
     subTitle: t("sections.meta_ats.subTitle"),
-    fields: Object.entries(t.raw("sections.meta_ats.fields"))
+    fields: Object.entries(
+      t.raw("sections.meta_ats.fields") as Record<
+        string,
+        { label: string; placeholder: string }
+      >
+    )
       .filter(([key]) => key !== "keywords")
-      .map(([key, value]: [string, any]) => ({
+      .map(([key, value]) => ({
         id: key,
         label: value.label,
         placeholder: value.placeholder,
@@ -175,7 +180,7 @@ export function MetaAtsSection() {
         onOpenChange={setIsOpen}
         className="flex flex-col gap-6 border-b py-4"
       >
-        {/* NÍVEL 1: HEADER PRINCIPAL DA SEÇÃO */}
+        {/* LEVEL 1: PRIMARY SECTION HEADER */}
         <div className="flex w-full flex-row items-start justify-between gap-4">
           <div className="flex flex-col text-left">
             <h2 className="text-xl font-semibold">{sectionDef.title}</h2>
@@ -202,7 +207,7 @@ export function MetaAtsSection() {
           </div>
         </div>
 
-        {/* NÍVEL 1 CONTEÚDO (CAMPOS DE CONFIGURAÇÃO DO ATS) */}
+        {/* LEVEL 1 CONTENT (ATS METADATA CONFIGURATION FIELDS) */}
         <CollapsibleContent className="space-y-4">
           <Field className="mb-4 scroll-mt-24" id="meta-lang">
             <div className="flex w-full flex-col gap-2">
@@ -252,7 +257,7 @@ export function MetaAtsSection() {
             );
           })}
 
-          {/* === NÍVEL 2: KEYWORDS SECTION (DYNAMIC ARRAY & COLLAPSIBLE) === */}
+          {/* === LEVEL 2: KEYWORDS SECTION (DYNAMIC ARRAY & COLLAPSIBLE) === */}
           <Collapsible
             open={isKeywordsOpen}
             onOpenChange={setIsKeywordsOpen}
