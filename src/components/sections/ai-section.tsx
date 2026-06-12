@@ -15,7 +15,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-
 import { useSyncCollapse } from "@/app/hooks/useSyncCollapse";
 
 export function AiSection() {
@@ -25,14 +24,12 @@ export function AiSection() {
   const handleAutoResize = useAutoResize();
 
   const [isMounted, setIsMounted] = useState(false);
-
   const [isOpen, setIsOpen] = useSyncCollapse("ai", false);
-  {
-    /* 
+
+  /* 
     DEFERRED MOUNT EFFECT
     - Defers rendering the fully interactive state to prevent hydration issues.
   */
-  }
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsMounted(true);
@@ -40,12 +37,10 @@ export function AiSection() {
     return () => clearTimeout(timer);
   }, []);
 
-  {
-    /* 
+  /* 
     HIGH-FIDELITY SKELETON LOADER
     - Matches the layout, gaps, and heights of both flat and dynamic components exactly.
   */
-  }
   if (!isMounted) {
     return (
       <CardContent>
@@ -78,7 +73,6 @@ export function AiSection() {
         <div className="flex w-full flex-row items-start justify-between gap-4">
           <div className="flex flex-col text-left">
             <h2 className="text-xl font-semibold">{t("sections.ai.title")}</h2>
-            {/* CORRIGIDO: Removido 'border-b pb-2' */}
             <h3 className="text-muted-foreground text-lg">
               {t("sections.ai.subTitle")}
             </h3>
@@ -102,7 +96,7 @@ export function AiSection() {
           </div>
         </div>
 
-        {/* CONTEÚDO QUE SOME E APARECE */}
+        {/* COLLAPSIBLE CONTENT */}
         <CollapsibleContent className="space-y-4">
           <Field className="mb-4">
             <div className="flex w-full flex-col gap-4">
