@@ -135,11 +135,10 @@ export function HistoryTable({
   );
 }
 
-// Subcomponent with direct color mapping on titles (span) and icons (SVG)
 interface HistoryItemDetailProps {
   cv: CvDataState;
-  t: (key: string) => string;
-  tJob: (key: string) => string;
+  t: ReturnType<typeof useTranslations>;
+  tJob: ReturnType<typeof useTranslations>;
 }
 
 function HistoryItemDetail({ cv, t, tJob }: HistoryItemDetailProps) {
