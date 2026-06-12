@@ -17,13 +17,13 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-// --- SUB-COMPONENTE AUXILIAR (SKILL ITEM) ---
+// --- AUXILIARY SUB-COMPONENT (SKILL ITEM) ---
 interface SkillItemProps {
   skill: string;
   index: number;
   cvDataLength: number;
-  t: any;
-  handleAutoResize: any;
+  t: ReturnType<typeof useTranslations>;
+  handleAutoResize: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   removeItem: (index: number) => void;
   updateItem: (index: number, value: string) => void;
 }
@@ -37,7 +37,7 @@ function SkillItem({
   removeItem,
   updateItem,
 }: SkillItemProps) {
-  // HOOK DO SUB-ITEM CONECTADO AO ÍNDICE
+  // CONNECT SUB-ITEM COLLAPSE STATE TO INDEX TO PREVENT HYDRATION DRIFT
   const [isSkillOpen, setIsSkillOpen] = useSyncCollapse(
     `skills-item-${index}`,
     false
@@ -107,7 +107,7 @@ function SkillItem({
   );
 }
 
-// --- COMPONENTE PRINCIPAL ---
+// --- MAIN COMPONENT ---
 export function SkillsSection() {
   const t = useTranslations("ResumeBuilderPage");
   const cvData = useResumeStore((s) => s.cvData);
@@ -170,7 +170,7 @@ export function SkillsSection() {
       >
         {/* SECTION HEADER CONTAINER */}
         <div className="flex w-full flex-row items-start justify-between gap-4">
-          {/* LADO ESQUERDO: TEXTOS DE INFORMAÇÃO */}
+          {/* LEFT SIDE: DESCRIPTIVE TEXTS */}
           <div className="flex flex-col text-left">
             <h2 className="text-xl font-semibold">
               {t("sections.skills.title")}
@@ -183,9 +183,9 @@ export function SkillsSection() {
             </p>
           </div>
 
-          {/* LADO DIREITO: DIV ÚNICA QUE AGRUPA O ABRE/FECHA EM CIMA E O ADICIONAR EMBAIXO */}
+          {/* RIGHT SIDE: UTILITIES GROUPING */}
           <div className="flex shrink-0 flex-col items-end gap-2">
-            {/* COLLAPSIBLE TRIGGER (SETA CHEVRON) */}
+            {/* COLLAPSIBLE TRIGGER (CHEVRON BUTTON) */}
             <CollapsibleTrigger asChild>
               <Button
                 type="button"
@@ -201,14 +201,14 @@ export function SkillsSection() {
               </Button>
             </CollapsibleTrigger>
 
-            {/* BOTÃO ADICIONAR */}
+            {/* ADD BUTTON */}
             <Button type="button" variant="outline" size="sm" onClick={addItem}>
               <Plus className="mr-2 h-4 w-4" /> {t("sections.skills.addBtn")}
             </Button>
           </div>
         </div>
 
-        {/* CONTEÚDO QUE SOME E APARECE */}
+        {/* COLLAPSIBLE CONTENT */}
         <CollapsibleContent className="space-y-4">
           {/* SKILLS LIST */}
           {cvData.skills.map((skill, index) => (
