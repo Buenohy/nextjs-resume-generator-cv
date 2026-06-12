@@ -38,8 +38,9 @@ import { cn } from "@/lib/utils";
 import { useResumeStore } from "@/store/useResumeStore";
 import { getColumns } from "./columns";
 import { Skeleton } from "@/components/ui/skeleton";
+import { KeywordData } from "@/types/keywords";
 
-const EMPTY_KEYWORDS: any[] = [];
+const EMPTY_KEYWORDS: KeywordData[] = [];
 
 export function FeedbackCard() {
   const t = useTranslations("ResumeBuilderPage");
@@ -74,10 +75,10 @@ export function FeedbackCard() {
   });
 
   const totalPendente = keywordsTableData.filter(
-    (item) => item.status === "Pendente"
+    (item) => item.status === "Pending"
   ).length;
   const totalAprovado = keywordsTableData.filter(
-    (item) => item.status === "Aprovado"
+    (item) => item.status === "Approved"
   ).length;
 
   if (!isMounted) {
@@ -131,7 +132,7 @@ export function FeedbackCard() {
               />
             </Button>
             {isLoadingAnalysis && (
-              <Loader2 className="text-primary h-5 w-5 animate-spin" />
+              <Loader2 className="text-primary size-5 animate-spin" />
             )}
           </div>
         </div>
@@ -177,7 +178,7 @@ export function FeedbackCard() {
           <>
             {activeTab === "parse" && <ParseTab />}
             {activeTab === "match" && (
-              // Rolagem horizontal nativa ativada via overflow-x-auto
+              // Native horizontal scrolling enabled via overflow-x-auto
               <div className="border-muted overflow-x-auto rounded-md border shadow-sm">
                 <Table className="min-w-[640px] md:min-w-full">
                   <TableHeader>
@@ -186,7 +187,7 @@ export function FeedbackCard() {
                         {hg.headers.map((header) => (
                           <TableHead
                             key={header.id}
-                            // Primeira coluna do cabeçalho fixa via CSS
+                            // First header column fixed via sticky layout
                             className="first:bg-card first:border-muted/50 pt-2 text-xs first:sticky first:left-0 first:z-20 first:border-r"
                           >
                             {header.isPlaceholder
@@ -207,7 +208,7 @@ export function FeedbackCard() {
                           {row.getVisibleCells().map((cell) => (
                             <TableCell
                               key={cell.id}
-                              // Primeira coluna do corpo fixa via CSS
+                              // First column of the body fixed via sticky layout
                               className="first:bg-card first:border-muted/50 py-2 align-middle first:sticky first:left-0 first:z-10 first:border-r"
                             >
                               {flexRender(
@@ -268,7 +269,7 @@ export function FeedbackCard() {
   );
 }
 
-// Subcomponente ParseTab e OptimizeTab permanecem intactos abaixo
+// Subcomponents ParseTab and OptimizeTab
 
 function ParseTab() {
   const t = useTranslations("ResumeBuilderPage");
