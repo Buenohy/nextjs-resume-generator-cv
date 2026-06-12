@@ -14,7 +14,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-
 import { useSyncCollapse } from "@/app/hooks/useSyncCollapse";
 
 export function HeaderSection() {
@@ -23,14 +22,12 @@ export function HeaderSection() {
   const updateCvData = useResumeStore((s) => s.updateCvData);
 
   const [isMounted, setIsMounted] = useState(false);
-
   const [isOpen, setIsOpen] = useSyncCollapse("personal-info", false);
-  {
-    /* 
+
+  /* 
     DEFERRED MOUNT EFFECT
     - Defers rendering the fully interactive state to prevent hydration issues.
   */
-  }
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsMounted(true);
@@ -42,13 +39,16 @@ export function HeaderSection() {
     id: "header",
     title: t("sections.header.title"),
     subTitle: t("sections.header.subTitle"),
-    fields: Object.entries(t.raw("sections.header.fields")).map(
-      ([key, value]: [string, any]) => ({
-        id: key,
-        label: value.label,
-        placeholder: value.placeholder,
-      })
-    ),
+    fields: Object.entries(
+      t.raw("sections.header.fields") as Record<
+        string,
+        { label: string; placeholder: string }
+      >
+    ).map(([key, value]) => ({
+      id: key,
+      label: value.label,
+      placeholder: value.placeholder,
+    })),
   };
 
   const getFieldValue = (fieldId: string) =>
@@ -56,7 +56,7 @@ export function HeaderSection() {
 
   const handleChange = (fieldId: string, value: string) => {
     updateCvData((draft) => {
-      // Se o campo for idade, permite apenas números, removendo letras/símbolos
+      // If the field is age, allow numbers only, filtering out letters and symbols
       if (fieldId === "age") {
         draft.info.age = value.replace(/\D/g, "");
       } else {
@@ -65,12 +65,10 @@ export function HeaderSection() {
     });
   };
 
-  {
-    /* 
+  /* 
     HIGH-FIDELITY SKELETON LOADER
     - Matches the layout, gaps, and heights of both flat and dynamic components exactly.
   */
-  }
   if (!isMounted) {
     return (
       <CardContent>
@@ -106,7 +104,6 @@ export function HeaderSection() {
         <div className="flex w-full flex-row items-start justify-between gap-4">
           <div className="flex flex-col text-left">
             <h2 className="text-xl font-semibold">{sectionDef.title}</h2>
-            {/* CORRIGIDO: Removido 'border-b pb-2' */}
             <h3 className="text-muted-foreground text-lg">
               {sectionDef.subTitle}
             </h3>
@@ -130,7 +127,7 @@ export function HeaderSection() {
           </div>
         </div>
 
-        {/* CONTEÚDO QUE SOME E APARECE */}
+        {/* COLLAPSIBLE CONTENT */}
         <CollapsibleContent className="space-y-4">
           {sectionDef.fields.map(({ id, label, placeholder }) => {
             const domId = `personal-${id}`;
@@ -146,7 +143,7 @@ export function HeaderSection() {
                     placeholder={placeholder}
                     value={getFieldValue(id)}
                     onChange={(e) => handleChange(id, e.target.value)}
-                    // Se for age (idade), mostra um limite menor no teclado mobile
+                    // Uses numeric input mode for age to show optimal mobile keyboard
                     inputMode={id === "age" ? "numeric" : "text"}
                     maxLength={id === "age" ? 3 : undefined}
                   />
