@@ -18,7 +18,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-// --- CONVERSÃO AUXILIAR ADAPTADA PARA TOKENS ---
+// --- AUXILIARY CONVERSION FOR TOKENIZED STRINGS ---
 const parseCertString = (str?: string) => {
   if (!str) return { text: "", month: "", year: "" };
   const parts = str.split(" | ");
@@ -44,15 +44,15 @@ const parseCertString = (str?: string) => {
   };
 };
 
-// --- SUB-COMPONENTE AUXILIAR (CERTIFICATION ITEM) ---
+// --- AUXILIARY SUB-COMPONENT (CERTIFICATION ITEM) ---
 interface CertificationItemProps {
   cert: string;
   index: number;
   YEARS: string[];
   MONTHS: string[];
   cvDataLength: number;
-  t: any;
-  handleAutoResize: any;
+  t: ReturnType<typeof useTranslations>;
+  handleAutoResize: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   removeItem: (index: number) => void;
   handleCertChange: (index: number, text: string, m: string, y: string) => void;
 }
@@ -171,7 +171,7 @@ function CertificationItem({
   );
 }
 
-// --- COMPONENTE PRINCIPAL ---
+// --- MAIN COMPONENT ---
 export function CertificationsSection() {
   const t = useTranslations("ResumeBuilderPage");
   const cvData = useResumeStore((s) => s.cvData);
