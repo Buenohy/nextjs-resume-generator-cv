@@ -64,7 +64,14 @@ export function MetaAtsSection() {
 
   const handleChange = (fieldId: string, value: string) => {
     updateCvData((draft) => {
-      draft.meta_ats[fieldId as keyof typeof draft.meta_ats] = value;
+      // We omit 'keywords' to guarantee we are writing only to string properties safely
+      if (fieldId !== "keywords") {
+        const stringKey = fieldId as keyof Omit<
+          typeof draft.meta_ats,
+          "keywords"
+        >;
+        draft.meta_ats[stringKey] = value;
+      }
 
       if (fieldId === "contributor") {
         draft.meta_ats.identifier = value ? `CV-${value}` : "";
