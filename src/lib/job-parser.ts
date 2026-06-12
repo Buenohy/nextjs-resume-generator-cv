@@ -6,10 +6,10 @@ export interface KeywordMatch {
 export type KeywordResults = Record<string, KeywordMatch>;
 
 // ==========================================
-// LISTA DE PALAVRAS SIMPLES (TECH WHITELIST)
+// SIMPLE KEYWORDS TECH WHITELIST
 // ==========================================
 const TECH_WHITELIST = [
-  // --- IA / Machine Learning (Simples) ---
+  // --- AI / Machine Learning (Simple) ---
   "ai",
   "ia",
   "llm",
@@ -47,7 +47,7 @@ const TECH_WHITELIST = [
   "cohere",
   "reka",
 
-  // --- Cloud / DevOps / Infraestrutura (Simples) ---
+  // --- Cloud / DevOps / Infrastructure (Simple) ---
   "aws",
   "gcp",
   "azure",
@@ -100,7 +100,7 @@ const TECH_WHITELIST = [
   "ibmcloud",
   "yandexcloud",
 
-  // --- Bancos de Dados (Simples) ---
+  // --- Databases (Simple) ---
   "postgresql",
   "postgres",
   "mysql",
@@ -124,7 +124,7 @@ const TECH_WHITELIST = [
   "pocketbase",
   "datomic",
 
-  // --- Linguagens de Programação e Scripting (Simples) ---
+  // --- Programming & Scripting Languages (Simple) ---
   "python",
   "nodejs",
   "react",
@@ -197,7 +197,7 @@ const TECH_WHITELIST = [
   "cobol",
   "mojo",
 
-  // --- Frameworks e Tecnologias Web (Simples) ---
+  // --- Web Frameworks & Technologies (Simple) ---
   "jquery",
   "express",
   "wordpress",
@@ -217,7 +217,7 @@ const TECH_WHITELIST = [
   "odoo",
   "swiftdata",
 
-  // --- IDEs e Editores de Código (Simples) ---
+  // --- IDEs & Code Editors (Simple) ---
   "vscode",
   "vim",
   "neovim",
@@ -240,7 +240,7 @@ const TECH_WHITELIST = [
   "aider",
   "trae",
 
-  // --- Documentação e Colaboração (Simples) ---
+  // --- Documentation & Collaboration (Simple) ---
   "github",
   "jira",
   "gitlab",
@@ -261,7 +261,7 @@ const TECH_WHITELIST = [
   "youtrack",
   "coda",
 
-  // --- Sistemas Operacionais (Simples) ---
+  // --- Operating Systems (Simple) ---
   "windows",
   "macos",
   "android",
@@ -276,10 +276,10 @@ const TECH_WHITELIST = [
 ];
 
 // ==========================================
-// LISTA DE PADRÕES COMPOSTOS (REGEX DE COINCIDÊNCIA)
+// COMPOSITE PATTERNS (REGEX MATCHING)
 // ==========================================
 const COMPOSITE_PATTERNS = [
-  // --- IA / Machine Learning (Compostas) ---
+  // --- AI / Machine Learning (Composite) ---
   { name: "artificial intelligence", regex: /\bartificial\s+intelligence\b/gi },
   {
     name: "inteligência artificial",
@@ -309,7 +309,7 @@ const COMPOSITE_PATTERNS = [
   { name: "amazon bedrock", regex: /\bamazon\s+bedrock\b/gi },
   { name: "amazon titan", regex: /\bamazon\s+titan\s+models?\b/gi },
 
-  // --- Cloud / DevOps (Compostas) ---
+  // --- Cloud / DevOps (Composite) ---
   { name: "amazon web services", regex: /\bamazon\s+web\s+services\b/gi },
   { name: "aws lambda", regex: /\baws\s+lambda\b/gi },
   { name: "microsoft azure", regex: /\bmicrosoft\s+azure\b/gi },
@@ -328,7 +328,7 @@ const COMPOSITE_PATTERNS = [
   { name: "blob storage", regex: /\bblob\s+storage\b/gi },
   { name: "digital ocean", regex: /\bdigital\s*ocean\b/gi },
 
-  // --- Bancos de Dados (Compostas) ---
+  // --- Databases (Composite) ---
   { name: "microsoft sql server", regex: /\bmicrosoft\s+sql\s+server\b/gi },
   { name: "cloud firestore", regex: /\bcloud\s+firestore\b/gi },
   {
@@ -341,7 +341,7 @@ const COMPOSITE_PATTERNS = [
   { name: "ibm db2", regex: /\bibm\s+db2\b/gi },
   { name: "amazon redshift", regex: /\bamazon\s+redshift\b/gi },
 
-  // --- Tecnologias e Frameworks Gerais (Compostas) ---
+  // --- Core Technologies & Frameworks (Composite) ---
   { name: "TypeScript", regex: /\btype\s*script\b/gi },
   { name: "JavaScript", regex: /\bjava\s*script\b/gi },
   { name: "React Native", regex: /\breact\s+native\b/gi },
@@ -360,13 +360,13 @@ const COMPOSITE_PATTERNS = [
   { name: "microsoft fabric", regex: /\bmicrosoft\s+fabric\b/gi },
   { name: "delphi 12", regex: /\bdelphi\s+12\b/gi },
 
-  // --- Linguagens e Caracteres Complexos ---
+  // --- Complex Syntaxes & Shells ---
   { name: "html/css", regex: /\bhtml\s*[\/-]\s*css\b/gi },
   { name: "bash/shell", regex: /\bbash\s*[\/-]\s*shell\b/gi },
   { name: "visual basic", regex: /\bvisual\s+basic\b/gi },
   { name: "micro python", regex: /\bmicro\s+python\b/gi },
 
-  // --- IDEs e Ferramentas Corporativas (Compostas) ---
+  // --- IDEs & Enterprise Collaboration Tools (Composite) ---
   { name: "visual studio code", regex: /\bvisual\s+studio\s+code\b/gi },
   { name: "visual studio", regex: /\bvisual\s+studio\b/gi },
   { name: "intellij idea", regex: /\bintellij\s+idea\b/gi },
@@ -377,7 +377,7 @@ const COMPOSITE_PATTERNS = [
   { name: "microsoft planner", regex: /\bmicrosoft\s+planner\b/gi },
   { name: "stack overflow", regex: /\bstack\s+overflow\b/gi },
 
-  // --- Sistemas Operacionais (Compostas) ---
+  // --- Operating Systems (Composite) ---
   {
     name: "windows subsystem for linux",
     regex: /\bwindows\s+subsystem\s+for\s+linux\b/gi,
@@ -396,7 +396,7 @@ const BLOCK_END_MARKERS = [
   "etapas do processo",
 ];
 
-// ALGORITMO DESCOLADOR (UN-GLUER)
+// CamelCase Un-gluer helper to split words stuck together
 function unglueText(text: string): string {
   if (!text) return "";
   let cleaned = text.replace(/([a-z])([A-Z])/g, "$1 $2");
@@ -431,7 +431,7 @@ export function extractKeywords(jobText: string): KeywordResults {
     (a, b) => b.name.length - a.name.length
   );
 
-  // 1. Processa e Mascara os padrões compostos
+  // 1. Process and mask composite patterns to prevent partial word overrides
   for (const pattern of sortedComposite) {
     const regex = pattern.regex;
     const matchesArray = workingText.match(regex) || [];
@@ -449,7 +449,7 @@ export function extractKeywords(jobText: string): KeywordResults {
     (a, b) => b.length - a.length
   );
 
-  // 2. Processa e Mascara as palavras simples
+  // 2. Process and mask simple whitelist keywords
   for (const tech of sortedWhitelist) {
     if (matches[tech]) continue;
 
