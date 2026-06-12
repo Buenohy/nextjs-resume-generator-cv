@@ -42,7 +42,7 @@ export function MonthYearPicker({
   side = "bottom",
   onlyEnd = false,
 }: MonthYearPickerProps) {
-  // Função que traduz o Token (ex: __MONTH_0__) para o nome real na interface
+  // Translates token values (e.g. __MONTH_0__) to local month names.
   const getDisplayMonth = (val: string) => {
     if (!val) return null;
     if (val === "__PRESENT__") return t("sections.education.present");
@@ -50,7 +50,7 @@ export function MonthYearPicker({
       const idx = parseInt(val.replace(/\D/g, ""), 10);
       return months[idx] || val;
     }
-    return val; // Fallback para dados antigos salvos como "Janeiro"
+    return val; // Fallback for legacy database records saved as string names (e.g. "Janeiro")
   };
 
   return (
