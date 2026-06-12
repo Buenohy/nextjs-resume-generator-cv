@@ -64,20 +64,21 @@ export default function NavigationMenuDemo() {
               <Link href="/pdf-preview" className="cursor-pointer">
                 {t("pdf.preview.title")}
               </Link>
-
-              <DropdownMenuLabel>{t("contents.trigger")}</DropdownMenuLabel>
-              <DropdownMenuItem asChild>
-                <Link href="/full-content" className="cursor-pointer">
-                  {t("contents.description.title")}
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
 
             <DropdownMenuLabel>{t("contents.trigger")}</DropdownMenuLabel>
             <DropdownMenuItem asChild>
               <Link href="/full-content" className="cursor-pointer">
                 {t("contents.description.title")}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+
+            <DropdownMenuLabel>{t("history.trigger")}</DropdownMenuLabel>
+            <DropdownMenuItem asChild>
+              <Link href="/history" className="cursor-pointer">
+                {t("history.description.title")}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
