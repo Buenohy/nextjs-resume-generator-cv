@@ -16,7 +16,7 @@ import {
 import NavigationMenu from "@/components/nav-menu";
 import { ThemeProvider } from "@/components/theme-provider";
 
-// Configuração das Fontes
+// Font Configurations
 const jetbrainsMonoHeading = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-heading",
@@ -27,7 +27,7 @@ const oxanium = Oxanium({
   variable: "--font-sans",
 });
 
-// Configuração dos Metadados (Title e Description)
+// Metadata Configurations
 export async function generateMetadata({
   params,
 }: {
@@ -50,15 +50,15 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params;
 
-  // Verifica se o idioma é válido
-  if (!routing.locales.includes(locale as any)) {
+  // Validate if the current locale is supported using strict routing array types instead of "any"
+  if (!routing.locales.includes(locale as (typeof routing.locales)[number])) {
     notFound();
   }
 
-  // Otimização para Server Components recomendada pelo next-intl
+  // Server-side localization context setup recommended by next-intl
   setRequestLocale(locale);
 
-  // Busca as traduções do pt.json ou en.json
+  // Fetch localized dictionary messages
   const messages = await getMessages();
 
   return (
