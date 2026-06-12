@@ -37,7 +37,7 @@ const PDFDownloadLink = dynamic(
 export default function PdfPreviewPage() {
   const t = useTranslations("PdfPreviewPage");
   const tResume = useTranslations("ResumeComponent.sections");
-  const tBuilder = useTranslations("ResumeBuilderPage"); // Usado para pegar os meses traduzidos
+  const tBuilder = useTranslations("ResumeBuilderPage");
   const locale = useLocale();
   const cvData = useResumeStore((state) => state.cvData);
   const saveResumeToHistory = useResumeStore(
@@ -50,7 +50,7 @@ export default function PdfPreviewPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  // --- TRADUTOR DE TOKENS (A MÁGICA ACONTECE AQUI) ---
+  // --- TOKEN PARSING TRANSLATOR ---
   const months = tBuilder.raw("months") as string[];
   const languageLevels = tBuilder.raw("language_levels") as string[];
   const presentStr = tBuilder("sections.education.present");
@@ -74,7 +74,7 @@ export default function PdfPreviewPage() {
     const meta = cvData.meta_ats || {};
     const prevTitle = document.title;
 
-    // Título dinâmico da aba do navegador incluindo a empresa
+    // Dynamic browser tab title including target company details
     const role = meta.role_target || "Resume";
     const name = cvData.info.name || "Gabriel Bueno Hygino";
     const company = cvData.company ? ` - ${cvData.company}` : "";
@@ -88,7 +88,7 @@ export default function PdfPreviewPage() {
 
   const infoProp = {
     ...cvData.info,
-    // MAPEAMENTO: Associa o valor de "city" do formulário/Zustand à propriedade "location" esperada pelo PDF
+    // MAP: Associates the form field value "city" with the property "location" expected by the PDF component
     location: cvData.info.city || "",
     age: cvData.info.age ? `${cvData.info.age} ${tResume("yearsOld")}` : "",
     email: cvData.links.email,
@@ -102,7 +102,7 @@ export default function PdfPreviewPage() {
     github_url: cvData.links.github,
   };
 
-  // Aplica o parseTokens nas datas e níveis de idioma!
+  // Apply token translator on dates and language proficiency levels
   const experienceProp = cvData.experiences.map((exp) => ({
     role: exp.role,
     company: exp.company,
@@ -144,7 +144,7 @@ export default function PdfPreviewPage() {
     />
   );
 
-  // Nomeação dinâmica do arquivo baseado no nome e empresa alvo sanitizados
+  // Dynamically format file name based on sanitized user name and target company
   const namePart = (cvData.info.name || "Resume").trim().replace(/\s+/g, "_");
   const companyPart = cvData.company
     ? cvData.company.trim().replace(/\s+/g, "_")
