@@ -18,7 +18,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-// --- CONVERSÃO AUXILIAR ADAPTADA PARA TOKENS ---
+// --- AUXILIARY CONVERSION FOR TOKENIZED STRINGS ---
 const parseEduString = (str?: string) => {
   if (!str)
     return {
@@ -62,8 +62,8 @@ interface EducationItemProps {
   YEARS: string[];
   MONTHS: string[];
   cvDataLength: number;
-  t: any;
-  handleAutoResize: any;
+  t: ReturnType<typeof useTranslations>;
+  handleAutoResize: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   removeItem: (index: number) => void;
   handleEduChange: (
     index: number,
@@ -272,7 +272,7 @@ export function EducationSection() {
     ey: string
   ) => {
     const start = [sm, sy].filter(Boolean).join(" ");
-    // SALVA O TOKEN __PRESENT__ SE ESTIVER ATUALMENTE SELECIONADO
+    // SAVES THE __PRESENT__ TOKEN IF IT IS CURRENTLY SELECTED
     const end =
       em === "__PRESENT__" ? "__PRESENT__" : [em, ey].filter(Boolean).join(" ");
     const datePart = [start, end].filter(Boolean).join(" - ");
