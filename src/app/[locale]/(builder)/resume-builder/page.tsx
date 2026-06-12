@@ -28,7 +28,7 @@ export default function ResumeBuilderPage() {
   const t = useTranslations("ResumeBuilderPage");
   const [isMounted, setIsMounted] = useState(false);
 
-  // REFERÊNCIAS E ESTADOS PARA O SCROLL DINÂMICO INTELIGENTE
+  // Refs and state hook for the smart dynamic floating scroll
   const parentRef = useRef<HTMLDivElement>(null);
   const rightColRef = useRef<HTMLDivElement>(null);
   const [floatOffset, setFloatOffset] = useState(0);
@@ -40,7 +40,7 @@ export default function ResumeBuilderPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  // LÓGICA DO SENSOR DE ALTURA E SCROLL SPY
+  // Height sensor and scroll-spy calculation logic
   useEffect(() => {
     if (!isMounted) return;
 
@@ -49,10 +49,10 @@ export default function ResumeBuilderPage() {
       const rightCol = rightColRef.current;
       if (!parent || !rightCol) return;
 
-      // Altura total do Grid pai
+      // Total height of the parent grid container
       const parentHeight = parent.offsetHeight;
 
-      // Resgata as divs dos cards de Feedback e Índice de forma segura
+      // Safely retrieve the DOM elements for Feedback and Section Navigation cards
       const feedbackCard = rightCol.querySelector(
         '[data-sticky="feedback"]'
       ) as HTMLElement;
@@ -62,28 +62,28 @@ export default function ResumeBuilderPage() {
 
       const feedbackHeight = feedbackCard?.offsetHeight || 380;
       const navHeight = sectionNav?.offsetHeight || 420;
-      const gap = 24; // correspondente à classe space-y-6 (1.5rem = 24px)
+      const gap = 24; // Corresponding to the space-y-6 class (1.5rem = 24px)
 
-      // Altura estática dos elementos da direita somados
+      // Aggregated static height of right column elements combined
       const rightColStaticHeight = feedbackHeight + navHeight + gap;
 
-      // Limite máximo que o menu pode deslizar sem vazar a coluna
-      const maxOffset = Math.max(0, parentHeight - rightColStaticHeight - 16); // 16px de margem inferior
+      // Maximum floating offset allowed without leaving the parent column boundaries
+      const maxOffset = Math.max(0, parentHeight - rightColStaticHeight - 16); // 16px bottom margin offset
 
       const currentScroll = window.scrollY;
-      const targetOffset = currentScroll - 1105; // Ponto inicial do scroll flutuante
+      const targetOffset = currentScroll - 1105; // Starting floating scroll trigger threshold point
 
-      // Aplica o "Clamp" limitador entre 0 e o MaxOffset calculado
+      // Clamp calculated offset value between 0 and maxOffset
       const clampedOffset = Math.min(Math.max(0, targetOffset), maxOffset);
 
       setFloatOffset(clampedOffset);
     };
 
-    // 1. Listeners tradicionais de Scroll e Redimensionamento de Janela
+    // 1. Window scroll and resize event listeners
     window.addEventListener("scroll", handleScrollAndResize, { passive: true });
     window.addEventListener("resize", handleScrollAndResize);
 
-    // 2. SENSOR DE CLIQUES (ResizeObserver na coluna esquerda dos formulários)
+    // 2. ResizeObserver tracking structural changes in the left column forms
     const leftCol = parentRef.current?.firstElementChild;
     let resizeObserver: ResizeObserver | null = null;
 
@@ -94,7 +94,7 @@ export default function ResumeBuilderPage() {
       resizeObserver.observe(leftCol);
     }
 
-    // Executa a primeira vez para iniciar alinhado
+    // Initial execution to align columns on load
     handleScrollAndResize();
 
     return () => {
@@ -114,12 +114,12 @@ export default function ResumeBuilderPage() {
         <h1 className="mb-6 text-2xl font-bold">{t("title")}</h1>
       )}
 
-      {/* PARENT GRID REF ADICIONADO */}
+      {/* PARENT GRID CONTAINER REF */}
       <div
         ref={parentRef}
         className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12"
       >
-        {/* COLUNA DA ESQUERDA: FORMULÁRIOS */}
+        {/* LEFT COLUMN: BUILDER FORM SECTIONS */}
         <div className="space-y-6 lg:col-span-7">
           <Card className="border-muted shadow-primary/50 shadow-lg">
             <CardHeader>
@@ -172,7 +172,7 @@ export default function ResumeBuilderPage() {
           </Card>
         </div>
 
-        {/* COLUNA DA DIREITA: CARDS FLUTUANTES (RIGHT COL REF ADICIONADO) */}
+        {/* RIGHT COLUMN: FLOATING PANELS */}
         <div ref={rightColRef} className="space-y-6 lg:col-span-5">
           <div data-sticky="feedback">
             <FeedbackCard />
