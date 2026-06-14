@@ -53,7 +53,8 @@ const initialState: FullContentState = {
   isLoading: false,
 };
 
-const API_URL = "http://localhost:3001/experiences";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const API_URL = `${BASE_URL}/experiences`;
 
 const storesCache = new Map<
   string,

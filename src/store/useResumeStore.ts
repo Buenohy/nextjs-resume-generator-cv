@@ -129,7 +129,8 @@ const initialCvData: CvDataState = {
   languages: [""],
 };
 
-const HISTORY_API_URL = "http://localhost:3001/history";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const HISTORY_API_URL = `${BASE_URL}/history`;
 
 export const useResumeStore = create<ResumeStore>()(
   persist(

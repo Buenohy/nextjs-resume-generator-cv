@@ -21,9 +21,11 @@ export default async function HistoryPage() {
 
   let historyItems: HistoryItem[] = [];
 
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+
   try {
     // Retrieve historical records directly from the NestJS PostgreSQL backend server-side
-    const res = await fetch("http://localhost:3001/history", {
+    const res = await fetch(`${apiBaseUrl}/history`, {
       cache: "no-store",
     });
 
