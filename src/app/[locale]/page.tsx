@@ -1,15 +1,10 @@
-import ButtonPaginate from "@/components/pagination-buttons";
-import { useTranslations } from "next-intl";
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  const t = useTranslations("HomePage");
+interface HomeProps {
+  params: Promise<{ locale: string }>;
+}
 
-  return (
-    <div className="bg-background flex min-h-screen items-center justify-center font-sans">
-      <main className="flex h-screen w-full flex-col items-center justify-center overflow-hidden p-4 sm:items-start">
-        <div>{t("title")}</div>
-        <ButtonPaginate />
-      </main>
-    </div>
-  );
+export default async function Home({ params }: HomeProps) {
+  const { locale } = await params;
+  redirect(`/${locale}/job`);
 }
