@@ -8,9 +8,9 @@ import { useRouter, usePathname } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 
 const STEPS = [
-  { id: 1, path: "/job-description" },
-  { id: 2, path: "/resume-builder" },
-  { id: 3, path: "/pdf-preview" },
+  { id: 1, path: "/job" },
+  { id: 2, path: "/resume" },
+  { id: 3, path: "/pdf" },
 ];
 
 export default function PaginationButtons() {

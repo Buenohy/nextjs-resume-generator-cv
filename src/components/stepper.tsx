@@ -6,9 +6,9 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
 const STEPS = [
-  { id: 1, translationKey: "steps.job", path: "/job-description" },
-  { id: 2, translationKey: "steps.resume", path: "/resume-builder" },
-  { id: 3, translationKey: "steps.pdf", path: "/pdf-preview" },
+  { id: 1, translationKey: "steps.job", path: "/job" },
+  { id: 2, translationKey: "steps.resume", path: "/resume" },
+  { id: 3, translationKey: "steps.pdf", path: "/pdf" },
 ];
 
 export function Stepper() {
@@ -50,7 +50,7 @@ export function Stepper() {
                 {/* Step circle indicator */}
                 <div
                   className={cn(
-                    "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 font-semibold transition-colors",
+                    `flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 font-semibold transition-colors`,
                     isActive
                       ? "border-primary bg-primary text-primary-foreground"
                       : isCompleted
@@ -58,7 +58,7 @@ export function Stepper() {
                         : "border-muted bg-background text-muted-foreground"
                   )}
                 >
-                  {isCompleted ? <Check className="h-5 w-5" /> : step.id}
+                  {isCompleted ? <Check className="size-5" /> : step.id}
                 </div>
 
                 {/* 
@@ -68,7 +68,7 @@ export function Stepper() {
                 */}
                 <span
                   className={cn(
-                    "absolute -bottom-6 left-1/2 w-max -translate-x-1/2 text-center text-[10px] font-medium transition-colors sm:text-xs md:text-sm",
+                    `absolute -bottom-6 left-1/2 w-max -translate-x-1/2 text-center text-[10px] font-medium transition-colors sm:text-xs md:text-sm`,
                     isActive ? "text-foreground" : "text-muted-foreground"
                   )}
                 >
@@ -85,7 +85,7 @@ export function Stepper() {
               {!isLastStep && (
                 <div
                   className={cn(
-                    "mx-1 h-0.5 flex-1 transition-colors sm:mx-4 md:mx-6",
+                    `mx-1 h-0.5 flex-1 transition-colors sm:mx-4 md:mx-6`,
                     isCompleted ? "bg-primary" : "bg-muted"
                   )}
                 />
