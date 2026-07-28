@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
-import { Plus, Trash2, ChevronDown } from "lucide-react";
+import { Plus, Trash2, ChevronDown, GripVertical } from "lucide-react";
 import { useResumeStore } from "@/store/useResumeStore";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
@@ -17,6 +17,9 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { DragDropProvider } from "@dnd-kit/react";
+import { useSortable } from "@dnd-kit/react/sortable";
+import { closestCenter } from "@dnd-kit/collision";
 
 // --- AUXILIARY CONVERSION FOR TOKENIZED STRINGS ---
 const parseCertString = (str?: string) => {
@@ -48,6 +51,7 @@ const parseCertString = (str?: string) => {
 interface CertificationItemProps {
   cert: string;
   index: number;
+  sortableId: string;
   YEARS: string[];
   MONTHS: string[];
   cvDataLength: number;
@@ -60,6 +64,7 @@ interface CertificationItemProps {
 function CertificationItem({
   cert,
   index,
+  sortableId,
   YEARS,
   MONTHS,
   cvDataLength,
@@ -68,106 +73,132 @@ function CertificationItem({
   removeItem,
   handleCertChange,
 }: CertificationItemProps) {
+  // Keyed by the stable sortableId (not the raw index, which shifts on reorder)
+  // to prevent collapse-state drift after drag-and-drop.
   const [isCertOpen, setIsCertOpen] = useSyncCollapse(
-    `certification-item-${index}`,
+    `certification-item-${sortableId}`,
     false
   );
   const parsed = parseCertString(cert);
 
+  const { ref, handleRef } = useSortable({
+    id: sortableId,
+    index,
+    collisionDetector: closestCenter,
+  });
+
   return (
-    <Collapsible
-      open={isCertOpen}
-      onOpenChange={setIsCertOpen}
-      id={`certification-item-${index}`}
-      className="border-muted/50 mb-4 scroll-mt-24 border-b pb-6 last:border-0 last:pb-0"
+    <div
+      ref={ref}
+      // touch-none prevents the browser from treating a fast touch/pointer
+      // drag as a page scroll gesture (see language-section.tsx for details)
+      className="touch-none"
     >
-      <div className="mb-4 flex w-full flex-row items-center justify-between gap-4">
-        <CollapsibleTrigger asChild>
-          <div
-            role="button"
-            tabIndex={0}
-            className="group flex flex-1 cursor-pointer items-center justify-between text-left transition-opacity hover:opacity-80 focus:outline-none"
-          >
-            <FieldLabel className="cursor-pointer text-left font-medium capitalize">
-              {t("sections.certifications.itemLabel", { num: index + 1 })}
-            </FieldLabel>
-            <ChevronDown
-              className={`text-muted-foreground mr-4 h-4 w-4 transition-transform duration-200 ${
-                isCertOpen ? "rotate-180" : ""
-              } `}
-            />
-          </div>
-        </CollapsibleTrigger>
+      <Collapsible
+        open={isCertOpen}
+        onOpenChange={setIsCertOpen}
+        id={`certification-item-${sortableId}`}
+        className="border-muted/50 mb-4 scroll-mt-24 border-b pb-6 last:border-0 last:pb-0"
+      >
+        <div className="mb-4 flex w-full flex-row items-center justify-between gap-4">
+          <div className="flex flex-1 flex-row items-center gap-3">
+            {/* Drag handle */}
+            <button
+              type="button"
+              ref={handleRef}
+              className="text-muted-foreground hover:text-foreground shrink-0 cursor-grab touch-none p-1 select-none focus-visible:outline-none active:cursor-grabbing"
+            >
+              <GripVertical className="size-4" />
+            </button>
 
-        {cvDataLength > 1 && (
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={() => removeItem(index)}
-            className="h-8 w-8 shrink-0"
-          >
-            <Trash2 className="text-destructive h-4 w-4" />
-          </Button>
-        )}
-      </div>
-
-      <CollapsibleContent className="space-y-6">
-        <div className="flex w-full flex-col gap-4">
-          <div className="flex w-full flex-col gap-2">
-            <Textarea
-              className="min-h-[38px] w-full resize-none overflow-hidden py-2"
-              rows={1}
-              placeholder={t("sections.certifications.placeholder")}
-              value={parsed.text}
-              onBlur={(e) => {
-                if (!e.target.value.trim() && cvDataLength > 1) {
-                  removeItem(index);
-                }
-              }}
-              onChange={(e) => {
-                handleAutoResize(e);
-                handleCertChange(
-                  index,
-                  e.target.value,
-                  parsed.month,
-                  parsed.year
-                );
-              }}
-            />
+            <CollapsibleTrigger asChild>
+              <div
+                role="button"
+                tabIndex={0}
+                className="group flex flex-1 cursor-pointer items-center justify-between text-left transition-opacity hover:opacity-80 focus:outline-none"
+              >
+                <FieldLabel className="cursor-pointer text-left font-medium capitalize">
+                  {t("sections.certifications.itemLabel", { num: index + 1 })}
+                </FieldLabel>
+                <ChevronDown
+                  className={`text-muted-foreground mr-4 size-4 transition-transform duration-200 ${
+                    isCertOpen ? "rotate-180" : ""
+                  } `}
+                />
+              </div>
+            </CollapsibleTrigger>
           </div>
 
-          <div
-            id={`certification-${index}-date`}
-            className="flex w-full scroll-mt-24 flex-col gap-2"
-          >
-            <FieldLabel className="text-left font-medium capitalize">
-              {t("sections.certifications.date")}
-            </FieldLabel>
-
-            <MonthYearPicker
-              startMonth=""
-              startYear=""
-              endMonth={parsed.month}
-              endYear={parsed.year}
-              months={MONTHS}
-              years={YEARS}
-              onStartMonthChange={() => {}}
-              onStartYearChange={() => {}}
-              onEndMonthChange={(val) =>
-                handleCertChange(index, parsed.text, val, parsed.year)
-              }
-              onEndYearChange={(val) =>
-                handleCertChange(index, parsed.text, parsed.month, val)
-              }
-              t={t}
-              showPresent={false}
-              onlyEnd={true}
-            />
-          </div>
+          {cvDataLength > 1 && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => removeItem(index)}
+              className="h-8 w-8 shrink-0"
+            >
+              <Trash2 className="text-destructive size-4" />
+            </Button>
+          )}
         </div>
-      </CollapsibleContent>
-    </Collapsible>
+
+        <CollapsibleContent className="space-y-6">
+          <div className="flex w-full flex-col gap-4">
+            <div className="flex w-full flex-col gap-2">
+              <Textarea
+                className="min-h-[38px] w-full resize-none overflow-hidden py-2"
+                rows={1}
+                placeholder={t("sections.certifications.placeholder")}
+                value={parsed.text}
+                onBlur={(e) => {
+                  if (!e.target.value.trim() && cvDataLength > 1) {
+                    removeItem(index);
+                  }
+                }}
+                onChange={(e) => {
+                  handleAutoResize(e);
+                  handleCertChange(
+                    index,
+                    e.target.value,
+                    parsed.month,
+                    parsed.year
+                  );
+                }}
+              />
+            </div>
+
+            <div
+              id={`certification-${index}-date`}
+              className="flex w-full scroll-mt-24 flex-col gap-2"
+            >
+              <FieldLabel className="text-left font-medium capitalize">
+                {t("sections.certifications.date")}
+              </FieldLabel>
+
+              <MonthYearPicker
+                startMonth=""
+                startYear=""
+                endMonth={parsed.month}
+                endYear={parsed.year}
+                months={MONTHS}
+                years={YEARS}
+                onStartMonthChange={() => {}}
+                onStartYearChange={() => {}}
+                onEndMonthChange={(val) =>
+                  handleCertChange(index, parsed.text, val, parsed.year)
+                }
+                onEndYearChange={(val) =>
+                  handleCertChange(index, parsed.text, parsed.month, val)
+                }
+                t={t}
+                showPresent={false}
+                onlyEnd={true}
+              />
+            </div>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+    </div>
   );
 }
 
@@ -180,6 +211,19 @@ export function CertificationsSection() {
 
   const [isMounted, setIsMounted] = useState(false);
   const [isOpen, setIsOpen] = useSyncCollapse("certifications", false);
+
+  // Virtual IDs used only by dnd-kit for stable sortable identity.
+  // cvData.certifications stays a plain string[] — this ref never touches the store directly.
+  const idsRef = useRef<string[]>([]);
+
+  const currentLength = cvData.certifications.length;
+  if (idsRef.current.length < currentLength) {
+    for (let i = idsRef.current.length; i < currentLength; i++) {
+      idsRef.current.push(Math.random().toString(36).substring(2, 9));
+    }
+  } else if (idsRef.current.length > currentLength) {
+    idsRef.current = idsRef.current.slice(0, currentLength);
+  }
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -194,18 +238,17 @@ export function CertificationsSection() {
   );
 
   const addItem = () => {
+    idsRef.current.push(Math.random().toString(36).substring(2, 9));
     updateCvData((draft) => {
       draft.certifications.push("");
     });
   };
 
   const removeItem = (index: number) => {
+    if (cvData.certifications.length <= 1) return;
+    idsRef.current.splice(index, 1);
     updateCvData((draft) => {
-      if (draft.certifications.length > 1) {
-        draft.certifications = draft.certifications.filter(
-          (_, i) => i !== index
-        );
-      }
+      draft.certifications = draft.certifications.filter((_, i) => i !== index);
     });
   };
 
@@ -274,7 +317,7 @@ export function CertificationsSection() {
                 className="h-9 w-9 focus-visible:ring-0"
               >
                 <ChevronDown
-                  className={`text-muted-foreground h-5 w-5 transition-transform duration-200 ${
+                  className={`text-muted-foreground size-5 transition-transform duration-200 ${
                     isOpen ? "rotate-180" : ""
                   } `}
                 />
@@ -282,27 +325,63 @@ export function CertificationsSection() {
             </CollapsibleTrigger>
 
             <Button type="button" variant="outline" size="sm" onClick={addItem}>
-              <Plus className="mr-2 h-4 w-4" />{" "}
+              <Plus className="mr-2 size-4" />{" "}
               {t("sections.certifications.addBtn")}
             </Button>
           </div>
         </div>
 
         <CollapsibleContent className="space-y-4">
-          {cvData.certifications.map((cert, index) => (
-            <CertificationItem
-              key={index}
-              cert={cert}
-              index={index}
-              YEARS={YEARS}
-              MONTHS={MONTHS}
-              cvDataLength={cvData.certifications.length}
-              t={t}
-              handleAutoResize={handleAutoResize}
-              removeItem={removeItem}
-              handleCertChange={handleCertChange}
-            />
-          ))}
+          <DragDropProvider
+            onDragEnd={(event: any) => {
+              if (event?.canceled) return;
+
+              // See language-section.tsx for full explanation: @dnd-kit/react
+              // v0.5.0 already reorders the item internally before onDragEnd
+              // fires, so operation.source.index is the FINAL position.
+              // The correct diff pair is initialIndex (before) vs index (after),
+              // both read from operation.source.
+              const source = event?.operation?.source;
+              if (!source) return;
+
+              const oldIndex = source.initialIndex;
+              const newIndex = source.index;
+
+              if (
+                oldIndex == null ||
+                newIndex == null ||
+                oldIndex === newIndex
+              ) {
+                return;
+              }
+
+              // Keep the virtual ID list in sync so React keys stay stable
+              const [movedId] = idsRef.current.splice(oldIndex, 1);
+              idsRef.current.splice(newIndex, 0, movedId);
+
+              // Persist the real reorder in the Zustand store (source of truth)
+              updateCvData((draft) => {
+                const [movedCert] = draft.certifications.splice(oldIndex, 1);
+                draft.certifications.splice(newIndex, 0, movedCert);
+              });
+            }}
+          >
+            {cvData.certifications.map((cert, index) => (
+              <CertificationItem
+                key={idsRef.current[index]}
+                sortableId={idsRef.current[index]}
+                cert={cert}
+                index={index}
+                YEARS={YEARS}
+                MONTHS={MONTHS}
+                cvDataLength={cvData.certifications.length}
+                t={t}
+                handleAutoResize={handleAutoResize}
+                removeItem={removeItem}
+                handleCertChange={handleCertChange}
+              />
+            ))}
+          </DragDropProvider>
 
           <div className="mt-2 flex justify-end">
             <Button
@@ -312,7 +391,7 @@ export function CertificationsSection() {
               onClick={addItem}
               className="gap-1 text-xs"
             >
-              <Plus className="mr-1 h-3.5 w-3.5" />{" "}
+              <Plus className="mr-1 size-3.5" />{" "}
               {t("sections.certifications.addBtn")}
             </Button>
           </div>
