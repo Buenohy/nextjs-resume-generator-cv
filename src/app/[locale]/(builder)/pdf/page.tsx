@@ -144,6 +144,28 @@ export default function PdfPreviewPage() {
     />
   );
 
+  // NOTE: @react-pdf/renderer's <PDFViewer> renders into an <iframe> that
+  // does not reliably re-render on deep prop changes (e.g. reordering an
+  // array). Forcing a fresh `key` remounts the viewer whenever the actual
+  // PDF content changes, guaranteeing the preview stays in sync.
+  //
+  // We build this key from only the fields that actually feed into
+  // `resumeDocument` (already-derived props), instead of JSON.stringify-ing
+  // the entire `cvData` object. This avoids remounting the PDF viewer on
+  // every keystroke for fields that don't affect the PDF at all (e.g.
+  // `jobText`, `platformText`, other internal form-only state).
+  const pdfKey = JSON.stringify({
+    info: infoProp,
+    company: cvData.company,
+    summary: cvData.summary,
+    ai: cvData.ai,
+    skills: cvData.skills,
+    experience: experienceProp,
+    education: educationProp,
+    certifications: certsProp,
+    languages: languagesProp,
+  });
+
   // Dynamically format file name based on sanitized user name and target company
   const namePart = (cvData.info.name || "Resume").trim().replace(/\s+/g, "_");
   const companyPart = cvData.company
@@ -167,6 +189,7 @@ export default function PdfPreviewPage() {
         <CardContent>
           <div className="bg-card h-150 overflow-hidden rounded-lg border p-1 shadow-sm sm:h-200">
             <PDFViewer
+              key={pdfKey}
               showToolbar={false}
               className="h-full w-full rounded-md border-0"
             >

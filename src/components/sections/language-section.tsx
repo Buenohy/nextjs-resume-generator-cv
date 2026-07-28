@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
-import { Plus, Trash2, ChevronDown } from "lucide-react";
+import { Plus, Trash2, ChevronDown, GripVertical } from "lucide-react";
 import { useResumeStore } from "@/store/useResumeStore";
 import { Button } from "@/components/ui/button";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { FieldLabel } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -23,6 +23,9 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { DragDropProvider } from "@dnd-kit/react";
+import { useSortable } from "@dnd-kit/react/sortable";
+import { closestCenter } from "@dnd-kit/collision";
 
 // --- PARSE "__LEVEL_X__" TOKENS ---
 const parseLangString = (str?: string) => {
@@ -44,6 +47,7 @@ const parseLangString = (str?: string) => {
 interface LanguageItemProps {
   lang: string;
   index: number;
+  sortableId: string;
   LANGUAGE_LEVELS: string[];
   cvDataLength: number;
   t: ReturnType<typeof useTranslations>;
@@ -55,6 +59,7 @@ interface LanguageItemProps {
 function LanguageItem({
   lang,
   index,
+  sortableId,
   LANGUAGE_LEVELS,
   cvDataLength,
   t,
@@ -63,85 +68,113 @@ function LanguageItem({
   handleLangChange,
 }: LanguageItemProps) {
   const [isLangOpen, setIsLangOpen] = useSyncCollapse(
-    `languages-item-${index}`,
+    `languages-item-${sortableId}`,
     false
   );
   const parsed = parseLangString(lang);
 
+  const { ref, handleRef } = useSortable({
+    id: sortableId,
+    index,
+    collisionDetector: closestCenter,
+  });
+
   return (
-    <Collapsible
-      open={isLangOpen}
-      onOpenChange={setIsLangOpen}
-      id={`languages-item-${index}`}
-      className="border-muted/50 mb-4 scroll-mt-24 border-b pb-6 last:border-0 last:pb-0"
+    <div
+      ref={ref}
+      // touch-none here (not just on the handle) prevents the browser from
+      // treating a fast touch/pointer drag as a page scroll gesture, which
+      // is what causes drags to fail intermittently on touch devices/emulators.
+      className="border-muted/50 mb-4 touch-none border-b pb-6 last:border-0 last:pb-0"
     >
-      <div className="mb-4 flex w-full flex-row items-center justify-between gap-4">
-        <CollapsibleTrigger asChild>
-          <div
-            role="button"
-            tabIndex={0}
-            className="group flex flex-1 cursor-pointer items-center justify-between text-left transition-opacity hover:opacity-80 focus:outline-none"
-          >
-            <FieldLabel className="cursor-pointer text-left font-medium capitalize">
-              {t("sections.languages.itemLabel", { num: index + 1 })}
-            </FieldLabel>
-            <ChevronDown
-              className={`text-muted-foreground mr-4 h-4 w-4 transition-transform duration-200 ${isLangOpen ? `rotate-180` : ""} `}
-            />
-          </div>
-        </CollapsibleTrigger>
-        {cvDataLength > 1 && (
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={() => removeItem(index)}
-            className="h-8 w-8 shrink-0"
-          >
-            <Trash2 className="text-destructive h-4 w-4" />
-          </Button>
-        )}
-      </div>
-
-      <CollapsibleContent className="space-y-6">
-        <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-          <Textarea
-            className="min-h-[38px] w-full min-w-0 flex-1 resize-none overflow-hidden py-2"
-            rows={1}
-            placeholder={t("sections.languages.placeholder")}
-            value={parsed.text}
-            onBlur={(e) => {
-              if (!e.target.value.trim() && cvDataLength > 1) removeItem(index);
-            }}
-            onChange={(e) => {
-              handleAutoResize(e);
-              handleLangChange(index, e.target.value, parsed.level);
-            }}
-          />
-
-          <div className="w-full min-w-0 flex-1">
-            <Select
-              value={parsed.level}
-              onValueChange={(val) => handleLangChange(index, parsed.text, val)}
+      <Collapsible
+        open={isLangOpen}
+        onOpenChange={setIsLangOpen}
+        id={`languages-item-${sortableId}`}
+      >
+        <div className="mb-4 flex w-full flex-row items-center justify-between gap-4">
+          <div className="flex flex-1 flex-row items-center gap-3">
+            {/* Drag handle — touch-none/select-none required for pointer/touch dragging to work reliably */}
+            <button
+              type="button"
+              ref={handleRef}
+              className="text-muted-foreground hover:text-foreground shrink-0 cursor-grab touch-none p-1 select-none focus-visible:outline-none active:cursor-grabbing"
             >
-              <SelectTrigger className="w-full">
-                <SelectValue
-                  placeholder={t("sections.languages.levelPlaceholder")}
+              <GripVertical className="size-4" />
+            </button>
+
+            <CollapsibleTrigger asChild>
+              <div
+                role="button"
+                tabIndex={0}
+                className="group flex flex-1 cursor-pointer items-center justify-between text-left transition-opacity hover:opacity-80 focus:outline-none"
+              >
+                <FieldLabel className="cursor-pointer text-left font-medium capitalize">
+                  {t("sections.languages.itemLabel", { num: index + 1 })}
+                </FieldLabel>
+                <ChevronDown
+                  className={`text-muted-foreground mr-4 size-4 transition-transform duration-200 ${
+                    isLangOpen ? "rotate-180" : ""
+                  } `}
                 />
-              </SelectTrigger>
-              <SelectContent>
-                {/* Store translation tokens instead of localized strings to preserve consistency */}
-                {LANGUAGE_LEVELS.map((level, i) => (
-                  <SelectItem key={i} value={`__LEVEL_${i}__`}>
-                    {level}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              </div>
+            </CollapsibleTrigger>
           </div>
+          {cvDataLength > 1 && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => removeItem(index)}
+              className="h-8 w-8 shrink-0"
+            >
+              <Trash2 className="text-destructive size-4" />
+            </Button>
+          )}
         </div>
-      </CollapsibleContent>
-    </Collapsible>
+
+        <CollapsibleContent className="space-y-6">
+          <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+            <Textarea
+              className="min-h-[38px] w-full min-w-0 flex-1 resize-none overflow-hidden py-2"
+              rows={1}
+              placeholder={t("sections.languages.placeholder")}
+              value={parsed.text}
+              onBlur={(e) => {
+                if (!e.target.value.trim() && cvDataLength > 1)
+                  removeItem(index);
+              }}
+              onChange={(e) => {
+                handleAutoResize(e);
+                handleLangChange(index, e.target.value, parsed.level);
+              }}
+            />
+
+            <div className="w-full min-w-0 flex-1">
+              <Select
+                value={parsed.level}
+                onValueChange={(val) =>
+                  handleLangChange(index, parsed.text, val)
+                }
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue
+                    placeholder={t("sections.languages.levelPlaceholder")}
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {LANGUAGE_LEVELS.map((level, i) => (
+                    <SelectItem key={i} value={`__LEVEL_${i}__`}>
+                      {level}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+    </div>
   );
 }
 
@@ -153,6 +186,19 @@ export function LanguagesSection() {
   const [isMounted, setIsMounted] = useState(false);
   const [isOpen, setIsOpen] = useSyncCollapse("languages", false);
 
+  // Virtual IDs used only by dnd-kit for stable sortable identity.
+  // cvData.languages stays a plain string[] — this ref never touches the store directly.
+  const idsRef = useRef<string[]>([]);
+
+  const currentLength = cvData.languages.length;
+  if (idsRef.current.length < currentLength) {
+    for (let i = idsRef.current.length; i < currentLength; i++) {
+      idsRef.current.push(Math.random().toString(36).substring(2, 9));
+    }
+  } else if (idsRef.current.length > currentLength) {
+    idsRef.current = idsRef.current.slice(0, currentLength);
+  }
+
   useEffect(() => {
     const timer = setTimeout(() => setIsMounted(true), 0);
     return () => clearTimeout(timer);
@@ -160,15 +206,21 @@ export function LanguagesSection() {
 
   const LANGUAGE_LEVELS = t.raw("language_levels") as string[];
 
-  const addItem = () =>
+  const addItem = () => {
+    idsRef.current.push(Math.random().toString(36).substring(2, 9));
     updateCvData((draft) => {
       draft.languages.push("");
     });
-  const removeItem = (index: number) =>
+  };
+
+  const removeItem = (index: number) => {
+    if (cvData.languages.length <= 1) return;
+    idsRef.current.splice(index, 1);
     updateCvData((draft) => {
-      if (draft.languages.length > 1)
-        draft.languages = draft.languages.filter((_, i) => i !== index);
+      draft.languages = draft.languages.filter((_, i) => i !== index);
     });
+  };
+
   const updateItem = (index: number, value: string) =>
     updateCvData((draft) => {
       draft.languages[index] = value;
@@ -203,33 +255,77 @@ export function LanguagesSection() {
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="h-9 w-9 focus-visible:ring-0"
+                className="size-9 focus-visible:ring-0"
               >
                 <ChevronDown
-                  className={`text-muted-foreground h-5 w-5 transition-transform ${isOpen ? `rotate-180` : ""} `}
+                  className={`text-muted-foreground size-5 transition-transform ${
+                    isOpen ? "rotate-180" : ""
+                  } `}
                 />
               </Button>
             </CollapsibleTrigger>
             <Button type="button" variant="outline" size="sm" onClick={addItem}>
-              <Plus className="mr-2 h-4 w-4" /> {t("sections.languages.addBtn")}
+              <Plus className="mr-2 size-4" /> {t("sections.languages.addBtn")}
             </Button>
           </div>
         </div>
 
         <CollapsibleContent className="space-y-4">
-          {cvData.languages.map((lang, index) => (
-            <LanguageItem
-              key={index}
-              lang={lang}
-              index={index}
-              LANGUAGE_LEVELS={LANGUAGE_LEVELS}
-              cvDataLength={cvData.languages.length}
-              t={t}
-              handleAutoResize={handleAutoResize}
-              removeItem={removeItem}
-              handleLangChange={handleLangChange}
-            />
-          ))}
+          <DragDropProvider
+            onDragEnd={(event: any) => {
+              if (event?.canceled) return;
+
+              // IMPORTANT: @dnd-kit/react v0.5.0 already reorders the dragged
+              // item internally (via its own renderer/startTransition) before
+              // onDragEnd fires. Because of that, `operation.source.index`
+              // and `operation.target.index` both reflect the FINAL
+              // (post-drop) position and will always be equal — comparing
+              // them here would silently no-op on every drag.
+              //
+              // The correct pair to diff is on `operation.source` alone:
+              //   - source.initialIndex -> position BEFORE the drag started
+              //   - source.index        -> position AFTER dnd-kit reordered it
+              const source = event?.operation?.source;
+              if (!source) return;
+
+              const oldIndex = source.initialIndex;
+              const newIndex = source.index;
+
+              if (
+                oldIndex == null ||
+                newIndex == null ||
+                oldIndex === newIndex
+              ) {
+                return;
+              }
+
+              // Keep the virtual ID list in sync so React keys stay stable
+              const [movedId] = idsRef.current.splice(oldIndex, 1);
+              idsRef.current.splice(newIndex, 0, movedId);
+
+              // Persist the real reorder in the Zustand store (source of truth).
+              // This is what SideNav, PDF preview, and the item labels read from.
+              updateCvData((draft) => {
+                const [movedLang] = draft.languages.splice(oldIndex, 1);
+                draft.languages.splice(newIndex, 0, movedLang);
+              });
+            }}
+          >
+            {cvData.languages.map((lang, index) => (
+              <LanguageItem
+                key={idsRef.current[index]}
+                sortableId={idsRef.current[index]}
+                lang={lang}
+                index={index}
+                LANGUAGE_LEVELS={LANGUAGE_LEVELS}
+                cvDataLength={cvData.languages.length}
+                t={t}
+                handleAutoResize={handleAutoResize}
+                removeItem={removeItem}
+                handleLangChange={handleLangChange}
+              />
+            ))}
+          </DragDropProvider>
         </CollapsibleContent>
       </Collapsible>
     </CardContent>
