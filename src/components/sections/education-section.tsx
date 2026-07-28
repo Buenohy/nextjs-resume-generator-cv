@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
-import { Plus, Trash2, ChevronDown } from "lucide-react";
+import { Plus, Trash2, ChevronDown, GripVertical } from "lucide-react";
 import { useResumeStore } from "@/store/useResumeStore";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
@@ -17,6 +17,9 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { DragDropProvider } from "@dnd-kit/react";
+import { useSortable } from "@dnd-kit/react/sortable";
+import { closestCenter } from "@dnd-kit/collision";
 
 // --- AUXILIARY CONVERSION FOR TOKENIZED STRINGS ---
 const parseEduString = (str?: string) => {
@@ -59,6 +62,7 @@ const parseEduString = (str?: string) => {
 interface EducationItemProps {
   edu: string;
   index: number;
+  sortableId: string;
   YEARS: string[];
   MONTHS: string[];
   cvDataLength: number;
@@ -78,6 +82,7 @@ interface EducationItemProps {
 function EducationItem({
   edu,
   index,
+  sortableId,
   YEARS,
   MONTHS,
   cvDataLength,
@@ -86,139 +91,165 @@ function EducationItem({
   removeItem,
   handleEduChange,
 }: EducationItemProps) {
+  // Keyed by the stable sortableId (not the raw index, which shifts on reorder)
+  // to prevent collapse-state drift after drag-and-drop.
   const [isEduOpen, setIsEduOpen] = useSyncCollapse(
-    `education-item-${index}`,
+    `education-item-${sortableId}`,
     false
   );
   const parsed = parseEduString(edu);
 
+  const { ref, handleRef } = useSortable({
+    id: sortableId,
+    index,
+    collisionDetector: closestCenter,
+  });
+
   return (
-    <Collapsible
-      open={isEduOpen}
-      onOpenChange={setIsEduOpen}
-      id={`education-item-${index}`}
-      className="border-muted/50 mb-4 scroll-mt-24 border-b pb-6 last:border-0 last:pb-0"
+    <div
+      ref={ref}
+      // touch-none prevents the browser from treating a fast touch/pointer
+      // drag as a page scroll gesture (see language-section.tsx for details)
+      className="touch-none"
     >
-      <div className="mb-4 flex w-full flex-row items-center justify-between gap-4">
-        <CollapsibleTrigger asChild>
-          <div
-            role="button"
-            tabIndex={0}
-            className="group flex flex-1 cursor-pointer items-center justify-between text-left transition-opacity hover:opacity-80 focus:outline-none"
-          >
-            <FieldLabel className="cursor-pointer text-left font-medium capitalize">
-              {t("sections.education.itemLabel", { num: index + 1 })}
-            </FieldLabel>
-            <ChevronDown
-              className={`text-muted-foreground mr-4 h-4 w-4 transition-transform duration-200 ${
-                isEduOpen ? "rotate-180" : ""
-              } `}
-            />
-          </div>
-        </CollapsibleTrigger>
+      <Collapsible
+        open={isEduOpen}
+        onOpenChange={setIsEduOpen}
+        id={`education-item-${sortableId}`}
+        className="border-muted/50 mb-4 scroll-mt-24 border-b pb-6 last:border-0 last:pb-0"
+      >
+        <div className="mb-4 flex w-full flex-row items-center justify-between gap-4">
+          <div className="flex flex-1 flex-row items-center gap-3">
+            {/* Drag handle */}
+            <button
+              type="button"
+              ref={handleRef}
+              className="text-muted-foreground hover:text-foreground shrink-0 cursor-grab touch-none p-1 select-none focus-visible:outline-none active:cursor-grabbing"
+            >
+              <GripVertical className="size-4" />
+            </button>
 
-        {cvDataLength > 1 && (
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={() => removeItem(index)}
-            className="h-8 w-8 shrink-0"
-          >
-            <Trash2 className="text-destructive h-4 w-4" />
-          </Button>
-        )}
-      </div>
-
-      <CollapsibleContent className="space-y-6">
-        <div className="flex w-full flex-col gap-6">
-          <div className="flex w-full flex-col gap-2">
-            <Textarea
-              className="min-h-[38px] w-full min-w-0 flex-1 resize-none overflow-hidden py-2"
-              rows={1}
-              placeholder={t("sections.education.placeholder")}
-              value={parsed.text}
-              onBlur={(e) => {
-                if (!e.target.value.trim() && cvDataLength > 1) {
-                  removeItem(index);
-                }
-              }}
-              onChange={(e) => {
-                handleAutoResize(e);
-                handleEduChange(
-                  index,
-                  e.target.value,
-                  parsed.startMonth,
-                  parsed.startYear,
-                  parsed.endMonth,
-                  parsed.endYear
-                );
-              }}
-            />
+            <CollapsibleTrigger asChild>
+              <div
+                role="button"
+                tabIndex={0}
+                className="group flex flex-1 cursor-pointer items-center justify-between text-left transition-opacity hover:opacity-80 focus:outline-none"
+              >
+                <FieldLabel className="cursor-pointer text-left font-medium capitalize">
+                  {t("sections.education.itemLabel", { num: index + 1 })}
+                </FieldLabel>
+                <ChevronDown
+                  className={`text-muted-foreground mr-4 size-4 transition-transform duration-200 ${
+                    isEduOpen ? "rotate-180" : ""
+                  } `}
+                />
+              </div>
+            </CollapsibleTrigger>
           </div>
 
-          <div
-            id={`education-${index}-period`}
-            className="flex w-full scroll-mt-24 flex-col gap-2"
-          >
-            <FieldLabel className="text-left font-medium capitalize">
-              {t("sections.education.period")}
-            </FieldLabel>
-
-            <MonthYearPicker
-              startMonth={parsed.startMonth}
-              startYear={parsed.startYear}
-              endMonth={parsed.endMonth}
-              endYear={parsed.endYear}
-              months={MONTHS}
-              years={YEARS}
-              onStartMonthChange={(val) =>
-                handleEduChange(
-                  index,
-                  parsed.text,
-                  val,
-                  parsed.startYear,
-                  parsed.endMonth,
-                  parsed.endYear
-                )
-              }
-              onStartYearChange={(val) =>
-                handleEduChange(
-                  index,
-                  parsed.text,
-                  parsed.startMonth,
-                  val,
-                  parsed.endMonth,
-                  parsed.endYear
-                )
-              }
-              onEndMonthChange={(val) =>
-                handleEduChange(
-                  index,
-                  parsed.text,
-                  parsed.startMonth,
-                  parsed.startYear,
-                  val,
-                  parsed.endYear
-                )
-              }
-              onEndYearChange={(val) =>
-                handleEduChange(
-                  index,
-                  parsed.text,
-                  parsed.startMonth,
-                  parsed.startYear,
-                  parsed.endMonth,
-                  val
-                )
-              }
-              t={t}
-              showPresent
-            />
-          </div>
+          {cvDataLength > 1 && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => removeItem(index)}
+              className="h-8 w-8 shrink-0"
+            >
+              <Trash2 className="text-destructive size-4" />
+            </Button>
+          )}
         </div>
-      </CollapsibleContent>
-    </Collapsible>
+
+        <CollapsibleContent className="space-y-6">
+          <div className="flex w-full flex-col gap-6">
+            <div className="flex w-full flex-col gap-2">
+              <Textarea
+                className="min-h-[38px] w-full min-w-0 flex-1 resize-none overflow-hidden py-2"
+                rows={1}
+                placeholder={t("sections.education.placeholder")}
+                value={parsed.text}
+                onBlur={(e) => {
+                  if (!e.target.value.trim() && cvDataLength > 1) {
+                    removeItem(index);
+                  }
+                }}
+                onChange={(e) => {
+                  handleAutoResize(e);
+                  handleEduChange(
+                    index,
+                    e.target.value,
+                    parsed.startMonth,
+                    parsed.startYear,
+                    parsed.endMonth,
+                    parsed.endYear
+                  );
+                }}
+              />
+            </div>
+
+            <div
+              id={`education-${index}-period`}
+              className="flex w-full scroll-mt-24 flex-col gap-2"
+            >
+              <FieldLabel className="text-left font-medium capitalize">
+                {t("sections.education.period")}
+              </FieldLabel>
+
+              <MonthYearPicker
+                startMonth={parsed.startMonth}
+                startYear={parsed.startYear}
+                endMonth={parsed.endMonth}
+                endYear={parsed.endYear}
+                months={MONTHS}
+                years={YEARS}
+                onStartMonthChange={(val) =>
+                  handleEduChange(
+                    index,
+                    parsed.text,
+                    val,
+                    parsed.startYear,
+                    parsed.endMonth,
+                    parsed.endYear
+                  )
+                }
+                onStartYearChange={(val) =>
+                  handleEduChange(
+                    index,
+                    parsed.text,
+                    parsed.startMonth,
+                    val,
+                    parsed.endMonth,
+                    parsed.endYear
+                  )
+                }
+                onEndMonthChange={(val) =>
+                  handleEduChange(
+                    index,
+                    parsed.text,
+                    parsed.startMonth,
+                    parsed.startYear,
+                    val,
+                    parsed.endYear
+                  )
+                }
+                onEndYearChange={(val) =>
+                  handleEduChange(
+                    index,
+                    parsed.text,
+                    parsed.startMonth,
+                    parsed.startYear,
+                    parsed.endMonth,
+                    val
+                  )
+                }
+                t={t}
+                showPresent
+              />
+            </div>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+    </div>
   );
 }
 
@@ -230,6 +261,19 @@ export function EducationSection() {
 
   const [isMounted, setIsMounted] = useState(false);
   const [isOpen, setIsOpen] = useSyncCollapse("education", false);
+
+  // Virtual IDs used only by dnd-kit for stable sortable identity.
+  // cvData.education stays a plain string[] — this ref never touches the store directly.
+  const idsRef = useRef<string[]>([]);
+
+  const currentLength = cvData.education.length;
+  if (idsRef.current.length < currentLength) {
+    for (let i = idsRef.current.length; i < currentLength; i++) {
+      idsRef.current.push(Math.random().toString(36).substring(2, 9));
+    }
+  } else if (idsRef.current.length > currentLength) {
+    idsRef.current = idsRef.current.slice(0, currentLength);
+  }
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -244,16 +288,17 @@ export function EducationSection() {
   );
 
   const addItem = () => {
+    idsRef.current.push(Math.random().toString(36).substring(2, 9));
     updateCvData((draft) => {
       draft.education.push("");
     });
   };
 
   const removeItem = (index: number) => {
+    if (cvData.education.length <= 1) return;
+    idsRef.current.splice(index, 1);
     updateCvData((draft) => {
-      if (draft.education.length > 1) {
-        draft.education = draft.education.filter((_, i) => i !== index);
-      }
+      draft.education = draft.education.filter((_, i) => i !== index);
     });
   };
 
@@ -328,7 +373,7 @@ export function EducationSection() {
                 className="h-9 w-9 focus-visible:ring-0"
               >
                 <ChevronDown
-                  className={`text-muted-foreground h-5 w-5 transition-transform duration-200 ${
+                  className={`text-muted-foreground size-5 transition-transform duration-200 ${
                     isOpen ? "rotate-180" : ""
                   } `}
                 />
@@ -336,26 +381,62 @@ export function EducationSection() {
             </CollapsibleTrigger>
 
             <Button type="button" variant="outline" size="sm" onClick={addItem}>
-              <Plus className="mr-2 h-4 w-4" /> {t("sections.education.addBtn")}
+              <Plus className="mr-2 size-4" /> {t("sections.education.addBtn")}
             </Button>
           </div>
         </div>
 
         <CollapsibleContent className="space-y-4">
-          {cvData.education.map((edu, index) => (
-            <EducationItem
-              key={index}
-              edu={edu}
-              index={index}
-              YEARS={YEARS}
-              MONTHS={MONTHS}
-              cvDataLength={cvData.education.length}
-              t={t}
-              handleAutoResize={handleAutoResize}
-              removeItem={removeItem}
-              handleEduChange={handleEduChange}
-            />
-          ))}
+          <DragDropProvider
+            onDragEnd={(event: any) => {
+              if (event?.canceled) return;
+
+              // See language-section.tsx for full explanation: @dnd-kit/react
+              // v0.5.0 already reorders the item internally before onDragEnd
+              // fires, so operation.source.index is the FINAL position.
+              // The correct diff pair is initialIndex (before) vs index (after),
+              // both read from operation.source.
+              const source = event?.operation?.source;
+              if (!source) return;
+
+              const oldIndex = source.initialIndex;
+              const newIndex = source.index;
+
+              if (
+                oldIndex == null ||
+                newIndex == null ||
+                oldIndex === newIndex
+              ) {
+                return;
+              }
+
+              // Keep the virtual ID list in sync so React keys stay stable
+              const [movedId] = idsRef.current.splice(oldIndex, 1);
+              idsRef.current.splice(newIndex, 0, movedId);
+
+              // Persist the real reorder in the Zustand store (source of truth)
+              updateCvData((draft) => {
+                const [movedEdu] = draft.education.splice(oldIndex, 1);
+                draft.education.splice(newIndex, 0, movedEdu);
+              });
+            }}
+          >
+            {cvData.education.map((edu, index) => (
+              <EducationItem
+                key={idsRef.current[index]}
+                sortableId={idsRef.current[index]}
+                edu={edu}
+                index={index}
+                YEARS={YEARS}
+                MONTHS={MONTHS}
+                cvDataLength={cvData.education.length}
+                t={t}
+                handleAutoResize={handleAutoResize}
+                removeItem={removeItem}
+                handleEduChange={handleEduChange}
+              />
+            ))}
+          </DragDropProvider>
 
           <div className="mt-2 flex justify-end">
             <Button
