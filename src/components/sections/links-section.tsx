@@ -15,6 +15,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { useSyncCollapse } from "@/app/hooks/useSyncCollapse";
+import { PdfMetrics } from "../pdf-metrics";
 
 export function LinksSection() {
   const t = useTranslations("ResumeBuilderPage");
@@ -141,6 +142,7 @@ export function LinksSection() {
                     value={getFieldValue(id)}
                     onChange={(e) => handleChange(id, e.target.value)}
                   />
+                  <PdfMetrics text={getFieldValue(id)} showPdfLines={false} />
                 </div>
               </Field>
             );
