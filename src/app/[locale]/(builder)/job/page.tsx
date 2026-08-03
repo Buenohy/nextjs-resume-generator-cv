@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PdfMetrics } from "@/components/pdf-metrics";
 
 export default function JobDescriptionPage() {
   const router = useRouter();
@@ -99,6 +100,11 @@ export default function JobDescriptionPage() {
               className="min-h-[60px] resize-none overflow-hidden py-2"
               rows={1}
             />
+            <PdfMetrics
+              text={globalPlatformText}
+              charsPerLine={110}
+              maxLines={1}
+            />
           </div>
 
           {/* FIELD 2: JOB DESCRIPTION REQUIREMENTS */}
@@ -111,6 +117,7 @@ export default function JobDescriptionPage() {
               onChange={(e) => setGlobalJobText(e.target.value)}
               className="sm:min-h-62.5"
             />
+            <PdfMetrics text={globalJobText} charsPerLine={110} />
           </div>
         </CardContent>
 
