@@ -26,6 +26,7 @@ import {
 import { DragDropProvider } from "@dnd-kit/react";
 import { useSortable } from "@dnd-kit/react/sortable";
 import { closestCenter } from "@dnd-kit/collision";
+import { PdfMetrics } from "../pdf-metrics";
 
 // --- PARSE "__LEVEL_X__" TOKENS ---
 const parseLangString = (str?: string) => {
@@ -172,6 +173,7 @@ function LanguageItem({
               </Select>
             </div>
           </div>
+          <PdfMetrics text={parsed.text} charsPerLine={110} />
         </CollapsibleContent>
       </Collapsible>
     </div>
