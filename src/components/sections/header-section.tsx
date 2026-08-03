@@ -15,6 +15,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { useSyncCollapse } from "@/app/hooks/useSyncCollapse";
+import { PdfMetrics } from "../pdf-metrics";
 
 export function HeaderSection() {
   const t = useTranslations("ResumeBuilderPage");
@@ -147,6 +148,7 @@ export function HeaderSection() {
                     inputMode={id === "age" ? "numeric" : "text"}
                     maxLength={id === "age" ? 3 : undefined}
                   />
+                  <PdfMetrics text={getFieldValue(id)} charsPerLine={110} />
                 </div>
               </Field>
             );
