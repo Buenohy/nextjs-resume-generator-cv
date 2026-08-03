@@ -408,5 +408,10 @@
       "languages": "Idiomas",
       "yearsOld": "Anos"
     }
+  },
+  "TextMetrics": {
+    "pdfLines": "~{count} {count, plural, =1 {linha no PDF} other {linhas no PDF}}",
+    "maxRecommended": "(máx. {max})",
+    "chars": "caracteres"
   }
 }
