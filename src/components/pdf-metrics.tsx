@@ -5,8 +5,8 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
 export interface PdfMetricsProps {
-  /** The current text value from your Textarea or Zustand store */
-  text?: string;
+  /** The current text or string array value */
+  text?: string | string[] | null;
   /**
    * Average characters per line in PDF A4 (Helvetica 9pt):
    * - Experience Bullet Points: ~98
@@ -17,6 +17,8 @@ export interface PdfMetricsProps {
   maxLines?: number;
   /** Optional maximum character limit */
   maxLength?: number;
+  /** Whether to render the PDF line count estimate (default: true) */
+  showPdfLines?: boolean;
   /** Additional CSS styling classes */
   className?: string;
 }
@@ -26,11 +28,13 @@ export function PdfMetrics({
   charsPerLine = 98,
   maxLines,
   maxLength,
+  showPdfLines = true,
   className,
 }: PdfMetricsProps) {
   const t = useTranslations("TextMetrics");
 
-  const str = String(text || "");
+  // Safely handle strings, string arrays (e.g. keywords), null, or undefined
+  const str = Array.isArray(text) ? text.join(", ") : String(text || "");
   const charCount = str.length;
 
   // Automatic calculation of PDF lines taking into account manual newlines (\n) and width wrapping
@@ -53,21 +57,26 @@ export function PdfMetrics({
       )}
     >
       {/* PDF Line Count */}
-      <div className="flex items-center gap-1.5">
-        <span
-          className={cn(
-            "transition-colors",
-            isLineOverflow && `font-semibold text-amber-500 dark:text-amber-400`
-          )}
-        >
-          {t("pdfLines", { count: pdfLines })}
-        </span>
-        {maxLines && (
-          <span className="text-muted-foreground/60 font-sans text-[10px]">
-            {t("maxRecommended", { max: maxLines })}
+      {showPdfLines ? (
+        <div className="flex items-center gap-1.5">
+          <span
+            className={cn(
+              "transition-colors",
+              isLineOverflow &&
+                `font-semibold text-amber-500 dark:text-amber-400`
+            )}
+          >
+            {t("pdfLines", { count: pdfLines })}
           </span>
-        )}
-      </div>
+          {maxLines && (
+            <span className="text-muted-foreground/60 font-sans text-[10px]">
+              {t("maxRecommended", { max: maxLines })}
+            </span>
+          )}
+        </div>
+      ) : (
+        <div /> // Spacer when line count is disabled
+      )}
 
       {/* Character Count */}
       <div className="flex items-center gap-1 font-sans">

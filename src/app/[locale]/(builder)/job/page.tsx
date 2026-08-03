@@ -103,7 +103,7 @@ export default function JobDescriptionPage() {
             <PdfMetrics
               text={globalPlatformText}
               charsPerLine={110}
-              maxLines={1}
+              showPdfLines={false}
             />
           </div>
 
@@ -117,7 +117,11 @@ export default function JobDescriptionPage() {
               onChange={(e) => setGlobalJobText(e.target.value)}
               className="sm:min-h-62.5"
             />
-            <PdfMetrics text={globalJobText} charsPerLine={110} />
+            <PdfMetrics
+              text={globalJobText}
+              charsPerLine={110}
+              showPdfLines={false}
+            />
           </div>
         </CardContent>
 

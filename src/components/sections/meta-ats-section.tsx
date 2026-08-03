@@ -7,6 +7,7 @@ import { useResumeStore } from "@/store/useResumeStore";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { PdfMetrics } from "@/components/pdf-metrics";
 import { CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAutoResize } from "@/app/hooks/useAutoResize";
@@ -64,7 +65,6 @@ export function MetaAtsSection() {
 
   const handleChange = (fieldId: string, value: string) => {
     updateCvData((draft) => {
-      // We omit 'keywords' to guarantee we are writing only to string properties safely
       if (fieldId !== "keywords") {
         const stringKey = fieldId as keyof Omit<
           typeof draft.meta_ats,
@@ -233,6 +233,7 @@ export function MetaAtsSection() {
 
           {sectionDef.fields.map(({ id, label, placeholder }) => {
             const domId = `meta-${id}`;
+            const fieldValue = getFieldValue(id);
 
             return (
               <Field key={id} className="mb-4 scroll-mt-24" id={domId}>
@@ -241,21 +242,24 @@ export function MetaAtsSection() {
                     {label}
                   </FieldLabel>
                   {textareaFields.includes(id) ? (
-                    <Textarea
-                      className="min-h-[38px] w-full resize-none overflow-hidden py-2"
-                      rows={1}
-                      placeholder={placeholder}
-                      value={getFieldValue(id)}
-                      onChange={(e) => {
-                        handleAutoResize(e);
-                        handleChange(id, e.target.value);
-                      }}
-                    />
+                    <div>
+                      <Textarea
+                        className="min-h-[38px] w-full resize-none overflow-hidden py-2"
+                        rows={1}
+                        placeholder={placeholder}
+                        value={fieldValue}
+                        onChange={(e) => {
+                          handleAutoResize(e);
+                          handleChange(id, e.target.value);
+                        }}
+                      />
+                      <PdfMetrics text={fieldValue} charsPerLine={110} />
+                    </div>
                   ) : (
                     <Input
                       className="w-full"
                       placeholder={placeholder}
-                      value={getFieldValue(id)}
+                      value={fieldValue}
                       onChange={(e) => handleChange(id, e.target.value)}
                     />
                   )}
@@ -339,21 +343,27 @@ export function MetaAtsSection() {
                       )}
                     </div>
 
-                    <Textarea
-                      className="min-h-[38px] w-full resize-none overflow-hidden py-2"
-                      rows={1}
-                      placeholder={t("sections.meta_ats.keywordPlaceholder")}
-                      value={keyword}
-                      onBlur={(e) => {
-                        if (!e.target.value.trim() && keywordsList.length > 1) {
-                          removeKeyword(index);
-                        }
-                      }}
-                      onChange={(e) => {
-                        handleAutoResize(e);
-                        updateKeyword(index, e.target.value);
-                      }}
-                    />
+                    <div>
+                      <Textarea
+                        className="min-h-[38px] w-full resize-none overflow-hidden py-2"
+                        rows={1}
+                        placeholder={t("sections.meta_ats.keywordPlaceholder")}
+                        value={keyword}
+                        onBlur={(e) => {
+                          if (
+                            !e.target.value.trim() &&
+                            keywordsList.length > 1
+                          ) {
+                            removeKeyword(index);
+                          }
+                        }}
+                        onChange={(e) => {
+                          handleAutoResize(e);
+                          updateKeyword(index, e.target.value);
+                        }}
+                      />
+                      <PdfMetrics text={keyword} showPdfLines={false} />
+                    </div>
                   </div>
                 </Field>
               ))}
