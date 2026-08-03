@@ -19,6 +19,7 @@ import {
 import { DragDropProvider } from "@dnd-kit/react";
 import { useSortable } from "@dnd-kit/react/sortable";
 import { closestCenter } from "@dnd-kit/collision";
+import { PdfMetrics } from "../pdf-metrics";
 
 // --- AUXILIARY SUB-COMPONENT (SKILL ITEM) ---
 interface SkillItemProps {
@@ -130,6 +131,7 @@ function SkillItem({
                 updateItem(index, e.target.value);
               }}
             />
+            <PdfMetrics text={skill} showPdfLines={false} />
           </CollapsibleContent>
         </div>
       </Collapsible>

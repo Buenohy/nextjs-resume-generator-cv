@@ -173,7 +173,7 @@ function LanguageItem({
               </Select>
             </div>
           </div>
-          <PdfMetrics text={parsed.text} charsPerLine={110} />
+          <PdfMetrics text={parsed.text} showPdfLines={false} />
         </CollapsibleContent>
       </Collapsible>
     </div>
