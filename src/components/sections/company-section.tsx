@@ -15,6 +15,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { useSyncCollapse } from "@/app/hooks/useSyncCollapse";
+import { PdfMetrics } from "../pdf-metrics";
 
 export function CompanySection() {
   const t = useTranslations("ResumeBuilderPage");
@@ -110,6 +111,11 @@ export function CompanySection() {
                   });
                 }}
                 className="w-full"
+              />
+              <PdfMetrics
+                text={cvData.company || ""}
+                charsPerLine={110}
+                maxLines={1}
               />
             </div>
           </Field>
