@@ -21,6 +21,7 @@ import {
 import { DragDropProvider } from "@dnd-kit/react";
 import { useSortable } from "@dnd-kit/react/sortable";
 import { closestCenter } from "@dnd-kit/collision";
+import { PdfMetrics } from "../pdf-metrics";
 
 // --- HELPER DATE PARSING ---
 const parseDateString = (dateStr?: string) => {
@@ -114,6 +115,7 @@ function DetailRow({
               onChange(e.target.value);
             }}
           />
+          <PdfMetrics text={value} showPdfLines={true} charsPerLine={110} />
         </div>
       </Field>
     </div>
@@ -194,6 +196,7 @@ function StackRow({
               onChange(e.target.value);
             }}
           />
+          <PdfMetrics text={value} showPdfLines={false} />
         </div>
       </Field>
     </div>
@@ -414,6 +417,10 @@ function ExperienceItem({
                       e.target.value
                     )
                   }
+                />
+                <PdfMetrics
+                  text={exp[id as keyof typeof exp] || ""}
+                  showPdfLines={false}
                 />
               </div>
             </Field>
