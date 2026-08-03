@@ -20,6 +20,7 @@ import {
 import { DragDropProvider } from "@dnd-kit/react";
 import { useSortable } from "@dnd-kit/react/sortable";
 import { closestCenter } from "@dnd-kit/collision";
+import { PdfMetrics } from "../pdf-metrics";
 
 // --- AUXILIARY CONVERSION FOR TOKENIZED STRINGS ---
 const parseCertString = (str?: string) => {
@@ -165,6 +166,7 @@ function CertificationItem({
                   );
                 }}
               />
+              <PdfMetrics text={parsed.text} charsPerLine={110} />
             </div>
 
             <div
