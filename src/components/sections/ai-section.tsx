@@ -16,6 +16,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { useSyncCollapse } from "@/app/hooks/useSyncCollapse";
+import { PdfMetrics } from "../pdf-metrics";
 
 export function AiSection() {
   const t = useTranslations("ResumeBuilderPage");
@@ -111,6 +112,7 @@ export function AiSection() {
                 }}
                 className="min-h-[120px] resize-none overflow-hidden"
               />
+              <PdfMetrics text={cvData.ai} charsPerLine={110} />
             </div>
           </Field>
         </CollapsibleContent>
