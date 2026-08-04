@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { Plus, Trash2, ChevronDown } from "lucide-react";
+import { Plus, Trash2, ChevronDown, GripVertical } from "lucide-react";
 import { useResumeStore } from "@/store/useResumeStore";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -18,7 +18,109 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { DragDropProvider } from "@dnd-kit/react";
+import { useSortable } from "@dnd-kit/react/sortable";
+import { closestCenter } from "@dnd-kit/collision";
 
+// --- AUXILIARY SUB-COMPONENT (KEYWORD ITEM) ---
+interface KeywordItemProps {
+  keyword: string;
+  index: number;
+  sortableId: string;
+  keywordsListLength: number;
+  t: ReturnType<typeof useTranslations>;
+  handleAutoResize: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  removeKeyword: (index: number) => void;
+  updateKeyword: (index: number, value: string) => void;
+}
+
+function KeywordItem({
+  keyword,
+  index,
+  sortableId,
+  keywordsListLength,
+  t,
+  handleAutoResize,
+  removeKeyword,
+  updateKeyword,
+}: KeywordItemProps) {
+  const { ref, handleRef } = useSortable({
+    id: sortableId,
+    index,
+    collisionDetector: closestCenter,
+  });
+
+  return (
+    <div
+      ref={ref}
+      // touch-none prevents the browser from treating a fast touch/pointer
+      // drag as a page scroll gesture
+      className="touch-none"
+    >
+      <Field
+        id={`meta-keyword-${sortableId}`}
+        className="mb-4 scroll-mt-24 last:mb-0"
+      >
+        <div className="flex w-full flex-col gap-2">
+          {/* ROW 1: HANDLE, LABEL & TRASH BUTTON */}
+          <div className="flex w-full items-center justify-between gap-2">
+            <div className="flex flex-1 items-center gap-3">
+              {/* Drag handle */}
+              <button
+                type="button"
+                ref={handleRef}
+                className="text-muted-foreground hover:text-foreground shrink-0 cursor-grab touch-none p-1 select-none focus-visible:outline-none active:cursor-grabbing"
+              >
+                <GripVertical className="size-4" />
+              </button>
+
+              <FieldLabel className="text-left text-xs font-medium capitalize">
+                {t("sections.meta_ats.keywordLabel", {
+                  num: index + 1,
+                })}
+              </FieldLabel>
+            </div>
+
+            {/* Trash Button */}
+            {keywordsListLength > 1 && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => removeKeyword(index)}
+                className="size-8 shrink-0"
+              >
+                <Trash2 className="text-destructive h-4 w-4" />
+              </Button>
+            )}
+          </div>
+
+          {/* ROW 2: INPUT FIELD (Textarea) */}
+          <div>
+            <Textarea
+              className="min-h-[38px] w-full resize-none overflow-hidden py-2"
+              rows={1}
+              placeholder={t("sections.meta_ats.keywordPlaceholder")}
+              value={keyword}
+              onBlur={(e) => {
+                if (!e.target.value.trim() && keywordsListLength > 1) {
+                  removeKeyword(index);
+                }
+              }}
+              onChange={(e) => {
+                handleAutoResize(e);
+                updateKeyword(index, e.target.value);
+              }}
+            />
+            <PdfMetrics text={keyword} showPdfLines={false} />
+          </div>
+        </div>
+      </Field>
+    </div>
+  );
+}
+
+// --- MAIN COMPONENT ---
 export function MetaAtsSection() {
   const t = useTranslations("ResumeBuilderPage");
   const locale = useLocale();
@@ -34,6 +136,22 @@ export function MetaAtsSection() {
     "meta-keywords",
     false
   );
+
+  const keywordsList = Array.isArray(cvData.meta_ats.keywords)
+    ? cvData.meta_ats.keywords
+    : [];
+
+  // Virtual IDs used only by dnd-kit for stable sortable identity.
+  const idsRef = useRef<string[]>([]);
+
+  const currentLength = keywordsList.length;
+  if (idsRef.current.length < currentLength) {
+    for (let i = idsRef.current.length; i < currentLength; i++) {
+      idsRef.current.push(Math.random().toString(36).substring(2, 9));
+    }
+  } else if (idsRef.current.length > currentLength) {
+    idsRef.current = idsRef.current.slice(0, currentLength);
+  }
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -84,10 +202,6 @@ export function MetaAtsSection() {
 
   const textareaFields = ["subject", "rights"];
 
-  const keywordsList = Array.isArray(cvData.meta_ats.keywords)
-    ? cvData.meta_ats.keywords
-    : [];
-
   useEffect(() => {
     if (
       !Array.isArray(cvData.meta_ats.keywords) ||
@@ -100,6 +214,7 @@ export function MetaAtsSection() {
   }, [cvData.meta_ats.keywords, updateCvData]);
 
   const addKeyword = () => {
+    idsRef.current.push(Math.random().toString(36).substring(2, 9));
     updateCvData((draft) => {
       if (!Array.isArray(draft.meta_ats.keywords)) {
         draft.meta_ats.keywords = [];
@@ -109,6 +224,8 @@ export function MetaAtsSection() {
   };
 
   const removeKeyword = (index: number) => {
+    if (keywordsList.length <= 1) return;
+    idsRef.current.splice(index, 1);
     updateCvData((draft) => {
       if (
         Array.isArray(draft.meta_ats.keywords) &&
@@ -315,60 +432,63 @@ export function MetaAtsSection() {
               </div>
             </div>
 
-            <CollapsibleContent className="w-full space-y-4">
-              {keywordsList.map((keyword, index) => (
-                <Field
-                  key={index}
-                  id={`meta-keyword-${index}`}
-                  className="scroll-mt-24"
-                >
-                  <div className="flex w-full flex-col gap-2">
-                    <div className="flex w-full items-center justify-between">
-                      <FieldLabel className="text-left text-xs font-medium capitalize">
-                        {t("sections.meta_ats.keywordLabel", {
-                          num: index + 1,
-                        })}
-                      </FieldLabel>
+            <CollapsibleContent className="w-full space-y-2">
+              <DragDropProvider
+                onDragEnd={(event: any) => {
+                  if (event?.canceled) return;
 
-                      {keywordsList.length > 1 && (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removeKeyword(index)}
-                          className="size-8 shrink-0"
-                        >
-                          <Trash2 className="text-destructive h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
+                  // See language-section.tsx for full explanation: @dnd-kit/react
+                  // v0.5.0 already reorders the item internally before onDragEnd
+                  // fires, so operation.source.index is the FINAL position.
+                  // The correct diff pair is initialIndex (before) vs index (after),
+                  // both read from operation.source.
+                  const source = event?.operation?.source;
+                  if (!source) return;
 
-                    <div>
-                      <Textarea
-                        className="min-h-[38px] w-full resize-none overflow-hidden py-2"
-                        rows={1}
-                        placeholder={t("sections.meta_ats.keywordPlaceholder")}
-                        value={keyword}
-                        onBlur={(e) => {
-                          if (
-                            !e.target.value.trim() &&
-                            keywordsList.length > 1
-                          ) {
-                            removeKeyword(index);
-                          }
-                        }}
-                        onChange={(e) => {
-                          handleAutoResize(e);
-                          updateKeyword(index, e.target.value);
-                        }}
-                      />
-                      <PdfMetrics text={keyword} showPdfLines={false} />
-                    </div>
-                  </div>
-                </Field>
-              ))}
+                  const oldIndex = source.initialIndex;
+                  const newIndex = source.index;
 
-              <div className="mt-2 flex justify-end">
+                  if (
+                    oldIndex == null ||
+                    newIndex == null ||
+                    oldIndex === newIndex
+                  ) {
+                    return;
+                  }
+
+                  // Keep the virtual ID list in sync so React keys stay stable
+                  const [movedId] = idsRef.current.splice(oldIndex, 1);
+                  idsRef.current.splice(newIndex, 0, movedId);
+
+                  // Persist the real reorder in the Zustand store (source of truth)
+                  updateCvData((draft) => {
+                    if (Array.isArray(draft.meta_ats.keywords)) {
+                      const [movedKeyword] = draft.meta_ats.keywords.splice(
+                        oldIndex,
+                        1
+                      );
+                      draft.meta_ats.keywords.splice(newIndex, 0, movedKeyword);
+                    }
+                  });
+                }}
+              >
+                {/* KEYWORDS LIST */}
+                {keywordsList.map((keyword, index) => (
+                  <KeywordItem
+                    key={idsRef.current[index]}
+                    sortableId={idsRef.current[index]}
+                    keyword={keyword}
+                    index={index}
+                    keywordsListLength={keywordsList.length}
+                    t={t}
+                    handleAutoResize={handleAutoResize}
+                    removeKeyword={removeKeyword}
+                    updateKeyword={updateKeyword}
+                  />
+                ))}
+              </DragDropProvider>
+
+              <div className="mt-4 flex justify-end">
                 <Button
                   type="button"
                   variant="outline"
