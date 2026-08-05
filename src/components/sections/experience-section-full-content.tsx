@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Plus, Trash2, X } from "lucide-react";
+import { Plus, Trash2, X, GripVertical } from "lucide-react";
 import {
   useFullContentStore,
   ExperienceItem,
@@ -27,6 +27,10 @@ import { MonthYearPicker } from "./ui/mouth-year-picker";
 import { ExperienceTable } from "./ui/experience-table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { DragDropProvider } from "@dnd-kit/react";
+import { useSortable } from "@dnd-kit/react/sortable";
+import { closestCenter } from "@dnd-kit/collision";
+import { PdfMetrics } from "../pdf-metrics";
 
 const emptyExperience: ExperienceItem = {
   role: "",
@@ -36,6 +40,171 @@ const emptyExperience: ExperienceItem = {
   details: [""],
   stacks: [""],
 };
+
+// Generates a random virtual id used only for dnd-kit sortable identity.
+const genId = () => Math.random().toString(36).substring(2, 9);
+
+// --- DRAGGABLE ROW: PROJECT DETAIL ---
+interface DetailRowProps {
+  sortableId: string;
+  index: number;
+  value: string;
+  label: string;
+  placeholder: string;
+  canRemove: boolean;
+  handleAutoResize: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onChange: (value: string) => void;
+  onRemove: () => void;
+}
+
+function DetailRow({
+  sortableId,
+  index,
+  value,
+  label,
+  placeholder,
+  canRemove,
+  handleAutoResize,
+  onChange,
+  onRemove,
+}: DetailRowProps) {
+  const { ref, handleRef } = useSortable({
+    id: sortableId,
+    index,
+    collisionDetector: closestCenter,
+  });
+
+  return (
+    <div ref={ref} className="touch-none">
+      <Field className="mb-2">
+        <div className="flex w-full flex-col gap-2">
+          <div className="flex w-full items-center justify-between gap-2">
+            <div className="flex flex-1 items-center gap-2">
+              <button
+                type="button"
+                ref={handleRef}
+                className="text-muted-foreground hover:text-foreground shrink-0 cursor-grab touch-none p-1 select-none focus-visible:outline-none active:cursor-grabbing"
+              >
+                <GripVertical className="size-3.5" />
+              </button>
+              <FieldLabel className="text-left text-xs font-medium capitalize">
+                {label}
+              </FieldLabel>
+            </div>
+
+            {canRemove && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={onRemove}
+                className="h-8 w-8 shrink-0"
+              >
+                <Trash2 className="text-destructive size-4" />
+              </Button>
+            )}
+          </div>
+
+          <Textarea
+            className="min-h-[38px] w-full resize-none overflow-hidden py-2"
+            rows={1}
+            placeholder={placeholder}
+            value={value}
+            onBlur={(e) => {
+              if (!e.target.value.trim() && canRemove) onRemove();
+            }}
+            onChange={(e) => {
+              handleAutoResize(e);
+              onChange(e.target.value);
+            }}
+          />
+          <PdfMetrics text={value} showPdfLines={true} charsPerLine={110} />
+        </div>
+      </Field>
+    </div>
+  );
+}
+
+// --- DRAGGABLE ROW: TECH STACK ---
+interface StackRowProps {
+  sortableId: string;
+  index: number;
+  value: string;
+  label: string;
+  placeholder: string;
+  canRemove: boolean;
+  handleAutoResize: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onChange: (value: string) => void;
+  onRemove: () => void;
+}
+
+function StackRow({
+  sortableId,
+  index,
+  value,
+  label,
+  placeholder,
+  canRemove,
+  handleAutoResize,
+  onChange,
+  onRemove,
+}: StackRowProps) {
+  const { ref, handleRef } = useSortable({
+    id: sortableId,
+    index,
+    collisionDetector: closestCenter,
+  });
+
+  return (
+    <div ref={ref} className="touch-none">
+      <Field className="mb-2">
+        <div className="flex w-full flex-col gap-2">
+          <div className="flex w-full items-center justify-between gap-2">
+            <div className="flex flex-1 items-center gap-2">
+              <button
+                type="button"
+                ref={handleRef}
+                className="text-muted-foreground hover:text-foreground shrink-0 cursor-grab touch-none p-1 select-none focus-visible:outline-none active:cursor-grabbing"
+              >
+                <GripVertical className="size-3.5" />
+              </button>
+              <FieldLabel className="text-left text-xs font-medium capitalize">
+                {label}
+              </FieldLabel>
+            </div>
+
+            {canRemove && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={onRemove}
+                className="h-8 w-8 shrink-0"
+              >
+                <Trash2 className="text-destructive size-4" />
+              </Button>
+            )}
+          </div>
+
+          <Textarea
+            className="min-h-[38px] w-full resize-none overflow-hidden py-2"
+            rows={1}
+            placeholder={placeholder}
+            value={value}
+            onBlur={(e) => {
+              if (!e.target.value.trim() && canRemove) onRemove();
+            }}
+            onChange={(e) => {
+              handleAutoResize(e);
+              onChange(e.target.value);
+            }}
+          />
+          <PdfMetrics text={value} showPdfLines={false} />
+        </div>
+      </Field>
+    </div>
+  );
+}
 
 export function ExperienceSectionFullContent() {
   const t = useTranslations("ResumeBuilderPage");
@@ -55,6 +224,29 @@ export function ExperienceSectionFullContent() {
   const [expToDelete, setExpToDelete] = useState<string | null>(null);
   const [showValidationError, setShowValidationError] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+
+  // Local state for virtual IDs to handle stable sortable rendering
+  const [detailIds, setDetailIds] = useState<string[]>(() =>
+    form.details.map(() => genId())
+  );
+  const [stackIds, setStackIds] = useState<string[]>(() =>
+    form.stacks.map(() => genId())
+  );
+
+  // Sync virtual IDs size with form arrays size
+  if (detailIds.length !== form.details.length) {
+    const next = [...detailIds];
+    while (next.length < form.details.length) next.push(genId());
+    while (next.length > form.details.length) next.pop();
+    setDetailIds(next);
+  }
+
+  if (stackIds.length !== form.stacks.length) {
+    const next = [...stackIds];
+    while (next.length < form.stacks.length) next.push(genId());
+    while (next.length > form.stacks.length) next.pop();
+    setStackIds(next);
+  }
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -118,6 +310,7 @@ export function ExperienceSectionFullContent() {
   };
 
   const addDetail = () => {
+    if (form.details.length >= 3) return;
     setForm({ ...form, details: [...form.details, ""] });
   };
 
@@ -152,6 +345,54 @@ export function ExperienceSectionFullContent() {
   const updateStack = (sIdx: number, value: string) => {
     const newStacks = [...form.stacks];
     newStacks[sIdx] = value;
+    setForm({ ...form, stacks: newStacks });
+  };
+
+  // --- DRAG END: PROJECT DETAILS ---
+  const handleDetailsDrag = (event: any) => {
+    if (event?.canceled) return;
+    const source = event?.operation?.source;
+    if (!source) return;
+
+    const oldIndex = source.initialIndex;
+    const newIndex = source.index;
+
+    if (oldIndex == null || newIndex == null || oldIndex === newIndex) return;
+
+    setDetailIds((prev) => {
+      const next = [...prev];
+      const [moved] = next.splice(oldIndex, 1);
+      next.splice(newIndex, 0, moved);
+      return next;
+    });
+
+    const newDetails = [...form.details];
+    const [movedDetail] = newDetails.splice(oldIndex, 1);
+    newDetails.splice(newIndex, 0, movedDetail);
+    setForm({ ...form, details: newDetails });
+  };
+
+  // --- DRAG END: TECH STACKS ---
+  const handleStacksDrag = (event: any) => {
+    if (event?.canceled) return;
+    const source = event?.operation?.source;
+    if (!source) return;
+
+    const oldIndex = source.initialIndex;
+    const newIndex = source.index;
+
+    if (oldIndex == null || newIndex == null || oldIndex === newIndex) return;
+
+    setStackIds((prev) => {
+      const next = [...prev];
+      const [moved] = next.splice(oldIndex, 1);
+      next.splice(newIndex, 0, moved);
+      return next;
+    });
+
+    const newStacks = [...form.stacks];
+    const [movedStack] = newStacks.splice(oldIndex, 1);
+    newStacks.splice(newIndex, 0, movedStack);
     setForm({ ...form, stacks: newStacks });
   };
 
@@ -269,6 +510,10 @@ export function ExperienceSectionFullContent() {
                   )
                 }
               />
+              <PdfMetrics
+                text={form[id as keyof typeof form] || ""}
+                showPdfLines={false}
+              />
             </div>
           </Field>
         ))}
@@ -324,6 +569,7 @@ export function ExperienceSectionFullContent() {
           </div>
         </Field>
 
+        {/* --- PROJECT DETAILS (draggable) --- */}
         <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
             <div>
@@ -344,41 +590,28 @@ export function ExperienceSectionFullContent() {
             )}
           </div>
 
-          {form.details.map((detail, dIdx) => (
-            <Field key={dIdx} className="mb-2">
-              <div className="flex w-full flex-col gap-2">
-                <div className="flex w-full items-center justify-between">
-                  <FieldLabel className="text-left text-xs font-medium capitalize">
-                    {t("sections.experience.detailLabel", { num: dIdx + 1 })}
-                  </FieldLabel>
-
-                  {form.details.length > 1 && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeDetail(dIdx)}
-                      className="h-8 w-8 shrink-0"
-                    >
-                      <Trash2 className="text-destructive size-4" />
-                    </Button>
-                  )}
-                </div>
-
-                <Textarea
-                  className="min-h-[38px] w-full resize-none overflow-hidden py-2"
-                  rows={1}
+          <div className="w-full space-y-4">
+            <DragDropProvider onDragEnd={handleDetailsDrag}>
+              {form.details.map((detail, dIdx) => (
+                <DetailRow
+                  key={detailIds[dIdx] || `detail-${dIdx}`}
+                  sortableId={detailIds[dIdx] || `detail-${dIdx}`}
+                  index={dIdx}
+                  value={detail}
+                  label={t("sections.experience.detailLabel", {
+                    num: dIdx + 1,
+                  })}
                   placeholder={t("sections.experience.detailPlaceholder", {
                     num: dIdx + 1,
                   })}
-                  value={detail}
-                  onChange={(e) => {
-                    handleAutoResize(e);
-                    updateDetail(dIdx, e.target.value);
-                  }}
+                  canRemove={form.details.length > 1}
+                  handleAutoResize={handleAutoResize}
+                  onChange={(value) => updateDetail(dIdx, value)}
+                  onRemove={() => removeDetail(dIdx)}
                 />
-              </div>
-            </Field>
-          ))}
+              ))}
+            </DragDropProvider>
+          </div>
 
           {form.details.length < 3 && (
             <div className="mt-2 flex justify-end">
@@ -395,6 +628,7 @@ export function ExperienceSectionFullContent() {
           )}
         </div>
 
+        {/* --- TECH STACKS (draggable) --- */}
         <div className="border-muted my-2 flex flex-col gap-4 border-l-2 pl-6">
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
             <div>
@@ -413,39 +647,24 @@ export function ExperienceSectionFullContent() {
             </Button>
           </div>
 
-          {form.stacks.map((stack, sIdx) => (
-            <Field key={sIdx} className="mb-2">
-              <div className="flex w-full flex-col gap-2">
-                <div className="flex w-full items-center justify-between">
-                  <FieldLabel className="text-left text-xs font-medium capitalize">
-                    {t("sections.experience.stackLabel", { num: sIdx + 1 })}
-                  </FieldLabel>
-
-                  {form.stacks.length > 1 && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeStack(sIdx)}
-                      className="h-8 w-8 shrink-0"
-                    >
-                      <Trash2 className="text-destructive size-4" />
-                    </Button>
-                  )}
-                </div>
-
-                <Textarea
-                  className="min-h-[38px] w-full resize-none overflow-hidden py-2"
-                  rows={1}
-                  placeholder={t("sections.experience.stackPlaceholder")}
+          <div className="w-full space-y-4">
+            <DragDropProvider onDragEnd={handleStacksDrag}>
+              {form.stacks.map((stack, sIdx) => (
+                <StackRow
+                  key={stackIds[sIdx] || `stack-${sIdx}`}
+                  sortableId={stackIds[sIdx] || `stack-${sIdx}`}
+                  index={sIdx}
                   value={stack}
-                  onChange={(e) => {
-                    handleAutoResize(e);
-                    updateStack(sIdx, e.target.value);
-                  }}
+                  label={t("sections.experience.stackLabel", { num: sIdx + 1 })}
+                  placeholder={t("sections.experience.stackPlaceholder")}
+                  canRemove={form.stacks.length > 1}
+                  handleAutoResize={handleAutoResize}
+                  onChange={(value) => updateStack(sIdx, value)}
+                  onRemove={() => removeStack(sIdx)}
                 />
-              </div>
-            </Field>
-          ))}
+              ))}
+            </DragDropProvider>
+          </div>
 
           <div className="mt-2 flex justify-end">
             <Button
