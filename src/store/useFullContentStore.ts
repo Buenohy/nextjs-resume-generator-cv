@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
+import { persist, createJSONStorage } from "zustand/middleware";
 import { useLocale } from "next-intl";
 import type { UseBoundStore, StoreApi } from "zustand";
 
@@ -65,98 +66,143 @@ function createFullContentStore(
   locale: string
 ): UseBoundStore<StoreApi<FullContentStore>> {
   return create<FullContentStore>()(
-    immer((set) => ({
-      ...initialState,
+    persist(
+      immer((set) => ({
+        ...initialState,
 
-      updateFullContent: (updater) =>
-        set((state) => {
-          updater(state);
+        updateFullContent: (updater) =>
+          set((state) => {
+            updater(state);
+          }),
+
+        // Fetch experiences from the API filtered by active locale.
+        // Fallback gracefully to LocalStorage state if API fails or server is offline.
+        fetchExperiences: async () => {
+          set({ isLoading: true });
+          try {
+            const res = await fetch(`${API_URL}?language=${locale}`);
+            if (res.ok) {
+              const data = await res.json();
+              set({ savedExperiences: data });
+            }
+          } catch (error) {
+            console.warn(
+              "API/Backend unavailable. Falling back to local data from LocalStorage:",
+              error
+            );
+          } finally {
+            set({ isLoading: false });
+          }
+        },
+
+        // Save a new experience entry (Offline-First approach).
+        // Updates local store & LocalStorage immediately, then attempts to sync with API.
+        addSavedExperience: async (experience) => {
+          const tempId = `local-${Date.now()}`;
+          const newExp = { ...experience, id: tempId, language: locale };
+
+          // 1. Optimistic update in LocalStorage & local state
+          set((state) => {
+            state.savedExperiences.unshift(newExp);
+          });
+
+          // 2. Try persisting to backend database
+          try {
+            const payload = { ...experience, language: locale };
+            const res = await fetch(API_URL, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+
+            if (res.ok) {
+              const savedBackendExp = await res.json();
+              // Replace temporary local ID with real database ID
+              set((state) => {
+                const index = state.savedExperiences.findIndex(
+                  (e) => e.id === tempId
+                );
+                if (index !== -1) {
+                  state.savedExperiences[index] = savedBackendExp;
+                }
+              });
+            }
+          } catch (error) {
+            console.warn(
+              "Failed to save experience to API. Retaining local copy in LocalStorage.",
+              error
+            );
+          }
+        },
+
+        // Update an existing experience entry locally first, then sync with API
+        updateSavedExperience: async (id, experience) => {
+          // 1. Update state & LocalStorage immediately
+          set((state) => {
+            const index = state.savedExperiences.findIndex((e) => e.id === id);
+            if (index !== -1) {
+              state.savedExperiences[index] = {
+                ...experience,
+                id,
+                language: locale,
+              };
+            }
+          });
+
+          // 2. Try updating backend
+          try {
+            const payload = { ...experience, language: locale };
+            await fetch(`${API_URL}/${id}`, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+          } catch (error) {
+            console.warn(
+              "Failed to update experience on API. Changes saved locally.",
+              error
+            );
+          }
+        },
+
+        // Delete an experience entry locally first, then sync with API
+        removeSavedExperience: async (id: string) => {
+          // 1. Remove from state & LocalStorage immediately
+          set((state) => {
+            state.savedExperiences = state.savedExperiences.filter(
+              (e) => e.id !== id
+            );
+          });
+
+          // 2. Try removing from backend
+          try {
+            await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+          } catch (error) {
+            console.warn(
+              "Failed to delete experience from API. Removed locally.",
+              error
+            );
+          }
+        },
+      })),
+      {
+        // Unique key per locale in LocalStorage (e.g. "full-content-store-pt", "full-content-store-en")
+        name: `full-content-store-${locale}`,
+        storage: createJSONStorage(() => localStorage),
+        // Exclude transient/loading state from persistent storage
+        partialize: (state) => ({
+          info: state.info,
+          meta_ats: state.meta_ats,
+          links: state.links,
+          summary: state.summary,
+          skills: state.skills,
+          savedExperiences: state.savedExperiences,
+          education: state.education,
+          certifications: state.certifications,
+          languages: state.languages,
         }),
-
-      // Fetch experiences from the API filtered by active locale
-      fetchExperiences: async () => {
-        set({ isLoading: true });
-        try {
-          const res = await fetch(`${API_URL}?language=${locale}`);
-          if (res.ok) {
-            const data = await res.json();
-            set({ savedExperiences: data });
-          }
-        } catch (error) {
-          console.error("Error fetching experiences from API:", error);
-        } finally {
-          set({ isLoading: false });
-        }
-      },
-
-      // Save a new experience entry to the API
-      addSavedExperience: async (experience) => {
-        try {
-          const payload = { ...experience, language: locale };
-
-          const res = await fetch(API_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-
-          if (res.ok) {
-            const newExp = await res.json();
-            set((state) => {
-              state.savedExperiences.unshift(newExp); // Prepend new item to UI list
-            });
-          }
-        } catch (error) {
-          console.error("Error saving experience to API:", error);
-        }
-      },
-
-      // Update an existing experience entry on the API
-      updateSavedExperience: async (id, experience) => {
-        try {
-          const payload = { ...experience, language: locale };
-
-          const res = await fetch(`${API_URL}/${id}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-
-          if (res.ok) {
-            const updatedExp = await res.json();
-            set((state) => {
-              const index = state.savedExperiences.findIndex(
-                (e) => e.id === id
-              );
-              if (index !== -1) {
-                state.savedExperiences[index] = updatedExp;
-              }
-            });
-          }
-        } catch (error) {
-          console.error("Error updating experience on API:", error);
-        }
-      },
-
-      // Delete an experience entry from the API
-      removeSavedExperience: async (id: string) => {
-        try {
-          const res = await fetch(`${API_URL}/${id}`, {
-            method: "DELETE",
-          });
-
-          if (res.ok) {
-            set((state) => {
-              state.savedExperiences = state.savedExperiences.filter(
-                (e) => e.id !== id
-              );
-            });
-          }
-        } catch (error) {
-          console.error("Error deleting experience from API:", error);
-        }
-      },
-    }))
+      }
+    )
   );
 }
 
