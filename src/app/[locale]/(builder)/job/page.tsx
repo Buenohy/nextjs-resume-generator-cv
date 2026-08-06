@@ -43,7 +43,7 @@ export default function JobDescriptionPage() {
 
   const handleSubmit = () => {
     // Since data is updated globally on every keystroke, submission simply routes the user forward
-    router.push("/resume-builder");
+    router.push("/resume");
   };
 
   if (!isMounted) {
